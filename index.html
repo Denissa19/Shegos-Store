@@ -43,7 +43,7 @@
         .btn-whatsapp:hover { background-color: #1ebe57; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5); }
 
         /* =========================================
-           NUEVO: HERO SECTION (PANTALLA DE INICIO)
+           HERO SECTION (PANTALLA DE INICIO)
            ========================================= */
         .hero-container { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 40px 20px; min-height: 60vh; }
         .hero-text { flex: 1; z-index: 2; }
@@ -61,7 +61,6 @@
         .hero-checks span::before { content: "✓"; background-color: #00ff88; color: #000; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8em; }
 
         .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        /* Brillo de fondo para la skin */
         .hero-image::before { content: ""; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,255,136,0.2) 0%, rgba(0,0,0,0) 70%); z-index: 0; border-radius: 50%; }
         .hero-image img { max-width: 100%; max-height: 600px; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5)); animation: float 4s ease-in-out infinite; z-index: 1; }
 
@@ -95,7 +94,6 @@
         .precio-usd { font-size: 1.2em; color: #00ff88; font-weight: bold; display: block; margin-bottom: 10px; transition: color 0.3s; }
         .producto:hover .precio-usd { text-shadow: 0 0 8px rgba(0,255,136,0.5); }
         
-        /* Resto de secciones */
         .grid-pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
         .paso { background-color: #2a2a2a; padding: 25px; border-radius: 8px; border-top: 4px solid #00ff88; text-align: center; transition: all 0.3s ease; }
         .paso:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
@@ -237,7 +235,7 @@
 
         <div id="ids-regalos" class="section-box pestana oculto">
             <h2>Cuentas para Agregar (Regalos)</h2>
-            <p>Por favor, envía solicitud de amistad a TODAS las siguientes cuentas:</p>
+            <p>Por favor, envía solicitud de amistad a TODAS las siguientes cuentas o a la que prefieras:</p>
             <ul class="lista-ids">
                 <li><strong>Maidas-S</strong></li>
                 <li><strong>Maidas-OS</strong></li>
@@ -246,6 +244,32 @@
                 <li><strong>SHAGOS STW</strong></li>
                 <li><strong>SHEGOS STW</strong></li>
             </ul>
+
+            <div style="margin-top: 40px; background: #2a2a2a; padding: 25px; border-radius: 8px; border-left: 5px solid #5865F2;">
+                <h3 style="margin-top: 0; color: #5865F2; display: flex; align-items: center; gap: 10px;">
+                    <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" width="25" alt="Discord">
+                    ¿Ya enviaste la solicitud?
+                </h3>
+                <p style="color: #ccc; margin-bottom: 20px;">Escribe tu Epic ID exacto y selecciona a cuál de nuestras cuentas le enviaste la solicitud. Nuestro equipo la aceptará al instante para iniciar tus 48 horas.</p>
+                
+                <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap;">
+                    <input type="text" id="aviso-epic-id" placeholder="Tu Epic ID..." style="margin: 0; flex: 1; min-width: 150px;">
+                    
+                    <select id="aviso-cuenta-destino" style="margin: 0; flex: 1; min-width: 150px;">
+                        <option value="">¿A qué cuenta la enviaste?</option>
+                        <option value="Maidas-S">Maidas-S</option>
+                        <option value="Maidas-OS">Maidas-OS</option>
+                        <option value="Denissa_STW">Denissa_STW</option>
+                        <option value="DENISSA_7u7">DENISSA_7u7</option>
+                        <option value="SHAGOS STW">SHAGOS STW</option>
+                        <option value="SHEGOS STW">SHEGOS STW</option>
+                        <option value="Todas las cuentas">A todas las cuentas</option>
+                    </select>
+
+                    <button class="btn-accion" style="background-color: #5865F2; color: white; width: auto; margin: 0; padding: 12px 25px;" onclick="enviarAvisoDiscord()">🔔 Notificar</button>
+                </div>
+                <div id="aviso-status" style="margin-top: 15px;"></div>
+            </div>
         </div>
 
         <div id="recargas" class="section-box pestana oculto">
@@ -315,7 +339,7 @@
             <label>1. Epic ID (Para recibir regalos):</label>
             <div style="display: flex; gap: 10px; align-items: flex-start;">
                 <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123" style="margin: 0;">
-                <button class="btn-accion" style="width: auto; margin: 0; padding: 12px 20px;" onclick="verificarID()">Verificar</button>
+                <button class="btn-accion" style="width: auto; margin: 0; padding: 12px 20px;" onclick="verificarID()">Verificar Estado</button>
             </div>
             <div id="id-status"></div>
 
@@ -400,7 +424,10 @@
         // ==========================================
         // CONFIGURACIÓN Y VARIABLES GLOBALES
         // ==========================================
-        const URL_WEBHOOK_DISCORD = ""; 
+        
+        // 🔥 PON EL LINK DE TU WEBHOOK DE DISCORD ENTRE LAS COMILLAS 🔥
+        const WEBHOOK_DISCORD_SOLICITUDES = ""; 
+
         const CLIENTES_VERIFICADOS = ["denissa_7u7", "juanperez123"];
         const CLIENTES_EN_ESPERA = { "cliente_nuevo01": "2026-04-23T10:00:00" };
 
@@ -433,7 +460,7 @@
                 const objetos = datos.data.entries;
                 
                 let categoriasAgrupadas = {};
-                let heroImgSet = false; // Control para la imagen principal
+                let heroImgSet = false;
 
                 objetos.forEach(item => {
                     let nombre = item.bundle ? item.bundle.name : (item.brItems ? item.brItems[0].name : "");
@@ -441,13 +468,9 @@
                     let imagen = item.bundle ? item.bundle.image : (item.brItems ? item.brItems[0].images.icon : "");
                     let cat = obtenerTipoArticulo(item);
                     
-                    // Extraer una imagen de cuerpo completo para el Hero Section
                     if (!heroImgSet && (cat === "Lotes y Paquetes" || cat === "Trajes")) {
                         let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0].images.featured ? item.brItems[0].images.featured : imagen);
-                        if (imgLarga) {
-                            document.getElementById('hero-dynamic-img').src = imgLarga;
-                            heroImgSet = true;
-                        }
+                        if (imgLarga) { document.getElementById('hero-dynamic-img').src = imgLarga; heroImgSet = true; }
                     }
                     
                     if(nombre && imagen && vbucks) {
@@ -508,6 +531,56 @@
             });
         }
 
+        // ==========================================
+        // SISTEMA DE ALERTAS A DISCORD (NUEVA VERSIÓN CON SELECTOR)
+        // ==========================================
+        async function enviarAvisoDiscord() {
+            const idInput = document.getElementById('aviso-epic-id').value.trim();
+            const cuentaDestino = document.getElementById('aviso-cuenta-destino').value;
+            const statusBox = document.getElementById('aviso-status');
+
+            if (!idInput || !cuentaDestino) {
+                statusBox.innerHTML = `<span style="color: #e74c3c;">❌ Por favor, escribe tu Epic ID y selecciona la cuenta.</span>`;
+                return;
+            }
+
+            if (!WEBHOOK_DISCORD_SOLICITUDES) {
+                statusBox.innerHTML = `<span style="color: #ff9d00;">⚠️ El sistema de alertas no está configurado aún en el código. (Falta el Webhook).</span>`;
+                return;
+            }
+
+            statusBox.innerHTML = `<span style="color: #aaa;">Enviando notificación al equipo...</span>`;
+
+            try {
+                const response = await fetch(WEBHOOK_DISCORD_SOLICITUDES, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: null,
+                        embeds: [{
+                            title: "🚨 NUEVA SOLICITUD DE AMISTAD 🚨",
+                            description: `El usuario \`${idInput}\` acaba de enviar solicitud a la cuenta **${cuentaDestino}**.\n\n> 👉 *Por favor, entren a esa cuenta, acepten la solicitud y anoten al usuario para que comiencen sus 48 horas.*`,
+                            color: 5814783,
+                            timestamp: new Date().toISOString()
+                        }]
+                    })
+                });
+
+                if(response.ok) {
+                    statusBox.innerHTML = `<div class="alerta-exito" style="padding: 10px; margin-top: 5px;">✅ <strong>¡Aviso enviado!</strong> Nuestro equipo te aceptará en la cuenta <strong>${cuentaDestino}</strong> en unos minutos.</div>`;
+                    document.getElementById('aviso-epic-id').value = ''; 
+                    document.getElementById('aviso-cuenta-destino').value = ''; 
+                } else {
+                    statusBox.innerHTML = `<span style="color: #e74c3c;">❌ Error de conexión con el servidor. Intenta nuevamente.</span>`;
+                }
+            } catch (error) {
+                statusBox.innerHTML = `<span style="color: #e74c3c;">❌ Ocurrió un error al enviar el aviso.</span>`;
+            }
+        }
+
+        // ==========================================
+        // CARRITO Y CHECKOUT
+        // ==========================================
         function agregarAlCarrito(n, p, i) { carrito.push({ nombre: n, precio: p, imagen: i }); actualizarCarrito(); abrirCarritoLateral(); }
         function vaciarCarrito() { if(confirm("¿Estás seguro de que deseas vaciar todo el carrito?")) { carrito = []; actualizarCarrito(); } }
         function actualizarCarrito() {
@@ -538,12 +611,12 @@
             } else if (CLIENTES_EN_ESPERA[idInput]) {
                 let fechaAgregado = new Date(CLIENTES_EN_ESPERA[idInput]); let fechaLiberacion = new Date(fechaAgregado.getTime() + (48 * 60 * 60 * 1000)); let ahora = new Date();
                 if (ahora >= fechaLiberacion) { status.innerHTML = `<div class="alerta-exito">✅ <strong>ID VERIFICADO:</strong> Ya pasaron las 48 horas. Listo para recibir regalos.</div>`;
-                } else { let opciones = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }; status.innerHTML = `<div class="alerta-espera">⏳ <strong>ID EN ESPERA:</strong> Podrás recibir regalos a partir del:<br><strong style="color:#ff9d00; font-size:1.1em; text-transform:uppercase;">${fechaLiberacion.toLocaleDateString('es-ES', opciones)}</strong>.</div>`; }
-            } else { status.innerHTML = `<div class="alerta-peligro">❌ <strong>ID NO ENCONTRADO:</strong> No estás en nuestra lista de amigos.<br><br>Para poder enviarte regalos, debes enviar solicitud a TODAS estas cuentas ahora mismo:<ul style="color:#e74c3c; font-weight:bold; margin: 10px 0;"><li>Maidas-S</li><li>Maidas-OS</li><li>Denissa_STW</li><li>DENISSA_7u7</li><li>SHAGOS STW</li><li>SHEGOS STW</li></ul>Una vez nos agregues, comenzará a contar tu tiempo de 48 horas de espera.</div>`;
-                if(URL_WEBHOOK_DISCORD) { try { await fetch(URL_WEBHOOK_DISCORD, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({content: `!add ${idInput}`}) }); } catch(e){} }
-            }
+                } else { let opciones = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }; status.innerHTML = `<div class="alerta-espera">⏳ <strong>ID EN ESPERA:</strong> Tu ID ya fue registrado. Podrás recibir regalos a partir del:<br><strong style="color:#ff9d00; font-size:1.1em; text-transform:uppercase;">${fechaLiberacion.toLocaleDateString('es-ES', opciones)}</strong>.</div>`; }
+            } else { status.innerHTML = `<div class="alerta-peligro">❌ <strong>ID NO REGISTRADO:</strong> Aún no estás en nuestra base de datos.<br><br>Ve a la pestaña <strong>ID's (Regalos)</strong>, envíanos solicitud en el juego y usa el botón de aviso para que te agreguemos.</div>`; }
         }
+        
         function mostrarInfoPago() { const metodo = document.getElementById('metodo-pago').value; document.querySelectorAll('.info-pago-box').forEach(b => b.classList.add('oculto')); if(metodo) document.getElementById('pago-' + (metodo === 'transferencia_mx' ? 'transferencia' : metodo)).classList.remove('oculto'); }
+        
         function enviarPedidoFinal() {
             const nom = document.getElementById('cliente-nombre').value; const wp = document.getElementById('cliente-whatsapp').value; const pais = document.getElementById('cliente-pais').value; const id = document.getElementById('cliente-epic').value; const met = document.getElementById('metodo-pago').value;
             if(!nom || !wp || !pais || !id || !met) return alert("Por favor completa todos tus datos, incluyendo tu WhatsApp, y selecciona un método de pago.");
@@ -558,7 +631,6 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
             document.getElementById(id).classList.remove('oculto');
             
-            // Buscar el botón correspondiente y activarlo (si existe en el nav)
             const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(id));
             if(btn) btn.classList.add('activo');
 
