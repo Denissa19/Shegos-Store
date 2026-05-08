@@ -44,7 +44,7 @@
         @keyframes slideSidebar { from { left: -280px; } to { left: 0; } }
 
         header { background-color: #0A0B0A; height: 100px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid rgba(44, 234, 163, 0.4); backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
-        .menu-toggle { background: none; border: none; color: #2CEAA3; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
+        .menu-toggle { display: none; background: none; border: none; color: #2CEAA3; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
         .header-text h1 { margin: 0; padding-bottom: 5px; font-size: 2.2em; letter-spacing: 1px; animation: slideInLeft 0.6s ease-out forwards; }
         .header-text p { margin: 0; color: #2CEAA3; font-size: 1.1em; font-weight: 500; animation: slideInLeft 0.8s ease-out forwards; opacity: 0; text-transform: uppercase; letter-spacing: 2px; }
         .logo-nav { 
@@ -95,11 +95,9 @@
         /* =========================================
            MEJORAS PARA MÓVIL Y RESPONSIVIDAD
            ========================================= */
-        @media (max-width: 768px) { 
-            header { height: auto !important; flex-direction: column; padding: 25px 15px; gap: 15px; top: 0; position: relative; }
-            .logo-nav { position: static; height: 100px !important; margin: 0 auto; display: block; animation: fadeIn 0.8s ease-out; }
-            .moneda-dropdown { margin: 0; width: 100%; text-align: center; }
-            .shop-timer-header { text-align: center; width: 100%; box-sizing: border-box; }
+        @media (max-width: 768px) {
+            /* Ajustes base de layout móvil */
+            .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
             
             nav { width: 95%; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; padding: 10px; border-radius: 15px; scrollbar-width: none; margin: 10px auto; }
             nav::-webkit-scrollbar { display: none; }
@@ -472,6 +470,7 @@
         }
         .btn-divisa:hover { border-color: #2CEAA3; transform: translateY(-3px); background-color: #1a1a1a; }
         .btn-divisa .emoji { font-size: 1.4em; margin-bottom: 4px; }
+        .btn-divisa img { width: 35px; height: 25px; object-fit: cover; border-radius: 4px; margin-bottom: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .btn-divisa .code { font-weight: 800; font-size: 1.2em; color: #fff; line-height: 1; }
         .btn-divisa .name { font-size: 0.65em; color: #888; text-transform: uppercase; margin-top: 4px; font-weight: 600; }
 
@@ -625,21 +624,137 @@
         .btn-binance-confirm { background-color: #FCD535 !important; color: #000 !important; }
         .btn-binance-cancel { background-color: transparent !important; color: #888 !important; border: 1px solid #444 !important; }
 
-        /* Ajustes de visibilidad del logo en móviles */
+        .mobile-hero-timer { display: none; }
+
+        /* =========================================
+           MEDIA QUERIES DE ÚLTIMA PRIORIDAD (MÓVIL)
+           ========================================= */
         @media (max-width: 768px) {
             header {
-                padding: 10px 15px !important;
+                flex-direction: column !important;
+                height: auto !important;
+                padding: 15px 15px !important;
+                gap: 15px !important;
+                align-items: center !important;
+                top: 0 !important;
+                position: relative !important;
+            }
+            body { font-size: 14px !important; }
+            .section-box { padding: 15px 10px !important; border-radius: 10px !important; }
+            .menu-toggle {
+                display: block !important;
+                position: absolute !important;
+                top: 50% !important;
+                transform: translateY(-50%);
+                left: 15px !important;
+                margin: 0 !important;
             }
             .logo-nav {
+                position: static !important;
+                max-width: 80px !important;
+                height: auto !important;
+                object-fit: contain !important;
+                margin: 0 auto !important;
                 display: block !important;
-                position: relative !important;
-                top: 0 !important;
-                left: 0 !important;
-                height: 55px !important;
             }
-            .header-text h1, .header-text p {
+            nav { display: none !important; }
+
+            /* Posicionamiento del selector y contador en la esquina superior derecha */
+            header > div {
+                position: absolute !important;
+                top: 50% !important;
+                transform: translateY(-50%);
+                right: 15px !important;
+                flex-direction: column !important;
+                align-items: flex-end !important;
+                gap: 2px !important;
+            }
+            .moneda-dropdown { 
+                width: auto !important; 
+                margin: 0 !important; 
+                padding: 4px 8px !important; 
+                font-size: 0.8em !important; 
+            }
+            .shop-timer-header { 
                 display: none !important;
             }
+
+            /* Reducción agresiva de escala general para evitar scroll */
+            h2 { font-size: 1.3em !important; margin-bottom: 10px !important; }
+            .hero-text h1 { font-size: 1.8em !important; }
+            .hero-text p { font-size: 0.8em !important; line-height: 1.3 !important; margin-bottom: 15px !important; }
+            .section-title { font-size: 1.1em !important; margin-bottom: 12px !important; }
+            .cosmetico-titulo { font-size: 0.75rem !important; }
+            .btn-precio-outline { font-size: 11px !important; padding: 8px !important; }
+            
+            .servicio-card { padding: 12px !important; }
+            .servicio-card strong { font-size: 1em !important; margin: 8px 0 !important; }
+            .servicio-card .precio-producto { margin-bottom: 15px !important; font-size: 0.9em !important; }
+            .servicio-card img { width: 80px !important; }
+            .servicio-card .club-img-16-9 { width: 100% !important; }
+
+            /* Sección Cómo Funciona Compacta */
+            .grid-pasos { gap: 10px !important; margin-top: 10px !important; }
+            .paso { padding: 12px !important; border-top-width: 3px !important; }
+            .paso-numero { font-size: 1.5em !important; margin-bottom: 5px !important; }
+            .paso p { font-size: 0.8em !important; line-height: 1.3 !important; margin: 0 !important; }
+            h3 { font-size: 1.1em !important; margin-top: 20px !important; }
+
+            /* Modales de información compactos */
+            .modal-pavos-content { padding: 20px !important; }
+            .modal-pavos-content h2 { font-size: 1.4em !important; }
+            .modal-pavos-content h3 { font-size: 1.1em !important; margin-bottom: 15px !important; }
+            .info-paso { margin: 12px 0 !important; gap: 10px !important; }
+            .info-paso p { font-size: 0.85em !important; }
+            .info-paso strong { min-width: 24px !important; height: 24px !important; font-size: 0.8em !important; }
+
+            /* Ajuste de botones flotantes */
+            .floating-container { bottom: 15px !important; right: 15px !important; gap: 10px !important; }
+            .float-btn { width: 45px !important; height: 45px !important; font-size: 1.2em !important; }
+            .float-cart img { width: 22px !important; }
+            .cart-badge-float { padding: 1px 5px !important; font-size: 0.7em !important; }
+
+            /* Métodos de pago más pequeños */
+            .metodo-label { 
+                padding: 12px 8px 12px 40px !important; 
+                font-size: 0.75em !important; 
+                gap: 5px !important; 
+                position: relative !important;
+                align-items: flex-start !important;
+                text-align: left !important;
+            }
+            .metodo-label img { height: 28px !important; }
+            .metodo-label::before {
+                content: "";
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 16px;
+                height: 16px;
+                border: 2px solid #555;
+                border-radius: 50%;
+                box-sizing: border-box;
+                transition: all 0.3s ease;
+            }
+            .metodo-card input[type="radio"]:checked + .metodo-label::before {
+                border-color: #2CEAA3;
+                background: radial-gradient(circle, #2CEAA3 40%, transparent 50%);
+                box-shadow: 0 0 10px rgba(44, 234, 163, 0.4);
+            }
+
+            /* Estilos para el nuevo contador en el Hero */
+            .mobile-hero-timer { 
+                display: block !important; 
+                color: #2CEAA3; 
+                font-size: 0.8em; 
+                font-weight: 700; 
+                letter-spacing: 1.5px; 
+                margin-bottom: 10px; 
+            }
+
+            footer { padding: 15px 10px !important; }
+            footer p { font-size: 0.75em !important; opacity: 0.7; margin: 5px 0 !important; }
         }
 </style>
 </head>
@@ -647,9 +762,25 @@
 
     <div class="banner-codigo"><span>Apóyanos en la tienda de Fortnite:</span> Código <strong>DENISSA_7U7</strong> <i class="fas fa-heart"></i></div>
 
+    <!-- SIDEBAR PARA MÓVIL -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-nav">
+            <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
+            <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
+            <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
+            <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
+            <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
+        </div>
+        <div class="sidebar-footer">
+            <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="discord-box" style="width: 100%; box-sizing: border-box; text-align: center;">Discord</a>
+        </div>
+    </div>
+
     <header>
+        <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
         <a href="index.html" style="text-decoration: none;">
-            <img src="img/logo.png" alt="Shegos Store" class="logo-nav">
+            <img src="./img/logo.png" alt="Shegos Store" class="logo-nav">
         </a>
         <div style="display: flex; align-items: center; gap: 15px;">
             <select id="currency-selector" class="moneda-dropdown" onchange="cambiarDivisa(this.value)">
@@ -698,6 +829,7 @@
         <div id="inicio-landing" class="pestana">
             <div class="hero-container">
                 <div class="hero-text">
+                    <div id="hero-shop-timer" class="mobile-hero-timer"></div>
                     <h1>Skins y Pavos</h1>
                     <p>Ofrecemos los precios más baratos del mercado. Recibe tus compras de manera segura, rápida y sin necesidad de darnos los datos de inicio de tu cuenta.</p>
                     <div class="hero-buttons">
@@ -826,35 +958,35 @@
                 <p style="color: #00ff88; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">V-BUCKS PARA FORTNITE · Se entrega una cuenta con los pavos recargados</p>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="img/2400vb.png" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="./img/2400vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="13.33">$13.33 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('2.400', '192')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '13.33', 'img/2400vb.png', '2400', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '13.33', './img/2400vb.png', '2400', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="img/4500vb.png" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="./img/4500vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="25.00">$25.00 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('4.500', '360')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '25.00', 'img/4500vb.png', '4500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '25.00', './img/4500vb.png', '4500', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="img/9000vb.png" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="./img/9000vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">9.000</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="44.44">$44.44 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('9.000', '720')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', 'img/9000vb.png', '9000', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', './img/9000vb.png', '9000', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #2CEAA3;">
                         <span style="background: #2CEAA3; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
-                        <img src="img/12500vb.png" style="width: 130px; margin: 0 auto 10px auto;">
+                        <img src="./img/12500vb.png" style="width: 130px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="55.55">$55.55 USD</span>
@@ -863,7 +995,7 @@
                             <span style="text-decoration: line-through;">$1629 MXN PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '55.55', 'img/12500vb.png', '12500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '55.55', './img/12500vb.png', '12500', 'cuenta')">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -1020,8 +1152,6 @@
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
                 <p style="text-align: center;">Realiza tu depósito en cualquier tienda OXXO:</p>
-                <span class="dato-copiar" oncliRealiza tu depósito en cualquier tienda OXXO:</p>
-                <span class="dato-copiar" oncliRealiza tu depósito en cualquier tienda OXXO:</p>
                 <span class="dato-copiar" onclick="copiarAlPortapapeles('2242170100050888', this)">2242170100050888</span>
                 <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: #ccc;">Luego de realizar tu deposito envia tu comprobante por whatsapp clickeando el boton de abajo</p>
             </div>
@@ -1064,15 +1194,15 @@
             <p style="color: #888; font-size: 0.9em;">Selecciona tu moneda local para una mejor experiencia.</p>
             
             <div class="grid-divisas">
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('PEN')"><span class="emoji">🇵🇪</span><span class="code">PEN</span><span class="name">PERÚ</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('MXN')"><span class="emoji">🇲🇽</span><span class="code">MXN</span><span class="name">MÉXICO</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('EUR')"><span class="emoji">🇪🇺</span><span class="code">EUR</span><span class="name">ESPAÑA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('USD')"><span class="emoji">🇺🇸</span><span class="code">USD</span><span class="name">DÓLAR</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('COP')"><span class="emoji">🇨🇴</span><span class="code">COP</span><span class="name">COLOMBIA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('ARS')"><span class="emoji">🇦🇷</span><span class="code">ARS</span><span class="name">ARGENTINA</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('PEN')"><img src="./img/Peru.png" alt="PEN"><span class="code">PEN</span><span class="name">PERÚ</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('MXN')"><img src="./img/Mexico.png" alt="MXN"><span class="code">MXN</span><span class="name">MÉXICO</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('EUR')"><img src="./img/Europa.png" alt="EUR"><span class="code">EUR</span><span class="name">EUROPA</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('USD')"><img src="./img/Usa.png" alt="USD"><span class="code">USD</span><span class="name">DÓLAR</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('COP')"><img src="./img/Colombia.png" alt="COP"><span class="code">COP</span><span class="name">COLOMBIA</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('ARS')"><img src="./img/Argentina.png" alt="ARS"><span class="code">ARS</span><span class="name">ARGENTINA</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('CLP')"><span class="emoji">🇨🇱</span><span class="code">CLP</span><span class="name">CHILE</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('USDT')"><span class="emoji">🪙</span><span class="code">USDT</span><span class="name">BINANCE PAY</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('DOP')"><span class="emoji">🇩🇴</span><span class="code">DOP</span><span class="name">Rep. Dom.</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('USDT')"><img src="./img/USDT.png" alt="USDT"><span class="code">USDT</span><span class="name">BINANCE PAY</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('DOP')"><img src="./img/Dominicana.png" alt="DOP"><span class="code">DOP</span><span class="name">Rep. Dom.</span></div>
             </div>
         </div>
     </div>
@@ -1082,7 +1212,7 @@
         <div class="modal-binance-card">
             <h2>Pagar con Binance Pay</h2>
             <p>Escanea el código QR o envía el pago a nuestro Pay ID</p>
-            <img src="img/binance-qr.jpg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
+            <img src="./img/binance-qr.jpg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
             <div style="background: #1a1c23; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px dashed #FCD535;">
                 <strong style="color: #FCD535; font-size: 1.1em;">Pay ID: 481410806</strong>
             </div>
@@ -1096,15 +1226,14 @@
     </div>
 
     <footer>
-        <span class="footer-logo">Shegos <span>Store</span></span>
         <p>Tu tienda de confianza para Fortnite. Únete a nuestra comunidad para ver todas las cuentas disponibles, participar en sorteos y contactar con administración.</p>
 
-        <p class="footer-text">&copy; 2026 Shegos Store. Todos los derechos reservados.</p>
+        <p class="footer-text">&copy; 2026. Todos los derechos reservados.</p>
     </footer>
 
     <div class="floating-container">
         <div class="float-btn float-cart" onclick="abrirCarritoLateral()" title="Ver Carrito">
-            <img src="img/carrito.png" alt="Carrito">
+            <img src="./img/carrito.png" alt="Carrito">
             <span id="cart-badge-float" class="cart-badge-float">0</span>
         </div>
         <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="float-btn float-ds" title="Discord"><i class="fab fa-discord"></i></a>
@@ -1122,7 +1251,7 @@
 
         // Lógica de conversión de precios y tasas oficiales
         const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900 };
-        const banderas = { USD: '🇺🇸', EUR: '🇪🇺', MXN: '🇲🇽', COP: '🇨🇴', ARS: '🇦🇷', PEN: '🇵🇪', CLP: '🇨🇱', USDT: '🪙', DOP: '🇩🇴' };
+        const banderas = { USD: './img/Usa.png', EUR: './img/Europa.png', MXN: './img/Mexico.png', COP: './img/Colombia.png', ARS: './img/Argentina.png', PEN: './img/Peru.png', CLP: '🇨🇱', USDT: './img/USDT.png', DOP: './img/Dominicana.png' };
         let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
 
         const ORDEN_CATEGORIAS = ["Lotes y Paquetes", "Trajes", "Gestos", "Alas delta", "Picos", "Accesorios mochileros", "Envoltorios", "Coches", "Pistas de improvisación"];
@@ -1401,7 +1530,11 @@
             const segundos = Math.floor((diff % (1000 * 60)) / 1000);
             
             const formato = (num) => num.toString().padStart(2, '0');
-            document.getElementById('shop-timer').innerText = `${formato(horas)}:${formato(minutos)}:${formato(segundos)}`;
+            const timerStr = `${formato(horas)}:${formato(minutos)}:${formato(segundos)}`;
+            
+            document.getElementById('shop-timer').innerText = timerStr;
+            const heroTimer = document.getElementById('hero-shop-timer');
+            if(heroTimer) heroTimer.innerText = `LA TIENDA CAMBIA EN: ${timerStr}`;
         }
 
         // LÓGICA MODAL INICIAL
@@ -1493,6 +1626,11 @@
             window.open(`https://wa.me/18299847680?text=${encodeURIComponent(msj)}`, '_blank');
         }
 
+        function toggleSidebar() {
+            document.getElementById('sidebar-overlay').classList.toggle('abierto');
+            document.getElementById('sidebar').classList.toggle('abierto');
+        }
+
         // LÓGICA MODAL BINANCE PAY
         function abrirPagoBinance(totalUsdt) {
             document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
@@ -1539,6 +1677,11 @@
             document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
             document.getElementById(id).classList.remove('oculto');
+            
+            // Cerrar sidebar si está abierto (en móvil)
+            if (document.getElementById('sidebar').classList.contains('abierto')) {
+                toggleSidebar();
+            }
             
             if (id === 'recargas') mostrarSubServicio('menu');
 
