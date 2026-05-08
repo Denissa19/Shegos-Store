@@ -391,6 +391,32 @@
         .metodo-label i { font-size: 1.5em; }
         .metodo-label img { height: 45px; width: auto; object-fit: contain; }
 
+        /* ESTILO BOTÓN PAYPAL REDISEÑADO */
+        .btn-pago-paypal {
+            background: #ffffff;
+            color: #003087;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        .btn-pago-paypal:hover {
+            background: #f7f7f7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn-pago-paypal img { height: 24px; width: auto; }
+
         .lista-ids { list-style: none; padding: 0; margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .lista-ids li { background: #2a2a2a; padding: 15px; border-radius: 8px; border-left: 4px solid #2CEAA3; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
         .lista-ids li:hover { background: #333; transform: translateX(5px); box-shadow: -4px 0 15px rgba(44, 234, 163, 0.2); }
@@ -631,10 +657,10 @@
            ========================================= */
         @media (max-width: 768px) {
             header {
-                flex-direction: column !important;
-                height: auto !important;
-                padding: 15px 15px !important;
-                gap: 15px !important;
+                flex-direction: row !important;
+                height: 80px !important;
+                padding: 0 15px !important;
+                justify-content: center !important;
                 align-items: center !important;
                 top: 0 !important;
                 position: relative !important;
@@ -650,33 +676,30 @@
                 margin: 0 !important;
             }
             .logo-nav {
-                position: static !important;
-                max-width: 80px !important;
-                height: auto !important;
-                object-fit: contain !important;
+                height: 45px !important;
+                width: auto !important;
+                position: relative !important;
+                top: 0 !important;
+                left: 0 !important;
                 margin: 0 auto !important;
                 display: block !important;
+                z-index: 1200 !important;
             }
             nav { display: none !important; }
 
-            /* Posicionamiento del selector y contador en la esquina superior derecha */
-            header > div {
+            /* Posicionamiento del contador en la esquina superior derecha */
+            .shop-timer-header {
                 position: absolute !important;
                 top: 50% !important;
                 transform: translateY(-50%);
                 right: 15px !important;
+                display: flex !important;
                 flex-direction: column !important;
                 align-items: flex-end !important;
                 gap: 2px !important;
-            }
-            .moneda-dropdown { 
-                width: auto !important; 
-                margin: 0 !important; 
-                padding: 4px 8px !important; 
-                font-size: 0.8em !important; 
-            }
-            .shop-timer-header { 
-                display: none !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
             }
 
             /* Reducción agresiva de escala general para evitar scroll */
@@ -709,18 +732,24 @@
             .info-paso strong { min-width: 24px !important; height: 24px !important; font-size: 0.8em !important; }
 
             /* Ajuste de botones flotantes */
-            .floating-container { bottom: 15px !important; right: 15px !important; gap: 10px !important; }
-            .float-btn { width: 45px !important; height: 45px !important; font-size: 1.2em !important; }
-            .float-cart img { width: 22px !important; }
+            .floating-container { bottom: 20px !important; right: 20px !important; gap: 12px !important; z-index: 3000 !important; }
+            .float-btn { width: 50px !important; height: 50px !important; font-size: 1.3em !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+            .float-cart img { width: 26px !important; height: auto !important; display: block !important; }
             .cart-badge-float { padding: 1px 5px !important; font-size: 0.7em !important; }
 
             /* Métodos de pago más pequeños */
+            .metodos-pago-container {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+                margin: 20px 0 !important;
+            }
             .metodo-label { 
                 padding: 12px 8px 12px 40px !important; 
                 font-size: 0.75em !important; 
                 gap: 5px !important; 
                 position: relative !important;
-                align-items: flex-start !important;
+                flex-direction: row !important; /* Apilar ícono y texto horizontalmente */
+                align-items: center !important; /* Centrar verticalmente el contenido */
                 text-align: left !important;
             }
             .metodo-label img { height: 28px !important; }
@@ -782,18 +811,9 @@
         <a href="index.html" style="text-decoration: none;">
             <img src="./img/logo.png" alt="Shegos Store" class="logo-nav">
         </a>
-        <div style="display: flex; align-items: center; gap: 15px;">
-            <select id="currency-selector" class="moneda-dropdown" onchange="cambiarDivisa(this.value)">
-                <option value="USD">🇺🇸 USD</option>
-                <option value="EUR">🇪🇺 EUR</option>
-                <option value="MXN">🇲🇽 MXN</option>
-                <option value="COP">🇨🇴 COP</option>
-                <option value="ARS">🇦🇷 ARS</option>
-            </select>
-            <div id="countdown" class="shop-timer-header">
-                <small style="text-transform: uppercase; font-size: 0.7em; opacity: 0.8;">La tienda cambia en:</small>
-                <span id="shop-timer">00:00:00</span>
-            </div>
+        <div id="countdown" class="shop-timer-header">
+            <small style="text-transform: uppercase; font-size: 0.7em; opacity: 0.8;">La tienda cambia en:</small>
+            <span id="shop-timer">00:00:00</span>
         </div>
     </header>
 
@@ -1088,7 +1108,7 @@
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
                     <label for="met-paypal" class="metodo-label">
-                        <img src="https://imgs.search.brave.com/097EeLXvDB8aeWBp9--pkaO7LDHghu3kpIep743S8Jw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3ZncmVwby5jb20v/c2hvdy8zMjgxNDUv/cGF5cGFsLnN2Zw" alt="PayPal">
+                        <img src="./img/paypal.png" alt="PayPal">
                         <span>PayPal</span>
                     </label>
                 </div>
@@ -1136,16 +1156,11 @@
                         <input type="hidden" name="cmd" value="_s-xclick" />
                         <input type="hidden" name="hosted_button_id" value="2E5ZJUHEU55Q2" />
                         <input type="hidden" name="currency_code" value="USD" />
-                        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="width: 100%; height: auto; max-width: 350px;" />
-                        <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+                        <button type="submit" class="btn-pago-paypal">
+                            <img src="./img/paypal.png" alt="PayPal">
+                            Pagar con PayPal
+                        </button>
                     </form>
-                <div class="checkout-container">
-                  <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="custom-checkout-btn">
-                    <svg class="paypal-logo-svg" viewBox="0 0 384 512" width="20" title="paypal">
-                      <path fill="#2CEAA3" d="M111.4 295.9c-3.5 19.2-17.4 108.7-21.5 134-.3 1.8-1 2.5-3 2.5H12.3c-7.6 0-13.1-6.6-12.1-13.9L58.8 46.6c1.5-9.6 10.1-16.9 20-16.9 152.3 0 165.1-1.7 204 11.4 60.1 23.3 65.6 79.5 44 140.3-21.5 62.6-72.5 89.5-140.1 90.3-43.4 .7-69.5-7-75.3 24.2zM357.1 152c-1.8-1.3-2.5-1.8-3 1.3-2 11.4-5.1 22.5-8.8 33.6-39.9 113.8-150.5 103.9-204.5 103.9-6.1 0-10.1 3.3-10.9 9.4-22.6 140.4-27.1 169.7-27.1 169.7-1 7.1 3.5 12.9 10.6 12.9h63.5c8.6 0 15.7-6.3 17.4-14.9 .7-5.4-1.1 6.1 14.4-91.3 4.6-22 14.3-19.7 29.3-19.7 71 0 126.4-28.8 142.9-112.3 6.5-34.8 4.6-71.4-23.8-92.6z"/>
-                    </svg>
-                    Pagar con PayPal
-                  </a>
                 </div>
                 <div id="paypal-resultado" class="paypal-resultado oculto"></div>
             </div>
@@ -1183,26 +1198,6 @@
                 <p style="font-size: 0.8em; color: #888; font-style: italic;">
                     Nota: Disponible en Xbox, PlayStation y PC. No compatible con Nintendo Switch.
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL SELECTOR DE DIVISA INICIAL -->
-    <div id="modal-inicial-divisa">
-        <div class="modal-selector-content">
-            <h2 style="color: #fff; margin-bottom: 5px; font-weight: bold;">🔄 ¿En qué moneda quieres ver los precios?</h2>
-            <p style="color: #888; font-size: 0.9em;">Selecciona tu moneda local para una mejor experiencia.</p>
-            
-            <div class="grid-divisas">
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('PEN')"><img src="./img/Peru.png" alt="PEN"><span class="code">PEN</span><span class="name">PERÚ</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('MXN')"><img src="./img/Mexico.png" alt="MXN"><span class="code">MXN</span><span class="name">MÉXICO</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('EUR')"><img src="./img/Europa.png" alt="EUR"><span class="code">EUR</span><span class="name">EUROPA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('USD')"><img src="./img/Usa.png" alt="USD"><span class="code">USD</span><span class="name">DÓLAR</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('COP')"><img src="./img/Colombia.png" alt="COP"><span class="code">COP</span><span class="name">COLOMBIA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('ARS')"><img src="./img/Argentina.png" alt="ARS"><span class="code">ARS</span><span class="name">ARGENTINA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('CLP')"><span class="emoji">🇨🇱</span><span class="code">CLP</span><span class="name">CHILE</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('USDT')"><img src="./img/USDT.png" alt="USDT"><span class="code">USDT</span><span class="name">BINANCE PAY</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('DOP')"><img src="./img/Dominicana.png" alt="DOP"><span class="code">DOP</span><span class="name">Rep. Dom.</span></div>
             </div>
         </div>
     </div>
@@ -1249,9 +1244,8 @@
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
 
-        // Lógica de conversión de precios y tasas oficiales
-        const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900 };
-        const banderas = { USD: './img/Usa.png', EUR: './img/Europa.png', MXN: './img/Mexico.png', COP: './img/Colombia.png', ARS: './img/Argentina.png', PEN: './img/Peru.png', CLP: '🇨🇱', USDT: './img/USDT.png', DOP: './img/Dominicana.png' };
+        // Tasas actualizadas
+        const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 }; // Mantener tasas para conversión
         let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
 
         const ORDEN_CATEGORIAS = ["Lotes y Paquetes", "Trajes", "Gestos", "Alas delta", "Picos", "Accesorios mochileros", "Envoltorios", "Coches", "Pistas de improvisación"];
@@ -1369,10 +1363,16 @@
             } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
         }
 
+        // La función cambiarDivisa ahora solo actualiza el código de la moneda
+        // y no maneja imágenes de banderas.
+        // Se mantiene para futuras expansiones si se desea un selector de moneda simple.
+        // Por ahora, la divisa se establece al cargar la página o por localStorage.
+        // Si se desea un selector de moneda sin banderas, se puede reintroducir un simple <select>
+        // y llamar a esta función.
+        // eslint-disable-next-line no-unused-vars
         function cambiarDivisa(val) {
             divisaActual = val;
-            const selector = document.getElementById('currency-selector');
-            if(selector) selector.value = val;
+            
             localStorage.setItem('divisaPreferida', val);
             actualizarPreciosGlobales();
             actualizarCarrito();
@@ -1381,7 +1381,6 @@
         function actualizarPreciosGlobales() {
             const tasa = tasas[divisaActual] || 1;
             const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$' }[divisaActual] || '$';
-            const bandera = banderas[divisaActual] || '';
 
             document.querySelectorAll('.precio-producto').forEach(el => {
                 const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
@@ -1484,32 +1483,19 @@
             const summaryBox = document.getElementById('cart-summary-box');
             const tasa = tasas[divisaActual] || 1;
             const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$' }[divisaActual] || '$';
-            const bandera = banderas[divisaActual] || '';
 
-            if(carrito.length === 0) { 
-                itemsCont.innerHTML = "<div style='text-align:center; color:#aaa; margin-top:50px;'>Carrito vacío.</div>"; 
-                btnVaciar.style.display = 'none'; 
+            if(carrito.length === 0) {
+                itemsCont.innerHTML = "<div style='text-align:center; color:#aaa; margin-top:50px;'>Carrito vacío.</div>";
+                btnVaciar.style.display = 'none';
                 summaryBox.style.display = 'none';
-                return; 
+                return;
             }
 
-            btnVaciar.style.display = 'block'; 
+            btnVaciar.style.display = 'block';
             summaryBox.style.display = 'block';
-            
+
             let totalV = 0;
             let totalD = 0;
-
-            itemsCont.innerHTML = carrito.map((item, index) => `
-                <div class="cart-item">
-                    <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
-                    <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
-                    <div class="cart-item-details">
-                        <span style="font-weight:bold; color:#fff;">${item.nombre}</span>
-                        ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
-                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
-                    </div>
-                </div>
-            `).join('');
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
@@ -1537,32 +1523,17 @@
             if(heroTimer) heroTimer.innerText = `LA TIENDA CAMBIA EN: ${timerStr}`;
         }
 
-        // LÓGICA MODAL INICIAL
+        // Simplificación de la lógica de divisa inicial
         function verificarDivisaInicial() {
             const guardada = localStorage.getItem('divisaPreferida');
             if (guardada && tasas[guardada]) {
                 divisaActual = guardada;
-                const selector = document.getElementById('currency-selector');
-                if(selector) selector.value = guardada;
                 actualizarPreciosGlobales();
                 actualizarCarrito();
             } else {
-                const modal = document.getElementById('modal-inicial-divisa');
-                modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+                // Si no hay divisa guardada, se usa el valor por defecto 'USD'
+                cambiarDivisa('USD');
             }
-        }
-
-        function seleccionarDivisaModal(divisa) {
-            const modal = document.getElementById('modal-inicial-divisa');
-            localStorage.setItem('divisaPreferida', divisa);
-            cambiarDivisa(divisa);
-            modal.style.opacity = '0';
-            modal.style.transition = 'opacity 0.5s ease';
-            setTimeout(() => {
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            }, 500);
         }
 
         async function verificarID() {
@@ -1692,7 +1663,13 @@
             tabActiva.style.animation = 'none'; tabActiva.offsetHeight; tabActiva.style.animation = null; 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        function abrirCarritoLateral() { document.getElementById('cart-overlay').classList.add('abierto'); document.getElementById('cart-drawer').classList.add('abierto'); }
+        function abrirCarritoLateral() { 
+            if (document.getElementById('sidebar').classList.contains('abierto')) {
+                toggleSidebar();
+            }
+            document.getElementById('cart-overlay').classList.add('abierto'); 
+            document.getElementById('cart-drawer').classList.add('abierto'); 
+        }
         function cerrarCarritoLateral() { document.getElementById('cart-overlay').classList.remove('abierto'); document.getElementById('cart-drawer').classList.remove('abierto'); }
         function irAlCheckout() { cerrarCarritoLateral(); abrirPestana('checkout'); }
 
