@@ -6,12 +6,14 @@
     <title>Shegos Store | Fortnite</title>
     <!-- FontAwesome SDK -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* =========================================
            ESTILOS GENERALES Y ANIMACIONES BASE
            ========================================= */
         body { 
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            font-family: 'Poppins', sans-serif; 
             background: #121212;
             color: #ffffff; 
             margin: 0; 
@@ -41,15 +43,15 @@
         @keyframes cartPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
         @keyframes slideSidebar { from { left: -280px; } to { left: 0; } }
 
-        header { background-color: #0A0B0A; height: 80px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(44, 234, 163, 0.3); backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
+        header { background-color: #0A0B0A; height: 100px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid rgba(44, 234, 163, 0.4); backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
         .menu-toggle { background: none; border: none; color: #2CEAA3; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
         .header-text h1 { margin: 0; padding-bottom: 5px; font-size: 2.2em; letter-spacing: 1px; animation: slideInLeft 0.6s ease-out forwards; }
         .header-text p { margin: 0; color: #2CEAA3; font-size: 1.1em; font-weight: 500; animation: slideInLeft 0.8s ease-out forwards; opacity: 0; text-transform: uppercase; letter-spacing: 2px; }
         .logo-nav { 
-            height: 110px !important; 
+            height: 130px !important; 
             width: auto;
             position: absolute;
-            top: 5px;
+            top: -15px;
             left: 30px;
             object-fit: contain; 
             display: block; 
@@ -89,7 +91,27 @@
         .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #333; }
 
         nav { display: flex; justify-content: center; background-color: #121212; padding: 12px; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(5px); animation: slideInDown 0.5s ease-out forwards; margin: 15px auto; border-radius: 50px; width: fit-content; border: 1px solid rgba(255,255,255,0.05); }
-        @media (max-width: 768px) { nav { display: none; } }
+
+        /* =========================================
+           MEJORAS PARA MÓVIL Y RESPONSIVIDAD
+           ========================================= */
+        @media (max-width: 768px) { 
+            header { height: auto !important; flex-direction: column; padding: 25px 15px; gap: 15px; top: 0; position: relative; }
+            .logo-nav { position: static; height: 100px !important; margin: 0 auto; display: block; animation: fadeIn 0.8s ease-out; }
+            .moneda-dropdown { margin: 0; width: 100%; text-align: center; }
+            .shop-timer-header { text-align: center; width: 100%; box-sizing: border-box; }
+            
+            nav { width: 95%; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; padding: 10px; border-radius: 15px; scrollbar-width: none; margin: 10px auto; }
+            nav::-webkit-scrollbar { display: none; }
+            .tab-btn { flex: 0 0 auto; font-size: 0.75em; padding: 8px 12px; }
+
+            .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
+            .hero-text h1 { font-size: 2.8em; }
+            .hero-buttons { justify-content: center; width: 100%; }
+            .hero-buttons .btn-accion, .btn-secundario { width: 100%; }
+            .section-box { padding: 20px 15px; }
+            .grid-productos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        }
 
         .tab-btn { background-color: transparent; color: #ccc; border: none; padding: 10px 18px; cursor: pointer; border-radius: 25px; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; font-size: 0.85em; }
         .tab-btn:hover { color: #6BFFB8; background-color: rgba(44, 234, 163, 0.1); }
@@ -180,15 +202,6 @@
             font-size: 0.6em;
             font-weight: bold;
             border: 2px solid #121212;
-        }
-
-        @media (max-width: 900px) {
-            .hero-container { flex-direction: column; text-align: center; padding: 20px 0; }
-            .hero-text h1 { font-size: 3em; }
-            .hero-text p { max-width: 100%; margin: 0 auto 30px auto; }
-            .hero-buttons { justify-content: center; }
-            .hero-checks { align-items: center; }
-            .hero-image img { max-height: 400px; margin-top: 30px; }
         }
 
         /* =========================================
@@ -308,7 +321,7 @@
         }
         .servicio-card:hover { transform: translateY(-5px); }
         .servicio-card strong { margin: 15px 0 12px 0; font-size: 1.1em; color: #fff; display: block; }
-        .servicio-card .precio-usd { margin-bottom: 25px; display: block; font-weight: 800; color: #2CEAA3; }
+        .servicio-card .precio-producto { margin-bottom: 25px; display: block; }
         .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 5px; }
         
         .btn-outline-mint { 
@@ -549,7 +562,6 @@
           font-weight: 600;
           text-align: center;
           margin: 0;
-          font-family: sans-serif;
         }
 
         .btn-precio-outline {
@@ -612,6 +624,23 @@
         .binance-btn-group { display: flex; gap: 10px; width: 100%; }
         .btn-binance-confirm { background-color: #FCD535 !important; color: #000 !important; }
         .btn-binance-cancel { background-color: transparent !important; color: #888 !important; border: 1px solid #444 !important; }
+
+        /* Ajustes de visibilidad del logo en móviles */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px !important;
+            }
+            .logo-nav {
+                display: block !important;
+                position: relative !important;
+                top: 0 !important;
+                left: 0 !important;
+                height: 55px !important;
+            }
+            .header-text h1, .header-text p {
+                display: none !important;
+            }
+        }
 </style>
 </head>
 <body>
@@ -801,6 +830,8 @@
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="13.33">$13.33 USD</span>
+                        <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
+                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('2.400', '192')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '13.33', 'img/2400vb.png', '2400', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
@@ -808,6 +839,8 @@
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="25.00">$25.00 USD</span>
+                        <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
+                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('4.500', '360')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '25.00', 'img/4500vb.png', '4500', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
@@ -815,6 +848,8 @@
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">9.000</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="44.44">$44.44 USD</span>
+                        <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
+                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('9.000', '720')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', 'img/9000vb.png', '9000', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #2CEAA3;">
@@ -972,12 +1007,23 @@
                         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="width: 100%; height: auto; max-width: 350px;" />
                         <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
                     </form>
+                <div class="checkout-container">
+                  <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="custom-checkout-btn">
+                    <svg class="paypal-logo-svg" viewBox="0 0 384 512" width="20" title="paypal">
+                      <path fill="#2CEAA3" d="M111.4 295.9c-3.5 19.2-17.4 108.7-21.5 134-.3 1.8-1 2.5-3 2.5H12.3c-7.6 0-13.1-6.6-12.1-13.9L58.8 46.6c1.5-9.6 10.1-16.9 20-16.9 152.3 0 165.1-1.7 204 11.4 60.1 23.3 65.6 79.5 44 140.3-21.5 62.6-72.5 89.5-140.1 90.3-43.4 .7-69.5-7-75.3 24.2zM357.1 152c-1.8-1.3-2.5-1.8-3 1.3-2 11.4-5.1 22.5-8.8 33.6-39.9 113.8-150.5 103.9-204.5 103.9-6.1 0-10.1 3.3-10.9 9.4-22.6 140.4-27.1 169.7-27.1 169.7-1 7.1 3.5 12.9 10.6 12.9h63.5c8.6 0 15.7-6.3 17.4-14.9 .7-5.4-1.1 6.1 14.4-91.3 4.6-22 14.3-19.7 29.3-19.7 71 0 126.4-28.8 142.9-112.3 6.5-34.8 4.6-71.4-23.8-92.6z"/>
+                    </svg>
+                    Pagar con PayPal
+                  </a>
                 </div>
                 <div id="paypal-resultado" class="paypal-resultado oculto"></div>
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
-                <p style="text-align: center;">Te enviaremos los datos para depósito por WhatsApp.</p>
+                <p style="text-align: center;">Realiza tu depósito en cualquier tienda OXXO:</p>
+                <span class="dato-copiar" oncliRealiza tu depósito en cualquier tienda OXXO:</p>
+                <span class="dato-copiar" oncliRealiza tu depósito en cualquier tienda OXXO:</p>
+                <span class="dato-copiar" onclick="copiarAlPortapapeles('2242170100050888', this)">2242170100050888</span>
+                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: #ccc;">Luego de realizar tu deposito envia tu comprobante por whatsapp clickeando el boton de abajo</p>
             </div>
             <div id="pago-link" class="info-pago-box oculto">
                 <h4>Link de Pago</h4>
@@ -1212,7 +1258,7 @@
                 const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
                 if (!isNaN(precioBase)) {
                     const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    el.innerText = `${simbolo}${nuevoPrecio} ${bandera} ${divisaActual}`;
+                    el.innerText = `${simbolo}${nuevoPrecio}`;
                 }
             });
         }
@@ -1331,14 +1377,14 @@
                     <div class="cart-item-details">
                         <span style="font-weight:bold; color:#fff;">${item.nombre}</span>
                         ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
-                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${bandera} ${divisaActual}</div>
+                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
                     </div>
                 </div>
             `).join('');
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
-            document.getElementById('total-dinero').innerText = `${simbolo}${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${bandera} ${divisaActual}`;
+            document.getElementById('total-dinero').innerText = `${simbolo}${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             localStorage.setItem('carrito', JSON.stringify(carrito));
         }
         function eliminarItem(i) { carrito.splice(i, 1); actualizarCarrito(); }
