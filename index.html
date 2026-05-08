@@ -41,18 +41,45 @@
         @keyframes cartPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
         @keyframes slideSidebar { from { left: -280px; } to { left: 0; } }
 
-        header { background-color: #2A6041; padding: 20px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(44, 234, 163, 0.3); backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
+        header { background-color: #0A0B0A; height: 80px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(44, 234, 163, 0.3); backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
         .menu-toggle { background: none; border: none; color: #2CEAA3; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
         .header-text h1 { margin: 0; padding-bottom: 5px; font-size: 2.2em; letter-spacing: 1px; animation: slideInLeft 0.6s ease-out forwards; }
         .header-text p { margin: 0; color: #2CEAA3; font-size: 1.1em; font-weight: 500; animation: slideInLeft 0.8s ease-out forwards; opacity: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .logo-nav { 
+            height: 110px !important; 
+            width: auto;
+            position: absolute;
+            top: 5px;
+            left: 30px;
+            object-fit: contain; 
+            display: block; 
+            margin-bottom: 0;
+            animation: slideInLeft 0.6s ease-out forwards; 
+            z-index: 1200;
+        }
+        
+        .moneda-dropdown {
+            background-color: #111111;
+            color: white;
+            border: 1px solid #2CEAA3;
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
+            margin-left: 15px;
+        }
+        .moneda-dropdown:hover {
+            box-shadow: 0 0 8px rgba(44, 234, 163, 0.5);
+        }
         
         .shop-timer-header { text-align: right; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; border: 1px solid #333; }
         .shop-timer-header span { display: block; color: #2CEAA3; font-weight: bold; font-family: monospace; font-size: 1.2em; }
-        
+
         /* SIDEBAR */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1100; opacity: 0; visibility: hidden; transition: 0.3s; }
         .sidebar-overlay.abierto { opacity: 1; visibility: visible; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #1a1a1a; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #333; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #000000; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #333; }
         .sidebar.abierto { left: 0; }
         .sidebar-nav { display: flex; flex-direction: column; }
         .sidebar-nav .tab-btn { text-align: left; padding: 15px 30px; border-radius: 0; font-size: 1em; width: 100%; }
@@ -61,7 +88,7 @@
         
         .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #333; }
 
-        nav { display: flex; justify-content: center; background-color: rgba(42, 96, 65, 0.85); padding: 12px; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(5px); animation: slideInDown 0.5s ease-out forwards; margin: 15px auto; border-radius: 50px; width: fit-content; border: 1px solid rgba(255,255,255,0.05); }
+        nav { display: flex; justify-content: center; background-color: #121212; padding: 12px; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(5px); animation: slideInDown 0.5s ease-out forwards; margin: 15px auto; border-radius: 50px; width: fit-content; border: 1px solid rgba(255,255,255,0.05); }
         @media (max-width: 768px) { nav { display: none; } }
 
         .tab-btn { background-color: transparent; color: #ccc; border: none; padding: 10px 18px; cursor: pointer; border-radius: 25px; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; font-size: 0.85em; }
@@ -140,6 +167,20 @@
         .float-btn:hover { transform: scale(1.1) translateY(-5px); }
         .float-ws { background-color: #25D366; }
         .float-ds { background-color: #5865F2; }
+        .float-cart { background-color: #2CEAA3; color: #000 !important; cursor: pointer; position: relative; }
+        .float-cart img { width: 30px; height: auto; object-fit: contain; }
+        .cart-badge-float {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff0000;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.6em;
+            font-weight: bold;
+            border: 2px solid #121212;
+        }
 
         @media (max-width: 900px) {
             .hero-container { flex-direction: column; text-align: center; padding: 20px 0; }
@@ -266,7 +307,9 @@
             text-align: center;
         }
         .servicio-card:hover { transform: translateY(-5px); }
-        .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .servicio-card strong { margin: 15px 0 20px 0; font-size: 1.1em; color: #fff; display: block; }
+        .servicio-card .precio-producto { margin-bottom: 30px; display: block; font-weight: 800; color: #2CEAA3; }
+        .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 5px; }
         
         .btn-outline-mint { 
             background: transparent; 
@@ -299,14 +342,13 @@
 
         /* REDISEÑO MÉTODOS DE PAGO */
         .metodos-pago-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0 40px 0;
         }
         .metodo-card {
-            flex: 1;
-            min-width: 120px;
+            width: 100%;
             cursor: pointer;
         }
         .metodo-card input[type="radio"] {
@@ -319,6 +361,9 @@
             justify-content: center;
             gap: 10px;
             padding: 15px;
+            gap: 12px;
+            padding: 20px 15px;
+            min-height: 125px;
             background-color: #1a1a1a;
             border: 1px solid #333;
             border-radius: 10px;
@@ -336,6 +381,12 @@
             box-shadow: 0 0 10px rgba(44, 234, 163, 0.2);
         }
         .metodo-label i { font-size: 1.5em; }
+        .metodo-label img { height: 45px; width: auto; object-fit: contain; }
+        .metodo-label img { 
+            height: 50px; 
+            width: 110px; 
+            object-fit: contain; 
+        }
 
         .lista-ids { list-style: none; padding: 0; margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .lista-ids li { background: #2a2a2a; padding: 15px; border-radius: 8px; border-left: 4px solid #2CEAA3; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
@@ -524,35 +575,79 @@
         }
 
         .btn-precio-outline:hover {
-          background-color: #39FF14; /* Toque verde Shego */
-          border-color: #39FF14;
-          color: #000000;
+          background-color: #2A6041;
+          border-color: #2A6041;
+          color: #ffffff;
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(57, 255, 20, 0.2);
+          box-shadow: 0 4px 12px rgba(42, 96, 65, 0.4);
         }
-    </style>
-    <!-- PayPal SDK -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AW6b5seXvL3aSSklvNt_GYMonoNh9gTJKn63rW2RQe6-zv546vf4un77sKEJ8QbL1_k6sHCl0eqhEys_&currency=USD&intent=capture"></script>
+
+        /* MODAL BINANCE PAY */
+        .modal-binance {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-binance-card {
+            background-color: #131614;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .modal-binance-card h2 { color: #FCD535; margin-top: 0; font-size: 1.8em; }
+        .modal-binance-card p { color: #ccc; font-size: 0.9em; margin-bottom: 15px; }
+        .modal-binance-card h3 { color: #fff; margin: 20px 0; font-size: 1.3em; }
+        #txid-binance {
+            background-color: #1a1c23;
+            color: white;
+            border: 1px solid #333;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .binance-btn-group { display: flex; gap: 10px; width: 100%; }
+        .btn-binance-confirm { background-color: #FCD535 !important; color: #000 !important; }
+        .btn-binance-cancel { background-color: transparent !important; color: #888 !important; border: 1px solid #444 !important; }
+</style>
 </head>
 <body>
 
     <div class="banner-codigo"><span>Apóyanos en la tienda de Fortnite:</span> Código <strong>DENISSA_7U7</strong> <i class="fas fa-heart"></i></div>
 
     <header>
-        <div class="header-text">
-            <h1>Shegos Store</h1>
-            <p>Todo lo que buscas en un solo lugar</p>
-        </div>
-        <div class="shop-timer-header">
-            <small style="color: #888; text-transform: uppercase; font-size: 0.7em;">La tienda cambia en:</small>
-            <span id="shop-timer">00:00:00</span>
+        <a href="index.html" style="text-decoration: none;">
+            <img src="img/logo.png" alt="Shegos Store" class="logo-nav">
+        </a>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <select id="currency-selector" class="moneda-dropdown" onchange="cambiarDivisa(this.value)">
+                <option value="USD">🇺🇸 USD</option>
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="MXN">🇲🇽 MXN</option>
+                <option value="COP">🇨🇴 COP</option>
+                <option value="ARS">🇦🇷 ARS</option>
+            </select>
+            <div id="countdown" class="shop-timer-header">
+                <small style="text-transform: uppercase; font-size: 0.7em; opacity: 0.8;">La tienda cambia en:</small>
+                <span id="shop-timer">00:00:00</span>
+            </div>
         </div>
     </header>
 
     <nav>
         <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
         <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
-        <button class="tab-btn" onclick="abrirPestana('como-comprar')"><i class="fas fa-book"></i> Guía</button>
         <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
         <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
         <button id="btn-carrito-nav" class="tab-btn" onclick="abrirCarritoLateral()" style="border: 1px solid #2CEAA3; color: #2CEAA3;"><i class="fas fa-shopping-cart"></i> Carrito</button>
@@ -572,8 +667,8 @@
             <div class="summary-row total"><span>Total a pagar:</span> <strong id="total-dinero">0.00</strong></div>
         </div>
         <div class="cart-footer">
-            <button id="btn-vaciar-carrito" class="btn-accion btn-vaciar" onclick="vaciarCarrito()" style="display: none;">Vaciar Carrito</button>
             <button class="btn-accion" onclick="irAlCheckout()">Ir a Pagar</button>
+            <button id="btn-vaciar-carrito" class="btn-accion btn-vaciar" onclick="vaciarCarrito()" style="display: none;">Vaciar Carrito</button>
         </div>
     </div>
 
@@ -602,18 +697,10 @@
 
         <div id="tienda" class="section-box pestana oculto">
             <h2>Catálogo de Hoy</h2>
+            <p style="color: #2CEAA3; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
             <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
             <div id="contenedor-filtros" class="filtros-container"></div>
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
-        </div>
-
-        <div id="como-comprar" class="section-box pestana oculto">
-            <h2>Instrucciones de Compra</h2>
-            <div class="grid-pasos">
-                <div class="paso"><div class="paso-numero">1</div><h3>Agrega las cuentas</h3><p>Búscalas en la sección de "ID's".</p></div>
-                <div class="paso"><div class="paso-numero">2</div><h3>Espera 48hrs</h3><p>Requisito de Epic Games.</p></div>
-                <div class="paso"><div class="paso-numero">3</div><h3>Paga y Recibe</h3><p>Envía tu comprobante por WhatsApp y recibe tus regalos.</p></div>
-            </div>
         </div>
 
         <div id="ids-regalos" class="section-box pestana oculto">
@@ -700,14 +787,14 @@
             <div id="menu-servicios">
                 <h2>Servicios</h2>
                 <p>Elige el tipo de servicio que deseas adquirir:</p>
-                <div style="display: flex; justify-content: center; gap: 50px; text-align: center; align-items: center; margin-top: 30px; flex-wrap: wrap;">
-                    <div class="producto" style="padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: auto; box-shadow: none;" onclick="mostrarSubServicio('pavos')">
-                        <img src="https://fortnite-api.com/images/vbuck.png" style="width: 150px; height: 150px; object-fit: contain; margin: 0; padding: 0;">
-                        <strong style="font-size: 1.4em; margin-top: 15px; color: #fff; display: block; text-align: center;">Recargas de Pavos</strong>
+                <div style="display: flex; justify-content: center; gap: 30px; text-align: center; align-items: center; margin-top: 30px; flex-wrap: wrap;">
+                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 350px; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pavos')">
+                        <img src="https://imgs.search.brave.com/sT2yIPpRyyV2ow7gdnXJgwP8fRENxdA0tKpfcg4tkPA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5hcGkucGxheXN0/YXRpb24uY29tL3Z1/bGNhbi9hcC9ybmQv/MjAyNDEwLzMxMjMv/MDMzMjUwMzFmNTQw/Y2Q5OGRkNjBiZDhk/MDA5Nzk2OTk2OWM5/MjU0OTczZjFlOWQy/LmpwZw" style="width: 100%; height: auto; object-fit: contain; margin: 0; padding: 0; border-radius: 12px;">
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
                     </div>
-                    <div class="producto" style="padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: auto; box-shadow: none;" onclick="mostrarSubServicio('club')">
-                        <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" style="width: 350px; height: 350px; object-fit: contain; margin: 0; padding: 0; border-radius: 12px;">
-                        <strong style="font-size: 1.4em; margin-top: 15px; color: #fff; display: block; text-align: center;"><i class="fas fa-crown"></i> Club de Fortnite</strong>
+                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 350px; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
+                        <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" style="width: 100%; height: auto; object-fit: contain; margin: 0; padding: 0; border-radius: 12px;">
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Club de Fortnite</strong>
                     </div>
                 </div>
             </div>
@@ -718,45 +805,45 @@
                 <p style="color: #00ff88; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">V-BUCKS PARA FORTNITE · Se entrega una cuenta con los pavos recargados</p>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://i.imgur.com/gUuol15.jpeg" style="width: 100px; margin: 0 auto 10px auto;">
+                        <img src="img/2400vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-usd" data-base="13.33">$13.33 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '13.33', 'https://lh3.googleusercontent.com/sitesv/AA5AbUA57AYSA4LvRTUQ0bUnrmzujdySTMG5Jp11v-uyExuQ8C33NXe4vjMpa5N_llNpK2iWOLFTnjKvztlFwF_RivZmS4l5xvmQsBod-hrcLnFo2p_GSM9zvVez57ETzI-gQiC6kvIxtuTmr9po3vr6Z1StzI8w1Vg3UX1qfrGhCs8vvFiIMEVHIJ_f53vy2ORTCU-IieaOY30u9GuntuNqkJPrwYoannFkBHug=w1280', '2400', 'cuenta')">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="13.33">$13.33 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '13.33', 'img/2400vb.png', '2400', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://i.imgur.com/RySMyiG.jpeg" style="width: 110px; margin: 0 auto 10px auto;">
+                        <img src="img/4500vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-usd" data-base="25.00">$25.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '25.00', 'https://i.imgur.com/RySMyiG.jpeg', '4500', 'cuenta')">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="25.00">$25.00 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '25.00', 'img/4500vb.png', '4500', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://i.imgur.com/IWRlQdG.jpeg" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="img/9000vb.png" style="width: 120px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">9.000</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-usd" data-base="44.44">$44.44 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', 'https://i.imgur.com/IWRlQdG.jpeg', '9000', 'cuenta')">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="44.44">$44.44 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', 'img/9000vb.png', '9000', 'cuenta')">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #2CEAA3;">
                         <span style="background: #2CEAA3; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
-                        <img src="https://i.imgur.com/gO88FJO.jpeg" style="width: 130px; margin: 0 auto 10px auto;">
+                        <img src="img/12500vb.png" style="width: 130px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-usd" data-base="55.55">$55.55 USD</span>
+                        <span class="precio-producto" data-precio-usd="55.55">$55.55 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">
                             $8.00 MXN CADA 100V<br>
                             <span style="text-decoration: line-through;">$1629 MXN PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '55.55', 'blob:https://gemini.google.com/d8236f9b-57e6-4279-8909-9e5c0cdb410c', '12500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '55.55', 'img/12500vb.png', '12500', 'cuenta')">+ Carrito</button>
                     </div>
                 </div>
             </div>
 
             <div id="sub-club" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <h2 style="margin-bottom: 5px;"><i class="fas fa-crown"></i> Club de Fortnite</h2>
+                <h2 style="margin-bottom: 5px;">Club de Fortnite</h2>
                 <p style="color: #2CEAA3; font-size: 0.9em; margin-bottom: 10px; font-weight: 500;">MÉTODO XBOX · Sin necesidad de datos de acceso</p>
                 
                 <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px;">Opción 1: Cuentas Nuevas / Sin Error</h4>
@@ -765,19 +852,19 @@
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
-                        <span class="precio-usd" data-base="6.94">$6.94 USD</span>
+                        <span class="precio-producto" data-precio-usd="6.94">$6.94 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '6.94', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
-                        <span class="precio-usd" data-base="20.83">$20.83 USD</span>
+                        <span class="precio-producto" data-precio-usd="20.83">$20.83 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '20.83', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
-                        <span class="precio-usd" data-base="41.67">$41.67 USD</span>
+                        <span class="precio-producto" data-precio-usd="41.67">$41.67 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '41.67', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
@@ -791,19 +878,19 @@
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
-                        <span class="precio-usd" data-base="8.33">$8.33 USD</span>
+                        <span class="precio-producto" data-precio-usd="8.33">$8.33 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.33', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
-                        <span class="precio-usd" data-base="25.00">$25.00 USD</span>
+                        <span class="precio-producto" data-precio-usd="25.00">$25.00 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '25.00', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
-                        <span class="precio-usd" data-base="50.00">$50.00 USD</span>
+                        <span class="precio-producto" data-precio-usd="50.00">$50.00 USD</span>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '50.00', 'https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
@@ -835,35 +922,35 @@
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-link" value="link" onchange="mostrarInfoPago()">
                     <label for="met-link" class="metodo-label">
-                        <i class="fas fa-link"></i>
+                        <img src="https://imgs.search.brave.com/jennjJaGURv4j4sIX12gcU2WMpbdlfo9kxvJr9UYvTI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/ZGl4LmNvbS9sb2dv/LzMzNTYyMy5qcGc" alt="Link de Pago">
                         <span>Link de Pago</span>
                     </label>
                 </div>
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
                     <label for="met-paypal" class="metodo-label">
-                        <i class="fab fa-paypal"></i>
+                        <img src="https://imgs.search.brave.com/097EeLXvDB8aeWBp9--pkaO7LDHghu3kpIep743S8Jw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/c3ZncmVwby5jb20v/c2hvdy8zMjgxNDUv/cGF5cGFsLnN2Zw" alt="PayPal">
                         <span>PayPal</span>
                     </label>
                 </div>
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-binance" value="binance" onchange="mostrarInfoPago()">
                     <label for="met-binance" class="metodo-label">
-                        <i class="fas fa-coins"></i>
+                        <img src="https://imgs.search.brave.com/wxn2b9vqJV03hnyZkE_Z0RLJ-OyeaowDTieTTyaNcoE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pY29u/YXBlLmNvbS93cC1j/b250ZW50L3BuZ19s/b2dvX3ZlY3Rvci9i/aW5hbmNlLnBuZw" alt="Binance Pay">
                         <span>Binance Pay</span>
                     </label>
                 </div>
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx" onchange="mostrarInfoPago()">
                     <label for="met-transfer" class="metodo-label">
-                        <i class="fas fa-university"></i>
+                        <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
                         <span>Transferencia MX</span>
                     </label>
                 </div>
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-oxxo" value="oxxo" onchange="mostrarInfoPago()">
                     <label for="met-oxxo" class="metodo-label">
-                        <i class="fas fa-store"></i>
+                        <img src="https://imgs.search.brave.com/-W8dNrFfgXQqpXQSBKITt0BFlaKf0NHOR6wW1zAYpbQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy82/LzY2L094eG9fTG9n/by5zdmc" alt="OXXO">
                         <span>OXXO</span>
                     </label>
                 </div>
@@ -884,8 +971,16 @@
             </div>
             <div id="pago-paypal" class="info-pago-box oculto">
                 <h4>Pago vía PayPal</h4>
-                <p style="text-align: center;">Haz clic en el botón de PayPal para pagar de forma segura.</p>
-                <div id="paypal-button-container"></div>
+                <p style="text-align: center;">Haz clic en el botón de PayPal para realizar tu donación.</p>
+                <div style="text-align: center; margin: 20px auto; max-width: 350px;">
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                        <input type="hidden" name="cmd" value="_s-xclick" />
+                        <input type="hidden" name="hosted_button_id" value="2E5ZJUHEU55Q2" />
+                        <input type="hidden" name="currency_code" value="USD" />
+                        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" style="width: 100%; height: auto; max-width: 350px;" />
+                        <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+                    </form>
+                </div>
                 <div id="paypal-resultado" class="paypal-resultado oculto"></div>
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
@@ -897,7 +992,7 @@
                 <p style="text-align: center;">Recibirás un enlace de cobro seguro por WhatsApp.</p>
             </div>
 
-            <button class="btn-accion btn-whatsapp" style="margin-top: 30px;" onclick="enviarPedidoFinal()">ENVIAR COMPROBANTE DE PAGO</button>
+            <button class="btn-accion btn-whatsapp" style="margin-top: 50px;" onclick="enviarPedidoFinal()">ENVIAR COMPROBANTE DE PAGO</button>
             <p style="text-align: center; color: #888; font-size: 0.9em;">Serás redirigido a WhatsApp para finalizar la transacción.</p>
         </div>
 
@@ -934,7 +1029,7 @@
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('PEN')"><span class="emoji">🇵🇪</span><span class="code">PEN</span><span class="name">PERÚ</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('MXN')"><span class="emoji">🇲🇽</span><span class="code">MXN</span><span class="name">MÉXICO</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('EUR')"><span class="emoji">🇪🇺</span><span class="code">EUR</span><span class="name">ESPAÑA</span></div>
-                <div class="btn-divisa" onclick="seleccionarDivisaModal('USD')"><span class="emoji">💳</span><span class="code">USD</span><span class="name">PayPal</span></div>
+                <div class="btn-divisa" onclick="seleccionarDivisaModal('USD')"><span class="emoji">🇺🇸</span><span class="code">USD</span><span class="name">DÓLAR</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('COP')"><span class="emoji">🇨🇴</span><span class="code">COP</span><span class="name">COLOMBIA</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('ARS')"><span class="emoji">🇦🇷</span><span class="code">ARS</span><span class="name">ARGENTINA</span></div>
                 <div class="btn-divisa" onclick="seleccionarDivisaModal('CLP')"><span class="emoji">🇨🇱</span><span class="code">CLP</span><span class="name">CHILE</span></div>
@@ -944,16 +1039,36 @@
         </div>
     </div>
 
+    <!-- MODAL PAGO BINANCE -->
+    <div id="modal-binance-pay" class="modal-binance">
+        <div class="modal-binance-card">
+            <h2>Pagar con Binance Pay</h2>
+            <p>Escanea el código QR o envía el pago a nuestro Pay ID</p>
+            <img src="img/binance-qr.jpg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
+            <div style="background: #1a1c23; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px dashed #FCD535;">
+                <strong style="color: #FCD535; font-size: 1.1em;">Pay ID: 481410806</strong>
+            </div>
+            <h3 id="total-pagar-binance">Total a enviar: $0.00 USDT</h3>
+            <input type="text" id="txid-binance" placeholder="Pega aquí el ID de la Transacción (TxID)">
+            <div class="binance-btn-group">
+                <button class="btn-accion btn-binance-cancel" onclick="cerrarPagoBinance()">Cancelar</button>
+                <button class="btn-accion btn-binance-confirm" onclick="confirmarPagoBinance()">Confirmar Pago</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <span class="footer-logo">Shegos <span>Store</span></span>
         <p>Tu tienda de confianza para Fortnite. Únete a nuestra comunidad para ver todas las cuentas disponibles, participar en sorteos y contactar con administración.</p>
-        <p>Admin: denisa_7u7</p>
-        <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="discord-box"><i class="fas fa-headset"></i> Comunidad en Discord</a>
 
         <p class="footer-text">&copy; 2026 Shegos Store. Todos los derechos reservados.</p>
     </footer>
 
     <div class="floating-container">
+        <div class="float-btn float-cart" onclick="abrirCarritoLateral()" title="Ver Carrito">
+            <img src="img/carrito.png" alt="Carrito">
+            <span id="cart-badge-float" class="cart-badge-float">0</span>
+        </div>
         <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="float-btn float-ds" title="Discord"><i class="fab fa-discord"></i></a>
         <a href="https://wa.me/18299847680" target="_blank" class="float-btn float-ws" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
@@ -964,27 +1079,13 @@
         // ==========================================
         
         const WEBHOOK_DISCORD_SOLICITUDES = "https://discord.com/api/webhooks/1497415610265501827/m3REzfXfz5GkLr_852ogOVWvs5AyecZ0wMNfKu-9pgpkKaBkrRpFnMj5SL4sApvOFNR7"; 
-
-        const CLIENTES_VERIFICADOS = ["denissa_7u7", "juanperez123"];
-        const CLIENTES_EN_ESPERA = { "cliente_nuevo01": "2026-04-23T10:00:00" };
-
-        let carrito = [];
-        let paypalTransactionId = null;
-        let paypalPayerEmail = null;
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
-        let divisaActual = 'USD';
-        
-        const TASAS_CAMBIO = {
-            'USD': 1,
-            'MXN': 18.00,
-            'PEN': 3.75,
-            'COP': 3950,
-            'ARS': 900,
-            'CLP': 940,
-            'EUR': 0.92,
-            'USDT': 1,
-            'DOP': 59.00
-        };
+
+        // Lógica de conversión de precios y tasas oficiales
+        const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900 };
+        const banderas = { USD: '🇺🇸', EUR: '🇪🇺', MXN: '🇲🇽', COP: '🇨🇴', ARS: '🇦🇷', PEN: '🇵🇪', CLP: '🇨🇱', USDT: '🪙', DOP: '🇩🇴' };
+        let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
 
         const ORDEN_CATEGORIAS = ["Lotes y Paquetes", "Trajes", "Gestos", "Alas delta", "Picos", "Accesorios mochileros", "Envoltorios", "Coches", "Pistas de improvisación"];
 
@@ -1040,15 +1141,15 @@
                 let skinsParaHero = [];
 
                 objetos.forEach(item => {
-                    let nombre = item.bundle ? item.bundle.name : (item.brItems ? item.brItems[0].name : "");
+                    let nombre = item.bundle ? item.bundle.name : (item.brItems && item.brItems[0] ? item.brItems[0].name : "");
                     let vbucks = item.finalPrice;
-                    let imagen = item.bundle ? item.bundle.image : (item.brItems ? item.brItems[0].images.icon : "");
-                    let rareza = item.brItems ? item.brItems[0].rarity.displayValue : (item.bundle ? "Lote" : "Épico");
+                    let imagen = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] ? item.brItems[0].images.icon : "");
+                    let rareza = item.brItems && item.brItems[0] ? item.brItems[0].rarity.displayValue : (item.bundle ? "Lote" : "Épico");
                     let seVaHoy = item.section && (item.section.id.toLowerCase().includes('daily') || item.section.id === 'Daily');
                     let cat = obtenerTipoArticulo(item);
                     
                     if (cat === "Lotes y Paquetes" || cat === "Trajes") {
-                        let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0].images.featured ? item.brItems[0].images.featured : imagen);
+                        let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] && item.brItems[0].images.featured ? item.brItems[0].images.featured : imagen);
                         if (imgLarga) skinsParaHero.push(imgLarga);
                     }
                     
@@ -1083,8 +1184,8 @@
                                     </div>
                                 </div>
                                 <h3 class="cosmetico-titulo">${p.nombre}</h3>
-                                <button class="btn-precio-outline precio-usd" data-base="${p.usd}" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
-                                    ~$${p.usd} USD
+                                <button class="btn-precio-outline precio-producto" data-precio-usd="${p.usd}" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
+                                    $${p.usd} USD
                                 </button>
                             </div>
                             `;
@@ -1096,23 +1197,31 @@
 
                 document.getElementById('contenedor-filtros').innerHTML = htmlFiltros;
                 cont.innerHTML = htmlFinal;
-                actualizarVisualizacionDivisa();
+                actualizarPreciosGlobales();
 
             } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
         }
 
         function cambiarDivisa(val) {
             divisaActual = val;
-            actualizarVisualizacionDivisa();
+            const selector = document.getElementById('currency-selector');
+            if(selector) selector.value = val;
+            localStorage.setItem('divisaPreferida', val);
+            actualizarPreciosGlobales();
             actualizarCarrito();
         }
 
-        function actualizarVisualizacionDivisa() {
-            const tasa = TASAS_CAMBIO[divisaActual] || 1;
-            document.querySelectorAll('.precio-usd').forEach(el => {
-                let base = parseFloat(el.getAttribute('data-base'));
-                let valor = (base * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                el.innerText = `~$${valor} ${divisaActual}`;
+        function actualizarPreciosGlobales() {
+            const tasa = tasas[divisaActual] || 1;
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$' }[divisaActual] || '$';
+            const bandera = banderas[divisaActual] || '';
+
+            document.querySelectorAll('.precio-producto').forEach(el => {
+                const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
+                if (!isNaN(precioBase)) {
+                    const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    el.innerText = `${simbolo}${nuevoPrecio} ${bandera} ${divisaActual}`;
+                }
             });
         }
 
@@ -1132,8 +1241,11 @@
                 if(!pasaCat) { sec.style.display = 'none'; return; }
                 
                 let tieneProds = false;
-                sec.querySelectorAll('.producto').forEach(prod => {
-                    let nom = prod.querySelector('strong').innerText.toLowerCase();
+                // Seleccionamos tanto las tarjetas antiguas como las nuevas premium
+                sec.querySelectorAll('.producto, .card-cosmetico-premium').forEach(prod => {
+                    // Buscamos el nombre en 'strong' (manual) o en '.cosmetico-titulo' (API)
+                    let nameEl = prod.querySelector('strong') || prod.querySelector('.cosmetico-titulo');
+                    let nom = nameEl ? nameEl.innerText.toLowerCase() : "";
                     if(nom.includes(busqueda)) { prod.style.display = 'flex'; tieneProds = true; }
                     else { prod.style.display = 'none'; }
                 });
@@ -1195,11 +1307,17 @@
         }
         function vaciarCarrito() { if(confirm("¿Estás seguro de que deseas vaciar todo el carrito?")) { carrito = []; actualizarCarrito(); } }
         function actualizarCarrito() {
-            document.getElementById('cart-count').innerText = carrito.length;
+            const count = carrito.length;
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-badge-float').innerText = count;
+            document.getElementById('cart-badge-float').style.display = count > 0 ? 'block' : 'none';
+            
             const itemsCont = document.getElementById('cart-items');
             const btnVaciar = document.getElementById('btn-vaciar-carrito');
             const summaryBox = document.getElementById('cart-summary-box');
-            const tasa = TASAS_CAMBIO[divisaActual] || 1;
+            const tasa = tasas[divisaActual] || 1;
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$' }[divisaActual] || '$';
+            const bandera = banderas[divisaActual] || '';
 
             if(carrito.length === 0) { 
                 itemsCont.innerHTML = "<div style='text-align:center; color:#aaa; margin-top:50px;'>Carrito vacío.</div>"; 
@@ -1221,14 +1339,15 @@
                     <div class="cart-item-details">
                         <span style="font-weight:bold; color:#fff;">${item.nombre}</span>
                         ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
-                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">$${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${divisaActual}</div>
+                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${bandera} ${divisaActual}</div>
                     </div>
                 </div>
             `).join('');
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
-            document.getElementById('total-dinero').innerText = `$${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${divisaActual}`;
+            document.getElementById('total-dinero').innerText = `${simbolo}${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})} ${bandera} ${divisaActual}`;
+            localStorage.setItem('carrito', JSON.stringify(carrito));
         }
         function eliminarItem(i) { carrito.splice(i, 1); actualizarCarrito(); }
 
@@ -1250,8 +1369,12 @@
         // LÓGICA MODAL INICIAL
         function verificarDivisaInicial() {
             const guardada = localStorage.getItem('divisaPreferida');
-            if (guardada && TASAS_CAMBIO[guardada]) {
-                cambiarDivisa(guardada);
+            if (guardada && tasas[guardada]) {
+                divisaActual = guardada;
+                const selector = document.getElementById('currency-selector');
+                if(selector) selector.value = guardada;
+                actualizarPreciosGlobales();
+                actualizarCarrito();
             } else {
                 const modal = document.getElementById('modal-inicial-divisa');
                 modal.style.display = 'flex';
@@ -1269,72 +1392,6 @@
                 modal.style.display = 'none';
                 document.body.style.overflow = 'auto';
             }, 500);
-        }
-
-        function renderPayPalButtons() {
-            const container = document.getElementById('paypal-button-container');
-            const resultado = document.getElementById('paypal-resultado');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            resultado.classList.add('oculto');
-            resultado.innerHTML = '';
-            paypalTransactionId = null;
-            paypalPayerEmail = null;
-
-            if (carrito.length === 0) {
-                container.innerHTML = '<p style="color:#ff9d00; text-align:center;">Agrega productos al carrito para pagar con PayPal.</p>';
-                return;
-            }
-
-            let total = 0;
-            carrito.forEach(i => { if(i.precio !== 'Consultar') total += parseFloat(i.precio); });
-            
-            if (total <= 0) {
-                container.innerHTML = '<p style="color:#ff9d00; text-align:center;">No hay un total calculable para pagar con PayPal.</p>';
-                return;
-            }
-
-            paypal.Buttons({
-                style: {
-                    layout: 'vertical',
-                    color: 'black',
-                    shape: 'rect',
-                    label: 'pay'
-                },
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: total.toFixed(2),
-                                currency_code: 'USD'
-                            },
-                            description: 'Compra en Shegos Store'
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    return actions.order.capture().then(function(details) {
-                        paypalTransactionId = details.id;
-                        paypalPayerEmail = details.payer && details.payer.email_address ? details.payer.email_address : 'No disponible';
-                        
-                        resultado.className = 'paypal-resultado exito';
-                        resultado.innerHTML = `<strong>Pago exitoso</strong><br>ID: ${paypalTransactionId}<br>Email: ${paypalPayerEmail}`;
-                        resultado.classList.remove('oculto');
-                    });
-                },
-                onError: function(err) {
-                    console.error(err);
-                    resultado.className = 'paypal-resultado error';
-                    resultado.innerHTML = '❌ Ocurrió un error al procesar el pago con PayPal. Intenta de nuevo.';
-                    resultado.classList.remove('oculto');
-                },
-                onCancel: function() {
-                    resultado.className = 'paypal-resultado info';
-                    resultado.innerHTML = '⚠️ El pago fue cancelado.';
-                    resultado.classList.remove('oculto');
-                }
-            }).render(container);
         }
 
         async function verificarID() {
@@ -1375,7 +1432,6 @@
             if(metodo) {
                 const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
                 document.getElementById('pago-' + id).classList.remove('oculto');
-                if(metodo === 'paypal') renderPayPalButtons();
             }
         }
         
@@ -1383,19 +1439,41 @@
             const nom = document.getElementById('cliente-nombre').value; const wp = document.getElementById('cliente-whatsapp').value; const id = document.getElementById('cliente-epic').value;
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const met = seleccionado ? seleccionado.value : "";
-
             if(!nom || !wp || !id || !met) return alert("Por favor completa todos tus datos, incluyendo tu WhatsApp, y selecciona un método de pago.");
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
-            let totalUSD = 0; let lista = carrito.map(i => { if(i.precio !== 'Consultar') totalUSD += parseFloat(i.precio); return `- ${i.nombre} ($${i.precio})`; }).join('\n');
-            let msj = `⭐ *NUEVO PEDIDO - SHEGOS STORE* ⭐\n\n👤 *Nombre:* ${nom}\n📱 *WhatsApp:* ${wp}\n🎮 *Epic ID:* ${id}\n💳 *Método:* ${met.toUpperCase()}\n\n🛒 *Productos:*\n${lista}\n\n💰 *Total:* $${totalUSD > 0 ? totalUSD.toFixed(2) + ' USD' : 'Por consultar'}`;
             
-            if (met === 'paypal') {
-                if (!paypalTransactionId) return alert("Por favor, realiza el pago con el botón de PayPal antes de enviar el pedido.");
-                msj += `\n\n*PAGO CONFIRMADO (PAYPAL)*\nID Transacción: ${paypalTransactionId}\nEmail: ${paypalPayerEmail}`;
+            let totalUSD = 0; let lista = carrito.map(i => { if(i.precio !== 'Consultar') totalUSD += parseFloat(i.precio); return `- ${i.nombre} ($${i.precio})`; }).join('\n');
+
+            // Si es Binance, abrimos el modal en lugar de ir a WhatsApp directamente
+            if (met === 'binance') {
+                abrirPagoBinance(totalUSD.toFixed(2));
+                return;
             }
 
+            let msj = `⭐ *NUEVO PEDIDO - SHEGOS STORE* ⭐\n\n👤 *Nombre:* ${nom}\n📱 *WhatsApp:* ${wp}\n🎮 *Epic ID:* ${id}\n💳 *Método:* ${met.toUpperCase()}\n\n🛒 *Productos:*\n${lista}\n\n💰 *Total:* $${totalUSD > 0 ? totalUSD.toFixed(2) + ' USD' : 'Por consultar'}`;
             msj += `\n\n🖼️ _Adjunto mi comprobante:_`;
             window.open(`https://wa.me/18299847680?text=${encodeURIComponent(msj)}`, '_blank');
+        }
+
+        // LÓGICA MODAL BINANCE PAY
+        function abrirPagoBinance(totalUsdt) {
+            document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
+            document.getElementById('modal-binance-pay').style.display = 'flex';
+        }
+
+        function cerrarPagoBinance() {
+            document.getElementById('modal-binance-pay').style.display = 'none';
+            document.getElementById('txid-binance').value = '';
+        }
+
+        function confirmarPagoBinance() {
+            const txid = document.getElementById('txid-binance').value.trim();
+            if (!txid) {
+                alert("Por favor, ingresa el ID de la transacción (TxID) para continuar.");
+                return;
+            }
+            alert("¡Pedido enviado! Verificaremos tu pago en breve.");
+            cerrarPagoBinance();
         }
 
         function abrirInfoPavos(cantidad, precioMXN) {
@@ -1442,6 +1520,7 @@
             verificarDivisaInicial();
             actualizarRelojTienda();
             setInterval(actualizarRelojTienda, 1000);
+            actualizarCarrito();
         });
     </script>
 </body>
