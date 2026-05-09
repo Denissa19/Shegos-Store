@@ -676,13 +676,15 @@
                 margin: 0 !important;
             }
             .logo-nav {
-                height: 45px !important;
+                height: 55px !important; /* Tamaño optimizado para visibilidad */
                 width: auto !important;
                 position: relative !important;
                 top: 0 !important;
                 left: 0 !important;
                 margin: 0 auto !important;
                 display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
                 z-index: 1200 !important;
             }
             nav { display: none !important; }
@@ -732,9 +734,9 @@
             .info-paso strong { min-width: 24px !important; height: 24px !important; font-size: 0.8em !important; }
 
             /* Ajuste de botones flotantes */
-            .floating-container { bottom: 20px !important; right: 20px !important; gap: 12px !important; z-index: 3000 !important; }
-            .float-btn { width: 50px !important; height: 50px !important; font-size: 1.3em !important; display: flex !important; align-items: center !important; justify-content: center !important; }
-            .float-cart img { width: 26px !important; height: auto !important; display: block !important; }
+            .floating-container { display: flex !important; bottom: 25px !important; right: 20px !important; gap: 12px !important; z-index: 5000 !important; visibility: visible !important; }
+            .float-btn { display: flex !important; width: 55px !important; height: 55px !important; align-items: center !important; justify-content: center !important; visibility: visible !important; }
+            .float-cart img { display: block !important; width: 32px !important; height: auto !important; visibility: visible !important; opacity: 1 !important; }
             .cart-badge-float { padding: 1px 5px !important; font-size: 0.7em !important; }
 
             /* Métodos de pago más pequeños */
@@ -969,6 +971,10 @@
                         <img src="https://imgs.search.brave.com/BYJNkPUlkC8eBHmae2Sg9aC5I7H0Nwg4NizscJtUJTA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA0/L0hvdy10by1HZXQt/RGFtb24tU2tpbi1p/bi1Gb3J0bml0ZS1N/YXktMjAyNi1DcmV3/LVBhY2stMTAyNHg1/NzYuanBn" style="width: 100%; height: auto; object-fit: contain; margin: 0; padding: 0; border-radius: 12px;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Club de Fortnite</strong>
                     </div>
+                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 350px; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('gamepass')">
+                        <img src="https://i.pcmag.com/imagery/reviews/05iBOK9slkTQuHvf1LFRCzz-15.fit_scale.size_1028x578.v1761321520.png" style="width: 100%; height: auto; object-fit: contain; margin: 0; padding: 0; border-radius: 12px;">
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Xbox Game Pass</strong>
+                    </div>
                 </div>
             </div>
 
@@ -1074,6 +1080,20 @@
                     </div>
                 </div>
             </div>
+
+            <div id="sub-gamepass" class="sub-seccion-servicios">
+                <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
+                <h2 style="margin-bottom: 5px;">Cuentas con xbox gamepass para colocarla en tu consola</h2>
+                <p style="color: #2CEAA3; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">SUSCRIPCIÓN PREMIUM · Acceso a cientos de juegos de alta calidad</p>
+                <div class="servicios-flex-container">
+                    <div class="servicio-card">
+                        <img src="https://static.driffle.com/fit-in/720x512/media-gallery/production/7b63f1f5-31eb-406b-a795-35062010e310_xbox-game-pass-ultimate-1-month-india---xbox-live---digital-key.png" class="club-img-16-9">
+                        <strong>Xbox Game pass Ultimate 2 Meses</strong>
+                        <span class="precio-producto" data-precio-usd="5.55">$5.55 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Xbox Game Pass Ultimate 2 Meses', '5.55', 'https://static.driffle.com/fit-in/720x512/media-gallery/production/7b63f1f5-31eb-406b-a795-35062010e310_xbox-game-pass-ultimate-1-month-india---xbox-live---digital-key.png', '0', 'cuenta')">+ Carrito</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="resenas" class="section-box pestana oculto">
@@ -1108,7 +1128,6 @@
                 <div class="metodo-card">
                     <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
                     <label for="met-paypal" class="metodo-label">
-                        <img src="./img/paypal.png" alt="PayPal">
                         <span>PayPal</span>
                     </label>
                 </div>
@@ -1157,7 +1176,6 @@
                         <input type="hidden" name="hosted_button_id" value="2E5ZJUHEU55Q2" />
                         <input type="hidden" name="currency_code" value="USD" />
                         <button type="submit" class="btn-pago-paypal">
-                            <img src="./img/paypal.png" alt="PayPal">
                             Pagar con PayPal
                         </button>
                     </form>
@@ -1463,8 +1481,8 @@
             }
         }
 
-        function agregarAlCarrito(n, p, i, v) { 
-            carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v }); 
+        function agregarAlCarrito(n, p, i, v, t) { 
+            carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v, tipo: t }); 
             actualizarCarrito(); 
             const btn = document.getElementById('btn-carrito-nav');
             btn.style.animation = 'cartPop 0.4s ease';
@@ -1496,6 +1514,18 @@
 
             let totalV = 0;
             let totalD = 0;
+
+            itemsCont.innerHTML = carrito.map((item, index) => `
+                <div class="cart-item">
+                    <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
+                    <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
+                    <div class="cart-item-details">
+                        <span style="font-weight:bold; color:#fff;">${item.nombre}</span>
+                        ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
+                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                    </div>
+                </div>
+            `).join('');
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
@@ -1638,9 +1668,11 @@
             document.getElementById('menu-servicios').style.display = 'none';
             document.getElementById('sub-pavos').style.display = 'none';
             document.getElementById('sub-club').style.display = 'none';
+            document.getElementById('sub-gamepass').style.display = 'none';
 
             if (tipo === 'pavos') document.getElementById('sub-pavos').style.display = 'block';
             else if (tipo === 'club') document.getElementById('sub-club').style.display = 'block';
+            else if (tipo === 'gamepass') document.getElementById('sub-gamepass').style.display = 'block';
             else document.getElementById('menu-servicios').style.display = 'block';
         }
 
