@@ -24,7 +24,11 @@
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: #121212;
+            background: #000000; 
+            /* Añadimos un gradiente radial para dar profundidad */
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(44, 234, 163, 0.07) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(88, 101, 242, 0.07) 0px, transparent 50%);
             color: #ffffff; 
             margin: 0; 
             padding: 0; 
@@ -36,12 +40,12 @@
         
         /* BANNER CÓDIGO FIJADO */
         .banner-codigo { 
-            background: linear-gradient(90deg, #1a1a1a, #2A6041, #1a1a1a); 
-            color: #2CEAA3; text-align: center; padding: 12px; font-weight: 700; text-transform: uppercase; 
-            letter-spacing: 2px; font-size: 0.85em; position: sticky; top: 0; z-index: 1100; border-bottom: 1px solid rgba(44, 234, 163, 0.2);
+            background: #000000; 
+            color: #ffffff; text-align: center; padding: 12px; font-weight: 700; text-transform: uppercase; 
+            letter-spacing: 2px; font-size: 0.85em; position: sticky; top: 0; z-index: 1100; border-bottom: 1px solid #121212;
         }
-        .banner-codigo span { color: #fff; margin-right: 10px; opacity: 0.8; }
-        .banner-codigo strong { color: #2CEAA3; text-shadow: 0 0 10px rgba(44, 234, 163, 0.5); font-size: 1.1em; }
+        .banner-codigo span { color: #888888; margin-right: 10px; }
+        .banner-codigo strong { color: #ffffff; font-size: 1.1em; }
 
         @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
@@ -53,16 +57,16 @@
         @keyframes cartPop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
         @keyframes slideSidebar { from { left: -280px; } to { left: 0; } }
 
-        header { background-color: #0A0B0A; height: 100px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #2CEAA3; backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
-        .menu-toggle { display: none; background: none; border: none; color: #2CEAA3; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
+        header { background-color: #000000; height: 100px !important; padding: 0 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #121212; backdrop-filter: blur(10px); position: sticky; top: 38px; z-index: 1000; }
+        .menu-toggle { display: none; background: none; border: none; color: #ffffff; font-size: 1.8em; cursor: pointer; padding: 0; margin-right: 20px; }
         .header-text h1 { margin: 0; padding-bottom: 5px; font-size: 2.2em; letter-spacing: 1px; animation: slideInLeft 0.6s ease-out forwards; }
-        .header-text p { margin: 0; color: #2CEAA3; font-size: 1.1em; font-weight: 500; animation: slideInLeft 0.8s ease-out forwards; opacity: 0; text-transform: uppercase; letter-spacing: 2px; }
+        .header-text p { margin: 0; color: #ffffff; font-size: 1.1em; font-weight: 500; animation: slideInLeft 0.8s ease-out forwards; opacity: 0; text-transform: uppercase; letter-spacing: 2px; }
         .logo-nav { 
-            height: 130px !important; 
+            height: 100px !important; /* Aumentado de 80px a 100px */
             width: auto;
-            position: absolute;
-            top: -15px;
-            left: 30px;
+            position: relative;
+            top: 0;
+            left: 0;
             object-fit: contain; 
             display: block; 
             margin-bottom: 0;
@@ -71,9 +75,9 @@
         }
         
         .moneda-dropdown {
-            background-color: #111111;
-            color: white;
-            border: 1px solid #2CEAA3;
+            background-color: #121212;
+            color: #ffffff;
+            border: 1px solid #222222;
             border-radius: 8px;
             padding: 6px 12px;
             font-weight: bold;
@@ -81,26 +85,23 @@
             outline: none;
             margin-left: 15px;
         }
-        .moneda-dropdown:hover {
-            box-shadow: 0 0 8px rgba(44, 234, 163, 0.5);
-        }
         
-        .shop-timer-header { text-align: right; background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 10px; border: 1px solid #333; }
-        .shop-timer-header span { display: block; color: #2CEAA3; font-weight: bold; font-family: monospace; font-size: 1.2em; }
+        .shop-timer-header { text-align: right; background: #000000; padding: 8px 15px; border-radius: 10px; border: 1px solid #121212; }
+        .shop-timer-header span { display: block; color: #ffffff; font-weight: bold; font-family: monospace; font-size: 1.2em; }
 
         /* SIDEBAR */
-        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1100; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1100; opacity: 0; visibility: hidden; transition: 0.3s; }
         .sidebar-overlay.abierto { opacity: 1; visibility: visible; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #000000; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #333; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #000000; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #121212; }
         .sidebar.abierto { left: 0; }
         .sidebar-nav { display: flex; flex-direction: column; }
         .sidebar-nav .tab-btn { text-align: left; padding: 15px 30px; border-radius: 0; font-size: 1em; width: 100%; }
-        .sidebar-nav .tab-btn:hover { background: rgba(44, 234, 163, 0.1); }
-        .sidebar-nav .tab-btn.activo { background: rgba(44, 234, 163, 0.2); border-left: 4px solid #2CEAA3; color: #2CEAA3; }
+        .sidebar-nav .tab-btn:hover { background: #121212; }
+        .sidebar-nav .tab-btn.activo { background: #121212; border-left: 4px solid #ffffff; color: #ffffff; }
         
-        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #333; }
+        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #121212; }
 
-        nav { display: flex; justify-content: center; background-color: #121212; padding: 12px; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(5px); animation: slideInDown 0.5s ease-out forwards; margin: 15px auto; border-radius: 50px; width: fit-content; border: 1px solid rgba(255,255,255,0.05); }
+        nav { display: flex; justify-content: center; background-color: #000000; padding: 12px; gap: 8px; flex-wrap: wrap; backdrop-filter: blur(5px); animation: slideInDown 0.5s ease-out forwards; margin: 15px auto; border-radius: 50px; width: fit-content; border: 1px solid #121212; }
 
         /* =========================================
            MEJORAS PARA MÓVIL Y RESPONSIVIDAD
@@ -121,19 +122,19 @@
             .grid-productos { grid-template-columns: repeat(2, 1fr); gap: 10px; }
         }
 
-        .tab-btn { background-color: transparent; color: #ccc; border: none; padding: 10px 18px; cursor: pointer; border-radius: 25px; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; font-size: 0.85em; }
-        .tab-btn:hover { color: #6BFFB8; background-color: rgba(44, 234, 163, 0.1); }
-        .tab-btn.activo { background-color: #2CEAA3; color: #000; box-shadow: 0 4px 20px rgba(44, 234, 163, 0.3); }
+        .tab-btn { background-color: transparent; color: #ffffff; border: none; padding: 10px 18px; cursor: pointer; border-radius: 25px; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; font-size: 0.85em; }
+        .tab-btn:hover { color: #ffffff; background-color: #121212; }
+        .tab-btn.activo { background-color: #ffffff; color: #000000; }
         
         .container { max-width: 1200px; margin: 20px auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
         .section-box { 
-            background-color: rgba(30, 30, 30, 0.6); 
+            background-color: rgba(10, 10, 10, 0.8); 
             border-radius: 20px; 
             padding: 30px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4); 
             margin-bottom: 25px; 
-            border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .sub-seccion-servicios {
@@ -144,23 +145,23 @@
         .pestana:not(.oculto) { animation: fadeInUp 0.5s ease-out forwards; }
         .oculto { display: none !important; }
         
-        input, select, button.btn-accion { width: 100%; padding: 12px; margin: 8px 0 20px 0; border-radius: 5px; border: 1px solid #333; background-color: #2a2a2a; color: white; box-sizing: border-box; transition: all 0.3s ease; }
-        input:focus, select:focus { outline: none; border-color: #2CEAA3; box-shadow: 0 0 10px rgba(44, 234, 163, 0.3); background-color: #1e1e1e; }
+        input, select, button.btn-accion { width: 100%; padding: 12px; margin: 8px 0 20px 0; border-radius: 5px; border: 1px solid #222222; background-color: #121212; color: white; box-sizing: border-box; transition: all 0.3s ease; }
+        input:focus, select:focus { outline: none; border-color: #ffffff; background-color: #000000; }
         
-        button.btn-accion { background-color: #2CEAA3; color: #000; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; transition: all 0.3s ease; }
-        button.btn-accion:hover { background-color: #28965A; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(44, 234, 163, 0.4); }
+        button.btn-accion { background-color: #ffffff; color: #000000; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; transition: all 0.3s ease; }
+        button.btn-accion:hover { background-color: #eeeeee; transform: translateY(-3px); }
         button.btn-accion:active { transform: translateY(0); }
 
         /* ESTADO COPIADO PARA BOTONES */
         button.btn-accion.copiado {
-            background-color: transparent !important;
-            border: 2px solid #2CEAA3 !important;
-            color: #2CEAA3 !important;
+            background-color: #000000 !important;
+            border: 1px solid #ffffff !important;
+            color: #ffffff !important;
             box-shadow: none !important;
             transform: none !important;
         }
         
-        .btn-whatsapp { background-color: #25D366; color: white; font-size: 1.1em; padding: 15px; margin-top: 10px; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); }
+        .btn-whatsapp { background-color: #ffffff; color: #000000; font-size: 1.1em; padding: 15px; margin-top: 10px; }
         .btn-whatsapp:hover { background-color: #1ebe57; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5); }
 
         /* =========================================
@@ -168,43 +169,43 @@
            ========================================= */
         .hero-container { display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 40px 20px; min-height: 60vh; }
         .hero-text { flex: 1; z-index: 2; }
-        .hero-text h1 { font-family: 'BurbankBigCondensed', sans-serif; font-size: 5.5em; margin: 0 0 10px 0; line-height: 1; color: #fff; text-shadow: 0 0 20px rgba(44, 234, 163, 0.3); font-style: italic; text-transform: uppercase; }
+        .hero-text h1 { font-family: 'BurbankBigCondensed', sans-serif; font-size: 5.5em; margin: 0 0 10px 0; line-height: 1; color: #ffffff; font-style: italic; text-transform: uppercase; }
         .hero-text p { font-size: 1.2em; color: #ccc; margin-bottom: 40px; line-height: 1.6; max-width: 90%; }
         
         .hero-buttons { display: flex; gap: 20px; margin-bottom: 40px; flex-wrap: wrap; }
         .hero-buttons .btn-accion { width: auto; padding: 15px 40px; font-family: 'BurbankBigCondensed', sans-serif; font-size: 1.4em; margin: 0; border-radius: 10px; }
         
         .btn-secundario { background-color: transparent; color: white; border: 2px solid #555; padding: 13px 30px; border-radius: 30px; text-decoration: none; font-weight: bold; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
-        .btn-secundario:hover { background-color: #2a2a2a; border-color: #2CEAA3; box-shadow: 0 0 15px rgba(44, 234, 163, 0.2); }
+        .btn-secundario:hover { background-color: #121212; border-color: #ffffff; }
 
         .btn-verificar-discord { border: 1px solid #5865F2; color: #5865F2; background: transparent; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 5px; display: block; width: fit-content; }
         .btn-verificar-discord:hover { background: rgba(88, 101, 242, 0.1); box-shadow: 0 0 10px rgba(88, 101, 242, 0.3); }
 
         .hero-checks { display: flex; flex-direction: column; gap: 15px; color: #fff; font-weight: 500; font-size: 1.05em; }
         .hero-checks span { display: flex; align-items: center; gap: 12px; }
-        .hero-checks i { color: #2CEAA3; font-size: 1.2em; width: 25px; text-align: center; }
+        .hero-checks i { color: #ffffff; font-size: 1.2em; width: 25px; text-align: center; }
 
         .hero-image { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .hero-image::before { content: ""; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(44, 234, 163, 0.2) 0%, rgba(0,0,0,0) 70%); z-index: 0; border-radius: 50%; }
+        .hero-image::before { content: ""; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(0,0,0,0) 70%); z-index: 0; border-radius: 50%; }
         .hero-image img { max-width: 100%; max-height: 85vh; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5)); animation: float 4s ease-in-out infinite; z-index: 1; }
 
         /* BOTONES FLOTANTES */
         .floating-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
         .float-btn { 
-            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid #222;
             font-size: 1.6em; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; text-decoration: none; 
         }
         .float-btn:hover { transform: scale(1.1) translateY(-5px); }
         .float-ws { background-color: #25D366; }
         .float-ds { background-color: #5865F2; }
-        .float-cart { background-color: #2CEAA3; color: #000 !important; cursor: pointer; position: relative; }
+        .float-cart { background-color: #ffffff; color: #000000 !important; cursor: pointer; position: relative; }
         .float-cart img { width: 30px; height: auto; object-fit: contain; }
         .cart-badge-float {
             position: absolute;
             top: -5px;
             right: -5px;
-            background-color: #ff0000;
-            color: white;
+            background-color: #ffffff;
+            color: #000000;
             border-radius: 50%;
             padding: 2px 6px;
             font-size: 0.6em;
@@ -215,58 +216,91 @@
         /* =========================================
            COMPONENTES DE LA TIENDA Y OTROS
            ========================================= */
-        .filtros-container { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; margin-top: -10px; }
-        .filtro-btn { background-color: #2a2a2a; color: #aaa; border: 1px solid #333; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85em; font-weight: bold; transition: all 0.3s ease; }
-        .filtro-btn:hover { border-color: #2CEAA3; color: #fff; }
-        .filtro-btn.activo { background-color: #2CEAA3; color: #000; border-color: #2CEAA3; box-shadow: 0 0 10px rgba(44, 234, 163, 0.3); }
+        .filtros-container { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; margin-top: -10px; }
+        .filtro-btn { 
+            background: rgba(255, 255, 255, 0.03); 
+            color: #888; 
+            border: 1px solid transparent; 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            font-size: 0.85em; 
+            font-weight: 700; 
+            transition: all 0.3s; 
+            text-transform: uppercase; 
+            border-radius: 30px; 
+        }
+        .filtro-btn:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+        .filtro-btn.active { 
+            color: #ffffff; 
+            border: 1px solid #ffffff !important; 
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-        .shop-section { margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #333; animation: fadeIn 0.8s ease-in forwards; }
-        .section-title { font-family: 'BurbankBigCondensed', sans-serif; font-size: 2.2em; text-transform: uppercase; color: #2CEAA3; margin-bottom: 20px; border-left: 6px solid #2CEAA3; padding-left: 15px; font-style: italic; }
+        .shop-section { margin: 60px 0; animation: fadeIn 0.8s ease-in forwards; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 2.2em; text-transform: uppercase; color: #ffffff; margin-bottom: 40px; padding-left: 0; border-left: none; font-weight: 800; }
         
-        .grid-productos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .grid-productos { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 30px; 
+            margin-top: 20px;
+        }
         
-        /* Arquitectura Maestra: Cosmetic Card */
+        /* Arquitectura de Tarjeta Independiente */
         .cosmetic-card {
             position: relative;
             overflow: hidden;
             aspect-ratio: 2 / 3;
             border-radius: 12px;
-            background-color: #0a0b0a;
+            background-color: #0d0d0d;
             display: flex;
             flex-direction: column;
             transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.03);
             box-sizing: border-box;
         }
-        .cosmetic-card:hover { transform: translateY(-8px); }
+        .cosmetic-card:hover { transform: translateY(-8px); border-color: rgba(44, 234, 163, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.6); }
 
-        /* Rarezas Dinámicas (Bordes + Glow) */
-        .cosmetic-card.rarity-legendary { border-color: #FF8000; box-shadow: 0 0 15px rgba(255, 128, 0, 0.4); }
-        .cosmetic-card.rarity-epic { border-color: #C000FF; box-shadow: 0 0 15px rgba(192, 0, 255, 0.4); }
-        .cosmetic-card.rarity-rare { border-color: #0078FF; box-shadow: 0 0 15px rgba(0, 120, 255, 0.4); }
-        .cosmetic-card.rarity-uncommon { border-color: #15BB2B; box-shadow: 0 0 15px rgba(21, 187, 43, 0.4); }
-        .cosmetic-card.rarity-idolos { border-color: #25DBF3; box-shadow: 0 0 15px rgba(37, 219, 243, 0.4); }
-        .cosmetic-card.rarity-marvel { border-color: #F31919; box-shadow: 0 0 15px rgba(243, 25, 25, 0.4); }
+        /* Línea de Rareza Superior (Diseño de Inventario) */
+        .cosmetic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            z-index: 20;
+            border-radius: 12px 12px 0 0;
+        }
 
-        /* Capas Superpuestas */
+        /* Mapeo de Colores por Clase */
+        .cosmetic-card.legendary::before { background-color: #FF8000 !important; }
+        .cosmetic-card.epic::before { background-color: #C000FF !important; }
+        .cosmetic-card.rare::before { background-color: #0078FF !important; }
+        .cosmetic-card.uncommon::before { background-color: #15BB2B !important; }
+
+        /* Capa de Fondo (El Personaje) */
         .card-img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: contain;
-            z-index: 1;
-            transition: transform 0.5s ease;
-            padding: 10px;
+            z-index: 1; /* Por debajo de la línea de rareza */
+            transition: transform 0.6s ease;
+            padding: 12px;
             box-sizing: border-box;
         }
-        .cosmetic-card:hover .card-img { transform: scale(1.1); }
+        .cosmetic-card:hover .card-img { transform: scale(1.05); }
 
+        /* Capa Superior (Timer y Labels) */
         .card-overlay-top {
             position: absolute;
-            top: 0; left: 0; right: 0;
-            padding: 10px;
+            top: 10px; left: 10px; right: 10px;
             display: flex;
             justify-content: space-between;
-            z-index: 2;
+            z-index: 5;
             pointer-events: none;
         }
         .overlay-timer {
@@ -275,25 +309,26 @@
             padding: 4px 8px;
             border-radius: 5px;
             font-size: 0.75em;
-            font-weight: 500;
+            font-weight: 600;
             backdrop-filter: blur(4px);
         }
         .overlay-se-va-hoy {
-            background: #ffffff;
+            background: #2CEAA3;
             color: #000;
-            padding: 2px 8px;
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 0.65rem;
-            font-weight: bold;
+            font-size: 0.7em;
+            font-weight: 900;
             text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(44, 234, 163, 0.3);
         }
 
+        /* Capa Inferior (Info y Acción) */
         .card-overlay-bottom {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 60%, transparent 100%);
-            padding: 20px 12px 12px;
+            background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
+            padding: 25px 12px 12px;
             z-index: 10;
             display: flex;
             flex-direction: column;
@@ -301,13 +336,12 @@
         }
 
         .card-title {
-            font-family: 'BurbankBigCondensed', sans-serif;
+            font-family: 'Poppins', sans-serif;
             color: #fff;
-            font-size: 1.4em;
-            font-weight: bold;
+            font-size: 1.1em;
+            font-weight: 600;
             margin: 0;
             text-transform: uppercase;
-            font-style: italic;
             text-align: center;
         }
 
@@ -321,15 +355,15 @@
             align-items: center;
             gap: 6px;
             font-weight: 800;
-            color: #2CEAA3;
+            color: #ffffff;
             font-size: 1.1em;
         }
         .card-price img { width: 18px; height: 18px; }
 
-        .btn-add-cart {
-            background: #000;
-            color: #fff;
-            border: 1px solid #39FF14;
+        .cosmetic-card .btn-add-cart {
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #ffffff;
             border-radius: 8px;
             padding: 6px 12px;
             font-family: 'BurbankBigCondensed', sans-serif;
@@ -339,13 +373,11 @@
             transition: 0.2s;
             text-transform: uppercase;
         }
-        .btn-add-cart:hover { background: #39FF14; color: #000; }
+        .cosmetic-card .btn-add-cart:hover { background: #ffffff; color: #000000; }
         
         .grid-pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
-        .paso { background-color: #2a2a2a; padding: 25px; border-radius: 8px; border-top: 4px solid #2CEAA3; text-align: center; transition: all 0.3s ease; }
-        .paso:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
-        .paso-numero { font-size: 2.5em; color: #2CEAA3; font-weight: bold; margin-bottom: 10px; transition: transform 0.3s ease; }
-        .paso:hover .paso-numero { transform: scale(1.2); text-shadow: 0 0 10px rgba(44, 234, 163, 0.5); }
+        .paso { background-color: #000; padding: 25px; border-radius: 8px; border: 1px solid #222; text-align: center; transition: all 0.3s ease; }
+        .paso-numero { font-size: 2.5em; color: #ffffff; font-weight: bold; margin-bottom: 10px; }
 
         /* REDISEÑO SECCIÓN SERVICIOS */
         .servicios-flex-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
@@ -366,9 +398,9 @@
         .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 5px; }
         
         .btn-outline-mint { 
-            background: transparent; 
+            background: #000000; 
             border: 2px solid #2CEAA3; 
-            color: white; 
+            color: #2CEAA3; 
             padding: 10px; 
             border-radius: 6px; 
             font-weight: 800; 
@@ -377,7 +409,7 @@
             transition: background 0.3s ease; 
             margin-top: auto;
         }
-        .btn-outline-mint:hover { background: #6BFFB8; color: #000; }
+        .btn-outline-mint:hover { background: #2CEAA3; color: #000000; }
         
         .alerta-warning { 
             background: rgba(255, 255, 255, 0.05); 
@@ -427,7 +459,7 @@
         }
         .metodo-card input[type="radio"]:checked + .metodo-label {
             border-color: #2CEAA3;
-            color: #fff;
+            color: #ffffff;
             background-color: rgba(44, 234, 163, 0.05);
             box-shadow: 0 0 10px rgba(44, 234, 163, 0.2);
         }
@@ -461,13 +493,13 @@
         .btn-pago-paypal img { height: 24px; width: auto; }
 
         .lista-ids { list-style: none; padding: 0; margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .lista-ids li { background: #2a2a2a; padding: 15px; border-radius: 8px; border-left: 4px solid #2CEAA3; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
-        .lista-ids li:hover { background: #333; transform: translateX(5px); box-shadow: -4px 0 15px rgba(44, 234, 163, 0.2); }
+        .lista-ids li { background: #121212; padding: 15px; border-radius: 8px; border: 1px solid #2CEAA3; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+        .lista-ids li:hover { background: #000; transform: translateX(5px); box-shadow: -4px 0 15px rgba(44, 234, 163, 0.2); }
         .lista-ids strong { color: #2CEAA3; font-size: 1.2em; letter-spacing: 1px; }
 
         .grid-resenas { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .resena-card { background-color: #2a2a2a; padding: 25px; border-radius: 8px; border-left: 4px solid #2CEAA3; transition: all 0.3s ease; }
-        .resena-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .resena-card { background-color: #121212; padding: 25px; border-radius: 8px; border: 1px solid #2CEAA3; transition: all 0.3s ease; }
+        .resena-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 20px rgba(44, 234, 163, 0.2); }
         .resena-estrellas { color: #2CEAA3; font-size: 1.3em; letter-spacing: 2px; margin-bottom: 15px; }
         .resena-texto { font-style: italic; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
         .resena-autor { font-weight: bold; color: #ffffff; text-align: right; font-size: 0.9em; text-transform: uppercase; }
@@ -475,17 +507,17 @@
         /* CARRITO Y CHECKOUT */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; backdrop-filter: blur(3px); }
         .cart-overlay.abierto { opacity: 1; visibility: visible; }
-        .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 350px; height: 100%; background-color: #1e1e1e; z-index: 1001; box-shadow: -5px 0 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-left: 2px solid #2CEAA3; }
+        .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 350px; height: 100%; background-color: #000000; z-index: 1001; box-shadow: -5px 0 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-left: 2px solid #2CEAA3; }
         .cart-drawer.abierto { right: 0; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #333; background-color: #121212; }
-        .cart-summary { padding: 20px; background: #121212; border-top: 1px solid #333; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #2CEAA3; background-color: #000000; }
+        .cart-summary { padding: 20px; background: #121212; border-top: 1px solid #2CEAA3; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95em; }
-        .summary-row.total { color: #2CEAA3; font-weight: bold; font-size: 1.2em; border-top: 1px solid #333; padding-top: 10px; margin-top: 10px; }
+        .summary-row.total { color: #2CEAA3; font-weight: bold; font-size: 1.2em; border-top: 1px solid #2CEAA3; padding-top: 10px; margin-top: 10px; }
         .cart-item-info { color: #aaa; font-size: 0.85em; margin-top: 3px; }
 
         .cart-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
         .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333; position: relative; animation: slideInLeft 0.3s ease-out forwards; }
-        .cart-item img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background-color: #2a2a2a; }
+        .cart-item img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background-color: #121212; }
         .cart-item-details { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 25px; }
         .btn-eliminar-item { position: absolute; top: 0; right: 0; background: none; border: none; color: #e74c3c; font-size: 1.2em; cursor: pointer; padding: 5px; font-weight: bold; transition: all 0.2s; }
         .btn-eliminar-item:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
@@ -496,10 +528,10 @@
         .alerta-exito { border: 2px solid #2CEAA3; background-color: rgba(44, 234, 163, 0.1); padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.5s ease; }
         .alerta-espera { border: 2px solid #ff9d00; background-color: rgba(255,157,0,0.1); padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.5s ease; }
         label { display: block; margin-top: 15px; color: #2CEAA3; font-weight: bold; font-size: 0.95em; transition: color 0.3s; }
-        .info-pago-box { background-color: #2a2a2a; border: 1px solid #2CEAA3; padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.4s ease forwards; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .info-pago-box { background-color: #121212; border: 1px solid #2CEAA3; padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.4s ease forwards; box-shadow: 0 5px 15px rgba(0,0,0,0.8); }
         .info-pago-box
-        .dato-copiar { background: #121212; padding: 12px; border-radius: 4px; font-family: monospace; color: #2CEAA3; font-size: 1.1em; margin: 10px 0; display: block; border: 1px dashed #444; text-align: center; transition: all 0.3s; cursor: pointer; }
-        .dato-copiar:hover { background: #1a1a1a; border-color: #2CEAA3; box-shadow: inset 0 0 10px rgba(44, 234, 163, 0.1); }
+        .dato-copiar { background: #000000; padding: 12px; border-radius: 4px; font-family: monospace; color: #2CEAA3; font-size: 1.1em; margin: 10px 0; display: block; border: 1px dashed #2CEAA3; text-align: center; transition: all 0.3s; cursor: pointer; }
+        .dato-copiar:hover { background: #121212; border-color: #2CEAA3; box-shadow: inset 0 0 10px rgba(44, 234, 163, 0.1); }
         
         /* ESTILOS SELECTOR DIVISA MODAL */
         #modal-inicial-divisa {
@@ -515,7 +547,7 @@
         }
         .modal-selector-content { 
             background: #0a0b0a; 
-            border: 2px solid #39FF14; 
+            border: 2px solid #2CEAA3; 
             border-radius: 20px; 
             padding: 30px; 
             width: 90%; 
@@ -529,7 +561,7 @@
             background: #111; border: 1px solid #333; border-radius: 12px; padding: 15px 5px; 
             cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; 
         }
-        .btn-divisa:hover { border-color: #39FF14; transform: translateY(-5px); box-shadow: 0 0 15px #39FF14; }
+        .btn-divisa:hover { border-color: #2CEAA3; transform: translateY(-5px); box-shadow: 0 0 15px rgba(44, 234, 163, 0.5); }
         .btn-divisa img { width: 45px; height: 30px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
         .btn-divisa span { font-weight: bold; color: #fff; font-size: 0.8em; }
 
@@ -549,7 +581,7 @@
 
         /* MODAL INFO PAVOS */
         .modal-pavos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 17, 0.9); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); animation: fadeIn 0.4s ease; transition: opacity 0.5s ease; }
-        .modal-pavos-content { background: #1e1e1e; border: 1px solid #2CEAA3; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 40px rgba(44, 234, 163, 0.2); }
+        .modal-pavos-content { background: #121212; border: 2px solid #2CEAA3; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 40px rgba(44, 234, 163, 0.2); }
         .info-paso { margin: 20px 0; display: flex; gap: 15px; text-align: left; align-items: flex-start; }
         .info-paso strong { color: #2CEAA3; font-size: 1em; min-width: 28px; height: 28px; border: 1px solid #2CEAA3; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .info-paso p { margin: 0; font-size: 0.95em; color: #ccc; line-height: 1.4; }
@@ -729,7 +761,7 @@
                 margin: 0 !important;
             }
             .logo-nav {
-                height: 55px !important; /* Tamaño optimizado para visibilidad */
+                height: 65px !important; /* Aumentado de 55px a 65px en móvil */
                 width: auto !important;
                 position: relative !important;
                 top: 0 !important;
@@ -1233,10 +1265,14 @@
             </div>
             <div id="pago-paypal" class="info-pago-box oculto">
                 <h4>Pago vía PayPal</h4>
-                <p style="text-align: center;">Haz clic en el botón de PayPal para realizar tu donación.</p>
-                <!-- Contenedor dinámico de PayPal (Paso 2) -->
-                <div id="paypal-button-container"></div>
-                <div id="paypal-resultado" class="paypal-resultado oculto"></div>
+                <p style="text-align: center; color: #ff9d00; font-weight: bold; margin-bottom: 15px;">
+                    ⚠️ Selecciona la casilla "cubrir comisión" o tu pago será reembolsado.
+                </p>
+                <p style="text-align: center;">Haz clic en el botón de abajo para realizar tu pago de forma segura.</p>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="btn-pago-paypal" style="text-decoration: none; margin: 20px auto; max-width: 300px;">
+                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal">
+                    PAGAR CON PAYPAL
+                </a>
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
@@ -1336,14 +1372,22 @@
         const WEBHOOK_DISCORD_SOLICITUDES = "https://discord.com/api/webhooks/1497415610265501827/m3REzfXfz5GkLr_852ogOVWvs5AyecZ0wMNfKu-9pgpkKaBkrRpFnMj5SL4sApvOFNR7"; 
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
-        // Variables globales PayPal (Paso 3)
-        let paypalTransaccionID = null;
+        let tiendaItems = [];
 
         // Tasas actualizadas
         const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 }; // Mantener tasas para conversión
         let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
 
-        const ORDEN_CATEGORIAS = ["⭐ ¡DESTACADOS DE HOY!", "Lotes y Paquetes", "Trajes", "Gestos", "Alas delta", "Picos", "Accesorios mochileros", "Envoltorios", "Coches", "Pistas de improvisación"];
+        // Helper para el tiempo de la tienda
+        function getTiempoTxt() {
+            const ahora = new Date();
+            const manana = new Date(ahora);
+            manana.setUTCHours(24, 0, 0, 0);
+            const diffMs = manana - ahora;
+            const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMinutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            return `${diffHoras}h ${diffMinutos}m`;
+        }
 
         function copiarAlPortapapeles(texto, el) {
             navigator.clipboard.writeText(texto).then(() => {
@@ -1361,160 +1405,96 @@
             });
         }
 
-        function obtenerTipoArticulo(item) {
-            if (item.bundle) return "Lotes y Paquetes";
-            if (item.tracks && item.tracks.length > 0) return "Pistas de improvisación";
-            let data = item.brItems ? item.brItems[0] : (item.cars ? item.cars[0] : null);
-            if (data && data.type) {
-                let t = data.type.value.toLowerCase();
-                if(t === 'outfit') return "Trajes";
-                if(t === 'emote') return "Gestos";
-                if(t === 'pickaxe') return "Picos";
-                if(t === 'glider') return "Alas delta";
-                if(t === 'wrap') return "Envoltorios";
-                if(t === 'car' || t === 'vehicle') return "Coches";
-            }
-            return "Otros Artículos";
-        }
-
         async function cargarTienda() {
             const cont = document.getElementById('contenedor-tienda');
             try {
                 const res = await fetch('https://fortnite-api.com/v2/shop?language=es');
                 const datos = await res.json();
-                const objetos = datos.data.entries;
+                console.log("Datos de la tienda recibidos:", datos); // Punto 1: Verificación
                 
-                // Cálculo de tiempo para las píldoras
-                const ahora = new Date();
-                const manana = new Date(ahora);
-                manana.setUTCHours(24, 0, 0, 0);
-                const diffMs = manana - ahora;
-                const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
-                const diffMinutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                const tiempoTxt = `${diffHoras}h ${diffMinutos}m`;
+                if (!datos.data || !datos.data.entries) throw new Error("Datos inválidos");
+                const objetos = datos.data.entries;
 
-                let categoriasAgrupadas = {};
+                tiendaItems = [];
                 let skinsParaHero = [];
 
                 objetos.forEach(item => {
-                    let nombre = item.bundle ? item.bundle.name : (item.brItems && item.brItems[0] ? item.brItems[0].name : "");
+                    let nombre = item.bundle ? item.bundle.name : (item.brItems && item.brItems[0] ? item.brItems[0].name : (item.cars ? item.cars[0].name : ""));
                     let vbucks = item.finalPrice;
                     let imagen = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] ? item.brItems[0].images.icon : "");
-                    let rareza = item.brItems && item.brItems[0] ? item.brItems[0].rarity.displayValue : (item.bundle ? "Lote" : "Épico");
-                    let seVaHoy = item.section && (item.section.id.toLowerCase().includes('daily') || item.section.id === 'Daily');
-                    let cat = obtenerTipoArticulo(item);
                     
-                    if (cat === "Lotes y Paquetes" || cat === "Trajes") {
-                        let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] && item.brItems[0].images.featured ? item.brItems[0].images.featured : (item.brItems && item.brItems[0] ? item.brItems[0].images.icon : ""));
+                    // Punto 2: Lógica de Categorización Estricta
+                    let tipoVal = (item.brItems && item.brItems[0]) ? item.brItems[0].type.value : 
+                                  (item.cars && item.cars[0]) ? item.cars[0].type.value : "other";
+                    tipoVal = tipoVal.toLowerCase();
+
+                    let categoriaFinal = 'ACCESORIOS';
+                    if (tipoVal === 'outfit') categoriaFinal = 'SKINS';
+                    else if (tipoVal === 'emote') categoriaFinal = 'BAILES';
+                    else if (tipoVal === 'pickaxe') categoriaFinal = 'PICOS';
+                    else if (tipoVal === 'backpack') categoriaFinal = 'MOCHILAS';
+                    else if (tipoVal === 'wrap') categoriaFinal = 'ENVOLTORIOS';
+                    else if (['body', 'wheel', 'booster', 'engine'].includes(tipoVal)) categoriaFinal = 'AUTOS';
+                    
+                    // Mapeo de Rarezas según instrucción
+                    let rarityVal = item.brItems && item.brItems[0] ? item.brItems[0].rarity.value : (item.bundle ? "legendary" : "common");
+                    let rarityClass = "common"; // Default
+                    const rLower = rarityVal.toLowerCase();
+                    if (rLower.includes('legendary') || rLower.includes('icon') || rLower.includes('marvel')) rarityClass = "legendary";
+                    else if (rLower.includes('epic')) rarityClass = "epic";
+                    else if (rLower.includes('rare')) rarityClass = "rare";
+                    else if (rLower.includes('uncommon')) rarityClass = "uncommon";
+                    
+                    let seVaHoy = item.section && (item.section.id.toLowerCase().includes('daily') || item.section.id === 'Daily');
+                    
+                    // Hero Image Logic (Usamos las skins para el fondo dinámico)
+                    if (categoriaFinal === 'SKINS' || item.bundle) {
+                        let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] && item.brItems[0].images.featured ? item.brItems[0].images.featured : imagen);
                         if (imgLarga) skinsParaHero.push(imgLarga);
                     }
                     
-                    const esDestacado = item.section && (item.section.name === 'Featured' || (item.section.id && item.section.id.toLowerCase().includes('featured')));
-                    
                     if(nombre && imagen && vbucks) {
-                        let usd = ((vbucks / 100) * 0.60).toFixed(2);
-                        let itemData = { nombre, vbucks, usd, imagen, rareza, seVaHoy, nombreSeguro: nombre.replace(/'/g, "\\'") };
-
-                        if (!categoriasAgrupadas[cat]) categoriasAgrupadas[cat] = [];
-                        categoriasAgrupadas[cat].push(itemData);
-
-                        // Lógica para Destacados (Skins de la sección Featured)
-                        if (item.section && (item.section.name === 'Featured' || (item.section.id && item.section.id.toLowerCase().includes('featured')))) {
-                            if (!categoriasAgrupadas["⭐ ¡DESTACADOS DE HOY!"]) categoriasAgrupadas["⭐ ¡DESTACADOS DE HOY!"] = [];
-                            categoriasAgrupadas["⭐ ¡DESTACADOS DE HOY!"].push(itemData);
-                        }
+                        tiendaItems.push({
+                            nombre,
+                            vbucks,
+                            usd: ((vbucks / 100) * 0.60).toFixed(2),
+                            imagen,
+                            rarityClass,
+                            seVaHoy,
+                            categoria: categoriaFinal,
+                            nombreSeguro: nombre.replace(/'/g, "\\'")
+                        });
                     }
                 });
 
                 if (skinsParaHero.length > 0) {
                     const heroImg = document.getElementById('hero-dynamic-img');
-                    // Variamos la imagen hero eligiendo una aleatoria de las destacadas
                     heroImg.src = skinsParaHero[Math.floor(Math.random() * skinsParaHero.length)];
                     heroImg.style.opacity = '1';
                 }
 
-                let htmlFinal = "";
-                let htmlFiltros = `<button class="filtro-btn activo" onclick="setCategoria('Todas', this)">Todas</button>`;
-
-                ORDEN_CATEGORIAS.forEach(cat => {
-                    if(categoriasAgrupadas[cat]) {
-                        htmlFiltros += `<button class="filtro-btn" onclick="setCategoria('${cat}', this)">${cat}</button>`;
-                        let htmlProds = categoriasAgrupadas[cat].map(p => {
-                            let rarityClass = "";
-                            let r = p.rareza.toLowerCase();
-                            if (r.includes('legendary') || r.includes('legendaria')) rarityClass = "rarity-legendary";
-                            else if (r.includes('epic') || r.includes('épica')) rarityClass = "rarity-epic";
-                            else if (r.includes('rare') || r.includes('rara')) rarityClass = "rarity-rare";
-                            else if (r.includes('uncommon') || r.includes('poco común')) rarityClass = "rarity-uncommon";
-                            else if (r.includes('ídolo')) rarityClass = "rarity-idolos";
-                            else if (r.includes('marvel')) rarityClass = "rarity-marvel";
-
-                            return `
-                            <div class="cosmetic-card ${rarityClass}">
-                                <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
-                                <div class="card-overlay-top">
-                                    <div class="overlay-timer">${tiempoTxt}</div>
-                                    ${p.seVaHoy ? '<div class="overlay-se-va-hoy">Se va hoy</div>' : ''}
-                                </div>
-                                <div class="card-overlay-bottom">
-                                    <h3 class="card-title">${p.nombre}</h3>
-                                    <div class="card-action-row">
-                                        <div class="card-price">
-                                            <img src="https://fortnite-api.com/images/vbuck.png" alt="V">
-                                            <span class="precio-producto" data-precio-usd="${p.usd}">$${p.usd} USD</span>
-                                        </div>
-                                        <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
-                                            + CARRITO
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            `;
-                        }).join('');
-                        htmlFinal += `<div class="shop-section"><h3 class="section-title">${cat}</h3><div class="grid-productos">${htmlProds}</div></div>`;
-                        delete categoriasAgrupadas[cat];
-                    }
-                });
-
-                document.getElementById('contenedor-filtros').innerHTML = htmlFiltros;
-                cont.innerHTML = htmlFinal;
-                actualizarPreciosGlobales();
-
+                renderFiltros();
+                aplicarFiltros();
             } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
         }
 
-        // Función para renderizar botones de PayPal (Paso 4)
-        function renderPayPalButtons() {
-            const container = document.getElementById('paypal-button-container');
-            if (!container || container.innerHTML !== "") return;
+        // Punto 3: Event Listeners y data-category
+        function renderFiltros() {
+            const container = document.getElementById('contenedor-filtros');
+            const ORDEN = ['Todas', 'SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
+            
+            container.innerHTML = ORDEN.map(cat => `
+                <button class="filtro-btn ${cat === categoriaActual ? 'active' : ''}" data-category="${cat}">${cat}</button>
+            `).join('');
 
-            paypal.Buttons({
-                createOrder: (data, actions) => {
-                    let totalUSD = 0;
-                    carrito.forEach(item => totalUSD += parseFloat(item.precio));
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: { value: totalUSD.toFixed(2) }
-                        }]
-                    });
-                },
-                onApprove: (data, actions) => {
-                    return actions.order.capture().then(details => {
-                        paypalTransaccionID = details.id;
-                        const resBox = document.getElementById('paypal-resultado');
-                        resBox.innerHTML = `¡Pago completado! ID: ${details.id}`;
-                        resBox.className = "paypal-resultado exito";
-                        resBox.classList.remove('oculto');
-                    });
-                },
-                onError: (err) => {
-                    console.error('Error en PayPal:', err);
-                    const resBox = document.getElementById('paypal-resultado');
-                    resBox.innerHTML = "Hubo un error con el pago.";
-                    resBox.className = "paypal-resultado error";
-                    resBox.classList.remove('oculto');
-                }
-            }).render('#paypal-button-container');
+            container.querySelectorAll('.filtro-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    categoriaActual = btn.getAttribute('data-category');
+                    container.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    aplicarFiltros();
+                });
+            });
         }
 
         function cambiarDivisa(val) {
@@ -1542,32 +1522,67 @@
             });
         }
 
-        function setCategoria(cat, btn) {
-            categoriaActual = cat;
-            document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('activo'));
-            btn.classList.add('activo');
-            aplicarFiltros();
-        }
-
+        // Punto 2 y 4: Reparación de lógica y manejo de errores
         function aplicarFiltros() {
+            const cont = document.getElementById('contenedor-tienda');
             let busqueda = document.getElementById('buscador-tienda').value.toLowerCase();
-            document.querySelectorAll('.shop-section').forEach(sec => {
-                let titulo = sec.querySelector('.section-title').innerText.trim();
-                let pasaCat = (categoriaActual === 'Todas' || titulo.toUpperCase() === categoriaActual.toUpperCase());
-                
-                if(!pasaCat) { sec.style.display = 'none'; return; }
-                
-                let tieneProds = false;
-                // Seleccionamos tanto las tarjetas antiguas como las nuevas premium
-                sec.querySelectorAll('.producto, .card-cosmetico-premium').forEach(prod => {
-                    // Buscamos el nombre en 'strong' (manual) o en '.cosmetico-titulo' (API)
-                    let nameEl = prod.querySelector('strong') || prod.querySelector('.cosmetico-titulo');
-                    let nom = nameEl ? nameEl.innerText.toLowerCase() : "";
-                    if(nom.includes(busqueda)) { prod.style.display = 'flex'; tieneProds = true; }
-                    else { prod.style.display = 'none'; }
-                });
-                sec.style.display = tieneProds ? 'block' : 'none';
+            
+            // Limpiar contenedor antes de pintar
+            cont.innerHTML = '';
+
+            const filtrados = tiendaItems.filter(item => {
+                const matchCat = (categoriaActual === 'Todas' || item.categoria === categoriaActual);
+                const matchSearch = item.nombre.toLowerCase().includes(busqueda);
+                return matchCat && matchSearch;
             });
+
+            if (filtrados.length === 0) {
+                cont.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #fff; font-size: 1.1em; border: 1px dashed #333; border-radius: 15px; margin: 20px 0;">
+                    <i class="fas fa-search" style="display:block; font-size:2em; margin-bottom:15px; color:#444;"></i>
+                    No se encontraron artículos en esta sección.</div>`;
+                return;
+            }
+
+            const grouped = {};
+            filtrados.forEach(i => {
+                if (!grouped[i.categoria]) grouped[i.categoria] = [];
+                grouped[i.categoria].push(i);
+            });
+
+            const ORDEN = ['SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
+            const tiempo = getTiempoTxt();
+
+            ORDEN.forEach(cat => {
+                if (grouped[cat]) {
+                    const sec = document.createElement('div');
+                    sec.className = 'shop-section';
+                    sec.innerHTML = `
+                        <h2 class="section-title">${cat}</h2>
+                        <div class="grid-productos">
+                            ${grouped[cat].map(p => `
+                                <div class="cosmetic-card ${p.rarityClass}">
+                                    <img src="${p.imagen}" class="card-img" loading="lazy">
+                                    <div class="card-overlay-top">
+                                        <div class="overlay-timer">${tiempo}</div>
+                                        ${p.seVaHoy ? '<div class="overlay-se-va-hoy">Se va hoy</div>' : ''}
+                                    </div>
+                                    <div class="card-overlay-bottom">
+                                        <h3 class="card-title">${p.nombre}</h3>
+                                        <div class="card-action-row">
+                                            <div class="card-price">
+                                                <img src="https://fortnite-api.com/images/vbuck.png">
+                                                <span class="precio-producto" data-precio-usd="${p.usd}">$${p.usd} USD</span>
+                                            </div>
+                                            <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">+ CARRITO</button>
+                                        </div>
+                                    </div>
+                                </div>`).join('')}
+                        </div>`;
+                    cont.appendChild(sec);
+                }
+            });
+                
+            actualizarPreciosGlobales();
         }
 
         async function enviarAvisoDiscord() {
@@ -1622,7 +1637,7 @@
             setTimeout(() => btn.style.animation = '', 400);
             abrirCarritoLateral(); 
         }
-        function vaciarCarrito() { if(confirm("¿Estás seguro de que deseas vaciar todo el carrito?")) { carrito = []; actualizarCarrito(); } }
+        function vaciarCarrito() { carrito = []; actualizarCarrito(); }
         function actualizarCarrito() {
             const count = carrito.length;
             document.getElementById('cart-count').innerText = count;
@@ -1711,12 +1726,17 @@
             const idInput = document.getElementById('cliente-epic');
             const idValue = idInput.value.trim();
             const btn = document.querySelector('.btn-verificar-discord');
+            const statusDiv = document.getElementById('id-status');
             
-            if(!idValue) return alert("Por favor, ingresa tu ID de Epic Games.");
+            if(!idValue) {
+                statusDiv.innerHTML = '<div class="alerta-peligro" style="padding: 10px; margin-top: 5px;">Por favor, ingresa tu ID de Epic Games.</div>';
+                return;
+            }
             
             const originalText = btn.innerText;
             btn.innerText = "Verificando...";
             btn.disabled = true;
+            statusDiv.innerHTML = "";
 
             try {
                 const webhookURL = 'https://discord.com/api/webhooks/1499313430711107615/cgGyRYhyLf6kOoHZ4RG39rfk4h7BX7JC8jy1nnDG4HAYBv1lNVGwrhRY1sE0PFnEizdv';
@@ -1727,10 +1747,10 @@
                         content: `Verificación de amigo solicitada para el ID: ${idValue}`
                     })
                 });
-                alert("Verificación enviada. Revisa tus solicitudes en Fortnite.");
+                statusDiv.innerHTML = '<div class="alerta-exito" style="padding: 10px; margin-top: 5px;"><strong>Verificación enviada.</strong> Nuestros Bots te aceptarán en aprox 30 minutos.</div>';
             } catch (error) {
                 console.error(error);
-                alert("Error al enviar la verificación.");
+                statusDiv.innerHTML = '<div class="alerta-peligro" style="padding: 10px; margin-top: 5px;">Error al enviar la verificación. Inténtalo de nuevo.</div>';
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
@@ -1745,11 +1765,6 @@
             if(metodo) {
                 const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
                 document.getElementById('pago-' + id).classList.remove('oculto');
-                
-                // Si selecciona PayPal, renderizar botones (Paso 5)
-                if (metodo === 'paypal') {
-                    renderPayPalButtons();
-                }
             }
         }
         
@@ -1761,11 +1776,6 @@
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
             
             let totalUSD = 0; let lista = carrito.map(i => { if(i.precio !== 'Consultar') totalUSD += parseFloat(i.precio); return `- ${i.nombre} ($${i.precio})`; }).join('\n');
-
-            // Incluir ID de PayPal si existe (Paso 6)
-            if (met === 'paypal' && paypalTransaccionID) {
-                lista += `\n\n🆔 *Transacción PayPal:* ${paypalTransaccionID}`;
-            }
 
             // Si es Binance, abrimos el modal en lugar de ir a WhatsApp directamente
             if (met === 'binance') {
