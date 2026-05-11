@@ -27,7 +27,7 @@
             background: #000000; 
             /* Añadimos un gradiente radial para dar profundidad */
             background-image: 
-                radial-gradient(at 0% 0%, rgba(44, 234, 163, 0.07) 0px, transparent 50%),
+                radial-gradient(at 0% 0%, rgba(40, 254, 182, 0.07) 0px, transparent 50%),
                 radial-gradient(at 100% 100%, rgba(88, 101, 242, 0.07) 0px, transparent 50%);
             color: #ffffff; 
             margin: 0; 
@@ -120,12 +120,213 @@
             .hero-buttons .btn-accion, .btn-secundario { width: 100%; }
             .section-box { padding: 20px 15px; }
             .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+            
+            /* Checkout móvil */
+            .checkout-layout {
+                grid-template-columns: 1fr; /* Apilar columnas */
+                gap: 20px;
+            }
+            .checkout-summary-column {
+                position: static; /* Quitar sticky en móvil */
+                order: -1; /* Poner el resumen primero en móvil */
+            }
+            .order-summary-card {
+                margin-bottom: 20px; /* Espacio después del resumen cuando se apila */
+            }
         }
 
         .tab-btn { background-color: transparent; color: #ffffff; border: none; padding: 10px 18px; cursor: pointer; border-radius: 25px; font-weight: 600; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-transform: uppercase; font-size: 0.85em; }
         .tab-btn:hover { color: #ffffff; background-color: #121212; }
         .tab-btn.activo { background-color: #ffffff; color: #000000; }
         
+        /* SISTEMA DE PASOS CHECKOUT */
+        .checkout-steps-nav {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .checkout-steps-nav::before {
+            content: "";
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: #222;
+            z-index: 1;
+        }
+        .step-dot {
+            width: 40px; height: 40px; background: #000; border: 2px solid #333;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 2; font-weight: bold; color: #555; transition: 0.3s; font-size: 0.9em;
+        }
+        .step-dot.active { border-color: #28feb6; color: #28feb6; box-shadow: 0 0 15px rgba(40, 254, 182, 0.2); }
+        .step-content { display: none; }
+        .step-content.active { display: block; animation: fadeIn 0.4s ease; }
+
+        /* ESTILOS CHECKOUT REDISEÑO */
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 3fr 2fr; /* Aproximadamente 60% / 40% */
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .form-section {
+            border: 1px solid #333333; /* Gris del logo para datos */
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px; /* Espacio entre secciones del formulario */
+        }
+
+        .form-section h4 {
+            color: #888888; /* Gris secundario para títulos de datos */
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .checkout-summary-column {
+            position: sticky;
+            top: 100px; /* Ajustar según la altura del header */
+            align-self: start; /* Se pega a la parte superior de su área de grid */
+            height: fit-content; /* Para que el sticky funcione correctamente */
+        }
+
+        .order-summary-card {
+            background-color: #121212;
+            border: 1px solid #333333; /* Gris minimalista */
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .order-summary-card h4 {
+            color: #888888;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        /* ESTILOS ESPECÍFICOS RASTREO */
+        .search-box-rastreo { border: 2px solid #28feb6; background: #000; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 30px; }
+        .btn-rastreo { background: #28feb6; color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: auto; margin-top: 10px; }
+        .order-card { background: #111; border-left: 4px solid #28feb6; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; animation: fadeInUp 0.4s ease; }
+        .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
+        .status-pendiente { background: #444; color: #fff; }
+        .status-en-proceso { background: #28feb6; color: #000; }
+        .status-completado { background: #28feb6; color: #000; }
+
+        /* Resumen de productos en checkout */
+        #checkout-productos-lista {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .checkout-item-summary {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            color: #ccc;
+        }
+
+        .checkout-item-summary strong { color: #fff; }
+
+        .summary-line { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1em; color: #fff; }
+        .summary-line.total {
+            font-weight: bold; font-size: 1.3em; color: #28feb6;
+            border-top: 1px solid rgba(40, 254, 182, 0.3); padding-top: 15px; margin-top: 15px;
+        }
+
+        /* ESTILOS TARJETA BANCARIA MODERNA */
+        .bank-card {
+            background-color: #111111;
+            border: 1px solid #28feb6;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        .bank-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
+        }
+        .bank-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .bank-label { color: #888888; font-size: 0.85em; font-weight: 500; }
+        .bank-value { color: #ffffff; font-size: 0.95em; }
+        .bank-value-group { display: flex; align-items: center; gap: 10px; }
+        
+        .btn-copy-mini {
+            background: #000;
+            border: 1px solid #28feb6;
+            color: #28feb6;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .btn-copy-mini:hover { background: #28feb6; color: #000; }
+        .btn-copy-mini.copiado {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        .bank-instruction {
+            text-align: center;
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+
+        /* ANIMACIÓN PULSO AQUA */
+        @keyframes pulseAqua {
+            0% { box-shadow: 0 0 0 0 rgba(40, 254, 182, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(40, 254, 182, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 254, 182, 0); }
+        }
+        .btn-pulse { animation: pulseAqua 2s infinite; }
+
+        /* SELECTOR MULTIPLE CUENTAS */
+        .cuentas-grid {
+            background: #111111; /* Acento técnico */
+            border: 2px solid #444444; /* Borde gris más grueso */
+            padding: 15px;
+            border-radius: 10px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .cuenta-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #000;
+            border: 1px solid #222;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: 0.3s;
+        }
+        .cuenta-option:hover { border-color: #888888; }
+        .cuenta-option input[type="checkbox"] { width: 18px; height: 18px; margin: 0; accent-color: #28feb6; cursor: pointer; }
+
         .container { max-width: 1200px; margin: 20px auto; padding: 20px; flex: 1; width: 100%; box-sizing: border-box; }
         .section-box { 
             background-color: rgba(10, 10, 10, 0.8); 
@@ -145,8 +346,15 @@
         .pestana:not(.oculto) { animation: fadeInUp 0.5s ease-out forwards; }
         .oculto { display: none !important; }
         
-        input, select, button.btn-accion { width: 100%; padding: 12px; margin: 8px 0 20px 0; border-radius: 5px; border: 1px solid #222222; background-color: #121212; color: white; box-sizing: border-box; transition: all 0.3s ease; }
-        input:focus, select:focus { outline: none; border-color: #ffffff; background-color: #000000; }
+        input, select, button.btn-accion { width: 100%; padding: 12px; margin: 8px 0 20px 0; border-radius: 5px; border: 1px solid #333333; background-color: #121212; color: white; box-sizing: border-box; transition: all 0.3s ease; }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #28feb6; 
+            background-color: #000000; 
+            box-shadow: 0 0 8px rgba(40, 254, 182, 0.2);
+        }
+        /* Clase para resaltar errores de validación */
+        .input-error { border-color: #ff4d4d !important; box-shadow: 0 0 5px rgba(255, 77, 77, 0.3); }
         
         button.btn-accion { background-color: #ffffff; color: #000000; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; transition: all 0.3s ease; }
         button.btn-accion:hover { background-color: #eeeeee; transform: translateY(-3px); }
@@ -190,7 +398,7 @@
         .hero-image img { max-width: 100%; max-height: 85vh; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5)); animation: float 4s ease-in-out infinite; z-index: 1; }
 
         /* BOTONES FLOTANTES */
-        .floating-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 2000; }
+        .floating-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 1000; }
         .float-btn { 
             width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #000; border: 1px solid #222;
             font-size: 1.6em; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.4); transition: 0.3s; text-decoration: none; 
@@ -204,7 +412,7 @@
             position: absolute;
             top: -5px;
             right: -5px;
-            background-color: #ffffff;
+            background-color: #28feb6;
             color: #000000;
             border-radius: 50%;
             padding: 2px 6px;
@@ -316,14 +524,14 @@
             backdrop-filter: blur(4px);
         }
         .overlay-se-va-hoy {
-            background: #CCFF00;
+            background: #28feb6;
             color: #000;
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 0.6em;
             font-weight: 900;
             text-transform: uppercase;
-            box-shadow: 0 0 8px rgba(204, 255, 0, 0.4);
+            box-shadow: 0 0 8px rgba(40, 254, 182, 0.4);
         }
 
         /* Capa Inferior (Info y Acción) */
@@ -474,8 +682,8 @@
         /* REDISEÑO MÉTODOS DE PAGO */
         .metodos-pago-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
             margin: 20px 0 40px 0;
         }
         .metodo-card {
@@ -491,9 +699,9 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            padding: 15px;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
+            padding: 10px;
+            background-color: #000;
+            border: 1px solid #28feb6;
             border-radius: 10px;
             transition: all 0.3s ease;
             text-align: center;
@@ -501,15 +709,35 @@
             font-weight: 600;
             color: #ccc;
             height: 100%;
+            box-sizing: border-box;
+            position: relative;
         }
         .metodo-card input[type="radio"]:checked + .metodo-label {
-            border-color: #CCFF00;
+            border-width: 2px;
             color: #ffffff;
-            background-color: rgba(204, 255, 0, 0.05);
-            box-shadow: 0 0 10px rgba(204, 255, 0, 0.2);
+            background-color: rgba(40, 254, 182, 0.1);
+            box-shadow: 0 0 10px rgba(40, 254, 182, 0.2);
+            transform: scale(1.02);
+        }
+        .metodo-label::before {
+            content: "";
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #444;
+            border-radius: 50%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        .metodo-card input[type="radio"]:checked + .metodo-label::before {
+            border-color: #28feb6;
+            background: radial-gradient(circle, #28feb6 40%, transparent 50%);
+            box-shadow: 0 0 5px rgba(40, 254, 182, 0.5);
         }
         .metodo-label i { font-size: 1.5em; }
-        .metodo-label img { height: 45px; width: auto; object-fit: contain; }
+        .metodo-label img { height: 30px; width: auto; object-fit: contain; }
 
         /* ESTILO BOTÓN PAYPAL REDISEÑADO */
         .btn-pago-paypal {
@@ -538,36 +766,46 @@
         .btn-pago-paypal img { height: 24px; width: auto; }
 
         .lista-ids { list-style: none; padding: 0; margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .lista-ids li { background: #121212; padding: 15px; border-radius: 8px; border: 1px solid #2CEAA3; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
-        .lista-ids li:hover { background: #000; transform: translateX(5px); box-shadow: -4px 0 15px rgba(204, 255, 0, 0.2); }
-        .lista-ids strong { color: #CCFF00; font-size: 1.2em; letter-spacing: 1px; }
+        .lista-ids li { background: #121212; padding: 15px; border-radius: 8px; border: 1px solid #28feb6; display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+        .lista-ids li:hover { background: #000; transform: translateX(5px); box-shadow: -4px 0 15px rgba(40, 254, 182, 0.2); }
+        .lista-ids strong { color: #28feb6; font-size: 1.2em; letter-spacing: 1px; }
 
         .grid-resenas { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-        .resena-card { background-color: #121212; padding: 25px; border-radius: 8px; border: 1px solid #2CEAA3; transition: all 0.3s ease; }
-        .resena-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 20px rgba(44, 234, 163, 0.2); }
-        .resena-estrellas { color: #2CEAA3; font-size: 1.3em; letter-spacing: 2px; margin-bottom: 15px; }
+        .resena-card { background-color: #121212; padding: 25px; border-radius: 8px; border: 1px solid #28feb6; transition: all 0.3s ease; }
+        .resena-card:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 20px rgba(40, 254, 182, 0.2); }
+        .resena-estrellas { color: #28feb6; font-size: 1.3em; letter-spacing: 2px; margin-bottom: 15px; }
         .resena-texto { font-style: italic; color: #ccc; margin-bottom: 20px; line-height: 1.5; }
         .resena-autor { font-weight: bold; color: #ffffff; text-align: right; font-size: 0.9em; text-transform: uppercase; }
 
         /* CARRITO Y CHECKOUT */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.4s ease; backdrop-filter: blur(3px); }
         .cart-overlay.abierto { opacity: 1; visibility: visible; }
-        .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 350px; height: 100%; background-color: #000000; z-index: 1001; box-shadow: -5px 0 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-left: 2px solid #CCFF00; }
+        .cart-drawer { position: fixed; top: 0; right: -400px; width: 100%; max-width: 350px; height: 100%; background-color: #000000; z-index: 5000; box-shadow: -5px 0 25px rgba(0,0,0,0.8); display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border-left: 1px solid #28feb6; }
         .cart-drawer.abierto { right: 0; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #CCFF00; background-color: #000000; }
-        .cart-summary { padding: 20px; background: #121212; border-top: 1px solid #CCFF00; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid #28feb6; background-color: #000000; }
+        .cart-header h3 { color: #28feb6 !important; font-weight: 800; }
+        .cart-summary { padding: 20px; background: #121212; border-top: 1px solid #28feb6; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95em; }
-        .summary-row.total { color: #CCFF00; font-weight: bold; font-size: 1.2em; border-top: 1px solid #CCFF00; padding-top: 10px; margin-top: 10px; }
+        .summary-row strong { color: #28feb6; font-weight: 700; }
+        .summary-row.total { color: #28feb6; font-weight: bold; font-size: 1.3em; border-top: 1px solid rgba(40, 254, 182, 0.3); padding-top: 15px; margin-top: 10px; }
         .cart-item-info { color: #aaa; font-size: 0.85em; margin-top: 3px; }
 
         .cart-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333; position: relative; animation: slideInLeft 0.3s ease-out forwards; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(40, 254, 182, 0.2); position: relative; animation: slideInLeft 0.3s ease-out forwards; }
         .cart-item img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background-color: #121212; }
         .cart-item-details { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 25px; }
         .btn-eliminar-item { position: absolute; top: 0; right: 0; background: none; border: none; color: #e74c3c; font-size: 1.2em; cursor: pointer; padding: 5px; font-weight: bold; transition: all 0.2s; }
         .btn-eliminar-item:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
-        .btn-vaciar { background-color: #e74c3c; color: white; margin-bottom: 10px; }
-        .btn-vaciar:hover { background-color: #c0392b; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
+        
+        .cart-footer { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .cart-footer .btn-accion { background-color: #28feb6; color: #000; border: none; font-weight: 800; margin: 0; }
+        .cart-footer .btn-accion:hover { background-color: #22d89b; transform: translateY(-2px); }
+        
+        .btn-vaciar { background-color: transparent !important; color: #28feb6 !important; border: 1px solid #28feb6 !important; margin: 0; text-transform: uppercase; font-size: 0.85em; }
+        .btn-vaciar:hover { background-color: rgba(40, 254, 182, 0.1) !important; transform: none; }
+
+        /* Botones de cantidad */
+        .btn-qty { border: 1px solid #28feb6; background: none; color: #28feb6; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
         .alerta-peligro { border: 2px solid #e74c3c; background-color: rgba(231,76,60,0.1); padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.5s ease; }
         .alerta-exito { border: 2px solid #2CEAA3; background-color: rgba(44, 234, 163, 0.1); padding: 20px; border-radius: 8px; margin-top: 15px; animation: fadeInUp 0.5s ease; }
@@ -592,13 +830,13 @@
         }
         .modal-selector-content { 
             background: #0a0b0a; 
-            border: 2px solid #2CEAA3; 
+            border: 2px solid #28feb6; 
             border-radius: 20px; 
             padding: 30px; 
             width: 90%; 
             max-width: 480px; 
             text-align: center; 
-            box-shadow: 0 0 30px rgba(44, 234, 163, 0.2); 
+            box-shadow: 0 0 30px rgba(40, 254, 182, 0.2); 
             animation: fadeInUp 0.5s ease-out; 
         }
         .grid-divisas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 25px; }
@@ -606,29 +844,29 @@
             background: #111; border: 1px solid #333; border-radius: 12px; padding: 15px 5px; 
             cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; 
         }
-        .btn-divisa:hover { border-color: #2CEAA3; transform: translateY(-5px); box-shadow: 0 0 15px rgba(44, 234, 163, 0.5); }
+        .btn-divisa:hover { border-color: #28feb6; transform: translateY(-5px); box-shadow: 0 0 15px rgba(40, 254, 182, 0.5); }
         .btn-divisa img { width: 45px; height: 30px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
         .btn-divisa span { font-weight: bold; color: #fff; font-size: 0.8em; }
 
         footer { background-color: #1f1f1f; padding: 30px 20px; text-align: center; border-top: 2px solid #333; margin-top: auto; }
         .footer-logo { font-size: 1.5em; font-weight: bold; color: #fff; margin-bottom: 10px; display: block; transition: text-shadow 0.3s; }
-        .footer-logo:hover { text-shadow: 0 0 15px rgba(44, 234, 163, 0.6); }
-        .footer-logo span { color: #2CEAA3; }
+        .footer-logo:hover { text-shadow: 0 0 15px rgba(40, 254, 182, 0.6); }
+        .footer-logo span { color: #28feb6; }
         .discord-box { background-color: #5865F2; display: inline-block; padding: 12px 25px; border-radius: 5px; color: white; text-decoration: none; font-weight: bold; margin-top: 15px; transition: all 0.3s ease; animation: pulseGlow 2.5s infinite; }
         .discord-box:hover { background-color: #4752C4; transform: scale(1.05) translateY(-3px); animation: none; box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6); }
         .footer-text { color: #888; font-size: 0.9em; margin-top: 20px; }
         /* PAYPAL */
         #paypal-button-container { margin: 20px auto; min-height: 45px; max-width: 350px; }
         .paypal-resultado { margin-top: 15px; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; }
-        .paypal-resultado.exito { border: 2px solid #2CEAA3; background-color: rgba(44, 234, 163, 0.1); color: #2CEAA3; }
+        .paypal-resultado.exito { border: 2px solid #28feb6; background-color: rgba(40, 254, 182, 0.1); color: #28feb6; }
         .paypal-resultado.error { border: 2px solid #e74c3c; background-color: rgba(231,76,60,0.1); color: #e74c3c; }
         .paypal-resultado.info { border: 2px solid #ff9d00; background-color: rgba(255,157,0,0.1); color: #ff9d00; }
 
         /* MODAL INFO PAVOS */
         .modal-pavos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 17, 0.9); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); animation: fadeIn 0.4s ease; transition: opacity 0.5s ease; }
-        .modal-pavos-content { background: #121212; border: 2px solid #2CEAA3; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 40px rgba(44, 234, 163, 0.2); }
+        .modal-pavos-content { background: #121212; border: 2px solid #28feb6; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 40px rgba(40, 254, 182, 0.2); }
         .info-paso { margin: 20px 0; display: flex; gap: 15px; text-align: left; align-items: flex-start; }
-        .info-paso strong { color: #2CEAA3; font-size: 1em; min-width: 28px; height: 28px; border: 1px solid #2CEAA3; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .info-paso strong { color: #28feb6; font-size: 1em; min-width: 28px; height: 28px; border: 1px solid #28feb6; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .info-paso p { margin: 0; font-size: 0.95em; color: #ccc; line-height: 1.4; }
 
         /* =========================================
@@ -871,43 +1109,23 @@
 
             /* Métodos de pago más pequeños */
             .metodos-pago-container {
-                grid-template-columns: 1fr !important;
-                gap: 15px !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
                 margin: 20px 0 !important;
             }
             .metodo-label { 
-                padding: 12px 8px 12px 40px !important; 
+                padding: 10px !important; 
                 font-size: 0.75em !important; 
-                gap: 5px !important; 
-                position: relative !important;
-                flex-direction: row !important; /* Apilar ícono y texto horizontalmente */
-                align-items: center !important; /* Centrar verticalmente el contenido */
-                text-align: left !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
             }
-            .metodo-label img { height: 28px !important; }
-            .metodo-label::before {
-                content: "";
-                position: absolute;
-                left: 12px;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 16px;
-                height: 16px;
-                border: 2px solid #555;
-                border-radius: 50%;
-                box-sizing: border-box;
-                transition: all 0.3s ease;
-            }
-            .metodo-card input[type="radio"]:checked + .metodo-label::before {
-                border-color: #2CEAA3;
-                background: radial-gradient(circle, #2CEAA3 40%, transparent 50%);
-                box-shadow: 0 0 10px rgba(44, 234, 163, 0.4);
-            }
+            .metodo-label img { height: 30px !important; }
 
             /* Estilos para el nuevo contador en el Hero */
-            .mobile-hero-timer { 
+            .mobile-hero-timer {
                 display: block !important; 
-                color: #2CEAA3; 
+                color: #28feb6; 
                 font-size: 0.8em; 
                 font-weight: 700; 
                 letter-spacing: 1.5px; 
@@ -930,6 +1148,7 @@
             <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
             <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
+            <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
             <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
         </div>
@@ -951,6 +1170,7 @@
                 <option value="CLP">🇨🇱 CLP $</option>
                 <option value="COP">🇨🇴 COP $</option>
                 <option value="ARS">🇦🇷 ARS $</option>
+                <option value="DOP">🇩🇴 DOP $</option>
             </select>
             
             <div id="countdown" class="shop-timer-header">
@@ -964,14 +1184,15 @@
         <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
         <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
         <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
+        <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
         <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
-        <button id="btn-carrito-nav" class="tab-btn" onclick="abrirCarritoLateral()" style="border: 1px solid #2CEAA3; color: #2CEAA3;"><i class="fas fa-shopping-cart"></i> Carrito</button>
+        <button id="btn-carrito-nav" class="tab-btn" onclick="abrirCarritoLateral()" style="border: 1px solid #28feb6; color: #28feb6;"><i class="fas fa-shopping-cart"></i> Carrito</button>
     </nav>
 
     <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarritoLateral()"></div>
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header">
-            <h3 style="margin:0; color:#fff;">Tu Carrito (<span id="cart-count">0</span>)</h3>
+            <h3 style="margin:0; color:#28feb6;">Tu Carrito (<span id="cart-count">0</span>)</h3>
             <button onclick="cerrarCarritoLateral()" style="background:none; border:none; color:#fff; cursor:pointer; font-size:1.5em; transition: transform 0.3s;">✕</button>
         </div>
         <div class="cart-body" id="cart-items">
@@ -1011,9 +1232,19 @@
             </div>
         </div>
 
+        <div id="rastreo-pedidos" class="section-box pestana oculto">
+            <h2>Rastreo de Pedidos</h2>
+            <p>Ingresa el número de WhatsApp con el que realizaste tu compra para ver el estado actual.</p>
+            <div class="search-box-rastreo">
+                <input type="text" id="input-rastreo" placeholder="Ej: 521234567890" style="margin-bottom: 10px;">
+                <button class="btn-rastreo" onclick="buscarPedidos()">Consultar Pedidos</button>
+            </div>
+            <div id="resultados-rastreo"></div>
+        </div>
+
         <div id="tienda" class="section-box pestana oculto">
             <h2>Catálogo de Hoy</h2>
-            <p style="color: #2CEAA3; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
+            <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
             <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
             <div id="contenedor-filtros" class="filtros-container"></div>
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
@@ -1021,9 +1252,9 @@
 
         <div id="ids-regalos" class="section-box pestana oculto">
             <h2>Skins vía Regalo</h2>
-            <p style="text-align: center; color: #2CEAA3; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Agrega nuestras cuentas para recibir tu pedido</p>
+            <p style="text-align: center; color: #28feb6; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Agrega nuestras cuentas para recibir tu pedido</p>
             
-            <h3 style="margin-top: 30px; color: #2CEAA3; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">¿CÓMO FUNCIONA?</h3>
+            <h3 style="margin-top: 30px; color: #28feb6; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">¿CÓMO FUNCIONA?</h3>
             <div class="grid-pasos">
                 <div class="paso">
                     <div class="paso-numero">01</div>
@@ -1039,7 +1270,7 @@
                 </div>
             </div>
 
-            <h3 style="margin-top: 40px; color: #2CEAA3; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">NUESTRAS CUENTAS</h3>
+            <h3 style="margin-top: 40px; color: #28feb6; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">NUESTRAS CUENTAS</h3>
             <div class="grid-productos" style="margin-top: 20px;">
                 <div class="producto" style="padding: 20px;">
                     <strong style="font-size: 1.1em;">Maidas-S</strong>
@@ -1151,8 +1382,8 @@
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('9.000', '720')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 9,000 V-Bucks', '44.44', 'img/9000vb.png', '9000', 'cuenta')">+ Carrito</button>
                     </div>
-                    <div class="servicio-card" style="border-color: #2CEAA3;">
-                        <span style="background: #2CEAA3; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
+                    <div class="servicio-card" style="border-color: #28feb6;">
+                        <span style="background: #28feb6; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
                         <img src="img/12500vb.png" style="width: 130px; margin: 0 auto 10px auto;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
@@ -1170,7 +1401,7 @@
             <div id="sub-club" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
                 <h2 style="margin-bottom: 5px;">Club de Fortnite</h2>
-                <p style="color: #2CEAA3; font-size: 0.9em; margin-bottom: 10px; font-weight: 500;">MÉTODO XBOX · Sin necesidad de datos de acceso</p>
+                <p style="color: #28feb6; font-size: 0.9em; margin-bottom: 10px; font-weight: 500;">MÉTODO XBOX · Sin necesidad de datos de acceso</p>
                 
                 <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px;">Opción 1: Cuentas Nuevas / Sin Error</h4>
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Para cuentas que no tienen problemas de región.</p>
@@ -1224,14 +1455,46 @@
 
             <div id="sub-gamepass" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <h2 style="margin-bottom: 5px;">Cuentas con xbox gamepass para colocarla en tu consola</h2>
-                <p style="color: #2CEAA3; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">SUSCRIPCIÓN PREMIUM · Acceso a cientos de juegos de alta calidad</p>
-                <div class="servicios-flex-container">
+                <h2 style="margin-bottom: 5px;">Xbox Game Pass Ultimate</h2>
+                <p style="color: #28feb6; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">SUSCRIPCIÓN PREMIUM · Acceso a cientos de juegos de alta calidad</p>
+                
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">1. Para tu cuenta personal (Vía Código)</h4>
+                <div class="servicios-flex-container" style="margin-bottom: 40px;">
                     <div class="servicio-card">
-                        <img src="https://static.driffle.com/fit-in/720x512/media-gallery/production/7b63f1f5-31eb-406b-a795-35062010e310_xbox-game-pass-ultimate-1-month-india---xbox-live---digital-key.png" class="club-img-16-9">
-                        <strong>Xbox Game pass Ultimate 2 Meses</strong>
-                        <span class="precio-producto" data-precio-usd="5.55">$5.55 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Xbox Game Pass Ultimate 2 Meses', '5.55', 'https://static.driffle.com/fit-in/720x512/media-gallery/production/7b63f1f5-31eb-406b-a795-35062010e310_xbox-game-pass-ultimate-1-month-india---xbox-live---digital-key.png', '0', 'cuenta')">+ Carrito</button>
+                        <img src="img/gamepassport.png" class="club-img-16-9">
+                        <strong>1 Mes GP Ultimate</strong>
+                        <span class="precio-producto" data-precio-usd="19.71">$19.71 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Personal - 1 Mes (Código)', '19.71', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                    </div>
+                </div>
+
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 50px;">2. Códigos para CUENTA NUEVA</h4>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">• Se puede poner la cuenta en principal •</p>
+                <div class="grid-productos" style="grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px;">
+                    <div class="servicio-card" style="width: 100%;">
+                        <img src="img/gamepassport.png" class="club-img-16-9">
+                        <strong>4 Meses GP Ultimate</strong>
+                        <span class="precio-producto" data-precio-usd="42.35">$42.35 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 4 Meses (Código)', '42.35', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card" style="width: 100%;">
+                        <img src="img/gamepassport.png" class="club-img-16-9">
+                        <strong>3 Meses GP Ultimate</strong>
+                        <span class="precio-producto" data-precio-usd="30.00">$30.00 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 3 Meses (Código)', '30.00', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card" style="width: 100%;">
+                        <img src="img/gamepassport.png" class="club-img-16-9">
+                        <strong>2 Meses GP Ultimate</strong>
+                        <span class="precio-producto" data-precio-usd="17.65">$17.65 USD</span>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Código)', '17.65', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card" style="border-color: #28feb6; width: 100%;">
+                        <img src="img/gamepassport.png" class="club-img-16-9">
+                        <strong>2 Meses GP Ultimate (Cuenta)</strong>
+                        <span class="precio-producto" data-precio-usd="18.82">$18.82 USD</span>
+                        <p style="font-size: 0.7em; color: #aaa; margin: -10px 0 10px 0;">Se entrega CORREO Y CONTRASEÑA</p>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Cuenta)', '18.82', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -1244,69 +1507,160 @@
         </div>
 
         <div id="checkout" class="section-box pestana oculto">
-            <h2>Pagar</h2>
+            <h2 style="text-align: center; margin-bottom: 10px;">Finalizar Pedido</h2>
             
-            <label>Nombre Completo:</label>
-            <input type="text" id="cliente-nombre" placeholder="Nombre completo">
+            <div class="checkout-steps-nav">
+                <div class="step-dot active" id="dot-1">1</div>
+                <div class="step-dot" id="dot-2">2</div>
+            </div>
+            
+            <div class="checkout-layout">
+                <!-- Columna Izquierda: Formulario -->
+                <div class="checkout-form-column">
+                    <!-- PASO 1: DATOS -->
+                    <div id="checkout-step-1" class="step-content active">
+                      <div class="form-section">
+                        <h4>Detalles de Contacto</h4>
+                        <label>Nombre Completo:</label>
+                        <input type="text" id="cliente-nombre" placeholder="Nombre completo">
 
-            <label>Número de WhatsApp:</label>
-            <input type="tel" id="cliente-whatsapp" placeholder="Ej: +52 123 456 7890">
+                        <label>Número de WhatsApp:</label>
+                        <input type="tel" id="cliente-whatsapp" placeholder="Ej: +52 123 456 7890">
 
-            <label>ID de Epic Games:</label>
-            <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
-            <button class="btn-verificar-discord" onclick="verificarID()">Verificar estado</button>
-            <div id="id-status"></div>
+                        <label>ID de Epic Games:</label>
+                        <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                            <label>¿En qué cuenta nos tienes agregados?</label>
+                            <a href="javascript:void(0)" onclick="abrirPestana('ids-regalos')" style="color: #28feb6; font-size: 0.8em; text-decoration: none; border-bottom: 1px solid #28feb6;">¿No nos tienes?</a>
+                        </div>
+                        <div class="cuentas-grid" id="cuentas-seleccion">
+                            <label class="cuenta-option"><input type="checkbox" value="Todas las cuentas" onchange="toggleTodasCuentas(this)"> Todas las cuentas</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-S"> Maidas-S</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-OS"> Maidas-OS</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Denissa_STW"> Denissa_STW</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="DENISSA_7u7"> DENISSA_7u7</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="SHAGOS STW"> SHAGOS STW</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="SHEGOS STW"> SHEGOS STW</label>
+                        </div>
+                      </div>
+                    </div>
 
-            <label>3. Selecciona tu Método de Pago:</label>
-            <div class="metodos-pago-container">
-                <div class="metodo-card">
-                    <input type="radio" name="metodo-pago" id="met-link" value="link" onchange="mostrarInfoPago()">
-                    <label for="met-link" class="metodo-label">
-                        <img src="https://imgs.search.brave.com/jennjJaGURv4j4sIX12gcU2WMpbdlfo9kxvJr9UYvTI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/ZGl4LmNvbS9sb2dv/LzMzNTYyMy5qcGc" alt="Link de Pago">
-                        <span>Link de Pago</span>
-                    </label>
+                    <!-- PASO 2: PAGO -->
+                    <div id="checkout-step-2" class="step-content">
+                      <div class="form-section">
+                        <h4>Método de Pago</h4>
+                        <div class="metodos-pago-container">
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-link" value="link" onchange="mostrarInfoPago()">
+                                <label for="met-link" class="metodo-label">
+                                    <img src="img/Linkdepago.webp" alt="Link de Pago">
+                                    <span>Link de Pago</span>
+                                </label>
+                            </div>
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
+                                <label for="met-paypal" class="metodo-label">
+                                    <img src="img/Paypal.webp" alt="PayPal">
+                                    <span>PayPal</span>
+                                </label>
+                            </div>
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-popular" value="popular" onchange="mostrarInfoPago()">
+                                <label for="met-popular" class="metodo-label">
+                                    <img src="img/Popular.webp" alt="Banco Popular">
+                                    <span>Banco Popular</span>
+                                </label>
+                            </div>
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-binance" value="binance" onchange="mostrarInfoPago()">
+                                <label for="met-binance" class="metodo-label">
+                                    <img src="img/Binance.webp" alt="Binance Pay">
+                                    <span>Binance Pay</span>
+                                </label>
+                            </div>
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx" onchange="mostrarInfoPago()">
+                                <label for="met-transfer" class="metodo-label">
+                                    <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
+                                    <span>Transferencia MX</span>
+                                </label>
+                            </div>
+                            <div class="metodo-card">
+                                <input type="radio" name="metodo-pago" id="met-oxxo" value="oxxo" onchange="mostrarInfoPago()">
+                                <label for="met-oxxo" class="metodo-label">
+                                    <img src="https://imgs.search.brave.com/-W8dNrFfgXQqpXQSBKITt0BFlaKf0NHOR6wW1zAYpbQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy82/LzY2L094eG9fTG9n/by5zdmc" alt="OXXO">
+                                    <span>OXXO</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button class="btn-secundario" style="margin-top: 10px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(1)">← Volver a editar datos</button>
+                      </div>
+                    </div>
                 </div>
-                <div class="metodo-card">
-                    <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
-                    <label for="met-paypal" class="metodo-label">
-                        <span>PayPal</span>
-                    </label>
-                </div>
-                <div class="metodo-card">
-                    <input type="radio" name="metodo-pago" id="met-binance" value="binance" onchange="mostrarInfoPago()">
-                    <label for="met-binance" class="metodo-label">
-                        <img src="https://imgs.search.brave.com/wxn2b9vqJV03hnyZkE_Z0RLJ-OyeaowDTieTTyaNcoE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pY29u/YXBlLmNvbS93cC1j/b250ZW50L3BuZ19s/b2dvX3ZlY3Rvci9i/aW5hbmNlLnBuZw" alt="Binance Pay">
-                        <span>Binance Pay</span>
-                    </label>
-                </div>
-                <div class="metodo-card">
-                    <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx" onchange="mostrarInfoPago()">
-                    <label for="met-transfer" class="metodo-label">
-                        <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
-                        <span>Transferencia MX</span>
-                    </label>
-                </div>
-                <div class="metodo-card">
-                    <input type="radio" name="metodo-pago" id="met-oxxo" value="oxxo" onchange="mostrarInfoPago()">
-                    <label for="met-oxxo" class="metodo-label">
-                        <img src="https://imgs.search.brave.com/-W8dNrFfgXQqpXQSBKITt0BFlaKf0NHOR6wW1zAYpbQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy82/LzY2L094eG9fTG9n/by5zdmc" alt="OXXO">
-                        <span>OXXO</span>
-                    </label>
+
+                <!-- Columna Derecha: Resumen del Pedido -->
+                <div class="checkout-summary-column">
+                    <div class="order-summary-card">
+                        <h4>Resumen del Pedido</h4>
+                        <div id="checkout-productos-lista">
+                            <!-- Los productos del carrito se renderizarán aquí -->
+                        </div>
+                        <div class="summary-line">
+                            <span>Subtotal:</span>
+                            <span id="checkout-subtotal-dinero"></span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total:</span>
+                            <span id="checkout-total-dinero"></span>
+                        </div>
+                        <button id="btn-main-checkout" class="btn-accion btn-whatsapp btn-pulse" style="margin-top: 20px; background-color: #28feb6; color: #000;" onclick="manejarAccionCheckout()">CONTINUAR AL PAGO</button>
+                        <p id="txt-instruccion-checkout" style="text-align: center; color: #ccc; font-size: 0.9em; margin-top: 10px; display: none;">Adjunta tu comprobante una vez completes el pago.</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="pago-binance" class="info-pago-box oculto">
-                <h4>Pagar con Binance Pay</h4>
-                <p style="text-align: center;">Envía el total en USDT a este ID de Binance:</p>
-                <span class="dato-copiar" onclick="copiarAlPortapapeles('481410806')">481410806</span>
-            </div>
             <div id="pago-transferencia" class="info-pago-box oculto">
                 <h4>Transferencia Bancaria (México)</h4>
-                <p>Realiza tu transferencia desde la app de tu banco:</p>
-                <p>Banco / Entidad: <strong>STP</strong></p>
-                <p>Beneficiario: <strong>Kevin Alexander Dominguez Alfaro</strong></p>
-                <p>CLABE Interbancaria:</p>
-                <span class="dato-copiar" onclick="copiarAlPortapapeles('646180546704313297')">646180546704313297</span>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Banco:</span>
+                        <span class="bank-value"><strong>STP</strong></span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Beneficiario:</span>
+                        <span class="bank-value">Denisa Severino Figueroa</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">CLABE:</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">646180546705661809</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('646180546705661809', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="bank-instruction">Una vez realizada la transferencia, regresa aquí para realizar tu pedido y enviar el comprobante.</p>
+            </div>
+            <div id="pago-popular" class="info-pago-box oculto">
+                <h4>Transferencia Banco Popular</h4>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Entidad:</span>
+                        <span class="bank-value"><strong>Banco Popular</strong></span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Titular:</span>
+                        <span class="bank-value">Denisa Severino Figueroa</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Cuenta:</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">837508191</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('837508191', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="bank-instruction">Una vez realizada la transferencia, regresa aquí para realizar tu pedido y enviar el comprobante.</p>
             </div>
             <div id="pago-paypal" class="info-pago-box oculto">
                 <h4>Pago vía PayPal</h4>
@@ -1321,17 +1675,21 @@
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
-                <p style="text-align: center;">Realiza tu depósito en cualquier tienda OXXO:</p>
-                <span class="dato-copiar" onclick="copiarAlPortapapeles('2242170100050888', this)">2242170100050888</span>
-                <p style="text-align: center; font-size: 0.9em; margin-top: 15px; color: #ccc;">Luego de realizar tu deposito envia tu comprobante por whatsapp clickeando el boton de abajo</p>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Establecimiento:</span>
+                        <span class="bank-value"><strong>Tiendas OXXO</strong></span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Número de Tarjeta:</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">2242170100050888</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('2242170100050888', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+                <p class="bank-instruction">Una vez realizado el depósito, regresa aquí para realizar tu pedido y enviar el comprobante.</p>
             </div>
-            <div id="pago-link" class="info-pago-box oculto">
-                <h4>Link de Pago</h4>
-                <p style="text-align: center;">Recibirás un enlace de cobro seguro por WhatsApp.</p>
-            </div>
-
-            <button class="btn-accion btn-whatsapp" style="margin-top: 50px;" onclick="enviarPedidoFinal()">ENVIAR COMPROBANTE DE PAGO</button>
-            <p style="text-align: center; color: #888; font-size: 0.9em;">Serás redirigido a WhatsApp para finalizar la transacción.</p>
         </div>
 
     </div>
@@ -1340,7 +1698,7 @@
     <div id="modal-info-pavos" class="modal-pavos" onclick="if(event.target == this) cerrarInfoPavos()">
         <div class="modal-pavos-content">
             <button onclick="cerrarInfoPavos()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 1.5em; cursor: pointer;">✕</button>
-            <h2 id="info-pavos-titulo" style="color: #2CEAA3; margin: 0 0 5px 0; font-size: 1.8em;"></h2>
+            <h2 id="info-pavos-titulo" style="color: #28feb6; margin: 0 0 5px 0; font-size: 1.8em;"></h2>
             <h3 id="info-pavos-precio" style="margin: 0 0 25px 0; font-size: 1.4em; color: #fff;"></h3>
             
             <h4 style="color: #c; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9em; border-bottom: 1px solid #333; padding-bottom: 10px;">¿CÓMO FUNCIONA?</h4>
@@ -1362,7 +1720,7 @@
         <div class="modal-binance-card">
             <h2>Pagar con Binance Pay</h2>
             <p>Escanea el código QR o envía el pago a nuestro Pay ID</p>
-            <img src="img/binance-qr.jpg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
+            <img src="img/Binanceqr.jpeg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
             <div style="background: #1a1c23; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px dashed #FCD535;">
                 <strong style="color: #FCD535; font-size: 1.1em;">Pay ID: 481410806</strong>
             </div>
@@ -1378,7 +1736,7 @@
     <!-- MODAL DE SELECCIÓN DE PAÍS (POPS-UP AL INICIO) -->
     <div id="modal-inicial-divisa">
         <div class="modal-selector-content">
-            <h2 style="color: #2CEAA3; margin-bottom: 10px;">¡Bienvenido a Shegos Store!</h2>
+            <h2 style="color: #28feb6; margin-bottom: 10px;">¡Bienvenido a Shegos Store!</h2>
             <p style="color: #ccc; font-size: 0.9em;">Selecciona tu país para ajustar los precios:</p>
             <div class="grid-divisas">
                 <div class="btn-divisa" onclick="seleccionarPais('USDT')"><img src="img/USDT.png"><span>USDT</span></div>
@@ -1414,13 +1772,67 @@
         // CONFIGURACIÓN Y VARIABLES GLOBALES
         // ==========================================
         
-        const WEBHOOK_DISCORD_SOLICITUDES = "https://discord.com/api/webhooks/1497415610265501827/m3REzfXfz5GkLr_852ogOVWvs5AyecZ0wMNfKu-9pgpkKaBkrRpFnMj5SL4sApvOFNR7"; 
+        // IMPORTANT: Move this to a backend environment variable. 
+        // Exposing webhooks on the frontend is a security risk.
+        const WEBHOOK_DISCORD_SOLICITUDES = "YOUR_BACKEND_PROXY_URL"; 
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
+
+        // LÓGICA DE RASTREO DE PEDIDOS
+        async function buscarPedidos() {
+            const tel = document.getElementById('input-rastreo').value.trim();
+            const cont = document.getElementById('resultados-rastreo');
+            
+            if(!tel) return alert("Ingresa tu número de teléfono.");
+            
+            cont.innerHTML = "<p style='text-align:center;'>Buscando en la base de datos...</p>";
+
+            try {
+                // Agregamos timestamp para evitar cache de GitHub
+                const res = await fetch(`pedidos.json?t=${Date.now()}`);
+                const pedidos = await res.json();
+                
+                const filtrados = pedidos.filter(p => p.telefono_cliente === tel);
+
+                if(filtrados.length === 0) {
+                    cont.innerHTML = `
+                        <div class="alerta-peligro" style="text-align:center;">
+                            <i class="fas fa-search-minus" style="font-size:2em; display:block; margin-bottom:10px;"></i>
+                            No se encontraron pedidos asociados al número: <strong>${tel}</strong>
+                        </div>`;
+                    return;
+                }
+
+                cont.innerHTML = filtrados.map(p => {
+                    let claseEstado = 'status-pendiente';
+                    if(p.estado.toLowerCase() === 'en proceso') claseEstado = 'status-en-proceso';
+                    if(p.estado.toLowerCase() === 'completado') claseEstado = 'status-completado';
+
+                    return `
+                        <div class="order-card">
+                            <div>
+                                <div style="font-size:0.7em; color:#888;">ID: ${p.id_pedido}</div>
+                                <div style="font-weight:bold; color:#fff; margin:5px 0;">${p.producto}</div>
+                                <div style="font-size:0.8em; color:#ccc;"><i class="far fa-calendar-alt"></i> ${p.fecha}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span class="status-badge ${claseEstado}">${p.estado}</span>
+                                <div style="margin-top:8px; font-size:0.7em; color:#28feb6;">Shegos Store</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (e) {
+                cont.innerHTML = "<p style='color:red;'>Error al conectar con la base de datos.</p>";
+            }
+        }
         let tiendaItems = [];
 
+        let pasoCheckoutActual = 1;
+
         // Tasas actualizadas
-        const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 }; // Mantener tasas para conversión
+        const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 };
         let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
 
         // Helper para el tiempo de la tienda
@@ -1556,7 +1968,7 @@
 
         function actualizarPreciosGlobales() {
             const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$' }[divisaActual] || '$';
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$' }[divisaActual] || '$';
 
             document.querySelectorAll('.precio-producto').forEach(el => {
                 const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
@@ -1723,9 +2135,9 @@
                     <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
                     <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
                     <div class="cart-item-details">
-                        <span style="font-weight:bold; color:#fff;">${item.nombre}</span>
+                            <span style="font-weight:bold; color:#28feb6;">${item.nombre}</span>
                         ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
-                        <div style="color:#2CEAA3; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                            <div style="color:#28feb6; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
                     </div>
                 </div>
             `).join('');
@@ -1754,7 +2166,7 @@
             document.getElementById('shop-timer').innerText = timerStr;
             const heroTimer = document.getElementById('hero-shop-timer');
             if(heroTimer) heroTimer.innerText = `LA TIENDA CAMBIA EN: ${timerStr}`;
-        }
+        } 
 
         // Simplificación de la lógica de divisa inicial
         function verificarDivisaInicial() {
@@ -1777,70 +2189,185 @@
             document.body.style.overflow = 'auto'; // Habilitar scroll
         }
 
-        async function verificarID() {
-            const idInput = document.getElementById('cliente-epic');
-            const idValue = idInput.value.trim();
-            const btn = document.querySelector('.btn-verificar-discord');
-            const statusDiv = document.getElementById('id-status');
-            
-            if(!idValue) {
-                statusDiv.innerHTML = '<div class="alerta-peligro" style="padding: 10px; margin-top: 5px;">Por favor, ingresa tu ID de Epic Games.</div>';
-                return;
-            }
-            
-            const originalText = btn.innerText;
-            btn.innerText = "Verificando...";
-            btn.disabled = true;
-            statusDiv.innerHTML = "";
-
-            try {
-                const webhookURL = 'https://discord.com/api/webhooks/1499313430711107615/cgGyRYhyLf6kOoHZ4RG39rfk4h7BX7JC8jy1nnDG4HAYBv1lNVGwrhRY1sE0PFnEizdv';
-                await fetch(webhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        content: `Verificación de amigo solicitada para el ID: ${idValue}`
-                    })
-                });
-                statusDiv.innerHTML = '<div class="alerta-exito" style="padding: 10px; margin-top: 5px;"><strong>Verificación enviada.</strong> Nuestros Bots te aceptarán en aprox 30 minutos.</div>';
-            } catch (error) {
-                console.error(error);
-                statusDiv.innerHTML = '<div class="alerta-peligro" style="padding: 10px; margin-top: 5px;">Error al enviar la verificación. Inténtalo de nuevo.</div>';
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-        
         function mostrarInfoPago() { 
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const metodo = seleccionado ? seleccionado.value : "";
             
             document.querySelectorAll('.info-pago-box').forEach(b => b.classList.add('oculto')); 
-            if(metodo) {
+            
+            // Binance no muestra información aquí, ya que utiliza el modal de confirmación al final
+            if(metodo && metodo !== 'binance') {
                 const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
-                document.getElementById('pago-' + id).classList.remove('oculto');
+                const box = document.getElementById('pago-' + id);
+                if(box) box.classList.remove('oculto');
             }
         }
         
         function enviarPedidoFinal() {
-            const nom = document.getElementById('cliente-nombre').value; const wp = document.getElementById('cliente-whatsapp').value; const id = document.getElementById('cliente-epic').value;
+            const btnFinal = document.querySelector('.btn-pulse');
+            if (btnFinal.disabled) return;
+
+            const nombre = document.getElementById('cliente-nombre').value;
+            const telefono = document.getElementById('cliente-whatsapp').value;
+            const epicId = document.getElementById('cliente-epic').value;
+            
+            // Validación de número de WhatsApp (10 a 15 dígitos)
+            const telRegex = /^[0-9]{10,15}$/;
+
+            const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
+            const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
+
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
-            const met = seleccionado ? seleccionado.value : "";
-            if(!nom || !wp || !id || !met) return alert("Por favor completa todos tus datos, incluyendo tu WhatsApp, y selecciona un método de pago.");
+            const metodoRaw = seleccionado ? seleccionado.value : "";
+            const metodo = metodoRaw.toUpperCase();
+
+            if(!nombre || !telefono || !epicId || !metodo || !cuentaSeleccionada) {
+                return alert("Por favor completa todos tus datos, selecciona al menos una cuenta donde nos agregaste y elige un método de pago.");
+            }
+
+            if(!telRegex.test(telefono.replace(/\s/g, ""))) {
+                document.getElementById('cliente-whatsapp').classList.add('input-error');
+                return alert("Por favor ingresa un número de WhatsApp válido (solo números, entre 10 y 15 dígitos).");
+            }
+
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
             
-            let totalUSD = 0; let lista = carrito.map(i => { if(i.precio !== 'Consultar') totalUSD += parseFloat(i.precio); return `- ${i.nombre} ($${i.precio})`; }).join('\n');
+            let totalSum = 0;
+            const listaProductos = carrito.map(i => {
+                if(i.precio !== 'Consultar') totalSum += parseFloat(i.precio);
+                return `• ${i.nombre} ($${i.precio})`;
+            }).join('\n');
+            const total = totalSum.toFixed(2);
+
+            // Deshabilitar botón temporalmente para evitar duplicados
+            btnFinal.disabled = true;
+            btnFinal.style.opacity = '0.7';
+            btnFinal.innerText = 'PROCESANDO...';
+
+            // Re-habilitar después de 5 segundos por si el usuario regresa
+            setTimeout(() => {
+                btnFinal.disabled = false;
+                btnFinal.style.opacity = '1';
+                btnFinal.innerText = 'REALIZAR PEDIDO';
+            }, 5000);
+
+            // Efecto de sonido de pedido completado
+            const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
+            audio.play().catch(e => console.log("Sonido bloqueado por navegador"));
 
             // Si es Binance, abrimos el modal en lugar de ir a WhatsApp directamente
-            if (met === 'binance') {
-                abrirPagoBinance(totalUSD.toFixed(2));
+            if (metodoRaw === 'binance') {
+                abrirPagoBinance(total);
                 return;
             }
 
-            let msj = `⭐ *NUEVO PEDIDO - SHEGOS STORE* ⭐\n\n👤 *Nombre:* ${nom}\n📱 *WhatsApp:* ${wp}\n🎮 *Epic ID:* ${id}\n💳 *Método:* ${met.toUpperCase()}\n\n🛒 *Productos:*\n${lista}\n\n💰 *Total:* $${totalUSD > 0 ? totalUSD.toFixed(2) + ' USD' : 'Por consultar'}`;
-            msj += `\n\n🖼️ _Adjunto mi comprobante:_`;
-            window.open(`https://wa.me/18299847680?text=${encodeURIComponent(msj)}`, '_blank');
+            const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*
+
+---------------------------------------
+
+👤 *Nombre:* ${nombre}
+
+📱 *WhatsApp:* ${telefono}
+
+🎮 *Epic ID:* ${epicId}
+
+🆔 *Cuenta Agregada:* ${cuentaSeleccionada}
+
+💳 *Método:* ${metodo}
+
+
+
+🛍️ *Productos:*
+
+${listaProductos}
+
+
+
+💰 *TOTAL:* $${total} USD
+
+---------------------------------------
+
+_He adjuntado mi comprobante de pago arriba._`;
+
+            const urlFinal = "https://wa.me/18299326234?text=" + encodeURIComponent(mensaje);
+            window.open(urlFinal, '_blank');
+        }
+
+        function renderCheckoutSummary() {
+            const productosLista = document.getElementById('checkout-productos-lista');
+            const subtotalDinero = document.getElementById('checkout-subtotal-dinero');
+            const totalDinero = document.getElementById('checkout-total-dinero');
+
+            productosLista.innerHTML = ''; // Limpiar lista anterior
+
+            let subtotal = 0;
+            const tasa = tasas[divisaActual] || 1;
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$' }[divisaActual] || '$';
+
+            if (carrito.length === 0) {
+                productosLista.innerHTML = '<p style="text-align:center; color:#aaa;">Tu carrito está vacío.</p>';
+                subtotalDinero.innerText = `${simbolo}0.00`;
+                totalDinero.innerText = `${simbolo}0.00`;
+                return;
+            }
+
+            carrito.forEach(item => {
+                const precioItem = parseFloat(item.precio);
+                subtotal += precioItem;
+                productosLista.innerHTML += `
+                    <div class="checkout-item-summary">
+                        <span>${item.nombre}</span>
+                        <strong>${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong>
+                    </div>
+                `;
+            });
+
+            subtotalDinero.innerText = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            totalDinero.innerText = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`; 
+        }
+
+        function cambiarPasoCheckout(paso) {
+            pasoCheckoutActual = paso;
+            
+            // Actualizar visibilidad de contenidos
+            document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`checkout-step-${paso}`).classList.add('active');
+            
+            // Actualizar indicadores (dots)
+            document.querySelectorAll('.step-dot').forEach((d, idx) => {
+                if (idx + 1 <= paso) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+
+            // Actualizar Botón Principal
+            const btn = document.getElementById('btn-main-checkout');
+            const txt = document.getElementById('txt-instruccion-checkout');
+            
+            if (paso === 1) {
+                btn.innerText = "CONTINUAR AL PAGO";
+                txt.style.display = 'none';
+            } else {
+                btn.innerText = "REALIZAR PEDIDO";
+                txt.style.display = 'block';
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function manejarAccionCheckout() {
+            if (pasoCheckoutActual === 1) {
+                // Validar Paso 1
+                const nombre = document.getElementById('cliente-nombre').value;
+                const telefono = document.getElementById('cliente-whatsapp').value;
+                const epicId = document.getElementById('cliente-epic').value;
+                const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
+
+                if (!nombre || !telefono || !epicId || cuentasCheckboxes.length === 0) {
+                    return alert("Por favor completa tus datos y selecciona al menos una cuenta para continuar.");
+                }
+                cambiarPasoCheckout(2);
+            } else {
+                enviarPedidoFinal();
+            }
         }
 
         function toggleSidebar() {
@@ -1852,11 +2379,13 @@
         function abrirPagoBinance(totalUsdt) {
             document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
             document.getElementById('modal-binance-pay').style.display = 'flex';
+            toggleFloatingButtons(false);
         }
 
         function cerrarPagoBinance() {
             document.getElementById('modal-binance-pay').style.display = 'none';
             document.getElementById('txid-binance').value = '';
+            if(document.getElementById('checkout').classList.contains('oculto')) toggleFloatingButtons(true);
         }
 
         function confirmarPagoBinance() {
@@ -1892,15 +2421,23 @@
             else document.getElementById('menu-servicios').style.display = 'block';
         }
 
+        function toggleFloatingButtons(show) {
+            const container = document.querySelector('.floating-container');
+            if (container) container.style.display = show ? 'flex' : 'none';
+        }
+
         function abrirPestana(id) {
             document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
             document.getElementById(id).classList.remove('oculto');
             
             // Cerrar sidebar si está abierto (en móvil)
-            if (document.getElementById('sidebar').classList.contains('abierto')) {
+            if (document.getElementById('sidebar').classList.contains('abierto') && window.innerWidth <= 768) {
                 toggleSidebar();
             }
+
+            // Ocultar botones flotantes en checkout
+            toggleFloatingButtons(id !== 'checkout');
             
             if (id === 'recargas') mostrarSubServicio('menu');
 
@@ -1910,15 +2447,27 @@
             const tabActiva = document.getElementById(id);
             tabActiva.style.animation = 'none'; tabActiva.offsetHeight; tabActiva.style.animation = null; 
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+
+            // Si es la pestaña de checkout, renderizar el resumen
+            if (id === 'checkout') {
+                renderCheckoutSummary();
+                cambiarPasoCheckout(1);
+            }
+        } 
         function abrirCarritoLateral() { 
             if (document.getElementById('sidebar').classList.contains('abierto')) {
                 toggleSidebar();
             }
+            toggleFloatingButtons(false);
             document.getElementById('cart-overlay').classList.add('abierto'); 
             document.getElementById('cart-drawer').classList.add('abierto'); 
         }
-        function cerrarCarritoLateral() { document.getElementById('cart-overlay').classList.remove('abierto'); document.getElementById('cart-drawer').classList.remove('abierto'); }
+        function cerrarCarritoLateral() { 
+            document.getElementById('cart-overlay').classList.remove('abierto'); 
+            document.getElementById('cart-drawer').classList.remove('abierto'); 
+            if(!document.getElementById('checkout').classList.contains('oculto')) toggleFloatingButtons(false);
+            else toggleFloatingButtons(true);
+        }
         function irAlCheckout() { cerrarCarritoLateral(); abrirPestana('checkout'); }
 
         document.addEventListener('DOMContentLoaded', () => { 
@@ -1928,6 +2477,13 @@
             setInterval(actualizarRelojTienda, 1000);
             actualizarCarrito();
         });
+
+        function toggleTodasCuentas(chkAll) {
+            const checkboxes = document.querySelectorAll('input[name="cuenta-chk"]');
+            checkboxes.forEach(chk => {
+                chk.checked = chkAll.checked;
+            });
+        }
     </script>
 </body>
 </html>
