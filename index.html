@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="img/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shegos Store | Fortnite</title>
     <!-- FontAwesome SDK -->
@@ -1255,6 +1256,91 @@
             .option-info { margin-top: 3px !important; } /* Reducir aún más el margen entre bandera y texto */
             .option-info small { font-size: 12px !important; } /* Código de moneda más pequeño */
             .option-info span { font-size: 9px !important; } /* Nombre del país más pequeño */
+        }
+
+        /* ── REDISEÑO TARJETAS TIENDA ── */
+
+        /* Zoom de imagen en hover */
+        .cosmetic-card:hover .card-img {
+            transform: scale(1.1);
+        }
+
+        /* Glow de rareza al hover — reemplaza el borde blanco genérico */
+        .cosmetic-card.legendary:hover {
+            border-color: #FF8C00;
+            box-shadow: 0 0 0 1px #FF8C00, 0 14px 40px rgba(255, 140, 0, 0.35);
+        }
+        .cosmetic-card.epic:hover {
+            border-color: #A855F7;
+            box-shadow: 0 0 0 1px #A855F7, 0 14px 40px rgba(168, 85, 247, 0.35);
+        }
+        .cosmetic-card.rare:hover {
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 1px #3B82F6, 0 14px 40px rgba(59, 130, 246, 0.35);
+        }
+        .cosmetic-card.uncommon:hover {
+            border-color: #22C55E;
+            box-shadow: 0 0 0 1px #22C55E, 0 14px 40px rgba(34, 197, 94, 0.35);
+        }
+
+        /* Card sube al hover */
+        .cosmetic-card:hover {
+            transform: translateY(-6px) scale(1.02);
+        }
+
+        /* Precio en dos líneas */
+        .card-price-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .card-price-vbucks {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .card-price-fiat {
+            font-size: 9px;
+            color: #888;
+            font-weight: 600;
+        }
+
+        /* Botón desliza desde abajo */
+        .cosmetic-card .btn-add-cart {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
+        }
+        .cosmetic-card:hover .btn-add-cart {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .cosmetic-card .btn-add-cart:hover {
+            background: #28feb6;
+            color: #000;
+        }
+
+        /* Badge "Se va hoy" con pulso */
+        @keyframes pulse-hot {
+            0%, 100% { box-shadow: 0 0 6px rgba(40, 254, 182, 0.5); }
+            50%       { box-shadow: 0 0 16px rgba(40, 254, 182, 0.9); }
+        }
+        .overlay-se-va-hoy {
+            animation: pulse-hot 2s infinite;
+        }
+
+        /* En móvil el botón siempre visible */
+        @media (max-width: 768px) {
+            .cosmetic-card .btn-add-cart {
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+            .cosmetic-card:hover {
+                transform: none;
+            }
         }
 </style>
 </head>
@@ -2709,4 +2795,6 @@ _He adjuntado mi comprobante de pago arriba._`;
         }
     </script>
 </body>
+</html>
+</html>
 </html>
