@@ -1887,6 +1887,7 @@
                         <label>Número de WhatsApp:</label>
                         <input type="tel" id="cliente-whatsapp" placeholder="Ej: +52 123 456 7890">
 
+                        <input type="tel" id="cliente-whatsapp" placeholder="Ej: 521234567890">
                         <label>ID de Epic Games:</label>
                         <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
                         
@@ -1966,6 +1967,7 @@
                         <div id="checkout-productos-lista">
                             <!-- Los productos del carrito se renderizarán aquí -->
                         </div>
+                        <div id="checkout-productos-lista"></div>
                         <div class="summary-line">
                             <span>Subtotal:</span>
                             <span id="checkout-subtotal-dinero"></span>
@@ -2032,6 +2034,8 @@
                     <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal">
                     PAGAR CON PAYPAL
                 </a>
+                <p style="text-align: center; margin-bottom: 15px;">Completa tu pago usando los botones oficiales:</p>
+                <div id="paypal-button-container"></div>
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
@@ -3051,6 +3055,143 @@ _He adjuntado mi comprobante de pago arriba._`;
             checkboxes.forEach(chk => {
                 chk.checked = chkAll.checked;
             });
+        }
+
+        // ==========================================
+        // NUEVAS FUNCIONES DE CHECKOUT (JS-REEMPLAZAR)
+        // ==========================================
+        let paypalOrderId = null; 
+        let pasoCheckoutActual = 1;
+
+        function renderPayPalButtons() {
+            const container = document.getElementById('paypal-button-container');
+            if (!container || !window.paypal) return;
+            container.innerHTML = '';
+            const totalUSD = carrito.reduce((sum, item) => sum + parseFloat(item.precio), 0).toFixed(2);
+            
+            paypal.Buttons({
+                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: totalUSD } }] }),
+                onApprove: (data, actions) => actions.order.capture().then(details => {
+                    paypalOrderId = details.id;
+                    alert("¡Pago de PayPal exitoso! ID: " + paypalOrderId);
+                    const btn = document.getElementById('btn-main-checkout');
+                    btn.innerHTML = '<i class="fab fa-whatsapp"></i> FINALIZAR Y ENVIAR WHATSAPP';
+                    btn.classList.add('pago-confirmado');
+                }),
+                onError: (err) => alert("Error con PayPal: " + err)
+            }).render('#paypal-button-container');
+        }
+
+        function irAlCheckout() {
+            if (carrito.length === 0) return alert("Tu carrito está vacío.");
+            pasoCheckoutActual = 1;
+            paypalOrderId = null;
+            renderCheckoutSummary();
+            abrirPestana('checkout');
+            cambiarPasoCheckout(1);
+        }
+
+        function cambiarPasoCheckout(paso) {
+            pasoCheckoutActual = paso;
+            document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(`checkout-step-${paso}`).classList.add('active');
+            document.querySelectorAll('.step-dot').forEach((d, i) => {
+                if (i + 1 <= paso) d.classList.add('active');
+                else d.classList.remove('active');
+            });
+            const btn = document.getElementById('btn-main-checkout');
+            btn.innerText = (paso === 1) ? "CONTINUAR AL PAGO" : "REALIZAR PEDIDO";
+            if(paso === 2) mostrarInfoPago();
+        }
+
+        function manejarAccionCheckout() {
+            if (pasoCheckoutActual === 1) {
+                const nombre = document.getElementById('cliente-nombre').value;
+                const tel = document.getElementById('cliente-whatsapp').value;
+                const epic = document.getElementById('cliente-epic').value;
+                const cuentas = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
+                if (!nombre || !tel || !epic || cuentas.length === 0) return alert("Completa tus datos.");
+                cambiarPasoCheckout(2);
+            } else {
+                enviarPedidoFinal();
+            }
+        }
+
+        function renderCheckoutSummary() {
+            const list = document.getElementById('checkout-productos-lista');
+            const subEl = document.getElementById('checkout-subtotal-dinero');
+            const totEl = document.getElementById('checkout-total-dinero');
+            let total = 0;
+            const tasa = tasas[divisaActual] || 1;
+            const simb = { USD: '$', MXN: '$', DOP: '$' }[divisaActual] || '$';
+            list.innerHTML = carrito.map(i => {
+                total += parseFloat(i.precio);
+                return `<div class="checkout-item-summary"><span>${i.nombre}</span><strong>${simb}${(parseFloat(i.precio)*tasa).toLocaleString(undefined,{minimumFractionDigits:2})}</strong></div>`;
+            }).join('');
+            const f = (total * tasa).toLocaleString(undefined,{minimumFractionDigits:2});
+            subEl.innerText = simb + f; totEl.innerText = simb + f;
+        }
+
+        async function enviarPedidoFinal() {
+            const met = document.querySelector('input[name="metodo-pago"]:checked');
+            if (!met) return alert("Selecciona método de pago.");
+            if (met.value === 'paypal' && !paypalOrderId) return alert("Completa el pago de PayPal.");
+            
+            const nombre = document.getElementById('cliente-nombre').value;
+            const tel = document.getElementById('cliente-whatsapp').value;
+            const epic = document.getElementById('cliente-epic').value;
+            const cuentas = Array.from(document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked')).map(c=>c.value).join(', ');
+            const itemsStr = carrito.map(i => `• ${i.nombre} ($${i.precio} USD)`).join('\n');
+            const totalUSD = carrito.reduce((s,i)=>s+parseFloat(i.precio),0).toFixed(2);
+
+            let msg = `*NUEVO PEDIDO - SHEGOS STORE*\n---\n👤 *Nombre:* ${nombre}\n📱 *WhatsApp:* ${tel}\n🎮 *Epic ID:* ${epic}\n🆔 *Cuentas:* ${cuentas}\n💳 *Método:* ${met.value.toUpperCase()}\n`;
+            if (paypalOrderId) msg += `🧾 *Transacción PayPal:* ${paypalOrderId}\n`;
+            msg += `\n🛍️ *Productos:*\n${itemsStr}\n💰 *TOTAL:* $${totalUSD} USD\n---\n_Adjunto comprobante._`;
+            window.open("https://wa.me/18299326234?text=" + encodeURIComponent(msg), '_blank');
+        }
+
+        function mostrarInfoPago() { 
+            const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
+            const metodo = seleccionado ? seleccionado.value : "";
+            document.querySelectorAll('.info-pago-box').forEach(b => b.classList.add('oculto')); 
+            if(metodo === 'paypal') {
+                document.getElementById('pago-paypal').classList.remove('oculto');
+                renderPayPalButtons();
+            } else if(metodo && metodo !== 'binance') {
+                const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
+                const box = document.getElementById('pago-' + id);
+                if(box) box.classList.remove('oculto');
+            }
+        }
+
+        function abrirPestana(id) {
+            document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
+            document.getElementById(id).classList.remove('oculto');
+            if (document.getElementById('sidebar').classList.contains('abierto') && window.innerWidth <= 768) toggleSidebar();
+            toggleFloatingButtons(id !== 'checkout');
+            if (id === 'recargas') mostrarSubServicio('menu');
+            const btns = Array.from(document.querySelectorAll('.tab-btn')).filter(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(id));
+            btns.forEach(b => b.classList.add('activo'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (id === 'checkout') { renderCheckoutSummary(); cambiarPasoCheckout(1); }
+        }
+
+        function abrirPagoBinance(totalUsdt) {
+            document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
+            document.getElementById('modal-binance-pay').style.display = 'flex';
+            toggleFloatingButtons(false);
+        }
+        function cerrarPagoBinance() {
+            document.getElementById('modal-binance-pay').style.display = 'none';
+            document.getElementById('txid-binance').value = '';
+            if(document.getElementById('checkout').classList.contains('oculto')) toggleFloatingButtons(true);
+        }
+        function confirmarPagoBinance() {
+            const txid = document.getElementById('txid-binance').value.trim();
+            if (!txid) return alert("Ingresa el TxID.");
+            alert("¡Pedido enviado! Verificaremos tu pago.");
+            cerrarPagoBinance();
         }
     </script>
 </body>
