@@ -649,10 +649,8 @@
 
         .btn-outline-mint { 
             background: #000000; 
-            border: 2px solid #CCFF00; 
-            color: #CCFF00; 
-            border: 2px solid #2CEAA3; 
-            color: #2CEAA3; 
+            border: 2px solid #28feb6; 
+            color: #28feb6; 
             padding: 10px; 
             border-radius: 6px; 
             font-weight: 800; 
@@ -661,8 +659,7 @@
             transition: background 0.3s ease; 
             margin-top: auto;
         }
-        .btn-outline-mint:hover { background: #CCFF00; color: #000000; }
-        .btn-outline-mint:hover { background: #2CEAA3; color: #000000; }
+        .btn-outline-mint:hover { background: #28feb6; color: #000000; }
         
         .alerta-warning { 
             background: rgba(255, 255, 255, 0.05); 
@@ -816,37 +813,124 @@
         .dato-copiar { background: #000000; padding: 12px; border-radius: 4px; font-family: monospace; color: #2CEAA3; font-size: 1.1em; margin: 10px 0; display: block; border: 1px dashed #2CEAA3; text-align: center; transition: all 0.3s; cursor: pointer; }
         .dato-copiar:hover { background: #121212; border-color: #2CEAA3; box-shadow: inset 0 0 10px rgba(44, 234, 163, 0.1); }
         
-        /* ESTILOS SELECTOR DIVISA MODAL */
-        #modal-inicial-divisa {
+        /* MODAL SELECCION DE MONEDA V2 */
+        .main-modal-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            display: none; /* Se controla por JS */
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); /* Negro con 90% de opacidad */
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
             justify-content: center;
+            align-items: center;
         }
-        .modal-selector-content { 
-            background: #0a0b0a; 
-            border: 2px solid #28feb6; 
-            border-radius: 20px; 
-            padding: 30px; 
-            width: 90%; 
-            max-width: 480px; 
-            text-align: center; 
-            box-shadow: 0 0 30px rgba(40, 254, 182, 0.2); 
-            animation: fadeInUp 0.5s ease-out; 
+        .main-modal-overlay.active { display: flex; animation: fadeIn 0.4s ease forwards; padding: 20px; } /* Añadido padding para evitar que la tarjeta toque los bordes en móvil */
+        
+        .modal-gaming-card {
+            background: #000000; /* Fondo negro sólido */
+            border: 1px solid #2d2d37; /* Borde fino gris oscuro */
+            border-radius: 15px; /* Más compacto */
+            padding: 30px 20px; 
+            width: 100%;
+            max-width: 380px; /* Ancho máximo reducido */
+            text-align: center;
+            box-shadow: none; /* Eliminar brillo/neon */
+            max-height: 80vh; /* Para que no ocupe toda la altura */
+            overflow-y: auto; /* Permite scroll si hay muchas opciones */
         }
-        .grid-divisas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 25px; }
-        .btn-divisa { 
-            background: #111; border: 1px solid #333; border-radius: 12px; padding: 15px 5px; 
-            cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; 
+        .modal-title { 
+            color: #FFFFFF; 
+            font-family: 'Poppins', sans-serif; 
+            font-size: 18px; 
+            margin: 0 0 25px 0; 
+            font-weight: 500; 
+            text-transform: none; 
+            text-align: center;
         }
-        .btn-divisa:hover { border-color: #28feb6; transform: translateY(-5px); box-shadow: 0 0 15px rgba(40, 254, 182, 0.5); }
-        .btn-divisa img { width: 45px; height: 30px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; }
-        .btn-divisa span { font-weight: bold; color: #fff; font-size: 0.8em; }
+        .modal-subtitle { display: none; } /* Eliminado según especificación */
+        
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 12px; /* Espacio exacto de 12px */
+            justify-items: center;
+        }
+        .currency-option {
+            background: #1b1b22; /* Gris oscuro/azulado */
+            border: 1px solid #2d2d37; /* Borde sutil */
+            border-radius: 12px; /* Esquinas redondeadas */
+            width: 100px; /* Tamaño cuadrado */
+            height: 100px; /* Tamaño cuadrado */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0;
+            color: #fff;
+        }
+        .currency-option:hover { background: #23232c; border-color: #3f3f4d; }
+        .currency-option img { width: 32px; height: auto; border-radius: 4px; object-fit: contain; } /* Bandera ligeramente más pequeña */
+        .option-info { display: flex; flex-direction: column; align-items: center; margin-top: 4px; } /* Margen reducido para mayor compacidad */
+        .option-info small { color: #ffffff; font-size: 14px; font-weight: bold; text-transform: uppercase; line-height: 1.2; } /* Código de moneda */
+        .option-info span { color: #a0a0a0; font-size: 10px; font-weight: 400; display: block; } /* Nombre del país */
+        
+        /* ESTILOS SELECTOR MONEDA DUAL (DESKTOP/MOBILE) */
+        .currency-trigger {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+        .currency-trigger:hover {
+            border-color: #28feb6;
+            background: rgba(40, 254, 182, 0.05);
+        }
+        .currency-trigger img {
+            width: 22px;
+            height: auto;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+        .currency-trigger:hover img {
+            filter: drop-shadow(0 0 5px #28feb6);
+        }
+        .currency-trigger span {
+            font-weight: 700;
+            font-size: 0.85em;
+            color: #fff;
+        }
+
+        .sidebar-divider { height: 1px; background: rgba(255,255,255,0.05); margin: 20px 30px; }
+        .sidebar-currency-section { padding: 0 30px; margin-bottom: 20px; }
+        .sidebar-currency-title { 
+            color: #a0a0a0; /* Gris claro */
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            display: block; 
+            margin-bottom: 10px; 
+            font-weight: 700;
+        }
+        .sidebar-dropdown {
+            background-color: #1b1b22;
+            color: #ffffff;
+            border: 1px solid #2d2d37;
+            border-radius: 10px;
+            padding: 12px;
+            width: 100%;
+            font-weight: 600;
+            font-size: 0.9em;
+            outline: none;
+            cursor: pointer;
+        }
 
         footer { background-color: #1f1f1f; padding: 30px 20px; text-align: center; border-top: 2px solid #333; margin-top: auto; }
         .footer-logo { font-size: 1.5em; font-weight: bold; color: #fff; margin-bottom: 10px; display: block; transition: text-shadow 0.3s; }
@@ -1120,6 +1204,10 @@
                 align-items: center !important;
                 text-align: center !important;
             }
+            
+            /* Cuadrícula de 2 columnas en móvil para el modal */
+            .grid-divisas { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+            
             .metodo-label img { height: 30px !important; }
 
             /* Estilos para el nuevo contador en el Hero */
@@ -1134,6 +1222,39 @@
 
             footer { padding: 15px 10px !important; }
             footer p { font-size: 0.75em !important; opacity: 0.7; margin: 5px 0 !important; }
+        }
+        @media (max-width: 768px) {
+            .currency-trigger { display: none !important; }
+            .main-modal-overlay { display: none !important; } /* Bloquear modal en móvil */
+        }
+        @media (min-width: 769px) {
+            .sidebar-divider, .sidebar-currency-section { display: none !important; }
+        }
+
+        /* Ajustes específicos para el modal de moneda en móvil */
+        @media (max-width: 768px) {
+            .modal-gaming-card {
+                padding: 20px 15px !important; /* Reducir el padding interno del modal */
+                max-width: 350px !important; /* Asegurar que no sea demasiado ancho en pantallas muy pequeñas */
+            }
+            .modal-title {
+                font-size: 16px !important; /* Título un poco más pequeño */
+                margin-bottom: 20px !important;
+            }
+            .currency-grid {
+                grid-template-columns: repeat(3, 1fr) !important; /* Mantener 3 columnas con botones más pequeños */
+                gap: 8px !important; /* Reducir el espacio entre botones */
+            }
+            .currency-option {
+                width: 85px !important; /* Reducir el tamaño de los botones */
+                height: 85px !important;
+            }
+            .currency-option img {
+                width: 28px !important; /* Ajustar el tamaño de la bandera */
+            }
+            .option-info { margin-top: 3px !important; } /* Reducir aún más el margen entre bandera y texto */
+            .option-info small { font-size: 12px !important; } /* Código de moneda más pequeño */
+            .option-info span { font-size: 9px !important; } /* Nombre del país más pequeño */
         }
 </style>
 </head>
@@ -1152,6 +1273,22 @@
             <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
         </div>
+        
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-currency-section">
+            <span class="sidebar-currency-title">MONEDA DE LA TIENDA</span>
+            <select id="sidebar-selector-divisa" class="sidebar-dropdown" onchange="cambiarDivisa(this.value)">
+                <option value="DOP">🇩🇴 DOP - Pesos Dominicanos</option>
+                <option value="MXN">🇲🇽 MXN - Pesos Mexicanos</option>
+                <option value="USD">🇺🇸 USD - Dólares</option>
+                <option value="EUR">🇪🇺 EUR - Euros</option>
+                <option value="COP">🇨🇴 COP - Pesos Colombianos</option>
+                <option value="ARS">🇦🇷 ARS - Pesos Argentinos</option>
+                <option value="CLP">🇨🇱 CLP - Pesos Chilenos</option>
+                <option value="PEN">🇵🇪 PEN - Soles Peruanos</option>
+                <option value="USDT">₮ USDT - Cripto</option>
+            </select>
+        </div>
         <div class="sidebar-footer">
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="discord-box" style="width: 100%; box-sizing: border-box; text-align: center;">Discord</a>
         </div>
@@ -1163,15 +1300,12 @@
             <img src="img/logo.png" alt="Shegos Store" class="logo-nav">
         </a>
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px;">
-            <!-- Selector de Divisa (Paso 8) -->
-            <select id="selector-divisa" class="moneda-dropdown" onchange="cambiarDivisa(this.value)">
-                <option value="USD">🇺🇸 USD $</option>
-                <option value="MXN">🇲🇽 MXN $</option>
-                <option value="CLP">🇨🇱 CLP $</option>
-                <option value="COP">🇨🇴 COP $</option>
-                <option value="ARS">🇦🇷 ARS $</option>
-                <option value="DOP">🇩🇴 DOP $</option>
-            </select>
+            <!-- Trigger Visual para Escritorio -->
+            <div id="currency-trigger-desktop" class="currency-trigger" onclick="abrirModalDivisa()">
+                <img id="header-flag" src="img/usa.png" alt="Flag">
+                <span id="header-code">USD</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.7em; opacity: 0.7;"></i>
+            </div>
             
             <div id="countdown" class="shop-timer-header">
                 <small style="text-transform: uppercase; font-size: 0.7em; opacity: 0.8;">La tienda cambia en:</small>
@@ -1733,21 +1867,47 @@
         </div>
     </div>
 
-    <!-- MODAL DE SELECCIÓN DE PAÍS (POPS-UP AL INICIO) -->
-    <div id="modal-inicial-divisa">
-        <div class="modal-selector-content">
-            <h2 style="color: #28feb6; margin-bottom: 10px;">¡Bienvenido a Shegos Store!</h2>
-            <p style="color: #ccc; font-size: 0.9em;">Selecciona tu país para ajustar los precios:</p>
-            <div class="grid-divisas">
-                <div class="btn-divisa" onclick="seleccionarPais('USDT')"><img src="img/USDT.png"><span>USDT</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('COP')"><img src="img/Colombia.png"><span>Colombia</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('PEN')"><img src="img/Peru.png"><span>Perú</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('DOP')"><img src="img/Dominicana.png"><span>Dominicana</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('ARS')"><img src="img/Argentina.png"><span>Argentina</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('EUR')"><img src="img/Europa.png"><span>Europa</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('MXN')"><img src="img/Mexico.png"><span>México</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('CLP')"><img src="img/Chile.png"><span>Chile</span></div>
-                <div class="btn-divisa" onclick="seleccionarPais('USD')"><img src="img/Usa.png"><span>USA</span></div>
+    <!-- NUEVO MODAL DE SELECCIÓN DE DIVISA V2 -->
+    <div id="currency-modal-v2" class="main-modal-overlay">
+        <div class="modal-gaming-card">
+            <h2 class="modal-title">¿En qué moneda quieres ver la página?</h2>
+            <div class="currency-grid">
+                <button class="currency-option" data-currency="DOP">
+                    <img src="img/dominicana.png" alt="RD">
+                    <div class="option-info"><small>DOP</small><span>Rep. Dominicana</span></div>
+                </button>
+                <button class="currency-option" data-currency="MXN">
+                    <img src="img/mexico.png" alt="MX">
+                    <div class="option-info"><small>MXN</small><span>México</span></div>
+                </button>
+                <button class="currency-option" data-currency="USD">
+                    <img src="img/usa.png" alt="US">
+                    <div class="option-info"><small>USD</small><span>Estados Unidos</span></div>
+                </button>
+                <button class="currency-option" data-currency="EUR">
+                    <img src="img/Europa.png" alt="EU">
+                    <div class="option-info"><small>EUR</small><span>Europa</span></div>
+                </button>
+                <button class="currency-option" data-currency="COP">
+                    <img src="img/Colombia.png" alt="CO">
+                    <div class="option-info"><small>COP</small><span>Colombia</span></div>
+                </button>
+                <button class="currency-option" data-currency="ARS">
+                    <img src="img/Argentina.png" alt="AR">
+                    <div class="option-info"><small>ARS</small><span>Argentina</span></div>
+                </button>
+                <button class="currency-option" data-currency="CLP">
+                    <img src="img/Chile.png" alt="CL">
+                    <div class="option-info"><small>CLP</small><span>Chile</span></div>
+                </button>
+                <button class="currency-option" data-currency="PEN">
+                    <img src="img/Peru.png" alt="PE">
+                    <div class="option-info"><small>PEN</small><span>Perú</span></div>
+                </button>
+                <button class="currency-option" data-currency="USDT">
+                    <img src="img/USDT.png" alt="USDT">
+                    <div class="option-info"><small>USDT</small><span>Criptomonedas</span></div>
+                </button>
             </div>
         </div>
     </div>
@@ -1829,18 +1989,31 @@
         }
         let tiendaItems = [];
 
-        let pasoCheckoutActual = 1;
-
         // Tasas actualizadas
         const tasas = { USD: 1, EUR: 0.92, MXN: 17.00, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 };
-        let divisaActual = localStorage.getItem('divisaPreferida') || 'USD';
+        
+        // Usamos 'userCurrency' como clave principal
+        let divisaActual = localStorage.getItem('userCurrency') || 'USD';
+
+        const flagMap = {
+            'DOP': 'img/dominicana.png',
+            'MXN': 'img/mexico.png',
+            'USD': 'img/usa.png',
+            'EUR': 'img/Europa.png',
+            'COP': 'img/Colombia.png',
+            'ARS': 'img/Argentina.png',
+            'CLP': 'img/Chile.png',
+            'PEN': 'img/Peru.png',
+            'USDT': 'img/USDT.png'
+        };
 
         // Helper para el tiempo de la tienda
         function getTiempoTxt() {
-            const ahora = new Date();
-            const manana = new Date(ahora);
-            manana.setUTCHours(24, 0, 0, 0);
-            const diffMs = manana - ahora;
+            const ahora = new Date(); 
+            // Calculamos la próxima rotación (00:00 UTC)
+            const proximaRotacion = new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate() + 1, 0, 0, 0));
+            
+            const diffMs = proximaRotacion.getTime() - ahora.getTime();
             const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
             const diffMinutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
             return `${diffHoras}h ${diffMinutos}m`;
@@ -1952,18 +2125,6 @@
                     aplicarFiltros();
                 });
             });
-        }
-
-        function cambiarDivisa(val) {
-            divisaActual = val;
-            
-            // Actualizar SDK de PayPal si es necesario (opcional, PayPal maneja conversión)
-            const selector = document.getElementById('selector-divisa');
-            if(selector) selector.value = val;
-            
-            localStorage.setItem('divisaPreferida', val);
-            actualizarPreciosGlobales();
-            actualizarCarrito();
         }
 
         function actualizarPreciosGlobales() {
@@ -2151,14 +2312,14 @@
 
         // CONTADOR DE LA TIENDA
         function actualizarRelojTienda() {
-            const ahora = new Date();
-            const manana = new Date(ahora);
-            manana.setUTCHours(24, 0, 0, 0); // La tienda de Fortnite rota a las 00:00 UTC
+            const ahora = new Date(); 
+            // Calculamos la próxima rotación (00:00 UTC)
+            const proximaRotacion = new Date(Date.UTC(ahora.getUTCFullYear(), ahora.getUTCMonth(), ahora.getUTCDate() + 1, 0, 0, 0));
             
-            const diff = manana - ahora;
-            const horas = Math.floor(diff / (1000 * 60 * 60));
-            const minutos = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const segundos = Math.floor((diff % (1000 * 60)) / 1000);
+            const diffMs = proximaRotacion.getTime() - ahora.getTime();
+            const horas = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutos = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diffMs % (1000 * 60)) / 1000);
             
             const formato = (num) => num.toString().padStart(2, '0');
             const timerStr = `${formato(horas)}:${formato(minutos)}:${formato(segundos)}`;
@@ -2168,26 +2329,60 @@
             if(heroTimer) heroTimer.innerText = `LA TIENDA CAMBIA EN: ${timerStr}`;
         } 
 
-        // Simplificación de la lógica de divisa inicial
-        function verificarDivisaInicial() {
-            const guardada = localStorage.getItem('divisaPreferida');
+        function inicializarDivisa() {
+            const guardada = localStorage.getItem('userCurrency');
+            const modal = document.getElementById('currency-modal-v2');
+            const isMobile = window.innerWidth <= 768;
+            
             if (guardada && tasas[guardada]) {
                 divisaActual = guardada;
-                actualizarPreciosGlobales();
-                actualizarCarrito();
             } else {
-                // Mostrar el modal si no hay preferencia guardada
-                document.getElementById('modal-inicial-divisa').style.display = 'flex';
-                document.body.style.overflow = 'hidden'; // Bloquear scroll
+                if (!isMobile) { // Si no hay divisa guardada y es escritorio, mostrar el modal
+                    abrirModalDivisa();
+                } else { // Si no hay divisa guardada y es móvil, establecer USD por defecto y marcar en sidebar
+                    divisaActual = 'USD'; // Establecer USD como divisa por defecto en móvil si no hay una guardada
+                    localStorage.setItem('userCurrency', 'USD');
+                }
             }
+            
+            actualizarPreciosGlobales();
+            actualizarCarrito();
+            sincronizarElementosDivisa();
         }
 
-        function seleccionarPais(moneda) {
-            localStorage.setItem('divisaPreferida', moneda);
-            cambiarDivisa(moneda);
-            document.getElementById('modal-inicial-divisa').style.display = 'none';
-            document.body.style.overflow = 'auto'; // Habilitar scroll
+        function seleccionarDivisaInicial(codigo) {
+            divisaActual = codigo;
+            localStorage.setItem('userCurrency', codigo);
+            
+            actualizarPreciosGlobales();
+            actualizarCarrito();
+            sincronizarElementosDivisa();
+            
+            document.getElementById('currency-modal-v2').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
+
+        function sincronizarElementosDivisa() {
+            const flag = flagMap[divisaActual] || 'img/usa.png';
+            const headerFlag = document.getElementById('header-flag');
+            const headerCode = document.getElementById('header-code');
+            if (headerFlag) headerFlag.src = flag;
+            if (headerCode) headerCode.innerText = divisaActual;
+
+            const sidebarSelect = document.getElementById('sidebar-selector-divisa');
+            if (sidebarSelect) sidebarSelect.value = divisaActual;
+        }
+
+        // Asignar eventos a las opciones del modal
+        function asignarEventosModal() {
+            document.querySelectorAll('#currency-modal-v2 .currency-option').forEach(btn => {
+                btn.onclick = function() {
+                    const moneda = this.getAttribute('data-currency');
+                    seleccionarDivisaInicial(moneda);
+                };
+            });
+        }
+        asignarEventosModal();
 
         function mostrarInfoPago() { 
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
@@ -2291,6 +2486,34 @@ _He adjuntado mi comprobante de pago arriba._`;
 
             const urlFinal = "https://wa.me/18299326234?text=" + encodeURIComponent(mensaje);
             window.open(urlFinal, '_blank');
+        }
+
+        function abrirModalDivisa() {
+            if (window.innerWidth > 768) {
+                document.getElementById('currency-modal-v2').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function cambiarDivisa(val) {
+            divisaActual = val;
+            localStorage.setItem('userCurrency', val);
+            
+            actualizarPreciosGlobales();
+            actualizarCarrito();
+            sincronizarElementosDivisa();
+            
+            // Cerrar el modal (Desktop)
+            const modal = document.getElementById('currency-modal-v2');
+            if (modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            
+            // Cerrar el sidebar si se cambió desde ahí (Mobile)
+            if (document.getElementById('sidebar').classList.contains('abierto')) {
+                setTimeout(toggleSidebar, 200);
+            }
         }
 
         function renderCheckoutSummary() {
@@ -2472,7 +2695,7 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         document.addEventListener('DOMContentLoaded', () => { 
             cargarTienda(); 
-            verificarDivisaInicial();
+            inicializarDivisa();
             actualizarRelojTienda();
             setInterval(actualizarRelojTienda, 1000);
             actualizarCarrito();
