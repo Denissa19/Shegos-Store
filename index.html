@@ -1258,91 +1258,210 @@
             .option-info span { font-size: 9px !important; } /* Nombre del país más pequeño */
         }
 
-        /* ── REDISEÑO TARJETAS TIENDA ── */
+/* ============================================
+   NUEVO SISTEMA DE CARDS ESTILO FORTNITE.COM
+   ============================================ */
 
-        /* Zoom de imagen en hover */
-        .cosmetic-card:hover .card-img {
-            transform: scale(1.1);
-        }
+/* Colores de fondo por rareza */
+.fn2-card.legendary { --card-bg: linear-gradient(160deg, #C8822A, #8B5A1A); }
+.fn2-card.epic      { --card-bg: linear-gradient(160deg, #7B3FA0, #4A1A6E); }
+.fn2-card.rare      { --card-bg: linear-gradient(160deg, #2A6FAA, #1A3D6E); }
+.fn2-card.uncommon  { --card-bg: linear-gradient(160deg, #3A7A3A, #1A4A1A); }
+.fn2-card.common    { --card-bg: linear-gradient(160deg, #5A5A6A, #2A2A3A); }
 
-        /* Glow de rareza al hover — reemplaza el borde blanco genérico */
-        .cosmetic-card.legendary:hover {
-            border-color: #FF8C00;
-            box-shadow: 0 0 0 1px #FF8C00, 0 14px 40px rgba(255, 140, 0, 0.35);
-        }
-        .cosmetic-card.epic:hover {
-            border-color: #A855F7;
-            box-shadow: 0 0 0 1px #A855F7, 0 14px 40px rgba(168, 85, 247, 0.35);
-        }
-        .cosmetic-card.rare:hover {
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 1px #3B82F6, 0 14px 40px rgba(59, 130, 246, 0.35);
-        }
-        .cosmetic-card.uncommon:hover {
-            border-color: #22C55E;
-            box-shadow: 0 0 0 1px #22C55E, 0 14px 40px rgba(34, 197, 94, 0.35);
-        }
+.fn2-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 40px;
+}
 
-        /* Card sube al hover */
-        .cosmetic-card:hover {
-            transform: translateY(-6px) scale(1.02);
-        }
+/* Card base */
+.fn2-card {
+    position: relative;
+    border-radius: 14px;
+    background: var(--card-bg, linear-gradient(160deg,#5A5A6A,#2A2A3A));
+    overflow: hidden;
+    cursor: pointer;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    transition: transform .35s cubic-bezier(.23,1,.32,1),
+                box-shadow .35s ease;
+    border: none;
+}
 
-        /* Precio en dos líneas */
-        .card-price-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .card-price-vbucks {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .card-price-fiat {
-            font-size: 9px;
-            color: #888;
-            font-weight: 600;
-        }
+/* Card grande para lotes (ocupa 2 columnas) */
+.fn2-card.bundle {
+    aspect-ratio: 2 / 1.5;
+    grid-column: span 2;
+}
 
-        /* Botón desliza desde abajo */
-        .cosmetic-card .btn-add-cart {
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.25s ease, transform 0.25s ease, background 0.2s ease;
-        }
-        .cosmetic-card:hover .btn-add-cart {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .cosmetic-card .btn-add-cart:hover {
-            background: #28feb6;
-            color: #000;
-        }
+.fn2-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,.5);
+}
 
-        /* Badge "Se va hoy" con pulso */
-        @keyframes pulse-hot {
-            0%, 100% { box-shadow: 0 0 6px rgba(40, 254, 182, 0.5); }
-            50%       { box-shadow: 0 0 16px rgba(40, 254, 182, 0.9); }
-        }
-        .overlay-se-va-hoy {
-            animation: pulse-hot 2s infinite;
-        }
+/* Imagen flotante */
+.fn2-img {
+    position: absolute;
+    bottom: 55px; /* sube desde la info */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    height: 75%;
+    object-fit: contain;
+    object-position: bottom;
+    z-index: 2;
+    transition: transform .5s cubic-bezier(.23,1,.32,1);
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,.4));
+}
+.fn2-card:hover .fn2-img {
+    transform: translateX(-50%) translateY(-6px) scale(1.05);
+}
 
-        /* En móvil el botón siempre visible */
-        @media (max-width: 768px) {
-            .cosmetic-card .btn-add-cart {
-                opacity: 1 !important;
-                transform: translateY(0) !important;
-            }
-            .cosmetic-card:hover {
-                transform: none;
-            }
-        }
+/* Badge descuento */
+.fn2-badge-discount {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: #fff;
+    color: #000;
+    font-size: 8px;
+    font-weight: 900;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    z-index: 5;
+}
+
+/* Badge tipo (LOTE) */
+.fn2-badge-type {
+    position: absolute;
+    bottom: 42px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,.4);
+    color: rgba(255,255,255,.7);
+    font-size: 7px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 5;
+    white-space: nowrap;
+}
+
+/* Info inferior */
+.fn2-info {
+    position: relative;
+    z-index: 5;
+    background: rgba(0,0,0,.35);
+    backdrop-filter: blur(4px);
+    padding: 8px 10px 8px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    min-height: 52px;
+}
+
+.fn2-text { flex: 1; min-width: 0; }
+
+.fn2-name {
+    font-family: 'BurbankBigCondensed', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.25;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fn2-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(255,255,255,.85);
+}
+.fn2-price img {
+    width: 12px;
+    height: 12px;
+}
+.fn2-price-old {
+    text-decoration: line-through;
+    opacity: .5;
+    font-size: 9px;
+}
+.fn2-price-fiat {
+    font-size: 8px;
+    color: rgba(255,255,255,.5);
+    margin-top: 1px;
+}
+
+/* Botón + circular */
+.fn2-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    border: 1.5px solid rgba(255,255,255,.4);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .2s, transform .2s;
+    line-height: 1;
+    padding-bottom: 1px;
+}
+.fn2-btn:hover {
+    background: rgba(255,255,255,.4);
+    transform: scale(1.1) rotate(90deg);
+}
+.fn2-btn.added {
+    background: #28feb6;
+    border-color: #28feb6;
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Section title estilo Fortnite */
+.fn2-section-title {
+    font-family: 'BurbankBigCondensed', 'Poppins', sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .fn2-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .fn2-card.bundle {
+        grid-column: span 2;
+        aspect-ratio: 2 / 1.8;
+    }
+    .fn2-section-title { font-size: 24px; }
+    .fn2-card:hover { transform: none; }
+}
+
 </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1463,9 +1582,30 @@
         </div>
 
         <div id="tienda" class="section-box pestana oculto">
-            <h2>Catálogo de Hoy</h2>
+            <h2>Tienda de Hoy</h2>
             <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
             <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
+            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: transparent;
+                border: 1px solid #333;
+                color: #888;
+                padding: 9px 18px;
+                border-radius: 30px;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                cursor: pointer;
+                transition: all .25s ease;
+                margin-bottom: 20px;
+                width: fit-content;
+            " onmouseover="this.style.borderColor='#fff';this.style.color='#fff'"
+               onmouseout="this.style.borderColor='#333';this.style.color='#888'">
+                <i class="fas fa-download"></i> Descargar Tienda de Hoy
+            </button>
             <div id="contenedor-filtros" class="filtros-container"></div>
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
         </div>
@@ -2215,7 +2355,7 @@
 
         function actualizarPreciosGlobales() {
             const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$' }[divisaActual] || '$';
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
 
             document.querySelectorAll('.precio-producto').forEach(el => {
                 const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
@@ -2230,8 +2370,6 @@
         function aplicarFiltros() {
             const cont = document.getElementById('contenedor-tienda');
             let busqueda = document.getElementById('buscador-tienda').value.toLowerCase();
-            
-            // Limpiar contenedor antes de pintar
             cont.innerHTML = '';
 
             const filtrados = tiendaItems.filter(item => {
@@ -2255,37 +2393,57 @@
 
             const ORDEN = ['SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
             const tiempo = getTiempoTxt();
+            const tasa = tasas[divisaActual] || 1;
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
 
             ORDEN.forEach(cat => {
-                if (grouped[cat]) {
-                    const sec = document.createElement('div');
-                    sec.className = 'shop-section';
-                    sec.innerHTML = `
-                        <h2 class="section-title">${cat}</h2>
-                        <div class="grid-productos">
-                            ${grouped[cat].map(p => `
-                                <div class="cosmetic-card ${p.rarityClass}">
-                                    <img src="${p.imagen}" class="card-img" loading="lazy">
-                                    <div class="card-overlay-top">
-                                        <div class="overlay-timer">${tiempo}</div>
-                                        ${p.seVaHoy ? '<div class="overlay-se-va-hoy">Se va hoy</div>' : ''}
-                                    </div>
-                                    <div class="card-overlay-bottom">
-                                        <h3 class="card-title">${p.nombre}</h3>
-                                        <div class="card-action-row">
-                                            <div class="card-price">
-                                                <img src="https://fortnite-api.com/images/vbuck.png">
-                                                <span class="precio-producto" data-precio-usd="${p.usd}">$${p.usd} USD</span>
+                if (!grouped[cat]) return;
+
+                const sec = document.createElement('div');
+                sec.className = 'shop-section';
+                sec.innerHTML = `
+                    <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:24px;">
+                        <h2 class="section-title" style="margin-bottom:0;">${cat}</h2>
+                        <span style="font-size:12px; color:#444; font-weight:600;">${grouped[cat].length} artículos</span>
+                    </div>
+                    <div class="grid-productos">
+                        ${grouped[cat].map(p => {
+                            const precioConvertido = (parseFloat(p.usd) * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            return `
+                            <div class="cosmetic-card ${p.rarityClass}">
+
+                                <!-- IMAGEN FONDO -->
+                                <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
+
+                                <!-- TIMER TOP IZQUIERDA -->
+                                <div class="card-overlay-top">
+                                    <div class="overlay-timer">⏱ ${tiempo}</div>
+                                    ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : '<div></div>'}
+                                </div>
+
+                                <!-- INFO INFERIOR -->
+                                <div class="card-overlay-bottom">
+                                    <h3 class="card-title">${p.nombre}</h3>
+                                    <div class="card-action-row">
+                                        <div class="card-price-block">
+                                            <div class="card-price-vbucks">
+                                                <img src="https://fortnite-api.com/images/vbuck.png" style="width:12px;height:12px;">
+                                                <span>${parseInt(p.vbucks).toLocaleString()}</span>
                                             </div>
-                                            <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">+ CARRITO</button>
+                                            <div class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</div>
                                         </div>
+                                        <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
+                                            + CARRITO
+                                        </button>
                                     </div>
-                                </div>`).join('')}
-                        </div>`;
-                    cont.appendChild(sec);
-                }
+                                </div>
+
+                            </div>`;
+                        }).join('')}
+                    </div>`;
+                cont.appendChild(sec);
             });
-                
+
             actualizarPreciosGlobales();
         }
 
@@ -2362,7 +2520,7 @@
             const btnVaciar = document.getElementById('btn-vaciar-carrito');
             const summaryBox = document.getElementById('cart-summary-box');
             const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$' }[divisaActual] || '$';
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
 
             if(carrito.length === 0) {
                 itemsCont.innerHTML = "<div style='text-align:center; color:#aaa; margin-top:50px;'>Carrito vacío.</div>";
@@ -2382,7 +2540,7 @@
                     <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
                     <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
                     <div class="cart-item-details">
-                            <span style="font-weight:bold; color:#28feb6;">${item.nombre}</span>
+                            <span style="font-family:'BurbankBigCondensed', sans-serif; font-weight:bold; color:#28feb6; text-transform:uppercase; font-size:1.1em;">${item.nombre}</span>
                         ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
                             <div style="color:#28feb6; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
                     </div>
@@ -2779,6 +2937,107 @@ _He adjuntado mi comprobante de pago arriba._`;
         }
         function irAlCheckout() { cerrarCarritoLateral(); abrirPestana('checkout'); }
 
+        async function exportarCatalogo() {
+            const tiendaCont = document.getElementById('contenedor-tienda');
+            const btn = document.getElementById('btn-exportar-catalogo');
+            const originalText = btn.innerHTML;
+
+            // Feedback visual mientras procesa
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Imagen...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            try {
+                const canvas = await html2canvas(tiendaCont, {
+                    useCORS: true, // Importante para cargar imágenes de dominios externos (API de Fortnite)
+                    allowTaint: true,
+                    backgroundColor: "#000000",
+                    scale: 2, // Aumentamos escala para que no se vea pixelado
+                    onclone: (clonedDoc) => {
+                        const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
+                        
+                        // DISEÑO HORIZONTAL PANORÁMICO
+                        clonedTienda.style.width = "2800px"; 
+                        clonedTienda.style.padding = "80px";
+                        clonedTienda.style.position = "relative";
+                        
+                        // Ajustar todos los grids a 12 columnas para aprovechar el ancho
+                        const grids = clonedTienda.querySelectorAll('.fn2-grid');
+                        grids.forEach(g => {
+                            g.style.display = "grid";
+                            g.style.gridTemplateColumns = "repeat(12, 1fr)";
+                            g.style.gap = "12px";
+                            g.style.marginBottom = "60px";
+                        });
+
+                        // LIMPIEZA DE UI: Ocultar precios fiat y botones de compra
+                        clonedTienda.querySelectorAll('.fn2-price-fiat').forEach(el => el.style.display = 'none');
+                        clonedTienda.querySelectorAll('.fn2-btn').forEach(el => el.style.display = 'none');
+
+                        // FIX PARA IMÁGENES OSCURAS:
+                        // 1. Eliminamos el backdrop-filter (no soportado) y hacemos el fondo de la info sólido
+                        clonedTienda.querySelectorAll('.fn2-info').forEach(el => {
+                            el.style.backdropFilter = "none";
+                            el.style.webkitBackdropFilter = "none";
+                            el.style.background = "rgba(0,0,0,0.85)"; // Fondo sólido para evitar que se vea oscuro
+                        });
+
+                        // Mejorar visibilidad de textos en la exportación
+                        clonedTienda.querySelectorAll('.fn2-name').forEach(el => {
+                            el.style.fontSize = "16px";
+                            el.style.marginBottom = "5px";
+                        });
+                        clonedTienda.querySelectorAll('.fn2-price').forEach(el => {
+                            el.style.fontSize = "14px";
+                        });
+
+                        // Ajustar títulos de sección (SKINS, BAILES, etc.)
+                        clonedTienda.querySelectorAll('.fn2-section-title').forEach(t => {
+                            t.style.fontSize = "65px";
+                            t.style.marginBottom = "35px";
+                            t.style.borderBottom = "3px solid #28feb6";
+                            t.style.width = "fit-content";
+                            t.style.paddingBottom = "10px";
+                        });
+
+                        // Logo en la esquina inferior izquierda
+                        const logo = clonedDoc.createElement('img');
+                        logo.src = 'img/logo.png';
+                        logo.style.position = 'absolute';
+                        logo.style.bottom = '40px';
+                        logo.style.left = '40px';
+                        logo.style.height = '200px';
+                        logo.style.zIndex = '1000';
+                        clonedTienda.appendChild(logo);
+
+                        // Texto de Apoyo / Código de Creador
+                        const watermark = clonedDoc.createElement('div');
+                        watermark.innerText = 'APOYA CON EL CÓDIGO: DENISSA_7U7';
+                        watermark.style.position = 'absolute';
+                        watermark.style.bottom = '40px';
+                        watermark.style.right = '40px';
+                        watermark.style.color = '#28feb6';
+                        watermark.style.fontSize = '45px';
+                        watermark.style.fontFamily = 'BurbankBigCondensed, sans-serif';
+                        watermark.style.fontWeight = '900';
+                        clonedTienda.appendChild(watermark);
+                    }
+                });
+
+                const link = document.createElement('a');
+                link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            } catch (err) {
+                console.error("Error al exportar:", err);
+                alert("No se pudo generar la imagen. Por favor, asegúrate de que los artículos se hayan cargado completamente.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => { 
             cargarTienda(); 
             inicializarDivisa();
@@ -2795,6 +3054,4 @@ _He adjuntado mi comprobante de pago arriba._`;
         }
     </script>
 </body>
-</html>
-</html>
 </html>
