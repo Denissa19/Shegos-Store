@@ -1507,7 +1507,7 @@
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px;">
             <!-- Trigger Visual para Escritorio -->
             <div id="currency-trigger-desktop" class="currency-trigger" onclick="abrirModalDivisa()">
-                <img id="header-flag" src="img/usa.png" alt="Flag">
+                <img id="header-flag" src="img/Usa.png" alt="Flag">
                 <span id="header-code">USD</span>
                 <i class="fas fa-chevron-down" style="font-size: 0.7em; opacity: 0.7;"></i>
             </div>
@@ -1872,6 +1872,7 @@
             <div class="checkout-steps-nav">
                 <div class="step-dot active" id="dot-1">1</div>
                 <div class="step-dot" id="dot-2">2</div>
+                <div class="step-dot" id="dot-3">3</div>
             </div>
             
             <div class="checkout-layout">
@@ -1879,8 +1880,28 @@
                 <div class="checkout-form-column">
                     <!-- PASO 1: DATOS -->
                     <div id="checkout-step-1" class="step-content active">
+                        <div class="form-section">
+                            <h4>1. Resumen de tu Pedido</h4>
+                            <div id="checkout-productos-lista-paso">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                            <div class="order-summary-card" style="background: transparent; border: none; padding: 10px 0;">
+                                <div class="summary-line">
+                                    <span>Subtotal:</span>
+                                    <span id="checkout-subtotal-resumen"></span>
+                                </div>
+                                <div class="summary-line total">
+                                    <span>Total:</span>
+                                    <span id="checkout-total-resumen"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2: DETALLES -->
+                    <div id="checkout-step-2" class="step-content">
                       <div class="form-section">
-                        <h4>Detalles de Contacto</h4>
+                        <h4>2. Detalles de Contacto</h4>
                         <label>Nombre Completo:</label>
                         <input type="text" id="cliente-nombre" placeholder="Nombre completo">
 
@@ -1904,13 +1925,14 @@
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="SHAGOS STW"> SHAGOS STW</label>
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="SHEGOS STW"> SHEGOS STW</label>
                         </div>
+                        <button class="btn-secundario" style="margin-top: 15px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(1)">← Volver al resumen</button>
                       </div>
                     </div>
 
-                    <!-- PASO 2: PAGO -->
-                    <div id="checkout-step-2" class="step-content">
+                    <!-- PASO 3: PAGO -->
+                    <div id="checkout-step-3" class="step-content">
                       <div class="form-section">
-                        <h4>Método de Pago</h4>
+                        <h4>3. Método de Pago</h4>
                         <div class="metodos-pago-container">
                             <div class="metodo-card">
                                 <input type="radio" name="metodo-pago" id="met-link" value="link" onchange="mostrarInfoPago()">
@@ -1955,28 +1977,16 @@
                                 </label>
                             </div>
                         </div>
-                        <button class="btn-secundario" style="margin-top: 10px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(1)">← Volver a editar datos</button>
+                        <button class="btn-secundario" style="margin-top: 10px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(2)">← Volver a datos de contacto</button>
                       </div>
                     </div>
                 </div>
 
                 <!-- Columna Derecha: Resumen del Pedido -->
-                <div class="checkout-summary-column">
+                <div class="checkout-summary-column" id="checkout-summary-sticky">
                     <div class="order-summary-card">
-                        <h4>Resumen del Pedido</h4>
-                        <div id="checkout-productos-lista">
-                            <!-- Los productos del carrito se renderizarán aquí -->
-                        </div>
-                        <div id="checkout-productos-lista"></div>
-                        <div class="summary-line">
-                            <span>Subtotal:</span>
-                            <span id="checkout-subtotal-dinero"></span>
-                        </div>
-                        <div class="summary-line total">
-                            <span>Total:</span>
-                            <span id="checkout-total-dinero"></span>
-                        </div>
-                        <button id="btn-main-checkout" class="btn-accion btn-whatsapp btn-pulse" style="margin-top: 20px; background-color: #28feb6; color: #000;" onclick="manejarAccionCheckout()">CONTINUAR AL PAGO</button>
+                        <h4 id="resumen-titulo-dinamico">Tu Pedido</h4>
+                        <button id="btn-main-checkout" class="btn-accion btn-whatsapp btn-pulse" style="background-color: #28feb6; color: #000;" onclick="manejarAccionCheckout()">CONTINUAR A DATOS</button>
                         <p id="txt-instruccion-checkout" style="text-align: center; color: #ccc; font-size: 0.9em; margin-top: 10px; display: none;">Adjunta tu comprobante una vez completes el pago.</p>
                     </div>
                 </div>
@@ -2103,15 +2113,15 @@
             <h2 class="modal-title">¿En qué moneda quieres ver la página?</h2>
             <div class="currency-grid">
                 <button class="currency-option" data-currency="DOP">
-                    <img src="img/dominicana.png" alt="RD">
+                    <img src="img/Dominicana.png" alt="RD">
                     <div class="option-info"><small>DOP</small><span>Rep. Dominicana</span></div>
                 </button>
                 <button class="currency-option" data-currency="MXN">
-                    <img src="img/mexico.png" alt="MX">
+                    <img src="img/Mexico.png" alt="MX">
                     <div class="option-info"><small>MXN</small><span>México</span></div>
                 </button>
                 <button class="currency-option" data-currency="USD">
-                    <img src="img/usa.png" alt="US">
+                    <img src="img/Usa.png" alt="US">
                     <div class="option-info"><small>USD</small><span>Estados Unidos</span></div>
                 </button>
                 <button class="currency-option" data-currency="EUR">
@@ -2226,9 +2236,9 @@
         let divisaActual = localStorage.getItem('userCurrency') || 'USD';
 
         const flagMap = {
-            'DOP': 'img/dominicana.png',
-            'MXN': 'img/mexico.png',
-            'USD': 'img/usa.png',
+            'DOP': 'img/Dominicana.png',
+            'MXN': 'img/Mexico.png',
+            'USD': 'img/Usa.png',
             'EUR': 'img/Europa.png',
             'COP': 'img/Colombia.png',
             'ARS': 'img/Argentina.png',
@@ -2611,7 +2621,7 @@
         }
 
         function sincronizarElementosDivisa() {
-            const flag = flagMap[divisaActual] || 'img/usa.png';
+            const flag = flagMap[divisaActual] || 'img/Usa.png';
             const headerFlag = document.getElementById('header-flag');
             const headerCode = document.getElementById('header-code');
             if (headerFlag) headerFlag.src = flag;
@@ -2815,17 +2825,23 @@ _He adjuntado mi comprobante de pago arriba._`;
             const txt = document.getElementById('txt-instruccion-checkout');
             
             if (paso === 1) {
+                btn.innerText = "CONTINUAR A DATOS";
+                txt.style.display = 'none';
+            } else if (paso === 2) {
                 btn.innerText = "CONTINUAR AL PAGO";
                 txt.style.display = 'none';
-            } else {
+            } else if (paso === 3) {
                 btn.innerText = "REALIZAR PEDIDO";
                 txt.style.display = 'block';
+                mostrarInfoPago();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function manejarAccionCheckout() {
             if (pasoCheckoutActual === 1) {
+                cambiarPasoCheckout(2);
+            } else if (pasoCheckoutActual === 2) {
                 // Validar Paso 1
                 const nombre = document.getElementById('cliente-nombre').value;
                 const telefono = document.getElementById('cliente-whatsapp').value;
@@ -2835,7 +2851,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                 if (!nombre || !telefono || !epicId || cuentasCheckboxes.length === 0) {
                     return alert("Por favor completa tus datos y selecciona al menos una cuenta para continuar.");
                 }
-                cambiarPasoCheckout(2);
+                cambiarPasoCheckout(3);
             } else {
                 enviarPedidoFinal();
             }
@@ -2965,8 +2981,8 @@ _He adjuntado mi comprobante de pago arriba._`;
                         clonedTienda.style.padding = "80px";
                         clonedTienda.style.position = "relative";
                         
-                        // Ajustar todos los grids a 12 columnas para aprovechar el ancho
-                        const grids = clonedTienda.querySelectorAll('.fn2-grid');
+                        // Ajustar todos los grids
+                        const grids = clonedTienda.querySelectorAll('.grid-productos');
                         grids.forEach(g => {
                             g.style.display = "grid";
                             g.style.gridTemplateColumns = "repeat(12, 1fr)";
@@ -2974,29 +2990,29 @@ _He adjuntado mi comprobante de pago arriba._`;
                             g.style.marginBottom = "60px";
                         });
 
-                        // LIMPIEZA DE UI: Ocultar precios fiat y botones de compra
-                        clonedTienda.querySelectorAll('.fn2-price-fiat').forEach(el => el.style.display = 'none');
-                        clonedTienda.querySelectorAll('.fn2-btn').forEach(el => el.style.display = 'none');
+                        // LIMPIEZA DE UI
+                        clonedTienda.querySelectorAll('.card-price-fiat').forEach(el => el.style.display = 'none');
+                        clonedTienda.querySelectorAll('.btn-add-cart').forEach(el => el.style.display = 'none');
 
                         // FIX PARA IMÁGENES OSCURAS:
-                        // 1. Eliminamos el backdrop-filter (no soportado) y hacemos el fondo de la info sólido
-                        clonedTienda.querySelectorAll('.fn2-info').forEach(el => {
+                        clonedTienda.querySelectorAll('.card-overlay-bottom').forEach(el => {
                             el.style.backdropFilter = "none";
                             el.style.webkitBackdropFilter = "none";
                             el.style.background = "rgba(0,0,0,0.85)"; // Fondo sólido para evitar que se vea oscuro
                         });
 
                         // Mejorar visibilidad de textos en la exportación
-                        clonedTienda.querySelectorAll('.fn2-name').forEach(el => {
+                        clonedTienda.querySelectorAll('.card-title').forEach(el => {
                             el.style.fontSize = "16px";
                             el.style.marginBottom = "5px";
                         });
-                        clonedTienda.querySelectorAll('.fn2-price').forEach(el => {
+                        clonedTienda.querySelectorAll('.card-price-vbucks').forEach(el => {
                             el.style.fontSize = "14px";
+                            el.style.display = "flex";
                         });
 
                         // Ajustar títulos de sección (SKINS, BAILES, etc.)
-                        clonedTienda.querySelectorAll('.fn2-section-title').forEach(t => {
+                        clonedTienda.querySelectorAll('.section-title').forEach(t => {
                             t.style.fontSize = "65px";
                             t.style.marginBottom = "35px";
                             t.style.borderBottom = "3px solid #28feb6";
@@ -3118,16 +3134,19 @@ _He adjuntado mi comprobante de pago arriba._`;
         }
 
         function renderCheckoutSummary() {
-            const list = document.getElementById('checkout-productos-lista');
-            const subEl = document.getElementById('checkout-subtotal-dinero');
-            const totEl = document.getElementById('checkout-total-dinero');
+            const list = document.getElementById('checkout-productos-lista-paso');
+            const subEl = document.getElementById('checkout-subtotal-resumen');
+            const totEl = document.getElementById('checkout-total-resumen');
+            
             let total = 0;
             const tasa = tasas[divisaActual] || 1;
-            const simb = { USD: '$', MXN: '$', DOP: '$' }[divisaActual] || '$';
+            const simb = { USD: '$', MXN: '$', DOP: '$', EUR: '€' }[divisaActual] || '$';
+            
             list.innerHTML = carrito.map(i => {
                 total += parseFloat(i.precio);
                 return `<div class="checkout-item-summary"><span>${i.nombre}</span><strong>${simb}${(parseFloat(i.precio)*tasa).toLocaleString(undefined,{minimumFractionDigits:2})}</strong></div>`;
             }).join('');
+            
             const f = (total * tasa).toLocaleString(undefined,{minimumFractionDigits:2});
             subEl.innerText = simb + f; totEl.innerText = simb + f;
         }
@@ -3141,12 +3160,16 @@ _He adjuntado mi comprobante de pago arriba._`;
             const tel = document.getElementById('cliente-whatsapp').value;
             const epic = document.getElementById('cliente-epic').value;
             const cuentas = Array.from(document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked')).map(c=>c.value).join(', ');
-            const itemsStr = carrito.map(i => `• ${i.nombre} ($${i.precio} USD)`).join('\n');
+            const itemsStr = carrito.map(i => `🔸 ${i.nombre} ($${i.precio} USD)`).join('\n');
             const totalUSD = carrito.reduce((s,i)=>s+parseFloat(i.precio),0).toFixed(2);
+            const tasa = tasas[divisaActual] || 1;
+            const totalLocal = (totalUSD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2});
+            const simb = { USD: '$', MXN: '$', DOP: '$', EUR: '€' }[divisaActual] || '$';
 
-            let msg = `*NUEVO PEDIDO - SHEGOS STORE*\n---\n👤 *Nombre:* ${nombre}\n📱 *WhatsApp:* ${tel}\n🎮 *Epic ID:* ${epic}\n🆔 *Cuentas:* ${cuentas}\n💳 *Método:* ${met.value.toUpperCase()}\n`;
+            let msg = `🚀 *NUEVO PEDIDO - SHEGOS STORE*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Cliente:* ${nombre}\n📱 *WhatsApp:* ${tel}\n🎮 *Epic ID:* ${epic}\n🆔 *Cuentas agregadas:* ${cuentas}\n💳 *Método de pago:* ${met.value.toUpperCase()}\n`;
             if (paypalOrderId) msg += `🧾 *Transacción PayPal:* ${paypalOrderId}\n`;
-            msg += `\n🛍️ *Productos:*\n${itemsStr}\n💰 *TOTAL:* $${totalUSD} USD\n---\n_Adjunto comprobante._`;
+            msg += `\n🛍️ *Detalle del Pedido:*\n${itemsStr}\n\n💰 *TOTAL:* $${totalUSD} USD (~ ${simb}${totalLocal} ${divisaActual})\n━━━━━━━━━━━━━━━━━━━━\n_Hola! Acabo de realizar mi pedido desde la web. Aquí adjunto mi comprobante de pago._`;
+
             window.open("https://wa.me/18299326234?text=" + encodeURIComponent(msg), '_blank');
         }
 
