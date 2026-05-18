@@ -3156,13 +3156,20 @@ _He adjuntado mi comprobante de pago arriba._`;
             const msg = document.getElementById('bot-status-msg');
             const username = input ? input.value.trim() : '';
             
+            // Validación del formato del nombre de usuario de Epic Games
+            // Permite letras, números, guiones bajos, puntos y guiones, entre 3 y 16 caracteres.
+            const epicUsernameRegex = /^[a-zA-Z0-9._-]{3,16}$/;
+            if (!epicUsernameRegex.test(username)) {
+                msg.innerHTML = '<span style="color:#ff4d4d;">⚠️ El usuario de Epic Games no tiene un formato válido. (Ej: NombreDeUsuario.123, 3-16 caracteres)</span>';
+                return;
+            }
             if (!username) {
                 msg.innerHTML = '<span style="color:#ff4d4d;">⚠️ Escribe tu usuario de Epic Games.</span>';
                 return;
             }
             
             btn.disabled = true;
-            btn.innerText = 'ENVIANDO...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...';
             msg.innerHTML = '<span style="color:#888;">⏳ Enviando solicitud...</span>';
             
             try {
@@ -3175,14 +3182,17 @@ _He adjuntado mi comprobante de pago arriba._`;
                 if (res.ok) {
                     msg.innerHTML = '<span style="color:#28feb6;">✅ ¡Solicitud enviada! Los bots te agregarán en aprox. 30 minutos.</span>';
                     input.value = '';
+                    setTimeout(() => { msg.innerHTML = ''; }, 5000);
                 } else {
                     msg.innerHTML = '<span style="color:#ff4d4d;">❌ Error: ' + (data.detail || 'No se pudo enviar.') + '</span>';
+                    setTimeout(() => { msg.innerHTML = ''; }, 5000);
                 }
             } catch(e) {
                 msg.innerHTML = '<span style="color:#ff4d4d;">❌ No se pudo conectar con el servidor.</span>';
+                setTimeout(() => { msg.innerHTML = ''; }, 5000);
             } finally {
                 btn.disabled = false;
-           btn.innerHTML = '+ SOLICITAR AGREGARME';
+                btn.innerHTML = '+ SOLICITAR AGREGARME';
             }
         }
 
