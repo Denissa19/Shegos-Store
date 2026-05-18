@@ -1693,53 +1693,84 @@
             <h2>Skins vía Regalo</h2>
             <p style="text-align: center; color: #28feb6; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Agrega nuestras cuentas para recibir tu pedido</p>
             
-            <h3 style="margin-top: 30px; color: #28feb6; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">¿CÓMO FUNCIONA?</h3>
-            <div class="grid-pasos">
-                <div class="paso">
-                    <div class="paso-numero">01</div>
-                    <p>Agrega a TODAS nuestras cuentas dentro de Fortnite, la lista se encuentra abajo.</p>
+            <!-- Contenedor Principal de Cuentas -->
+            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid #222; border-radius: 15px; padding: 25px; max-width: 600px; margin: 0 auto;">
+                
+                <!-- 2. Subsección ¿CÓMO FUNCIONA? -->
+                <h3 style="color: #28feb6; font-size: 1em; text-transform: uppercase; margin-bottom: 20px; font-weight: 700;">¿CÓMO FUNCIONA?</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">01</span>
+                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Agrega a TODAS nuestras cuentas en Fortnite. La solicitud se aceptará de inmediato con nuestro bot automático.</p>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">02</span>
+                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Espera 48 horas para que Epic permita enviarte regalos.</p>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">03</span>
+                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Coordina tu pedido por WhatsApp y listo.</p>
+                    </div>
                 </div>
-                <div class="paso">
-                    <div class="paso-numero">02</div>
-                    <p>Espera 48 horas para que Epic permita enviarte regalos. La solicitud debería aceptarse instantáneamente. Si no, podría tardar un poco más.</p>
-                </div>
-                <div class="paso">
-                    <div class="paso-numero">03</div>
-                    <p>Coordina tu pedido en el grupo de WhatsApp y listo.</p>
-                </div>
-            </div>
 
-            <h3 style="margin-top: 40px; color: #28feb6; border-bottom: 1px solid #333; padding-bottom: 10px; font-size: 1.1em;">NUESTRAS CUENTAS</h3>
-            <div class="grid-cuentas-v2">
-                <div class="cuenta-card-v2">
-                    <strong>Maidas-S</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('Maidas-S', this)">COPIAR ID</button>
+                <!-- 3. Separador y Título -->
+                <div style="height: 1px; background: #333; margin-bottom: 20px;"></div>
+                <h4 style="color: #666; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">NUESTRAS CUENTAS</h4>
+
+                <!-- 4. Lista Vertical de Cuentas -->
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">M</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Maidas-S</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Maidas-S', this)">COPIAR</button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">M</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Maidas-OS</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Maidas-OS', this)">COPIAR</button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">D</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Denissa_STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Denissa_STW', this)">COPIAR</button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">D</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">DENISSA_7u7</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('DENISSA_7u7', this)">COPIAR</button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">S</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">SHAGOS STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('SHAGOS STW', this)">COPIAR</button>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">S</div>
+                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">SHEGOS STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
+                        </div>
+                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('SHEGOS STW', this)">COPIAR</button>
+                    </div>
                 </div>
-                <div class="cuenta-card-v2">
-                    <strong>Maidas-OS</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('Maidas-OS', this)">COPIAR ID</button>
-                </div>
-                <div class="cuenta-card-v2">
-                    <strong>Denissa_STW</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('Denissa_STW', this)">COPIAR ID</button>
-                </div>
-                <div class="cuenta-card-v2">
-                    <strong>DENISSA_7u7</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('DENISSA_7u7', this)">COPIAR ID</button>
-                </div>
-                <div class="cuenta-card-v2">
-                    <strong>SHAGOS STW</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('SHAGOS STW', this)">COPIAR ID</button>
-                </div>
-                <div class="cuenta-card-v2">
-                    <strong>SHEGOS STW</strong>
-                    <span class="epic-label">EPIC</span>
-                    <button class="btn-copiar-v2" onclick="copiarAlPortapapeles('SHEGOS STW', this)">COPIAR ID</button>
+
+                <!-- Formulario de Solicitud Automática integrado -->
+                <div style="margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; border: 1px solid #222;">
+                    <h4 style="margin:0 0 15px 0; color:#28feb6; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px;">SOLICITA QUE TE AÑADAN [AUTOMÁTICO]</h4>
+                    <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
+                    <button id="btn-agregar" class="btn-accion" style="background: #28feb6; color: #000; margin: 0; font-weight: 800; font-size: 0.85em; padding: 10px;">+ SOLICITAR AGREGARME</button>
+                    <p style="font-size: 0.75em; color: #666; margin-top: 15px; text-align: center; line-height: 1.4;">
+                        Nuestros Bots te aceptarán en aprox 30 minutos. Si deseas mayor velocidad, usa Solicitar Agregarme.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1960,8 +1991,6 @@
                         <input type="text" id="cliente-nombre" placeholder="Nombre completo">
 
                         <label>Número de WhatsApp:</label>
-                        <input type="tel" id="cliente-whatsapp" placeholder="Ej: +52 123 456 7890">
-
                         <input type="tel" id="cliente-whatsapp" placeholder="Ej: 521234567890">
                         <label>ID de Epic Games:</label>
                         <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
@@ -3280,5 +3309,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             cerrarPagoBinance();
         }
     </script>
+    <!-- Integración del sistema de bots -->
+    <script src="Aceptar solicitud/web_integration.js"></script>
 </body>
 </html>
