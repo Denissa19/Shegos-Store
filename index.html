@@ -1766,11 +1766,37 @@
                 <!-- Formulario de Solicitud Automática integrado -->
                 <div style="margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; border: 1px solid #222;">
                     <h4 style="margin:0 0 15px 0; color:#28feb6; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px;">SOLICITA QUE TE AÑADAN [AUTOMÁTICO]</h4>
-                    <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
-                    <button id="btn-agregar" class="btn-accion" style="background: #28feb6; color: #000; margin: 0; font-weight: 800; font-size: 0.85em; padding: 10px;">VERIFICAR</button>
+
+                    <!-- Selector de plataforma -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                        <button onclick="seleccionarPlataforma('epic')" id="plat-epic"
+                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #28feb6; 
+                            background:#28feb6; color:#000; font-weight:800; font-size:0.75em; cursor:pointer;">
+                            EPIC
+                        </button>
+                        <button onclick="seleccionarPlataforma('psn')" id="plat-psn"
+                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
+                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
+                            PSN
+                        </button>
+                        <button onclick="seleccionarPlataforma('xbox')" id="plat-xbox"
+                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
+                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
+                            XBOX
+                        </button>
+                    </div>
+
+                    <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" 
+                        style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
+
+                    <button onclick="enviarSolicitudBot()" id="btn-agregar" class="btn-accion" 
+                        style="background: #28feb6; color: #000; margin: 0; font-weight: 800; font-size: 0.85em; padding: 10px;">
+                        + SOLICITAR AGREGARME
+                    </button>
+
                     <div id="bot-status-msg" style="margin-top: 12px; font-size: 0.8em; text-align: center; min-height: 20px;"></div>
                     <p style="font-size: 0.75em; color: #666; margin-top: 15px; text-align: center; line-height: 1.4;">
-                        Nuestros Bots te aceptarán en aprox 30 minutos. Si deseas mayor velocidad, usa Solicitar Agregarme.
+                        Nuestros Bots te aceptarán en aprox 30 minutos.
                     </p>
                 </div>
             </div>
@@ -3332,6 +3358,31 @@ _He adjuntado mi comprobante de pago arriba._`;
             if (!txid) return alert("Ingresa el TxID.");
             alert("¡Pedido enviado! Verificaremos tu pago.");
             cerrarPagoBinance();
+        }
+
+        let plataformaSeleccionada = 'epic';
+
+        function seleccionarPlataforma(plat) {
+            plataformaSeleccionada = plat;
+            const placeholders = {
+                'epic': 'Tu usuario de Epic Games',
+                'psn': 'Tu ID de PlayStation Network',
+                'xbox': 'Tu Gamertag de Xbox'
+            };
+            document.getElementById('epic-username').placeholder = placeholders[plat];
+            
+            ['epic', 'psn', 'xbox'].forEach(p => {
+                const btn = document.getElementById('plat-' + p);
+                if (p === plat) {
+                    btn.style.background = '#28feb6';
+                    btn.style.color = '#000';
+                    btn.style.borderColor = '#28feb6';
+                } else {
+                    btn.style.background = '#000';
+                    btn.style.color = '#888';
+                    btn.style.borderColor = '#333';
+                }
+            });
         }
     </script>
     <!-- Integración del sistema de bots -->
