@@ -1767,25 +1767,6 @@
                 <div style="margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; border: 1px solid #222;">
                     <h4 style="margin:0 0 15px 0; color:#28feb6; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px;">SOLICITA QUE TE AÑADAN [AUTOMÁTICO]</h4>
 
-                    <!-- Selector de plataforma -->
-                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                        <button onclick="seleccionarPlataforma('epic')" id="plat-epic"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #28feb6; 
-                            background:#28feb6; color:#000; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            EPIC
-                        </button>
-                        <button onclick="seleccionarPlataforma('psn')" id="plat-psn"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
-                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            PSN
-                        </button>
-                        <button onclick="seleccionarPlataforma('xbox')" id="plat-xbox"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
-                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            XBOX
-                        </button>
-                    </div>
-
                     <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" 
                         style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
 
@@ -3366,28 +3347,6 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         let plataformaSeleccionada = 'epic';
 
-        function seleccionarPlataforma(plat) {
-            plataformaSeleccionada = plat;
-            const placeholders = {
-                'epic': 'Tu usuario de Epic Games',
-                'psn': 'Tu ID de PlayStation Network',
-                'xbox': 'Tu Gamertag de Xbox'
-            };
-            document.getElementById('epic-username').placeholder = placeholders[plat];
-            
-            ['epic', 'psn', 'xbox'].forEach(p => {
-                const btn = document.getElementById('plat-' + p);
-                if (p === plat) {
-                    btn.style.background = '#28feb6';
-                    btn.style.color = '#000';
-                    btn.style.borderColor = '#28feb6';
-                } else {
-                    btn.style.background = '#000';
-                    btn.style.color = '#888';
-                    btn.style.borderColor = '#333';
-                }
-            });
-        }
     </script>
     <!-- Integración del sistema de bots -->
     <script src="web_integration.js"></script>
