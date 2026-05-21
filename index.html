@@ -1767,25 +1767,6 @@
                 <div style="margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; border: 1px solid #222;">
                     <h4 style="margin:0 0 15px 0; color:#28feb6; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px;">SOLICITA QUE TE AÑADAN [AUTOMÁTICO]</h4>
 
-                    <!-- Selector de plataforma -->
-                    <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                        <button onclick="seleccionarPlataforma('epic')" id="plat-epic"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #28feb6; 
-                            background:#28feb6; color:#000; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            EPIC
-                        </button>
-                        <button onclick="seleccionarPlataforma('psn')" id="plat-psn"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
-                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            PSN
-                        </button>
-                        <button onclick="seleccionarPlataforma('xbox')" id="plat-xbox"
-                            style="flex:1; padding:8px; border-radius:6px; border:1px solid #333; 
-                            background:#000; color:#888; font-weight:800; font-size:0.75em; cursor:pointer;">
-                            XBOX
-                        </button>
-                    </div>
-
                     <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" 
                         style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
 
@@ -2283,7 +2264,8 @@
         
         // IMPORTANT: Move this to a backend environment variable. 
         // Exposing webhooks on the frontend is a security risk.
-        const WEBHOOK_DISCORD_SOLICITUDES = "YOUR_BACKEND_PROXY_URL"; 
+        const BOT_API_URL = "https://shegos-bots-2.onrender.com";
+        const WEBHOOK_DISCORD_SOLICITUDES = ""; 
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
 
@@ -2810,7 +2792,7 @@
             let totalSum = 0;
             const listaProductos = carrito.map(i => {
                 if(i.precio !== 'Consultar') totalSum += parseFloat(i.precio);
-                return `• ${i.nombre} ($${i.precio})`;
+                return `• *${i.nombre}* ($${i.precio})\n  📸 Foto: ${i.imagen}`;
             }).join('\n');
             const total = totalSum.toFixed(2);
 
@@ -3094,25 +3076,33 @@ _He adjuntado mi comprobante de pago arriba._`;
                     useCORS: true,
                     allowTaint: false,
                     backgroundColor: "#000000",
-                    scale: 1.2, // Balance ideal entre calidad y rendimiento
+                    scale: 1,
                     logging: false,
                     onclone: (clonedDoc) => {
                         const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
                         
-                        // DISEÑO OPTIMIZADO PARA EXPORTACIÓN
-                        clonedTienda.style.width = "1800px"; 
+                        // DISEÑO OPTIMIZADO PARA EXPORTACIÓN (1280x720 HD)
+                        clonedTienda.style.width = "1280px"; 
+                        clonedTienda.style.height = "720px";
                         clonedTienda.style.padding = "40px";
+                        clonedTienda.style.overflow = "hidden";
                         clonedTienda.style.position = "relative";
-                        clonedTienda.style.background = "#000000";
+                        clonedTienda.style.backgroundImage = "url('https://imgs.search.brave.com/VbEA87RHA8nZsYFtPCFQ-a04VqNbGyzYRYWnWt_Pwx4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zbGlk/ZWNoZWYubmV0L3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI0LzAx/L0ZvcnRuaXRlLUdh/bWUtQmFja2dyb3Vu/ZC5qcGc')";
+                        clonedTienda.style.backgroundSize = "cover";
+                        clonedTienda.style.backgroundPosition = "center";
+                        clonedTienda.style.backgroundRepeat = "no-repeat";
+
+                        // COMBINAR TODO EN UN SOLO GRID (SIN SECCIONES)
+                        const allCards = Array.from(clonedTienda.querySelectorAll('.cosmetic-card'));
+                        const singleGrid = clonedDoc.createElement('div');
+                        singleGrid.style.display = "grid";
+                        singleGrid.style.gridTemplateColumns = "repeat(4, 1fr)";
+                        singleGrid.style.gap = "8px";
+                        singleGrid.style.marginBottom = "40px";
                         
-                        // Reconfigurar Grid (8 columnas es óptimo para 1800px)
-                        const grids = clonedTienda.querySelectorAll('.grid-productos');
-                        grids.forEach(g => {
-                            g.style.display = "grid";
-                            g.style.gridTemplateColumns = "repeat(8, 1fr)";
-                            g.style.gap = "10px";
-                            g.style.marginBottom = "40px";
-                        });
+                        allCards.forEach(card => singleGrid.appendChild(card));
+                        clonedTienda.innerHTML = '';
+                        clonedTienda.appendChild(singleGrid);
 
                         // LIMPIEZA Y MEJORA DE VISIBILIDAD
                         clonedTienda.querySelectorAll('.card-price-fiat').forEach(el => el.style.display = 'none');
@@ -3123,7 +3113,8 @@ _He adjuntado mi comprobante de pago arriba._`;
                         clonedTienda.querySelectorAll('.cosmetic-card').forEach(card => {
                             card.style.background = "#151515"; 
                             card.style.boxShadow = "none";
-                            card.style.border = "1px solid #333";
+                            card.style.border = "1px solid rgba(255,255,255,0.15)";
+                            card.style.borderRadius = "10px";
                         });
 
                         clonedTienda.querySelectorAll('.card-img').forEach(img => {
@@ -3137,21 +3128,15 @@ _He adjuntado mi comprobante de pago arriba._`;
                         });
 
                         clonedTienda.querySelectorAll('.card-title').forEach(el => {
-                            el.style.fontSize = "14px";
+                            el.style.fontSize = "13px";
                             el.style.color = "#ffffff";
-                        });
-
-                        clonedTienda.querySelectorAll('.section-title').forEach(t => {
-                            t.style.fontSize = "45px";
-                            t.style.marginBottom = "20px";
-                            t.style.borderBottom = "3px solid #28feb6";
                         });
 
                         const logo = clonedDoc.createElement('img');
                         logo.src = 'img/logo.png';
                         logo.style.position = 'absolute';
                         logo.style.bottom = '20px';
-                        logo.style.left = '20px';
+                        logo.style.left = '40px';
                         logo.style.height = '120px';
                         logo.style.zIndex = '1000';
                         clonedTienda.appendChild(logo);
@@ -3160,9 +3145,9 @@ _He adjuntado mi comprobante de pago arriba._`;
                         watermark.innerText = 'CÓDIGO: DENISSA_7U7';
                         watermark.style.position = 'absolute';
                         watermark.style.bottom = '20px';
-                        watermark.style.right = '20px';
+                        watermark.style.right = '40px';
                         watermark.style.color = '#ffffff';
-                        watermark.style.fontSize = '30px';
+                        watermark.style.fontSize = '28px';
                         watermark.style.fontFamily = 'BurbankBigCondensed, sans-serif';
                         watermark.style.fontWeight = '900';
                         clonedTienda.appendChild(watermark);
@@ -3175,12 +3160,12 @@ _He adjuntado mi comprobante de pago arriba._`;
                     const url = URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.png`;
+                    link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.jpg`;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                     URL.revokeObjectURL(url);
-                }, 'image/png');
+                }, 'image/jpeg', 0.8);
 
             } catch (err) {
                 console.error("Error al exportar:", err);
@@ -3303,7 +3288,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             const tel = document.getElementById('cliente-whatsapp').value;
             const epic = document.getElementById('cliente-epic').value;
             const cuentas = Array.from(document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked')).map(c=>c.value).join(', ');
-            const itemsStr = carrito.map(i => `🔸 ${i.nombre} ($${i.precio} USD)`).join('\n');
+            const itemsStr = carrito.map(i => `🔸 *${i.nombre}*\n   💵 Precio: $${i.precio} USD\n   📸 Foto: ${i.imagen}`).join('\n\n');
             const totalUSD = carrito.reduce((s,i)=>s+parseFloat(i.precio),0).toFixed(2);
             const tasa = tasas[divisaActual] || 1;
             const totalLocal = (totalUSD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2});
@@ -3362,28 +3347,6 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         let plataformaSeleccionada = 'epic';
 
-        function seleccionarPlataforma(plat) {
-            plataformaSeleccionada = plat;
-            const placeholders = {
-                'epic': 'Tu usuario de Epic Games',
-                'psn': 'Tu ID de PlayStation Network',
-                'xbox': 'Tu Gamertag de Xbox'
-            };
-            document.getElementById('epic-username').placeholder = placeholders[plat];
-            
-            ['epic', 'psn', 'xbox'].forEach(p => {
-                const btn = document.getElementById('plat-' + p);
-                if (p === plat) {
-                    btn.style.background = '#28feb6';
-                    btn.style.color = '#000';
-                    btn.style.borderColor = '#28feb6';
-                } else {
-                    btn.style.background = '#000';
-                    btn.style.color = '#888';
-                    btn.style.borderColor = '#333';
-                }
-            });
-        }
     </script>
     <!-- Integración del sistema de bots -->
     <script src="web_integration.js"></script>
