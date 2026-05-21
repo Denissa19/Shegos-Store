@@ -9,8 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- PayPal SDK (Paso 1) -->
-    <script src="https://www.paypal.com/sdk/js?client-id=BAA8p9i6p_80fWd68nSAn3Z2Yp4G0p6nSAn3Z2Yp4G0&currency=USD"></script>
+
     <style>
         /* =========================================
            ESTILOS GENERALES Y ANIMACIONES BASE
@@ -1020,7 +1019,7 @@
         .discord-box:hover { background-color: #4752C4; transform: scale(1.05) translateY(-3px); animation: none; box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6); }
         .footer-text { color: #888; font-size: 0.9em; margin-top: 20px; }
         /* PAYPAL */
-        #paypal-button-container { margin: 20px auto; min-height: 45px; max-width: 350px; }
+
         .paypal-resultado { margin-top: 15px; padding: 15px; border-radius: 8px; text-align: center; font-weight: bold; }
         .paypal-resultado.exito { border: 2px solid #28feb6; background-color: rgba(40, 254, 182, 0.1); color: #28feb6; }
         .paypal-resultado.error { border: 2px solid #e74c3c; background-color: rgba(231,76,60,0.1); color: #e74c3c; }
@@ -1539,6 +1538,68 @@
     .fn2-card:hover { transform: none; }
 }
 
+/* ===== SHEGOS BOTS SECCIÓN ===== */
+#shegos-bots-section * { box-sizing: border-box; }
+#shegos-bots-section { font-family: 'Poppins', sans-serif; color: #fff; background: #000; border-radius: 20px; overflow: hidden; }
+
+.sb-hero { padding: 80px 20px 60px; text-align: center; position: relative; overflow: hidden; }
+.sb-hero::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse at 50% 0%, rgba(40,254,182,0.07) 0%, transparent 60%); pointer-events:none; }
+
+.sb-badge { display:inline-block; background:rgba(40,254,182,0.1); border:1px solid rgba(40,254,182,0.3); color:#28feb6; padding:5px 18px; border-radius:50px; font-size:0.7em; font-weight:700; letter-spacing:3px; text-transform:uppercase; margin-bottom:24px; }
+.sb-title { font-size:clamp(2.2em,6vw,4.2em); font-weight:900; text-transform:uppercase; letter-spacing:2px; line-height:1.1; margin-bottom:16px; }
+.sb-title span { background:linear-gradient(135deg,#28feb6,#5865f2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.sb-subtitle { color:#666; font-size:1em; max-width:520px; margin:0 auto 48px; line-height:1.7; }
+
+.sb-card { background:#111; border:1px solid rgba(40,254,182,0.3); border-radius:15px; padding:30px; max-width:620px; margin:0 auto; box-shadow:0 0 30px rgba(40,254,182,0.08); }
+.sb-form-grid { display:grid; grid-template-columns:1fr auto; gap:12px; margin-bottom:16px; }
+@media (max-width:500px) { .sb-form-grid { grid-template-columns:1fr; } }
+.sb-form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:16px; }
+.sb-label { display:block; font-size:0.68em; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#555; margin-bottom:8px; }
+.sb-input { width:100%; background:#0a0a0a; border:1px solid #222; border-radius:10px; padding:14px 16px; color:#fff; font-size:0.95em; font-family:inherit; outline:none; transition:border-color 0.2s; }
+.sb-input:focus { border-color:#28feb6; }
+.sb-select { background:#0a0a0a; border:1px solid #222; border-radius:10px; padding:14px 16px; color:#fff; font-size:0.88em; font-family:inherit; outline:none; cursor:pointer; width:100%; height:52px; }
+.sb-btn { width:100%; padding:16px; background:linear-gradient(135deg,#28feb6,#1dd99e); border:none; border-radius:10px; color:#000; font-size:0.95em; font-weight:800; text-transform:uppercase; letter-spacing:2px; cursor:pointer; font-family:inherit; box-shadow:0 0 25px rgba(40,254,182,0.35); transition:all 0.3s; display:flex; align-items:center; justify-content:center; gap:10px; }
+.sb-btn:hover { box-shadow:0 0 45px rgba(40,254,182,0.5); transform:translateY(-1px); }
+.sb-btn:disabled { background:#1a1a1a; color:#555; box-shadow:none; cursor:not-allowed; transform:none; }
+
+.sb-error { display:flex; align-items:center; gap:10px; background:#1a0a0a; border:1px solid rgba(255,77,77,0.3); border-radius:10px; padding:12px 16px; margin-bottom:16px; color:#ff4d4d; font-size:0.85em; font-weight:500; }
+
+.sb-success-box { text-align:center; padding:20px 0; }
+.sb-countdown { font-size:clamp(2.2em,7vw,3.5em); font-family:'Courier New',monospace; font-weight:900; color:#ffd700; text-shadow:0 0 20px rgba(255,215,0,0.5); letter-spacing:4px; margin:16px 0; }
+.sb-btn-outline { background:none; border:1px solid #28feb6; color:#28feb6; padding:10px 24px; border-radius:50px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-size:0.78em; font-family:inherit; margin-top:16px; transition:all 0.2s; }
+.sb-btn-outline:hover { background:#28feb6; color:#000; }
+
+.sb-warning-bar { background:#110d00; border-top:1px solid #2b2000; border-bottom:1px solid #2b2000; padding:14px 20px; text-align:center; color:#ffd700; font-size:0.82em; font-weight:500; }
+
+.sb-section { padding:60px 20px; background:#000; border-top:1px solid #121212; }
+.sb-inner { max-width:900px; margin:0 auto; }
+.sb-section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
+.sb-section-title { font-size:1.4em; font-weight:800; text-transform:uppercase; letter-spacing:3px; display:flex; align-items:center; gap:10px; }
+.sb-count-pill { background:rgba(40,254,182,0.1); border:1px solid rgba(40,254,182,0.3); color:#28feb6; padding:5px 14px; border-radius:50px; font-size:0.68em; font-weight:700; letter-spacing:2px; }
+
+.sb-bots-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(185px,1fr)); gap:12px; }
+.sb-bot-card { background:#0a0a0a; border:1px solid rgba(40,254,182,0.15); border-radius:12px; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; }
+.sb-bot-card.offline { border-color:#1a1a1a; opacity:0.4; }
+.sb-bot-name { font-family:'Courier New',monospace; font-size:0.86em; font-weight:700; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:130px; }
+.sb-bot-badge { display:flex; align-items:center; gap:6px; font-size:0.62em; font-weight:800; text-transform:uppercase; letter-spacing:1px; flex-shrink:0; }
+.sb-bot-badge.online { color:#28feb6; } .sb-bot-badge.offline { color:#ff4d4d; }
+.sb-dot { width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.sb-dot.online { background:#28feb6; box-shadow:0 0 8px #28feb6; animation:sbPulse 2s ease-in-out infinite; }
+.sb-dot.offline { background:#ff4d4d; }
+
+.sb-steps-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+.sb-step-card { background:#0a0a0a; border:1px solid #1a1a1a; border-radius:12px; padding:28px 22px; text-align:center; transition:border-color 0.3s; }
+.sb-step-card:hover { border-color:rgba(40,254,182,0.3); }
+.sb-step-icon { width:58px; height:58px; background:#111; border:1px solid rgba(40,254,182,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px; font-size:1.5em; }
+.sb-step-title { font-size:0.9em; font-weight:800; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.sb-step-desc { color:#666; font-size:0.83em; line-height:1.7; }
+
+
+
+@keyframes sbPulse { 0%,100% { opacity:1; box-shadow:0 0 5px #28feb6; } 50% { opacity:0.5; box-shadow:0 0 12px #28feb6; } }
+@keyframes sbSpin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+.sb-spin { animation:sbSpin 1s linear infinite; display:inline-block; }
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -1689,98 +1750,79 @@
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
         </div>
 
-        <div id="ids-regalos" class="section-box pestana oculto">
-            <h2>Skins vía Regalo</h2>
-            <p style="text-align: center; color: #28feb6; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 30px;">Agrega nuestras cuentas para recibir tu pedido</p>
-            
-            <!-- Contenedor Principal de Cuentas -->
-            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid #222; border-radius: 15px; padding: 25px; max-width: 600px; margin: 0 auto;">
-                
-                <!-- 2. Subsección ¿CÓMO FUNCIONA? -->
-                <h3 style="color: #28feb6; font-size: 1em; text-transform: uppercase; margin-bottom: 20px; font-weight: 700;">¿CÓMO FUNCIONA?</h3>
-                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
-                    <div style="display: flex; align-items: flex-start; gap: 15px;">
-                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">01</span>
-                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Agrega a TODAS nuestras cuentas en Fortnite. La solicitud se aceptará de inmediato con nuestro bot automático.</p>
+        <div id="ids-regalos" class="pestana oculto">
+            <section id="shegos-bots-section">
+              <div class="sb-hero">
+                <div class="sb-badge">Sistema Automatizado</div>
+                <h2 class="sb-title">Recibe tus cosméticos via regalO</h2> 
+                <p class="sb-subtitle">Agrega a TODAS nuestras cuentas dentro de Fortnite. La solicitud debería aceptarse de inmediato, pasadas 48h luego de agregarnos podras recibir regalos.</p>
+
+                <div class="sb-card">
+                  <!-- COUNTDOWN -->
+                  <div id="sb-state-countdown" class="sb-success-box" style="display:none">
+                    <div style="font-size:3em;margin-bottom:12px">⏱️</div>
+                    <h3 style="font-size:1.3em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Solicitud Enviada!</h3>
+        <p style="color:#666;font-size:0.82em;margin-bottom:4px">Se enviaron solicitudes de amistad desde <strong id="sb-sent-count" style="color:#28feb6">—</strong> cuenta(s) · Tiempo restante:</p>
+                    <div class="sb-countdown" id="sb-timer">00:00:00</div>
+                    <p style="color:#555;font-size:0.75em">Acepta la solicitud en Fortnite para completar el proceso</p>
+                  </div>
+
+                  <!-- YA AMIGO -->
+                  <div id="sb-state-already" class="sb-success-box" style="display:none">
+                    <div style="font-size:3em;margin-bottom:12px">✅</div>
+        <h3 style="font-size:1.3em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Solicitud Enviada!</h3>
+        <p style="color:#ffd700;font-weight:700;font-size:1.05em;margin-bottom:20px">Se enviaron solicitudes de amistad desde <strong id="sb-already-count" style="color:#28feb6">0</strong> cuenta(s).</p>
+                    <button class="sb-btn-outline" onclick="sbReset()">Añadir otra cuenta</button>
+                  </div>
+
+                  <!-- FORMULARIO -->
+                  <div id="sb-state-form">
+                    <div class="sb-form-grid">
+                      <div>
+                        <label class="sb-label" for="sb-username">ID de Usuario</label>
+                        <input id="sb-username" class="sb-input" type="text" placeholder="Tu Epic ID, PSN o Xbox..." autocomplete="off" />
+                      </div>
+                      <div>
+                        <label class="sb-label" for="sb-platform">Plataforma</label>
+                        <select id="sb-platform" class="sb-select">
+                          <option value="epic">Epic Games</option>
+                          <option value="psn">PlayStation</option>
+                          <option value="xbl">Xbox</option>
+                        </select>
+                      </div>
                     </div>
-                    <div style="display: flex; align-items: flex-start; gap: 15px;">
-                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">02</span>
-                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Espera 48 horas para que Epic permita enviarte regalos.</p>
-                    </div>
-                    <div style="display: flex; align-items: flex-start; gap: 15px;">
-                        <span style="color: #28feb6; font-weight: 800; font-size: 1.1em;">03</span>
-                        <p style="margin: 0; font-size: 0.85em; color: #bbb; line-height: 1.5;">Coordina tu pedido por WhatsApp y listo.</p>
-                    </div>
+                    <div id="sb-error" class="sb-error" style="display:none">⚠️ <span id="sb-error-text"></span></div>
+                    <button id="sb-btn" class="sb-btn" onclick="sbEnviar()"> Solicitar agregarme</button>
+                  </div>
                 </div>
+              </div>
 
-                <!-- 3. Separador y Título -->
-                <div style="height: 1px; background: #333; margin-bottom: 20px;"></div>
-                <h4 style="color: #666; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">NUESTRAS CUENTAS</h4>
+              <div class="sb-warning-bar">Por políticas de Fortnite debes ser amigo por al menos <strong>48 horas</strong> antes de recibir regalos</div>
 
-                <!-- 4. Lista Vertical de Cuentas -->
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">M</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Maidas-S</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Maidas-S', this)">COPIAR</button>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">M</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Maidas-OS</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Maidas-OS', this)">COPIAR</button>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">D</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">Denissa_STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Denissa_STW', this)">COPIAR</button>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">D</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">DENISSA_7u7</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('DENISSA_7u7', this)">COPIAR</button>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">S</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">SHAGOS STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('SHAGOS STW', this)">COPIAR</button>
-                    </div>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 10px 15px; border-radius: 8px; border: 1px solid #111;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #111; color: #28feb6; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9em; border: 1px solid #222;">S</div>
-                            <div><div style="color: #fff; font-size: 0.9em; font-weight: 600;">SHEGOS STW</div><div style="color: #888; font-size: 0.7em;">Epic</div></div>
-                        </div>
-                        <button class="btn-copy-mini" onclick="copiarAlPortapapeles('SHEGOS STW', this)">COPIAR</button>
-                    </div>
+              <!-- ESTADO DE BOTS -->
+              <div class="sb-section">
+                <div class="sb-inner">
+                  <div class="sb-section-head">
+                    <div class="sb-section-title">⚡ Estado de Bots</div>
+                    <span id="sb-count-pill" class="sb-count-pill" style="display:none"></span>
+                  </div>
+                  <div class="sb-bots-grid" id="sb-bots-grid"></div>
                 </div>
+              </div>
 
-                <!-- Formulario de Solicitud Automática integrado -->
-                <div style="margin-top: 30px; background: #000; padding: 20px; border-radius: 10px; border: 1px solid #222;">
-                    <h4 style="margin:0 0 15px 0; color:#28feb6; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px;">SOLICITA QUE TE AÑADAN [AUTOMÁTICO]</h4>
-
-                    <input type="text" id="epic-username" placeholder="Tu usuario de Epic Games" 
-                        style="margin-bottom: 10px; background: #0a0a0a; border: 1px solid #222; font-size: 0.85em;">
-
-                    <button onclick="enviarSolicitudBot()" id="btn-agregar" class="btn-accion" 
-                        style="background: #28feb6; color: #000; margin: 0; font-weight: 800; font-size: 0.85em; padding: 10px;">
-                        + SOLICITAR AGREGARME
-                    </button>
-
-                    <div id="bot-status-msg" style="margin-top: 12px; font-size: 0.8em; text-align: center; min-height: 20px;"></div>
-                    <p style="font-size: 0.75em; color: #666; margin-top: 15px; text-align: center; line-height: 1.4;">
-                        Nuestros Bots te aceptarán en aprox 30 minutos.
-                    </p>
+              <!-- CÓMO FUNCIONA -->
+              <div class="sb-section">
+                <div class="sb-inner">
+                  <div class="sb-section-title" style="justify-content:center;margin-bottom:36px;font-size:1.3em">Cómo Funciona</div>
+                  <div class="sb-steps-grid">
+                    <div class="sb-step-card"><div class="sb-step-icon">🎮</div><div class="sb-step-title">Ingresa tu ID</div><p class="sb-step-desc">Escribe tu nombre de usuario exacto de Epic Games, PSN o Xbox y selecciona tu plataforma.</p></div>
+                    <div class="sb-step-card"><div class="sb-step-icon">🚀</div><div class="sb-step-title">Envía la solicitud</div><p class="sb-step-desc">Nuestros bots te enviarán una solicitud de amistad automáticamente en segundos.</p></div>
+                    <div class="sb-step-card"><div class="sb-step-icon">🛡️</div><div class="sb-step-title">Espera 48 horas</div><p class="sb-step-desc">Por políticas de Fortnite, debes ser amigo por 48 horas antes de poder recibir regalos.</p></div>
+                  </div>
                 </div>
-            </div>
+              </div>
+
+            </section>
         </div>
 
         <div id="recargas" class="section-box pestana oculto">
@@ -2129,13 +2171,16 @@
                 <p style="text-align: center; color: #ff9d00; font-weight: bold; margin-bottom: 15px;">
                     ⚠️ Selecciona la casilla "cubrir comisión" o tu pago será reembolsado.
                 </p>
-                <p style="text-align: center;">Haz clic en el botón de abajo para realizar tu pago de forma segura.</p>
-                <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="btn-pago-paypal" style="text-decoration: none; margin: 20px auto; max-width: 300px;">
+                <p style="text-align: center; color: #aaa; margin-bottom: 20px;">
+                    Haz clic en el botón de abajo, completa tu pago y luego regresa aquí para enviar tu pedido por WhatsApp con el comprobante.
+                </p>
+                <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="btn-pago-paypal" style="text-decoration: none; margin: 0 auto 20px auto; max-width: 300px;">
                     <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal">
                     PAGAR CON PAYPAL
                 </a>
-                <p style="text-align: center; margin-bottom: 15px;">Completa tu pago usando los botones oficiales:</p>
-                <div id="paypal-button-container"></div>
+                <p style="text-align: center; color: #28feb6; font-size: 0.9em; font-weight: bold;">
+                    ✅ Una vez pagado, presiona "REALIZAR PEDIDO" y adjunta tu comprobante en WhatsApp.
+                </p>
             </div>
             <div id="pago-oxxo" class="info-pago-box oculto">
                 <h4>Pago en OXXO</h4>
@@ -2268,6 +2313,7 @@
         const WEBHOOK_DISCORD_SOLICITUDES = ""; 
         let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
         let categoriaActual = 'Todas';
+        let pasoCheckoutActual = 1;
 
         // LÓGICA DE RASTREO DE PEDIDOS
         async function buscarPedidos() {
@@ -2752,8 +2798,7 @@
             
             document.querySelectorAll('.info-pago-box').forEach(b => b.classList.add('oculto')); 
             
-            // Binance no muestra información aquí, ya que utiliza el modal de confirmación al final
-            if(metodo && metodo !== 'binance') {
+            if (metodo && metodo !== 'binance') {
                 const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
                 const box = document.getElementById('pago-' + id);
                 if(box) box.classList.remove('oculto');
@@ -2966,6 +3011,17 @@ _He adjuntado mi comprobante de pago arriba._`;
             document.getElementById('sidebar').classList.toggle('abierto');
         }
 
+        function mostrarSubServicio(id) {
+            const menu = document.getElementById('menu-servicios');
+            const subs = document.querySelectorAll('.sub-seccion-servicios');
+            
+            // Toggles entre el menú principal y las subsecciones
+            menu.style.display = (id === 'menu') ? 'block' : 'none';
+            subs.forEach(s => {
+                s.style.display = (id !== 'menu' && s.id === 'sub-' + id) ? 'block' : 'none';
+            });
+        }
+
         // LÓGICA MODAL BINANCE PAY
         function abrirPagoBinance(totalUsdt) {
             document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
@@ -3000,18 +3056,6 @@ _He adjuntado mi comprobante de pago arriba._`;
             document.body.style.overflow = 'auto';
         }
 
-        function mostrarSubServicio(tipo) {
-            document.getElementById('menu-servicios').style.display = 'none';
-            document.getElementById('sub-pavos').style.display = 'none';
-            document.getElementById('sub-club').style.display = 'none';
-            document.getElementById('sub-gamepass').style.display = 'none';
-
-            if (tipo === 'pavos') document.getElementById('sub-pavos').style.display = 'block';
-            else if (tipo === 'club') document.getElementById('sub-club').style.display = 'block';
-            else if (tipo === 'gamepass') document.getElementById('sub-gamepass').style.display = 'block';
-            else document.getElementById('menu-servicios').style.display = 'block';
-        }
-
         function toggleFloatingButtons(show) {
             const container = document.querySelector('.floating-container');
             if (container) container.style.display = show ? 'flex' : 'none';
@@ -3030,14 +3074,15 @@ _He adjuntado mi comprobante de pago arriba._`;
             // Ocultar botones flotantes en checkout
             toggleFloatingButtons(id !== 'checkout');
             
-            if (id === 'recargas') mostrarSubServicio('menu');
-
             const btns = Array.from(document.querySelectorAll('.tab-btn')).filter(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(id));
             btns.forEach(b => b.classList.add('activo'));
 
             const tabActiva = document.getElementById(id);
             tabActiva.style.animation = 'none'; tabActiva.offsetHeight; tabActiva.style.animation = null; 
             window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Asegurar que al entrar a Servicios se vea el menú principal
+            if (id === 'recargas') mostrarSubServicio('menu');
 
             // Si es la pestaña de checkout, renderizar el resumen
             if (id === 'checkout') {
@@ -3059,7 +3104,11 @@ _He adjuntado mi comprobante de pago arriba._`;
             if(!document.getElementById('checkout').classList.contains('oculto')) toggleFloatingButtons(false);
             else toggleFloatingButtons(true);
         }
-        function irAlCheckout() { cerrarCarritoLateral(); abrirPestana('checkout'); }
+        function irAlCheckout() { 
+            if (carrito.length === 0) return alert("Tu carrito está vacío.");
+            cerrarCarritoLateral(); 
+            abrirPestana('checkout'); 
+        }
 
         async function exportarCatalogo() {
             const tiendaCont = document.getElementById('contenedor-tienda');
@@ -3192,163 +3241,271 @@ _He adjuntado mi comprobante de pago arriba._`;
             });
         }
 
-        // ==========================================
-        // NUEVAS FUNCIONES DE CHECKOUT (JS-REEMPLAZAR)
-        // ==========================================
-        let paypalOrderId = null; 
-        let pasoCheckoutActual = 1;
-
-        function renderPayPalButtons() {
-            const container = document.getElementById('paypal-button-container');
-            if (!container || !window.paypal) return;
-            container.innerHTML = '';
-            const totalUSD = carrito.reduce((sum, item) => sum + parseFloat(item.precio), 0).toFixed(2);
-            
-            paypal.Buttons({
-                createOrder: (data, actions) => actions.order.create({ purchase_units: [{ amount: { value: totalUSD } }] }),
-                onApprove: (data, actions) => actions.order.capture().then(details => {
-                    paypalOrderId = details.id;
-                    alert("¡Pago de PayPal exitoso! ID: " + paypalOrderId);
-                    const btn = document.getElementById('btn-main-checkout');
-                    btn.innerHTML = '<i class="fab fa-whatsapp"></i> FINALIZAR Y ENVIAR WHATSAPP';
-                    btn.classList.add('pago-confirmado');
-                }),
-                onError: (err) => alert("Error con PayPal: " + err)
-            }).render('#paypal-button-container');
-        }
-
-        function irAlCheckout() {
-            if (carrito.length === 0) return alert("Tu carrito está vacío.");
-            cerrarCarritoLateral();
-            pasoCheckoutActual = 1;
-            paypalOrderId = null;
-            renderCheckoutSummary();
-            abrirPestana('checkout');
-            cambiarPasoCheckout(1);
-        }
-
-        function cambiarPasoCheckout(paso) {
-            pasoCheckoutActual = paso;
-            document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
-            document.getElementById(`checkout-step-${paso}`).classList.add('active');
-            document.querySelectorAll('.step-dot').forEach((d, i) => {
-                if (i + 1 <= paso) d.classList.add('active');
-                else d.classList.remove('active');
-            });
-            const btn = document.getElementById('btn-main-checkout');
-            btn.innerText = (paso === 1) ? "CONTINUAR AL PAGO" : "REALIZAR PEDIDO";
-            if (paso === 1) btn.innerText = "CONTINUAR A DATOS";
-            else if (paso === 2) btn.innerText = "CONTINUAR AL PAGO";
-            else btn.innerText = "REALIZAR PEDIDO";
-            
-            if(paso === 2) mostrarInfoPago();
-        }
-
-        function manejarAccionCheckout() {
-            if (pasoCheckoutActual === 1) {
-                cambiarPasoCheckout(2);
-            } else if (pasoCheckoutActual === 2) {
-                const nombre = document.getElementById('cliente-nombre').value;
-                const tel = document.getElementById('cliente-whatsapp').value;
-                const epic = document.getElementById('cliente-epic').value;
-                const cuentas = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
-                if (!nombre || !tel || !epic || cuentas.length === 0) return alert("Completa tus datos.");
-                cambiarPasoCheckout(2);
-                if (!nombre || !tel || !epic || cuentas.length === 0) return alert("Por favor, completa tus datos de contacto.");
-                cambiarPasoCheckout(3);
-            } else {
-                enviarPedidoFinal();
-            }
-        }
-
-        function renderCheckoutSummary() {
-            const list = document.getElementById('checkout-productos-lista-paso');
-            const subEl = document.getElementById('checkout-subtotal-resumen');
-            const totEl = document.getElementById('checkout-total-resumen');
-            
-            let total = 0;
-            const tasa = tasas[divisaActual] || 1;
-            const simb = { USD: '$', MXN: '$', DOP: '$', EUR: '€' }[divisaActual] || '$';
-            
-            list.innerHTML = carrito.map(i => {
-                total += parseFloat(i.precio);
-                return `<div class="checkout-item-summary"><span>${i.nombre}</span><strong>${simb}${(parseFloat(i.precio)*tasa).toLocaleString(undefined,{minimumFractionDigits:2})}</strong></div>`;
-            }).join('');
-            
-            const f = (total * tasa).toLocaleString(undefined,{minimumFractionDigits:2});
-            subEl.innerText = simb + f; totEl.innerText = simb + f;
-        }
-
-        async function enviarPedidoFinal() {
-            const met = document.querySelector('input[name="metodo-pago"]:checked');
-            if (!met) return alert("Selecciona método de pago.");
-            if (met.value === 'paypal' && !paypalOrderId) return alert("Completa el pago de PayPal.");
-            
-            const nombre = document.getElementById('cliente-nombre').value;
-            const tel = document.getElementById('cliente-whatsapp').value;
-            const epic = document.getElementById('cliente-epic').value;
-            const cuentas = Array.from(document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked')).map(c=>c.value).join(', ');
-            const itemsStr = carrito.map(i => `🔸 *${i.nombre}*\n   💵 Precio: $${i.precio} USD\n   📸 Foto: ${i.imagen}`).join('\n\n');
-            const totalUSD = carrito.reduce((s,i)=>s+parseFloat(i.precio),0).toFixed(2);
-            const tasa = tasas[divisaActual] || 1;
-            const totalLocal = (totalUSD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2});
-            const simb = { USD: '$', MXN: '$', DOP: '$', EUR: '€' }[divisaActual] || '$';
-
-            let msg = `🚀 *NUEVO PEDIDO - SHEGOS STORE*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Cliente:* ${nombre}\n📱 *WhatsApp:* ${tel}\n🎮 *Epic ID:* ${epic}\n🆔 *Cuentas agregadas:* ${cuentas}\n💳 *Método de pago:* ${met.value.toUpperCase()}\n`;
-            if (paypalOrderId) msg += `🧾 *Transacción PayPal:* ${paypalOrderId}\n`;
-            msg += `\n🛍️ *Detalle del Pedido:*\n${itemsStr}\n\n💰 *TOTAL:* $${totalUSD} USD (~ ${simb}${totalLocal} ${divisaActual})\n━━━━━━━━━━━━━━━━━━━━\n_Hola! Acabo de realizar mi pedido desde la web. Aquí adjunto mi comprobante de pago._`;
-
-            window.open("https://wa.me/18299326234?text=" + encodeURIComponent(msg), '_blank');
-        }
-
-        function mostrarInfoPago() { 
-            const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
-            const metodo = seleccionado ? seleccionado.value : "";
-            document.querySelectorAll('.info-pago-box').forEach(b => b.classList.add('oculto')); 
-            if(metodo === 'paypal') {
-                document.getElementById('pago-paypal').classList.remove('oculto');
-                renderPayPalButtons();
-            } else if(metodo && metodo !== 'binance') {
-                const id = metodo === 'transferencia_mx' ? 'transferencia' : metodo;
-                const box = document.getElementById('pago-' + id);
-                if(box) box.classList.remove('oculto');
-            }
-        }
-
-        function abrirPestana(id) {
-            document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
-            document.getElementById(id).classList.remove('oculto');
-            if (document.getElementById('sidebar').classList.contains('abierto') && window.innerWidth <= 768) toggleSidebar();
-            toggleFloatingButtons(id !== 'checkout');
-            if (id === 'recargas') mostrarSubServicio('menu');
-            const btns = Array.from(document.querySelectorAll('.tab-btn')).filter(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(id));
-            btns.forEach(b => b.classList.add('activo'));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            if (id === 'checkout') { renderCheckoutSummary(); cambiarPasoCheckout(1); }
-        }
-
-        function abrirPagoBinance(totalUsdt) {
-            document.getElementById('total-pagar-binance').innerText = `Total a enviar: $${totalUsdt} USDT`;
-            document.getElementById('modal-binance-pay').style.display = 'flex';
-            toggleFloatingButtons(false);
-        }
-        function cerrarPagoBinance() {
-            document.getElementById('modal-binance-pay').style.display = 'none';
-            document.getElementById('txid-binance').value = '';
-            if(document.getElementById('checkout').classList.contains('oculto')) toggleFloatingButtons(true);
-        }
-        function confirmarPagoBinance() {
-            const txid = document.getElementById('txid-binance').value.trim();
-            if (!txid) return alert("Ingresa el TxID.");
-            alert("¡Pedido enviado! Verificaremos tu pago.");
-            cerrarPagoBinance();
-        }
-
         let plataformaSeleccionada = 'epic';
 
     </script>
-    <!-- Integración del sistema de bots -->
-    <script src="web_integration.js"></script>
+    <script>async function exportarCatalogo() {
+    const tiendaCont = document.getElementById('contenedor-tienda');
+    const btn = document.getElementById('btn-exportar-catalogo');
+    const originalText = btn.innerHTML;
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Imagen...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+
+    try {
+        const canvas = await html2canvas(tiendaCont, {
+            useCORS: true,
+            allowTaint: false,
+            backgroundColor: "#000000",
+            scale: 1,
+            logging: false,
+            onclone: (clonedDoc) => {
+                const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
+
+                // ── ANCHO FIJO, ALTO AUTOMÁTICO ──────────────────────────
+                clonedTienda.style.width = "1800px";
+                clonedTienda.style.height = "auto";
+                clonedTienda.style.padding = "36px 36px 80px 36px";
+                clonedTienda.style.overflow = "visible";
+                clonedTienda.style.position = "relative";
+                clonedTienda.style.background = "#000000";
+                clonedTienda.style.boxSizing = "border-box";
+
+                // ── AGRUPAR POR CATEGORÍA MANTENIENDO EL ORDEN ───────────
+                const ORDEN = ['SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
+                const LABEL_COLORS = {
+                    'SKINS':        '#28feb6',
+                    'BAILES':       '#ffd700',
+                    'PICOS':        '#c0c0c0',
+                    'MOCHILAS':     '#a78bfa',
+                    'ENVOLTORIOS':  '#f472b6',
+                    'AUTOS':        '#fb923c',
+                    'ACCESORIOS':   '#94a3b8'
+                };
+
+                // Recoger todas las cards con su categoría
+                const sections = Array.from(clonedTienda.querySelectorAll('.shop-section'));
+                const byCategory = {};
+                sections.forEach(sec => {
+                    const titleEl = sec.querySelector('.section-title');
+                    if (!titleEl) return;
+                    const cat = titleEl.textContent.trim().toUpperCase();
+                    const cards = Array.from(sec.querySelectorAll('.cosmetic-card'));
+                    if (cards.length > 0) byCategory[cat] = cards;
+                });
+
+                // Limpiar contenido
+                clonedTienda.innerHTML = '';
+
+                // ── ENCABEZADO SUPERIOR ───────────────────────────────────
+                const header = clonedDoc.createElement('div');
+                header.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-bottom: 28px;
+                    padding-bottom: 18px;
+                    border-bottom: 1px solid #1a1a1a;
+                `;
+                header.innerHTML = `
+                    <div style="font-family: 'BurbankBigCondensed', 'Poppins', sans-serif; font-size: 32px; font-weight: 900; color: #28feb6; letter-spacing: 3px; text-transform: uppercase;">
+                        TIENDA DE HOY
+                    </div>
+                    <div style="font-family: 'Poppins', sans-serif; font-size: 15px; color: #555; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">
+                        ${new Date().toLocaleDateString('es-ES', { weekday:'long', year:'numeric', month:'long', day:'numeric' })}
+                    </div>
+                `;
+                clonedTienda.appendChild(header);
+
+                // ── SECCIONES POR CATEGORÍA ───────────────────────────────
+                ORDEN.forEach(cat => {
+                    const cards = byCategory[cat];
+                    if (!cards || cards.length === 0) return;
+
+                    const color = LABEL_COLORS[cat] || '#28feb6';
+
+                    // Etiqueta de sección
+                    const label = clonedDoc.createElement('div');
+                    label.style.cssText = `
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        margin: 22px 0 12px 0;
+                    `;
+                    label.innerHTML = `
+                        <span style="display:inline-block; width:4px; height:22px; background:${color}; border-radius:2px; flex-shrink:0;"></span>
+                        <span style="font-family:'BurbankBigCondensed','Poppins',sans-serif; font-size:20px; font-weight:900; color:${color}; text-transform:uppercase; letter-spacing:3px;">${cat}</span>
+                        <span style="font-size:12px; color:#333; font-weight:600;">${cards.length} artículos</span>
+                        <div style="flex:1; height:1px; background: linear-gradient(to right, ${color}33, transparent);"></div>
+                    `;
+                    clonedTienda.appendChild(label);
+
+                    // Grid de 9 columnas
+                    const grid = clonedDoc.createElement('div');
+                    grid.style.cssText = `
+                        display: grid;
+                        grid-template-columns: repeat(9, 1fr);
+                        gap: 7px;
+                        margin-bottom: 6px;
+                    `;
+
+                    cards.forEach(card => {
+                        // Estilos de la card para exportación
+                        card.style.background = "#111111";
+                        card.style.boxShadow = "none";
+                        card.style.border = `1px solid ${color}33`;
+                        card.style.borderRadius = "8px";
+                        card.style.overflow = "hidden";
+                        card.style.position = "relative";
+                        card.style.display = "block";
+                        card.style.width = "100%";
+                        card.style.aspectRatio = "3/4";
+
+                        // Ocultar elementos que no van en la imagen
+                        const fiat = card.querySelector('.card-price-fiat');
+                        if (fiat) fiat.style.display = 'none';
+                        const addBtn = card.querySelector('.btn-add-cart');
+                        if (addBtn) addBtn.style.display = 'none';
+                        const timer = card.querySelector('.overlay-timer');
+                        if (timer) timer.style.display = 'none';
+
+                        // Mejorar imagen
+                        const img = card.querySelector('.card-img');
+                        if (img) {
+                            img.style.filter = "brightness(1.15) contrast(1.05)";
+                            img.style.padding = "6px";
+                        }
+
+                        // Mejorar overlay inferior
+                        const bottom = card.querySelector('.card-overlay-bottom');
+                        if (bottom) {
+                            bottom.style.backdropFilter = "none";
+                            bottom.style.background = "rgba(0,0,0,0.92)";
+                            bottom.style.padding = "6px 8px";
+                        }
+
+                        // Título más pequeño en grid compacto
+                        const title = card.querySelector('.card-title');
+                        if (title) {
+                            title.style.fontSize = "10px";
+                            title.style.color = "#ffffff";
+                            title.style.lineHeight = "1.2";
+                            title.style.whiteSpace = "nowrap";
+                            title.style.overflow = "hidden";
+                            title.style.textOverflow = "ellipsis";
+                        }
+
+                        // Precio en vbucks
+                        const vbucksEl = card.querySelector('.card-price-vbucks');
+                        if (vbucksEl) {
+                            vbucksEl.style.fontSize = "10px";
+                        }
+
+                        grid.appendChild(card);
+                    });
+
+                    clonedTienda.appendChild(grid);
+                });
+
+                // ── WATERMARK INFERIOR ────────────────────────────────────
+                const footer = clonedDoc.createElement('div');
+                footer.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-top: 28px;
+                    padding-top: 18px;
+                    border-top: 1px solid #1a1a1a;
+                `;
+                footer.innerHTML = `
+                    <div style="font-family:'Poppins',sans-serif; font-size:13px; color:#333; font-weight:600; text-transform:uppercase; letter-spacing:2px;">
+                        shegos.store
+                    </div>
+                    <div style="font-family:'BurbankBigCondensed','Poppins',sans-serif; font-size:20px; font-weight:900; color:#ffffff; letter-spacing:2px;">
+                        CÓDIGO: <span style="color:#28feb6;">DENISSA_7U7</span>
+                    </div>
+                `;
+                clonedTienda.appendChild(footer);
+            }
+        });
+
+        canvas.toBlob((blob) => {
+            if (!blob) throw new Error("Error generando el archivo");
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 'image/jpeg', 0.92);
+
+    } catch (err) {
+        console.error("Error al exportar:", err);
+        alert("No se pudo generar la imagen. Asegúrate de que los artículos se hayan cargado completamente.");
+    } finally {
+        btn.innerHTML = originalText;
+        btn.style.opacity = '1';
+        btn.disabled = false;
+    }
+}
+
+    (function(){
+      var API="https://shegos-bots-2.onrender.com",KEY="ShegosSuperSecret123";
+      var BOTS=["Maidas-S","Maidas-OS","DENISSA_7u7","Shegos么1","Shegos么2"];
+      var timerId=null;
+
+      document.addEventListener("DOMContentLoaded",function(){
+        sbCheckCountdown(); sbLoadBots(); setInterval(sbLoadBots,60000);
+        var inp=document.getElementById("sb-username");
+        if(inp) inp.addEventListener("keydown",function(e){ if(e.key==="Enter") sbEnviar(); });
+      });
+
+      window.sbEnviar=async function(){
+        var u=document.getElementById("sb-username"),p=document.getElementById("sb-platform"),b=document.getElementById("sb-btn");
+        var username=u?u.value.trim():""; if(!username) return;
+        document.getElementById("sb-error").style.display="none";
+        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
+        try{
+          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:p?p.value:"epic"})});
+          var d=await r.json();
+      if(r.ok){ 
+        if(d.already_added>0){ 
+          var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
+          sbShow("already"); 
+        } else { var e=Date.now()+172800000; localStorage.setItem("sbEnd",e); localStorage.setItem("sbCount",d.requests_sent||0); sbStartTimer(e,d.requests_sent||0); sbShow("countdown"); if(u) u.value=""; } 
+      }
+          else if(r.status===404){ sbErr("Usuario no encontrado. Verifica el nombre exacto."); }
+          else if(r.status===503){ sbErr("Bots fuera de línea. Agrega las cuentas manualmente."); }
+          else{ sbErr(d.detail||"Ocurrió un error. Inténtalo de nuevo."); }
+        } catch(e){ sbErr("Error de conexión. Verifica tu internet."); }
+        finally{ b.disabled=false; b.innerHTML='🎮 Enviar Solicitud'; }
+      };
+
+      window.sbReset=function(){ sbShow("form"); };
+      window.sbFaq=function(btn){ var body=btn.nextElementSibling; var o=body.classList.toggle("open"); btn.classList.toggle("open",o); };
+
+      function sbShow(s){ ["form","countdown","already"].forEach(function(k){ var el=document.getElementById("sb-state-"+k); if(el) el.style.display=(k===s?"block":"none"); }); }
+      function sbErr(msg){ var e=document.getElementById("sb-error"),t=document.getElementById("sb-error-text"); if(e&&t){ t.textContent=msg; e.style.display="flex"; } }
+
+      function sbStartTimer(end,count){
+        if(timerId) clearInterval(timerId);
+        var sc=document.getElementById("sb-sent-count"); if(sc) sc.textContent=count;
+        function tick(){ var diff=end-Date.now(),el=document.getElementById("sb-timer"); if(!el) return; if(diff<=0){ el.textContent="00:00:00"; clearInterval(timerId); localStorage.removeItem("sbEnd"); return; } var h=Math.floor(diff/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000); el.textContent=pad(h)+":"+pad(m)+":"+pad(s); }
+        tick(); timerId=setInterval(tick,1000);
+      }
+      function sbCheckCountdown(){ var e=localStorage.getItem("sbEnd"); if(!e) return; var end=parseInt(e); if(Date.now()>=end){ localStorage.removeItem("sbEnd"); return; } sbShow("countdown"); sbStartTimer(end,parseInt(localStorage.getItem("sbCount")||"0")); }
+      function pad(n){ return String(n).padStart(2,"0"); }
+
+      async function sbLoadBots(){
+        try{ var r=await fetch(API+"/status",{headers:{"X-Api-Key":KEY}}); if(r.ok){ var d=await r.json(); sbRenderBots(d.online_bots||[],d.offline_bots||[]); var pill=document.getElementById("sb-count-pill"); if(pill){ pill.textContent=(d.online_count||0)+"/"+(d.total_bots||0)+" ONLINE"; pill.style.display="inline-block"; } return; } } catch(e){}
+        sbRenderBots(BOTS,[]);
+      }
+      function sbRenderBots(on,off){ var g=document.getElementById("sb-bots-grid"); if(!g) return; var h=""; on.forEach(function(n){ h+='<div class="sb-bot-card"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; }); off.forEach(function(n){ h+='<div class="sb-bot-card offline"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; }); g.innerHTML=h; }
+      function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+    })();
+    </script>
 </body>
 </html>
