@@ -1735,7 +1735,7 @@
                 <div class="hero-text">
                     <div id="hero-shop-timer" class="mobile-hero-timer"></div>
                     <h1>SHEGOS STORE</h1>
-                    <p>Ofrecemos los precios más baratos del mercado. Recibe tus compras de manera segura, rápida y sin necesidad de darnos los datos de inicio de tu cuenta.</p>
+                    <p> Recibe tus compras de manera segura, rápida y sin necesidad de darnos los datos de inicio de tu cuenta.</p>
                     <div class="hero-buttons">
                         <button class="btn-accion" onclick="abrirPestana('tienda')">Ver Tienda Hoy <i class="fas fa-store"></i></button>
                         <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="btn-secundario"><i class="fas fa-headset" style="margin-right: 8px;"></i> Comunidad en Discord</a>
@@ -2093,7 +2093,7 @@
                             <a href="javascript:void(0)" onclick="abrirPestana('ids-regalos')" style="color: #28feb6; font-size: 0.8em; text-decoration: none; border-bottom: 1px solid #28feb6;">¿No nos tienes?</a>
                         </div>
                         <div class="cuentas-grid" id="cuentas-seleccion">
-                            <label class="cuenta-option" style="grid-column: 1 / -1;"><input type="checkbox" onchange="toggleTodasCuentas(this)"> Seleccionar todas las cuentas</label>
+                            <label class="cuenta-option" style="grid-column: 1 / -1;"><input type="checkbox" onchange="toggleTodasCuentas(this)"> Todas las cuentas</label>
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么1"> Shegos么1</label>
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么2"> Shegos么2</label>
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="DENISSA_7u7"> DENISSA_7u7</label>
@@ -2258,6 +2258,22 @@
             </div>
             
             <button class="btn-accion btn-whatsapp" style="margin-top: 25px; width: 100%; background: #fff; color: #000; border-radius: 8px;" onclick="confirmarYEnviarWhatsApp()">Confirmar y enviar comprobante</button>
+        </div>
+    </div>
+
+    <!-- MODAL PAYPAL: COMPROBANTE POST-PAGO -->
+    <div id="modal-paypal-comprobante" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(8px);">
+        <div style="background:#09090b; border:1px solid #0070ba; border-radius:16px; padding:35px 30px; max-width:420px; width:90%; text-align:center; position:relative; box-shadow:0 0 40px rgba(0,112,186,0.25);">
+            <button onclick="document.getElementById('modal-paypal-comprobante').style.display='none'; document.body.style.overflow='auto';" style="position:absolute; top:14px; right:14px; background:none; border:none; color:#fff; font-size:1.4em; cursor:pointer; line-height:1;">✕</button>
+            <img src="img/Paypal.webp" alt="PayPal" style="height:42px; object-fit:contain; margin-bottom:18px;" onerror="this.style.display='none'">
+            <h3 style="margin:0 0 10px; color:#fff; font-size:1.2em;">Pago con PayPal</h3>
+            <p style="color:#aaa; font-size:0.9em; margin:0 0 8px;">Se abrió el link de pago en una nueva pestaña.</p>
+            <p style="color:#ccc; font-size:0.88em; margin:0 0 28px; line-height:1.5;">Una vez que <strong style="color:#fff;">completes el pago</strong>, regresa aquí y haz clic en el botón para enviarnos tu comprobante por WhatsApp.</p>
+            <button class="btn-accion" onclick="confirmarYEnviarWhatsApp(); document.getElementById('modal-paypal-comprobante').style.display='none'; document.body.style.overflow='auto';"
+                style="background:#25D366; color:#fff; border-radius:10px; font-size:1em; padding:14px; display:flex; align-items:center; justify-content:center; gap:10px; width:100%; margin:0;">
+                <i class="fab fa-whatsapp" style="font-size:1.3em;"></i> Enviar comprobante por WhatsApp
+            </button>
+            <p style="color:#555; font-size:0.78em; margin-top:16px;">¿No completaste el pago aún? Cierra este modal, finaliza el pago en PayPal y regresa.</p>
         </div>
     </div>
 
@@ -2927,10 +2943,15 @@
             const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
             audio.play().catch(e => console.log("Sonido bloqueado por navegador"));
 
-            // Redirección inmediata si el método es PayPal
+            // Flujo PayPal: abrir link de pago primero, luego mostrar botón de comprobante
             if (metodoRaw === 'paypal') {
                 window.open("https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2", '_blank');
-                confirmarYEnviarWhatsApp(); // Disparar WhatsApp para PayPal también
+                // Mostrar modal de confirmación PayPal (NO redirigir a WA todavía)
+                const modalPP = document.getElementById('modal-paypal-comprobante');
+                if (modalPP) {
+                    modalPP.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
                 return;
             }
 
@@ -3023,7 +3044,7 @@ ${listaProductos}
 
 _He adjuntado mi comprobante de pago arriba._`;
 
-            const urlFinal = "https://wa.me/18299326234?text=" + encodeURIComponent(mensaje);
+            const urlFinal = "https://wa.me/18299847680?text=" + encodeURIComponent(mensaje);
             window.open(urlFinal, '_blank');
             cerrarModalInstrucciones();
         }
@@ -3055,36 +3076,58 @@ _He adjuntado mi comprobante de pago arriba._`;
         }
 
         function renderCheckoutSummary() {
-            const productosLista = document.getElementById('checkout-productos-lista');
-            const subtotalDinero = document.getElementById('checkout-subtotal-dinero');
-            const totalDinero = document.getElementById('checkout-total-dinero');
+            // Step 1 column IDs
+            const productosListaPaso = document.getElementById('checkout-productos-lista-paso');
+            const subtotalResumen    = document.getElementById('checkout-subtotal-resumen');
+            const totalResumen       = document.getElementById('checkout-total-resumen');
+            // Legacy right-column IDs (kept for compatibility)
+            const productosLista     = document.getElementById('checkout-productos-lista');
+            const subtotalDinero     = document.getElementById('checkout-subtotal-dinero');
+            const totalDinero        = document.getElementById('checkout-total-dinero');
 
-            productosLista.innerHTML = ''; // Limpiar lista anterior
+            if (productosListaPaso) productosListaPaso.innerHTML = '';
+            if (productosLista)     productosLista.innerHTML = '';
 
             let subtotal = 0;
-            const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$' }[divisaActual] || '$';
+            const tasa    = tasas[divisaActual] || 1;
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
+
+            const itemRow = (item) => {
+                const precioItem = parseFloat(item.precio);
+                subtotal += precioItem;
+                return `
+                    <div class="checkout-item-summary" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #1a1a1a; gap:10px;">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;">
+                            <span style="font-size:0.9em;">${item.nombre}</span>
+                        </div>
+                        <strong style="color:#28feb6; white-space:nowrap;">${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong>
+                    </div>`;
+            };
 
             if (carrito.length === 0) {
-                productosLista.innerHTML = '<p style="text-align:center; color:#aaa;">Tu carrito está vacío.</p>';
-                subtotalDinero.innerText = `${simbolo}0.00`;
-                totalDinero.innerText = `${simbolo}0.00`;
+                const emptyMsg = '<p style="text-align:center; color:#aaa; padding:20px 0;">Tu carrito está vacío.</p>';
+                if (productosListaPaso) productosListaPaso.innerHTML = emptyMsg;
+                if (productosLista)     productosLista.innerHTML = emptyMsg;
+                const cero = `${simbolo}0.00`;
+                if (subtotalResumen) subtotalResumen.innerText = cero;
+                if (totalResumen)    totalResumen.innerText    = cero;
+                if (subtotalDinero)  subtotalDinero.innerText  = cero;
+                if (totalDinero)     totalDinero.innerText     = cero;
                 return;
             }
 
-            carrito.forEach(item => {
-                const precioItem = parseFloat(item.precio);
-                subtotal += precioItem;
-                productosLista.innerHTML += `
-                    <div class="checkout-item-summary">
-                        <span>${item.nombre}</span>
-                        <strong>${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong>
-                    </div>
-                `;
-            });
+            let html = '';
+            carrito.forEach(item => { html += itemRow(item); });
 
-            subtotalDinero.innerText = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            totalDinero.innerText = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`; 
+            if (productosListaPaso) productosListaPaso.innerHTML = html;
+            if (productosLista)     productosLista.innerHTML     = html;
+
+            const totalStr = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            if (subtotalResumen) subtotalResumen.innerText = totalStr;
+            if (totalResumen)    totalResumen.innerText    = totalStr;
+            if (subtotalDinero)  subtotalDinero.innerText  = totalStr;
+            if (totalDinero)     totalDinero.innerText     = totalStr;
         }
 
         function cambiarPasoCheckout(paso) {
