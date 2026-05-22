@@ -187,15 +187,17 @@
         @media (max-width: 768px) {
             /* Ajustes base de layout móvil */
             .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
-            
+            .hero-text { display: flex; flex-direction: column; align-items: center; width: 100%; }
+            .hero-text p { max-width: 100%; margin-left: auto; margin-right: auto; }
+            .hero-checks { align-items: center; }
+
             nav { width: 95%; overflow-x: auto; flex-wrap: nowrap; justify-content: flex-start; padding: 10px; border-radius: 15px; scrollbar-width: none; margin: 10px auto; }
             nav::-webkit-scrollbar { display: none; }
             .tab-btn { flex: 0 0 auto; font-size: 0.75em; padding: 8px 12px; }
 
-            .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
             .hero-text h1 { font-size: 2.8em; }
-            .hero-buttons { justify-content: center; width: 100%; }
-            .hero-buttons .btn-accion, .btn-secundario { width: 100%; }
+            .hero-buttons { flex-direction: column; align-items: center; width: 100%; gap: 12px; }
+            .hero-buttons .btn-accion, .hero-buttons .btn-secundario { width: 100%; max-width: 320px; margin: 0; box-sizing: border-box; }
             .section-box { padding: 20px 15px; }
             .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
             
@@ -2852,12 +2854,24 @@
                 alert("Este artículo ya se encuentra en tu carrito. Solo puedes adquirir 1 unidad de cada cosmético por pedido.");
                 return;
             }
+            const eraVacio = carrito.length === 0;
             carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v, tipo: t }); 
             actualizarCarrito(); 
+
             const btn = document.getElementById('btn-carrito-nav');
-            btn.style.animation = 'cartPop 0.4s ease';
-            setTimeout(() => btn.style.animation = '', 400);
-            abrirCarritoLateral(); 
+            if (btn) {
+                btn.style.animation = 'cartPop 0.4s ease';
+                setTimeout(() => btn.style.animation = '', 400);
+            }
+            const btnFloat = document.querySelector('.float-cart');
+            if (btnFloat) {
+                btnFloat.style.animation = 'cartPop 0.4s ease';
+                setTimeout(() => btnFloat.style.animation = '', 400);
+            }
+
+            if (eraVacio) {
+                abrirCarritoLateral();
+            }
         }
         function vaciarCarrito() { 
             carrito = []; 
