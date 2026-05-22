@@ -48,12 +48,30 @@
         
         /* BANNER CÓDIGO FIJADO */
         .banner-codigo { 
-            background: #000000; 
-            color: #ffffff; text-align: center; padding: 12px; font-weight: 700; text-transform: uppercase; 
-            letter-spacing: 2px; font-size: 0.85em; position: sticky; top: 0; z-index: 1100; border-bottom: 1px solid #121212;
+            background: #000000;
+            color: #ffffff;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px 20px;
+            font-weight: 700;
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+            font-size: 0.85em;
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            border-bottom: 1px solid #121212;
         }
-        .banner-codigo span { color: #888888; margin-right: 10px; }
-        .banner-codigo strong { color: #ffffff; font-size: 1.1em; }
+        .banner-codigo span { color: #888888; }
+
+        .codigo-banner {
+            color: #28feb6;
+            font-weight: 800;
+            margin-left: 5px;
+        }
 
         @keyframes slideInLeft { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
         @keyframes slideInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
@@ -567,8 +585,44 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .shop-section { margin: 60px 0; animation: fadeIn 0.8s ease-in forwards; }
-        .section-title { font-family: 'Poppins', sans-serif; font-size: 2.2em; text-transform: uppercase; color: #ffffff; margin-bottom: 40px; padding-left: 0; border-left: none; font-weight: 800; }
+        .shop-section { margin: 50px 0; animation: fadeIn 0.8s ease-in forwards; }
+
+        /* Cabecera de sección estilo tienda in-game */
+        .shop-section-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .shop-section-header-left {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .section-title {
+            font-family: 'BurbankBigCondensed', 'Poppins', sans-serif;
+            font-size: 1.9em;
+            text-transform: uppercase;
+            color: #ffffff;
+            margin: 0;
+            font-weight: 900;
+            font-style: italic;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .section-item-count {
+            font-size: 0.78em;
+            color: #555;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .shop-section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, rgba(255,255,255,0.12), transparent);
+        }
         
         .grid-productos { 
             display: grid; 
@@ -661,28 +715,49 @@
         .card-overlay-bottom {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, #000000 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
-            padding: 15px 8px 8px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 55%, transparent 100%);
+            padding: 18px 8px 8px;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
         }
 
         .card-title {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'BurbankBigCondensed', 'Poppins', sans-serif;
             color: #fff;
-            font-size: 0.9rem;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 900;
             margin: 0;
             text-transform: uppercase;
             text-align: center;
+            letter-spacing: 0.5px;
+            line-height: 1.1;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
         }
 
         .card-action-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .card-price-block {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        .card-price-vbucks {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: #a8d8ff;
+        }
+        .card-price-fiat {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.55);
+            font-weight: 600;
         }
         .card-price {
             display: flex;
@@ -1317,6 +1392,11 @@
 
             /* Ajuste de botones flotantes — sin !important para respetar toggleFloatingButtons() */
             .floating-container { bottom: 25px; right: 20px; gap: 12px; z-index: 5000; }
+            
+            /* Ajuste Banner Código Móvil */
+            .banner-codigo { font-size: 0.72em; padding: 8px 10px; gap: 8px; letter-spacing: 0.5px; }
+            .codigo-destacado { padding: 4px 14px; font-size: 1.1em; }
+
             .float-btn { width: 40px; height: 40px; font-size: 1.1em; }
             .float-cart img { width: 20px; height: auto; }
             .cart-badge-float { padding: 1px 4px; font-size: 0.6em; top: -3px; right: -3px; }
@@ -1710,9 +1790,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-
-    <div class="banner-codigo"><span>Apóyanos en la tienda de Fortnite:</span> Código <strong>DENISSA_7U7</strong> <i class="fas fa-heart"></i></div>
-
+    <div class="banner-codigo">Apóyanos en la tienda de Fortnite: Código <strong class="codigo-banner">DENISSA_7U7</strong></div>
+ 
     <!-- SIDEBAR PARA MÓVIL -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
     <div id="sidebar" class="sidebar">
@@ -2434,6 +2513,24 @@
         let categoriaActual = 'Todas';
         let pasoCheckoutActual = 1;
 
+        // Orden oficial de secciones de la tienda de Fortnite (global)
+        const ordenSeccionesOficiales = [
+            "Pistas de improvisación",
+            "The Mandalorian",
+            "Puesta a punto",
+            "Taquilla de Vanessuh",
+            "Kim Kardashian",
+            "Fiesta de la victoria",
+            "Marvel",
+            "Insidio",
+            "Batman",
+            "No hay problema",
+            "Fuerzas espectrales",
+            "Botín de Fortnite",
+            "EsDeeKid",
+            "Overwatch"
+        ];
+
         // LÓGICA DE RASTREO DE PEDIDOS
         async function buscarPedidos() {
             const telRaw = document.getElementById('input-rastreo').value.trim();
@@ -2627,8 +2724,10 @@
                     else if (rLower.includes('rare')) rarityClass = "rare";
                     else if (rLower.includes('uncommon')) rarityClass = "uncommon";
                     
-                    let seVaHoy = item.section && (item.section.id.toLowerCase().includes('daily') || item.section.id === 'Daily');
-                    let sectionTitle = item.section ? item.section.name : categoriaFinal;
+                    let seVaHoy = item.layout?.displayType === 'expandableList';
+                    // La API de Fortnite usa 'layout', NO 'section' — layout.name tiene el nombre real
+                    let sectionTitle = (item.layout && item.layout.name) ? item.layout.name : 'Botín de Fortnite';
+                    let sectionRank  = (item.layout && item.layout.rank  != null) ? item.layout.rank  : 999;
                     
                     // Hero Image Logic (Usamos las skins para el fondo dinámico)
                     if (categoriaFinal === 'SKINS' || item.bundle) {
@@ -2646,6 +2745,7 @@
                             seVaHoy,
                             categoria: categoriaFinal,
                             sectionName: sectionTitle,
+                            sectionRank: sectionRank,
                             nombreSeguro: nombre.replace(/'/g, "\\'")
                         });
                     }
@@ -2675,11 +2775,22 @@
             } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
         }
 
-        // Punto 3: Event Listeners y data-category
+        // Genera botones de filtro basados en las SECCIONES reales de la tienda
         function renderFiltros() {
             const container = document.getElementById('contenedor-filtros');
-            const ORDEN = ['Todas', 'SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
-            
+
+            // Obtener secciones únicas con su rank oficial de la API
+            const seccionMap = {};
+            tiendaItems.forEach(i => {
+                if (i.sectionName && !(i.sectionName in seccionMap)) {
+                    seccionMap[i.sectionName] = i.sectionRank ?? 999;
+                }
+            });
+
+            // Ordenar por rank oficial (igual que Epic las muestra en la tienda)
+            const seccionesOrdenadas = Object.keys(seccionMap).sort((a, b) => seccionMap[a] - seccionMap[b]);
+            const ORDEN = ['Todas', ...seccionesOrdenadas];
+
             container.innerHTML = ORDEN.map(cat => `
                 <button class="filtro-btn ${cat === categoriaActual ? 'active' : ''}" data-category="${cat}">${cat}</button>
             `).join('');
@@ -2707,14 +2818,14 @@
             });
         }
 
-        // Punto 2 y 4: Reparación de lógica y manejo de errores
+        // Filtra y renderiza la tienda por SECCIÓN (no por tipo de cosmético)
         function aplicarFiltros() {
             const cont = document.getElementById('contenedor-tienda');
             let busqueda = document.getElementById('buscador-tienda').value.toLowerCase();
             cont.innerHTML = '';
 
             const filtrados = tiendaItems.filter(item => {
-                const matchCat = (categoriaActual === 'Todas' || item.categoria === categoriaActual);
+                const matchCat = (categoriaActual === 'Todas' || item.sectionName === categoriaActual);
                 const matchSearch = item.nombre.toLowerCase().includes(busqueda);
                 return matchCat && matchSearch;
             });
@@ -2733,31 +2844,24 @@
                 grouped[sName].push(i);
             });
 
-            const ordenSeccionesOficiales = [
-                "Pistas de improvisación",
-                "The Mandalorian",
-                "Puesta a punto",
-                "Taquilla de Vanessuh",
-                "Kim Kardashian",
-                "Fiesta de la victoria",
-                "Marvel",
-                "Insidio",
-                "Batman",
-                "No hay problema",
-                "Fuerzas espectrales",
-                "Botín de Fortnite",
-                "EsDeeKid",
-                "Overwatch"
-            ];
+            // Ordenar secciones por el rank oficial que devuelve la API (layout.rank)
+            const rankPorSeccion = {};
+            tiendaItems.forEach(i => {
+                if (!(i.sectionName in rankPorSeccion)) {
+                    rankPorSeccion[i.sectionName] = i.sectionRank;
+                }
+            });
 
             const seccionesOrdenadas = Object.keys(grouped).sort((a, b) => {
-                let indexA = ordenSeccionesOficiales.findIndex(sec => a.toLowerCase().includes(sec.toLowerCase()));
-                let indexB = ordenSeccionesOficiales.findIndex(sec => b.toLowerCase().includes(sec.toLowerCase()));
-                
-                if (indexA === -1) indexA = 999;
-                if (indexB === -1) indexB = 999;
-                
-                return indexA - indexB;
+                // Priorizamos las secciones con más artículos para que aparezcan arriba
+                const countA = grouped[a].length;
+                const countB = grouped[b].length;
+
+                if (countA !== countB) {
+                    return countB - countA;
+                }
+                // Si tienen la misma cantidad, respetamos el orden original de la API
+                return (rankPorSeccion[a] ?? 999) - (rankPorSeccion[b] ?? 999);
             });
 
             const tiempo = getTiempoTxt();
@@ -2769,9 +2873,12 @@
                 const sec = document.createElement('div');
                 sec.className = 'shop-section';
                 sec.innerHTML = `
-                    <div style="display:flex; align-items:baseline; gap:12px; margin-bottom:24px;">
-                        <h2 class="section-title" style="margin-bottom:0;">${cat}</h2>
-                        <span style="font-size:12px; color:#444; font-weight:600;">${grouped[cat].length} artículos</span>
+                    <div class="shop-section-header">
+                        <div class="shop-section-header-left">
+                            <h2 class="section-title">${cat}</h2>
+                            <span class="section-item-count">${grouped[cat].length} ${grouped[cat].length === 1 ? 'artículo' : 'artículos'}</span>
+                        </div>
+                        <div class="shop-section-line"></div>
                     </div>
                     <div class="grid-productos">
                         ${grouped[cat].map(p => {
