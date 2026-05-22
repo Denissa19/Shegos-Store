@@ -1234,7 +1234,8 @@
                 top: 0 !important;
                 position: relative !important;
             }
-            body { font-size: 14px !important; }
+            /* Tipografía fluida que se adapta a cualquier tamaño de pantalla */
+            body { font-size: clamp(12px, 3.5vw, 15px) !important; }
             .section-box { padding: 15px 10px !important; border-radius: 10px !important; }
             .menu-toggle {
                 display: block !important;
@@ -1302,11 +1303,13 @@
             .info-paso p { font-size: 0.85em !important; }
             .info-paso strong { min-width: 24px !important; height: 24px !important; font-size: 0.8em !important; }
 
-            /* Ajuste de botones flotantes */
-            .floating-container { display: flex !important; bottom: 25px !important; right: 20px !important; gap: 12px !important; z-index: 5000 !important; visibility: visible !important; }
-            .float-btn { display: flex !important; width: 55px !important; height: 55px !important; align-items: center !important; justify-content: center !important; visibility: visible !important; }
-            .float-cart img { display: block !important; width: 32px !important; height: auto !important; visibility: visible !important; opacity: 1 !important; }
-            .cart-badge-float { padding: 1px 5px !important; font-size: 0.7em !important; }
+            /* Ajuste de botones flotantes — sin !important para respetar toggleFloatingButtons() */
+            .floating-container { bottom: 25px; right: 20px; gap: 12px; z-index: 5000; }
+            .float-btn { width: 55px; height: 55px; }
+            .float-cart img { width: 32px; height: auto; }
+            .cart-badge-float { padding: 1px 5px; font-size: 0.7em; }
+            /* Ocultar botones flotantes cuando se está en checkout (móvil) */
+            body.en-checkout .floating-container { display: none !important; }
 
             /* Métodos de pago más pequeños */
             .metodos-pago-container {
@@ -1345,6 +1348,56 @@
         }
         @media (max-width: 768px) {
             .currency-trigger { display: none !important; }
+        }
+
+        /* ── Teléfonos medianos: 481px – 767px ── */
+        @media (min-width: 481px) and (max-width: 767px) {
+            .grid-productos { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+            .hero-text h1 { font-size: clamp(2em, 7vw, 3em) !important; }
+            .section-box { padding: 18px 14px !important; }
+            .auto-request-panel { grid-template-columns: 1fr !important; }
+            .checkout-steps-nav { gap: 20px; }
+        }
+
+        /* ── Teléfonos pequeños: ≤480px ── */
+        @media (max-width: 480px) {
+            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
+            .hero-text h1 { font-size: clamp(1.6em, 9vw, 2.4em) !important; }
+            .section-box { padding: 12px 8px !important; border-radius: 8px !important; }
+            .auto-request-panel { grid-template-columns: 1fr !important; padding: 15px !important; }
+            .order-summary-card { padding: 15px !important; }
+            .form-section { padding: 14px 12px !important; }
+            .step-dot { width: 32px; height: 32px; font-size: 0.8em; }
+            .checkout-steps-nav { gap: 16px; }
+            .checkout-steps-nav::before { width: 70px; }
+            .metodo-label { padding: 10px !important; gap: 8px !important; }
+            .servicio-card { padding: 10px !important; }
+            .modal-pavos-content { padding: 15px !important; }
+            .modal-auto-card { padding: 20px 15px !important; }
+            .bank-card { padding: 12px !important; }
+            .btn-accion { font-size: 0.85em !important; padding: 11px !important; }
+            .hero-buttons { flex-direction: column; gap: 10px; }
+            .hero-buttons .btn-accion { padding: 12px 20px !important; font-size: 1.1em !important; }
+            h2 { font-size: 1.2em !important; }
+            h3 { font-size: 1em !important; }
+            .section-title { font-size: 1em !important; }
+            .sb-title { font-size: clamp(1.5em, 8vw, 2.2em) !important; }
+            .sb-card { padding: 18px !important; }
+            .fn2-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+            .fn2-section-title { font-size: 20px !important; }
+            .grid-cuentas-v2 { grid-template-columns: 1fr !important; }
+        }
+
+        /* ── Teléfonos muy pequeños: ≤360px ── */
+        @media (max-width: 360px) {
+            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 4px !important; }
+            .hero-text h1 { font-size: 1.5em !important; }
+            .section-box { padding: 10px 6px !important; }
+            .float-btn { width: 48px !important; height: 48px !important; font-size: 1.2em !important; }
+            .floating-container { bottom: 15px !important; right: 12px !important; gap: 8px !important; }
+            .sb-countdown { font-size: 2em !important; }
+            .metodo-label { font-size: 0.7em !important; }
+            .currency-grid { grid-template-columns: repeat(2, 1fr) !important; }
         }
         @media (min-width: 769px) {
             .sidebar-divider, .sidebar-currency-section { display: none !important; }
@@ -2370,25 +2423,32 @@
 
         // LÓGICA DE RASTREO DE PEDIDOS
         async function buscarPedidos() {
-            const tel = document.getElementById('input-rastreo').value.trim();
+            const telRaw = document.getElementById('input-rastreo').value.trim();
+            // Normalizar: quitar espacios, guiones y paréntesis
+            const tel = telRaw.replace(/[\s\-\(\)]/g, '');
             const cont = document.getElementById('resultados-rastreo');
             
             if(!tel) return alert("Ingresa tu número de teléfono.");
             
-            cont.innerHTML = "<p style='text-align:center;'>Buscando en la base de datos...</p>";
+            cont.innerHTML = "<p style='text-align:center; padding:20px; color:#aaa;'><i class='fas fa-spinner fa-spin'></i> Buscando en la base de datos...</p>";
 
             try {
-                // Agregamos timestamp para evitar cache de GitHub
                 const res = await fetch(`pedidos.json?t=${Date.now()}`);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 const pedidos = await res.json();
                 
-                const filtrados = pedidos.filter(p => p.telefono_cliente === tel);
+                // Comparación normalizada: ignorar espacios/guiones en el JSON también
+                const filtrados = pedidos.filter(p => {
+                    const telDB = (p.telefono_cliente || '').replace(/[\s\-\(\)]/g, '');
+                    return telDB === tel;
+                });
 
                 if(filtrados.length === 0) {
                     cont.innerHTML = `
-                        <div class="alerta-peligro" style="text-align:center;">
+                        <div class="alerta-peligro" style="text-align:center; padding:30px;">
                             <i class="fas fa-search-minus" style="font-size:2em; display:block; margin-bottom:10px;"></i>
-                            No se encontraron pedidos asociados al número: <strong>${tel}</strong>
+                            No se encontraron pedidos asociados al número: <strong>${telRaw}</strong>
+                            <div style="margin-top:12px; font-size:0.82em; color:#888;">Verifica que sea el número con el que realizaste la compra, incluyendo el código de país.</div>
                         </div>`;
                     return;
                 }
@@ -2398,23 +2458,72 @@
                     if(p.estado.toLowerCase() === 'en proceso') claseEstado = 'status-en-proceso';
                     if(p.estado.toLowerCase() === 'completado') claseEstado = 'status-completado';
 
-                    return `
-                        <div class="order-card">
-                            <div>
-                                <div style="font-size:0.7em; color:#888;">ID: ${p.id_pedido}</div>
-                                <div style="font-weight:bold; color:#fff; margin:5px 0;">${p.producto}</div>
-                                <div style="font-size:0.8em; color:#ccc;"><i class="far fa-calendar-alt"></i> ${p.fecha}</div>
+                    // Fecha formateada
+                    let fechaFormateada = p.fecha || '';
+                    try {
+                        fechaFormateada = new Date(p.fecha).toLocaleDateString('es-ES', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                    } catch(e) {}
+
+                    // Renderizar productos — p.productos es un array, igual que el carrito del checkout
+                    const productosHTML = (p.productos || []).map(prod => `
+                        <div class="checkout-item-summary" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #1a1a1a;">
+                            <img src="${prod.imagen || 'https://fortnite-api.com/images/vbuck.png'}" 
+                                 onerror="this.src='https://fortnite-api.com/images/vbuck.png'"
+                                 style="width:50px; height:50px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#111;">
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-weight:700; color:#fff; font-size:0.92em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${prod.nombre}</div>
+                                ${parseInt(prod.vbucks) > 0 ? `<div style="font-size:0.75em; color:#aaa; margin-top:2px;"><img src="https://fortnite-api.com/images/vbuck.png" style="width:11px;height:11px;vertical-align:middle;"> ${parseInt(prod.vbucks).toLocaleString()} V-Bucks</div>` : ''}
                             </div>
-                            <div style="text-align:right;">
-                                <span class="status-badge ${claseEstado}">${p.estado}</span>
-                                <div style="margin-top:8px; font-size:0.7em; color:#28feb6;">Shegos Store</div>
+                            <strong style="color:#28feb6; white-space:nowrap; font-size:0.9em;">$${prod.precio_usd} USD</strong>
+                        </div>
+                    `).join('');
+
+                    // Cuentas agregadas
+                    const cuentasHTML = p.cuentas_agregadas && p.cuentas_agregadas.length > 0
+                        ? `<div style="margin-top:10px; font-size:0.78em; color:#888;">
+                               <i class="fas fa-gamepad" style="margin-right:5px;"></i>
+                               Cuenta(s): <span style="color:#28feb6;">${p.cuentas_agregadas.join(', ')}</span>
+                           </div>`
+                        : '';
+
+                    return `
+                        <div class="order-card" style="display:block; margin-bottom:16px; padding:20px; border-radius:12px; background:#111; border:1px solid #222;">
+                            <!-- Cabecera del pedido -->
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                                <div>
+                                    <div style="font-size:0.7em; color:#555; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Pedido</div>
+                                    <div style="font-size:1.1em; font-weight:800; color:#fff; font-family:'BurbankBigCondensed', sans-serif; letter-spacing:1px;">${p.id_pedido}</div>
+                                    <div style="font-size:0.78em; color:#666; margin-top:4px;"><i class="far fa-calendar-alt" style="margin-right:5px;"></i>${fechaFormateada}</div>
+                                </div>
+                                <span class="status-badge ${claseEstado}" style="align-self:flex-start;">${p.estado}</span>
+                            </div>
+
+                            <!-- Separador -->
+                            <div style="border-top:1px solid #1e1e1e; margin-bottom:12px;"></div>
+
+                            <!-- Lista de productos (igual al paso 1 del checkout) -->
+                            <div style="margin-bottom:4px; font-size:0.72em; color:#555; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Productos</div>
+                            ${productosHTML}
+
+                            <!-- Total -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px solid #1e1e1e;">
+                                <div>
+                                    <div style="font-size:0.72em; color:#555; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Epic ID</div>
+                                    <div style="font-size:0.88em; color:#ccc; font-weight:600;">${p.epic_id_cliente || '—'}</div>
+                                    ${cuentasHTML}
+                                </div>
+                                <div style="text-align:right;">
+                                    <div style="font-size:0.72em; color:#555; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Total</div>
+                                    <div style="font-size:1.2em; font-weight:800; color:#28feb6;">$${p.total_usd} USD</div>
+                                </div>
                             </div>
                         </div>
                     `;
                 }).join('');
 
             } catch (e) {
-                cont.innerHTML = "<p style='color:red;'>Error al conectar con la base de datos.</p>";
+                console.error('buscarPedidos error:', e);
+                cont.innerHTML = "<div style='padding:20px; text-align:center; color:#ff6b6b;'><i class='fas fa-exclamation-circle' style='font-size:1.8em; margin-bottom:10px; display:block;'></i>Error al conectar con la base de datos. Intenta nuevamente.</div>";
             }
         }
         let tiendaItems = [];
@@ -3232,6 +3341,9 @@ _He adjuntado mi comprobante de pago arriba._`;
         function toggleFloatingButtons(show) {
             const container = document.querySelector('.floating-container');
             if (container) container.style.display = show ? 'flex' : 'none';
+            // En móvil, la clase en body permite control extra vía CSS
+            if (show) document.body.classList.remove('en-checkout');
+            else document.body.classList.add('en-checkout');
         }
 
         function abrirPestana(id) {
