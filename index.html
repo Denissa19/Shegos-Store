@@ -24,11 +24,10 @@
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: #000000; 
-            /* Añadimos un gradiente radial para dar profundidad */
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(40, 254, 182, 0.07) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(88, 101, 242, 0.07) 0px, transparent 50%);
+            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://wallpapercave.com/wp/wp3031122.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
             color: #ffffff; 
             margin: 0; 
             padding: 0; 
@@ -251,7 +250,17 @@
             display: grid;
             grid-template-columns: 3fr 2fr; /* Aproximadamente 60% / 40% */
             gap: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             margin-top: 20px;
+        }
+        @media (min-width: 768px) {
+            .checkout-layout {
+                display: grid;
+                grid-template-columns: 3fr 2fr;
+                gap: 30px;
+            }
         }
 
         .form-section {
@@ -271,10 +280,27 @@
         }
 
         .checkout-summary-column {
-            position: sticky;
-            top: 100px; /* Ajustar según la altura del header */
-            align-self: start; /* Se pega a la parte superior de su área de grid */
-            height: fit-content; /* Para que el sticky funcione correctamente */
+            order: 2; /* En móvil aparece al final después del formulario */
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .checkout-summary-column {
+                order: unset;
+                position: sticky;
+                top: 100px;
+                align-self: start;
+                height: fit-content;
+                width: 316px;
+            }
+        }
+        @media (min-width: 768px) {
+            .checkout-summary-column {
+                order: unset;
+                position: sticky;
+                top: 100px;
+                align-self: start;
+                height: fit-content;
+            }
         }
 
         .order-summary-card {
@@ -389,7 +415,13 @@
             border-radius: 10px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr; /* Una columna en móvil */
             gap: 10px;
+        }
+        @media (min-width: 768px) {
+            .cuentas-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         .cuenta-option {
             display: flex;
@@ -759,8 +791,14 @@
         .metodos-pago-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: 1fr; /* Columna única en móvil para evitar cortes */
             gap: 10px;
             margin: 20px 0 40px 0;
+        }
+        @media (min-width: 768px) {
+            .metodos-pago-container {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
         }
         .metodo-card {
             width: 100%;
@@ -1272,16 +1310,19 @@
 
             /* Métodos de pago más pequeños */
             .metodos-pago-container {
-                grid-template-columns: repeat(2, 1fr) !important;
+                grid-template-columns: 1fr !important;
                 gap: 10px !important;
                 margin: 20px 0 !important;
             }
+            .metodo-card {
+                width: 100% !important;
+            }
             .metodo-label { 
-                padding: 10px !important; 
+                padding: 15px !important; 
                 font-size: 0.75em !important; 
-                flex-direction: column !important;
-                align-items: center !important;
-                text-align: center !important;
+                flex-direction: row !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
             }
             
             /* Cuadrícula de 2 columnas en móvil para el modal */
@@ -1304,7 +1345,6 @@
         }
         @media (max-width: 768px) {
             .currency-trigger { display: none !important; }
-            .main-modal-overlay { display: none !important; } /* Bloquear modal en móvil */
         }
         @media (min-width: 769px) {
             .sidebar-divider, .sidebar-currency-section { display: none !important; }
@@ -1620,19 +1660,20 @@
         </div>
         
         <div class="sidebar-divider"></div>
-        <div class="sidebar-currency-section">
-            <span class="sidebar-currency-title">MONEDA DE LA TIENDA</span>
-            <select id="sidebar-selector-divisa" class="sidebar-dropdown" onchange="cambiarDivisa(this.value)">
-                <option value="DOP">🇩🇴 DOP - Pesos Dominicanos</option>
-                <option value="MXN">🇲🇽 MXN - Pesos Mexicanos</option>
-                <option value="USD">🇺🇸 USD - Dólares</option>
-                <option value="EUR">🇪🇺 EUR - Euros</option>
-                <option value="COP">🇨🇴 COP - Pesos Colombianos</option>
-                <option value="ARS">🇦🇷 ARS - Pesos Argentinos</option>
-                <option value="CLP">🇨🇱 CLP - Pesos Chilenos</option>
-                <option value="PEN">🇵🇪 PEN - Soles Peruanos</option>
-                <option value="USDT">₮ USDT - Cripto</option>
-            </select>
+        <div class="sidebar-currency-section" onclick="abrirModalDivisa(); toggleSidebar();" 
+             style="cursor: pointer; padding: 15px 30px; transition: 0.3s; border-radius: 12px; margin: 0 10px; border: 1px solid rgba(255,255,255,0.05);" 
+             onmouseover="this.style.background='#121212'; this.style.borderColor='#333';" 
+             onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(255,255,255,0.05)';">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <i class="fas fa-globe" style="color: #888; font-size: 1.2em;"></i>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="color: #666; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px;">Moneda actual</span>
+                        <span id="sidebar-currency-label" style="color: #fff; font-size: 0.95em; font-weight: 600;">USD ($)</span>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right" style="color: #444; font-size: 0.8em;"></i>
+            </div>
         </div>
         <div class="sidebar-footer">
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="discord-box" style="width: 100%; box-sizing: border-box; text-align: center;">Discord</a>
@@ -1725,7 +1766,7 @@
             <h2>Tienda de Hoy</h2>
             <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
             <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
-            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" style="
+            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" title="Descargar Tienda" style="
                 display: flex;
                 align-items: center;
                 gap: 8px;
@@ -2035,6 +2076,8 @@
 
                     <!-- PASO 2: DETALLES -->
                     <div id="checkout-step-2" class="step-content">
+                        <button class="btn-secundario" style="margin-bottom: 15px; border: none; font-size: 0.85em; opacity: 0.8; justify-content: flex-start; padding: 0;" onclick="cambiarPasoCheckout(1)">← Volver al resumen del pedido</button>
+                        
                       <div class="form-section">
                         <h4>2. Detalles de Contacto</h4>
                         <label>Nombre Completo:</label>
@@ -2050,59 +2093,59 @@
                             <a href="javascript:void(0)" onclick="abrirPestana('ids-regalos')" style="color: #28feb6; font-size: 0.8em; text-decoration: none; border-bottom: 1px solid #28feb6;">¿No nos tienes?</a>
                         </div>
                         <div class="cuentas-grid" id="cuentas-seleccion">
-                            <label class="cuenta-option"><input type="checkbox" value="Todas las cuentas" onchange="toggleTodasCuentas(this)"> Todas las cuentas</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-S"> Maidas-S</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-OS"> Maidas-OS</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Denissa_STW"> Denissa_STW</label>
+                            <label class="cuenta-option" style="grid-column: 1 / -1;"><input type="checkbox" onchange="toggleTodasCuentas(this)"> Seleccionar todas las cuentas</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么1"> Shegos么1</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么2"> Shegos么2</label>
                             <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="DENISSA_7u7"> DENISSA_7u7</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="SHEGOS STW"> SHEGOS STW</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-OS"> Maidas-OS</label>
+                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-S"> Maidas-S</label>
                         </div>
-                        <button class="btn-secundario" style="margin-top: 15px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(1)">← Volver al resumen</button>
                       </div>
                     </div>
 
                     <!-- PASO 3: PAGO -->
                     <div id="checkout-step-3" class="step-content">
+                        <button class="btn-secundario" style="margin-bottom: 15px; border: none; font-size: 0.85em; opacity: 0.8; justify-content: flex-start; padding: 0;" onclick="cambiarPasoCheckout(2)">← Volver a datos de contacto</button>
+
                       <div class="form-section">
                         <h4>3. Método de Pago</h4>
                         <div class="metodos-pago-container">
                             <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-link" value="link" onchange="mostrarInfoPago()">
+                                <input type="radio" name="metodo-pago" id="met-link" value="link">
                                 <label for="met-link" class="metodo-label">
                                     <img src="img/Linkdepago.webp" alt="Link de Pago">
                                     <span>Link de Pago</span>
                                 </label>
                             </div>
                             <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarInfoPago()">
+                                <input type="radio" name="metodo-pago" id="met-paypal" value="paypal">
                                 <label for="met-paypal" class="metodo-label">
                                     <img src="img/Paypal.webp" alt="PayPal">
                                     <span>PayPal</span>
                                 </label>
                             </div>
                             <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-popular" value="popular" onchange="mostrarInfoPago()">
+                                <input type="radio" name="metodo-pago" id="met-popular" value="popular">
                                 <label for="met-popular" class="metodo-label">
                                     <img src="img/Popular.webp" alt="Banco Popular">
                                     <span>Banco Popular</span>
                                 </label>
                             </div>
                             <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-binance" value="binance" onchange="mostrarInfoPago()">
+                                <input type="radio" name="metodo-pago" id="met-binance" value="binance">
                                 <label for="met-binance" class="metodo-label">
                                     <img src="img/Binance.webp" alt="Binance Pay">
                                     <span>Binance Pay</span>
                                 </label>
                             </div>
                             <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx" onchange="mostrarInfoPago()">
+                                <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx">
                                 <label for="met-transfer" class="metodo-label">
                                     <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
                                     <span>Transferencia MX</span>
                                 </label>
                             </div>
                         </div>
-                        <button class="btn-secundario" style="margin-top: 10px; border: none; font-size: 0.8em; opacity: 0.6;" onclick="cambiarPasoCheckout(2)">← Volver a datos de contacto</button>
                       </div>
                     </div>
                 </div>
@@ -2118,62 +2161,66 @@
             </div>
 
             <div id="pago-transferencia" class="info-pago-box oculto">
-                <h4>Transferencia Bancaria (México)</h4>
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza la transferencia SPEI desde tu app bancaria.</p>
                 <div class="bank-card">
                     <div class="bank-row">
-                        <span class="bank-label">Banco:</span>
-                        <span class="bank-value"><strong>STP</strong></span>
+                        <span class="bank-label">Institución</span>
+                        <span class="bank-value">STP (México)</span>
                     </div>
                     <div class="bank-row">
-                        <span class="bank-label">Beneficiario:</span>
+                        <span class="bank-label">Beneficiario</span>
                         <span class="bank-value">Denisa Severino Figueroa</span>
                     </div>
                     <div class="bank-row">
-                        <span class="bank-label">CLABE:</span>
+                        <span class="bank-label">CLABE Interbancaria</span>
                         <div class="bank-value-group">
                             <span class="bank-value">646180546705661809</span>
                             <button class="btn-copy-mini" onclick="copiarAlPortapapeles('646180546705661809', this)">Copiar</button>
                         </div>
                     </div>
                 </div>
-                <p class="bank-instruction">Una vez realizada la transferencia, regresa aquí para realizar tu pedido y enviar el comprobante.</p>
             </div>
             <div id="pago-popular" class="info-pago-box oculto">
-                <h4>Transferencia Banco Popular</h4>
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Transfiere directamente a nuestra cuenta del Banco Popular.</p>
                 <div class="bank-card">
                     <div class="bank-row">
-                        <span class="bank-label">Entidad:</span>
+                        <span class="bank-label">Entidad</span>
                         <span class="bank-value"><strong>Banco Popular</strong></span>
                     </div>
                     <div class="bank-row">
-                        <span class="bank-label">Titular:</span>
+                        <span class="bank-label">Titular</span>
                         <span class="bank-value">Denisa Severino Figueroa</span>
                     </div>
                     <div class="bank-row">
-                        <span class="bank-label">Cuenta:</span>
+                        <span class="bank-label">Número de Cuenta</span>
                         <div class="bank-value-group">
                             <span class="bank-value">837508191</span>
                             <button class="btn-copy-mini" onclick="copiarAlPortapapeles('837508191', this)">Copiar</button>
                         </div>
                     </div>
                 </div>
-                <p class="bank-instruction">Una vez realizada la transferencia, regresa aquí para realizar tu pedido y enviar el comprobante.</p>
             </div>
-            <div id="pago-paypal" class="info-pago-box oculto">
-                <h4>Pago vía PayPal</h4>
-                <p style="text-align: center; color: #ff9d00; font-weight: bold; margin-bottom: 15px;">
-                    ⚠️ Selecciona la casilla "cubrir comisión" o tu pago será reembolsado.
-                </p>
-                <p style="text-align: center; color: #aaa; margin-bottom: 20px;">
-                    Haz clic en el botón de abajo, completa tu pago y luego regresa aquí para enviar tu pedido por WhatsApp con el comprobante.
-                </p>
-                <a href="https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2" target="_blank" class="btn-pago-paypal" style="text-decoration: none; margin: 0 auto 20px auto; max-width: 300px;">
-                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal">
-                    PAGAR CON PAYPAL
-                </a>
-                <p style="text-align: center; color: #28feb6; font-size: 0.9em; font-weight: bold;">
-                    ✅ Una vez pagado, presiona "REALIZAR PEDIDO" y adjunta tu comprobante en WhatsApp.
-                </p>
+            <div id="pago-binance-info" class="info-pago-box oculto">
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Envía el pago vía Binance Pay (USDT).</p>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Plataforma</span>
+                        <span class="bank-value">Binance Pay</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Pay ID</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">481410806</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('481410806', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="pago-link-info" class="info-pago-box oculto">
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Solicita el link de pago por WhatsApp para pagar con Tarjeta.</p>
+                <div class="alerta-espera" style="text-align: center; font-size: 0.85em;">
+                    Al confirmar, se abrirá el chat para generar tu enlace personalizado.
+                </div>
             </div>
         </div>
 
@@ -2197,6 +2244,20 @@
                     Nota: Disponible en Xbox, PlayStation y PC. No compatible con Nintendo Switch.
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE INSTRUCCIONES DE PAGO -->
+    <div id="modal-instrucciones-pago" class="modal-pavos" style="display: none;" onclick="if(event.target == this) cerrarModalInstrucciones()">
+        <div class="modal-pavos-content" style="max-width: 450px; background: #09090b; border: 1px solid #27272a;">
+            <button onclick="cerrarModalInstrucciones()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 1.5em; cursor: pointer;">✕</button>
+            <h2 id="modal-pago-titulo" style="color: #fff; margin: 0 0 20px 0; font-size: 1.2em; text-align: center; font-weight: 600;"></h2>
+            
+            <div id="modal-pago-body">
+                <!-- Aquí se inyectan los datos de transferencia -->
+            </div>
+            
+            <button class="btn-accion btn-whatsapp" style="margin-top: 25px; width: 100%; background: #fff; color: #000; border-radius: 8px;" onclick="confirmarYEnviarWhatsApp()">Confirmar y enviar comprobante</button>
         </div>
     </div>
 
@@ -2429,6 +2490,7 @@
                     else if (rLower.includes('uncommon')) rarityClass = "uncommon";
                     
                     let seVaHoy = item.section && (item.section.id.toLowerCase().includes('daily') || item.section.id === 'Daily');
+                    let sectionTitle = item.section ? item.section.name : categoriaFinal;
                     
                     // Hero Image Logic (Usamos las skins para el fondo dinámico)
                     if (categoriaFinal === 'SKINS' || item.bundle) {
@@ -2445,6 +2507,7 @@
                             rarityClass,
                             seVaHoy,
                             categoria: categoriaFinal,
+                            sectionName: sectionTitle,
                             nombreSeguro: nombre.replace(/'/g, "\\'")
                         });
                     }
@@ -2527,17 +2590,43 @@
 
             const grouped = {};
             filtrados.forEach(i => {
-                if (!grouped[i.categoria]) grouped[i.categoria] = [];
-                grouped[i.categoria].push(i);
+                let sName = i.sectionName || "Otros";
+                if (!grouped[sName]) grouped[sName] = [];
+                grouped[sName].push(i);
             });
 
-            const ORDEN = ['SKINS', 'BAILES', 'PICOS', 'MOCHILAS', 'ENVOLTORIOS', 'AUTOS', 'ACCESORIOS'];
+            const ordenSeccionesOficiales = [
+                "Pistas de improvisación",
+                "The Mandalorian",
+                "Puesta a punto",
+                "Taquilla de Vanessuh",
+                "Kim Kardashian",
+                "Fiesta de la victoria",
+                "Marvel",
+                "Insidio",
+                "Batman",
+                "No hay problema",
+                "Fuerzas espectrales",
+                "Botín de Fortnite",
+                "EsDeeKid",
+                "Overwatch"
+            ];
+
+            const seccionesOrdenadas = Object.keys(grouped).sort((a, b) => {
+                let indexA = ordenSeccionesOficiales.findIndex(sec => a.toLowerCase().includes(sec.toLowerCase()));
+                let indexB = ordenSeccionesOficiales.findIndex(sec => b.toLowerCase().includes(sec.toLowerCase()));
+                
+                if (indexA === -1) indexA = 999;
+                if (indexB === -1) indexB = 999;
+                
+                return indexA - indexB;
+            });
+
             const tiempo = getTiempoTxt();
             const tasa = tasas[divisaActual] || 1;
             const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
 
-            ORDEN.forEach(cat => {
-                if (!grouped[cat]) return;
+            seccionesOrdenadas.forEach(cat => {
 
                 const sec = document.createElement('div');
                 sec.className = 'shop-section';
@@ -2753,8 +2842,12 @@
             if (headerFlag) headerFlag.src = flag;
             if (headerCode) headerCode.innerText = divisaActual;
 
-            const sidebarSelect = document.getElementById('sidebar-selector-divisa');
-            if (sidebarSelect) sidebarSelect.value = divisaActual;
+            // Actualizar etiqueta del Sidebar
+            const sidebarLabel = document.getElementById('sidebar-currency-label');
+            if (sidebarLabel) {
+                const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
+                sidebarLabel.innerText = `${divisaActual} (${simbolo})`;
+            }
         }
 
         // Asignar eventos a las opciones del modal
@@ -2828,16 +2921,79 @@
                 btnFinal.style.opacity = '1';
                 btnFinal.innerText = 'REALIZAR PEDIDO';
             }, 5000);
+            setTimeout(() => { btnFinal.disabled = false; btnFinal.style.opacity = '1'; btnFinal.innerText = 'REALIZAR PEDIDO'; }, 5000);
 
             // Efecto de sonido de pedido completado
             const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
             audio.play().catch(e => console.log("Sonido bloqueado por navegador"));
+
+            // Redirección inmediata si el método es PayPal
+            if (metodoRaw === 'paypal') {
+                window.open("https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2", '_blank');
+                confirmarYEnviarWhatsApp(); // Disparar WhatsApp para PayPal también
+                return;
+            }
+
+            // Si es transferencia o popular, abrir Modal en lugar de ir directo
+            if (metodoRaw === 'transferencia_mx' || metodoRaw === 'popular') {
+                abrirModalInstrucciones(metodoRaw);
+                return;
+            }
 
             // Si es Binance, abrimos el modal en lugar de ir a WhatsApp directamente
             if (metodoRaw === 'binance') {
                 abrirPagoBinance(total);
                 return;
             }
+
+            confirmarYEnviarWhatsApp();
+        }
+
+        function abrirModalInstrucciones(metodo) {
+            const modal = document.getElementById('modal-instrucciones-pago');
+            const titulo = document.getElementById('modal-pago-titulo');
+            const body = document.getElementById('modal-pago-body');
+            
+            let idSource = '';
+            let titTxt = '';
+            
+            switch(metodo) {
+                case 'transferencia_mx': idSource = 'pago-transferencia'; titTxt = 'Transferencia SPEI'; break;
+                case 'popular': idSource = 'pago-popular'; titTxt = 'Banco Popular RD'; break;
+                case 'binance': idSource = 'pago-binance-info'; titTxt = 'Binance Pay'; break;
+                case 'link': idSource = 'pago-link-info'; titTxt = 'Link de Pago'; break;
+            }
+            
+            if(idSource) {
+                const source = document.getElementById(idSource);
+                body.innerHTML = source ? source.innerHTML : '<p>Cargando datos...</p>';
+                titulo.innerText = titTxt;
+            }
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModalInstrucciones() {
+            document.getElementById('modal-instrucciones-pago').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmarYEnviarWhatsApp() {
+            const nombre = document.getElementById('cliente-nombre').value;
+            const telefono = document.getElementById('cliente-whatsapp').value;
+            const epicId = document.getElementById('cliente-epic').value;
+            const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
+            const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
+            const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
+            const metodo = seleccionado ? seleccionado.value.toUpperCase() : "";
+
+            let totalSum = 0;
+            const listaProductos = carrito.map(i => {
+                if(i.precio !== 'Consultar') totalSum += parseFloat(i.precio);
+                return `• *${i.nombre}* ($${i.precio})\n  📸 Foto: ${i.imagen}`;
+            }).join('\n');
+            const total = totalSum.toFixed(2);
 
             const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*
 
@@ -2869,13 +3025,12 @@ _He adjuntado mi comprobante de pago arriba._`;
 
             const urlFinal = "https://wa.me/18299326234?text=" + encodeURIComponent(mensaje);
             window.open(urlFinal, '_blank');
+            cerrarModalInstrucciones();
         }
 
         function abrirModalDivisa() {
-            if (window.innerWidth > 768) {
-                document.getElementById('currency-modal-v2').classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
+            document.getElementById('currency-modal-v2').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function cambiarDivisa(val) {
@@ -2958,7 +3113,6 @@ _He adjuntado mi comprobante de pago arriba._`;
             } else if (paso === 3) {
                 btn.innerText = "REALIZAR PEDIDO";
                 txt.style.display = 'block';
-                mostrarInfoPago();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -3086,118 +3240,47 @@ _He adjuntado mi comprobante de pago arriba._`;
             abrirPestana('checkout'); 
         }
 
+        /**
+         * REPARACIÓN DE LÓGICA: EXPORTACIÓN DE TIENDA A PNG
+         * Captura el contenedor de la tienda conservando estilos y rarezas.
+         */
         async function exportarCatalogo() {
             const tiendaCont = document.getElementById('contenedor-tienda');
             const btn = document.getElementById('btn-exportar-catalogo');
             const originalText = btn.innerHTML;
 
-            // Feedback visual mientras procesa
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Imagen...';
-            btn.style.opacity = '0.7';
             btn.disabled = true;
 
             try {
                 const canvas = await html2canvas(tiendaCont, {
-                    useCORS: true,
-                    allowTaint: false,
+                    useCORS: true, // Crucial para imágenes de Fortnite-API
+                    allowTaint: true,
                     backgroundColor: "#000000",
-                    scale: 1,
+                    scale: 2, // Alta calidad (Retina/HD)
                     logging: false,
                     onclone: (clonedDoc) => {
                         const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
-                        
-                        // DISEÑO OPTIMIZADO PARA EXPORTACIÓN (1280x720 HD)
-                        clonedTienda.style.width = "1280px"; 
-                        clonedTienda.style.height = "720px";
-                        clonedTienda.style.padding = "40px";
-                        clonedTienda.style.overflow = "hidden";
-                        clonedTienda.style.position = "relative";
-                        clonedTienda.style.backgroundImage = "url('https://imgs.search.brave.com/VbEA87RHA8nZsYFtPCFQ-a04VqNbGyzYRYWnWt_Pwx4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zbGlk/ZWNoZWYubmV0L3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI0LzAx/L0ZvcnRuaXRlLUdh/bWUtQmFja2dyb3Vu/ZC5qcGc')";
-                        clonedTienda.style.backgroundSize = "cover";
-                        clonedTienda.style.backgroundPosition = "center";
-                        clonedTienda.style.backgroundRepeat = "no-repeat";
-
-                        // COMBINAR TODO EN UN SOLO GRID (SIN SECCIONES)
-                        const allCards = Array.from(clonedTienda.querySelectorAll('.cosmetic-card'));
-                        const singleGrid = clonedDoc.createElement('div');
-                        singleGrid.style.display = "grid";
-                        singleGrid.style.gridTemplateColumns = "repeat(4, 1fr)";
-                        singleGrid.style.gap = "8px";
-                        singleGrid.style.marginBottom = "40px";
-                        
-                        allCards.forEach(card => singleGrid.appendChild(card));
-                        clonedTienda.innerHTML = '';
-                        clonedTienda.appendChild(singleGrid);
-
-                        // LIMPIEZA Y MEJORA DE VISIBILIDAD
-                        clonedTienda.querySelectorAll('.card-price-fiat').forEach(el => el.style.display = 'none');
+                        clonedTienda.style.padding = "30px";
+                        clonedTienda.style.background = "#000";
+                        // Ocultamos elementos innecesarios en la foto
                         clonedTienda.querySelectorAll('.btn-add-cart').forEach(el => el.style.display = 'none');
-                        clonedTienda.querySelectorAll('.overlay-timer').forEach(el => el.style.display = 'none');
-
-                        // REALTAR COSMÉTICOS (Evita que salgan oscuros)
-                        clonedTienda.querySelectorAll('.cosmetic-card').forEach(card => {
-                            card.style.background = "#151515"; 
-                            card.style.boxShadow = "none";
-                            card.style.border = "1px solid rgba(255,255,255,0.15)";
-                            card.style.borderRadius = "10px";
-                        });
-
-                        clonedTienda.querySelectorAll('.card-img').forEach(img => {
-                            img.style.filter = "brightness(1.15) contrast(1.1)"; // Realza la skin para que no se vea opaca
-                            img.style.padding = "10px";
-                        });
-
-                        clonedTienda.querySelectorAll('.card-overlay-bottom').forEach(el => {
-                            el.style.backdropFilter = "none"; // html2canvas no procesa bien filtros de desenfoque
-                            el.style.background = "rgba(0,0,0,0.95)";
-                        });
-
-                        clonedTienda.querySelectorAll('.card-title').forEach(el => {
-                            el.style.fontSize = "13px";
-                            el.style.color = "#ffffff";
-                        });
-
-                        const logo = clonedDoc.createElement('img');
-                        logo.src = 'img/logo.png';
-                        logo.style.position = 'absolute';
-                        logo.style.bottom = '20px';
-                        logo.style.left = '40px';
-                        logo.style.height = '120px';
-                        logo.style.zIndex = '1000';
-                        clonedTienda.appendChild(logo);
-
-                        const watermark = clonedDoc.createElement('div');
-                        watermark.innerText = 'CÓDIGO: DENISSA_7U7';
-                        watermark.style.position = 'absolute';
-                        watermark.style.bottom = '20px';
-                        watermark.style.right = '40px';
-                        watermark.style.color = '#ffffff';
-                        watermark.style.fontSize = '28px';
-                        watermark.style.fontFamily = 'BurbankBigCondensed, sans-serif';
-                        watermark.style.fontWeight = '900';
-                        clonedTienda.appendChild(watermark);
+                        clonedTienda.querySelectorAll('.card-price-fiat').forEach(el => el.style.opacity = '0.7');
                     }
                 });
 
-                // Método de descarga seguro para móviles (Blob vs DataURL)
-                canvas.toBlob((blob) => {
-                    if (!blob) throw new Error("Error generando el archivo");
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.jpg`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-                }, 'image/jpeg', 0.8);
+                const link = document.createElement('a');
+                link.download = 'Tienda_Shegos_Store.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
 
             } catch (err) {
                 console.error("Error al exportar:", err);
-                alert("No se pudo generar la imagen. Por favor, asegúrate de que los artículos se hayan cargado completamente.");
+                alert("Hubo un error al generar la imagen. Inténtalo de nuevo.");
             } finally {
                 btn.innerHTML = originalText;
-                btn.style.opacity = '1';
                 btn.disabled = false;
             }
         }
