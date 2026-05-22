@@ -22,12 +22,21 @@
             font-display: swap;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: #000000;
+        }
+
         body { 
             font-family: 'Poppins', sans-serif; 
             background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://wallpapercave.com/wp/wp3031122.jpg');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
+            background-color: #000000;
             color: #ffffff; 
             margin: 0; 
             padding: 0; 
@@ -186,6 +195,7 @@
            ========================================= */
         @media (max-width: 768px) {
             /* Ajustes base de layout móvil */
+            body { background-attachment: scroll !important; }
             .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
             .hero-text { display: flex; flex-direction: column; align-items: center; width: 100%; }
             .hero-text p { max-width: 100%; margin-left: auto; margin-right: auto; }
@@ -1307,9 +1317,9 @@
 
             /* Ajuste de botones flotantes — sin !important para respetar toggleFloatingButtons() */
             .floating-container { bottom: 25px; right: 20px; gap: 12px; z-index: 5000; }
-            .float-btn { width: 55px; height: 55px; }
-            .float-cart img { width: 32px; height: auto; }
-            .cart-badge-float { padding: 1px 5px; font-size: 0.7em; }
+            .float-btn { width: 40px; height: 40px; font-size: 1.1em; }
+            .float-cart img { width: 20px; height: auto; }
+            .cart-badge-float { padding: 1px 4px; font-size: 0.6em; top: -3px; right: -3px; }
             /* Ocultar botones flotantes cuando se está en checkout (móvil) */
             body.en-checkout .floating-container { display: none !important; }
 
@@ -1396,6 +1406,7 @@
             .hero-text h1 { font-size: 1.5em !important; }
             .section-box { padding: 10px 6px !important; }
             .float-btn { width: 48px !important; height: 48px !important; font-size: 1.2em !important; }
+            .float-btn { width: 40px !important; height: 40px !important; font-size: 1.1em !important; }
             .floating-container { bottom: 15px !important; right: 12px !important; gap: 8px !important; }
             .sb-countdown { font-size: 2em !important; }
             .metodo-label { font-size: 0.7em !important; }
