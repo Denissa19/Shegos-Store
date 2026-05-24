@@ -1430,6 +1430,37 @@ td{padding:12px 14px;vertical-align:middle}
             </select>
           </div>
         </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label class="flabel">Plazo / Cuotas</label>
+            <select class="fsel" id="vc-f-plazo" onchange="window.updateInterestPct()">
+              <option value="0">Contado (0%)</option>
+              <option value="2.5">7 Días (2.5%)</option>
+              <option value="5">15 Días (5%)</option>
+              <option value="10">30 Días (10%)</option>
+              <option value="15">45 Días (15%)</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Interés (%)</label>
+            <input class="finput" id="vc-f-interes-pct" type="number" step="0.1" placeholder="0" oninput="window.calcVentaMargen()">
+          </div>
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label class="flabel">Pago Parcial (USD)</label>
+            <input class="finput" id="vc-f-pago-parcial" type="number" step="0.01" placeholder="0.00" oninput="window.calcVentaMargen()">
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Pago Pendiente (USD)</label>
+            <input class="finput" id="vc-f-pago-pendiente" type="number" step="0.01" placeholder="0.00" readonly style="background:var(--surface2); opacity: 0.8">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Cuota Adicional / Interés (USD)</label>
+          <input class="finput" id="vc-f-cuota-adicional" type="number" step="0.01" readonly style="background:var(--surface2); opacity: 0.8">
+        </div>
       </div>
 
       <!-- Nombre producto / cuenta (siempre visible) -->
@@ -2552,28 +2583,26 @@ window.sendReset = async function() {
     return;
   }
 
-  if (!ROLE_MAP[email]) {
-    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
-    msgEl.textContent = 'Este correo no está registrado en el panel.';
-    return;
-  }
-
+  // UI State: Sending
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
   btn.disabled = true;
+  msgEl.style.display = 'none';
 
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.href
-  });
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin
+    });
 
-  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar enlace';
-  btn.disabled = false;
+    if (error) throw error;
 
-  if (error) {
-    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
-    msgEl.textContent = 'Error al enviar: ' + error.message;
-  } else {
     msgEl.style.cssText = 'display:block;background:rgba(40,254,182,.08);color:var(--accent);border:1px solid rgba(40,254,182,.25)';
     msgEl.textContent = '✓ Enlace enviado. Revisa tu correo (también el spam).';
+  } catch (err) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'Error: ' + (err.message || 'No se pudo enviar el enlace.');
+  } finally {
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar enlace';
+    btn.disabled = false;
   }
 };
 
@@ -2639,7 +2668,7 @@ function aplicarRestriccionesRol(role) {
 
 // ═══════════════════════════════════════════════
 let currentVentas = [];
-let editingVentaId = null;
+window.editingVentaId = null;
 let currentRole = 'ADMIN'; // Bug 9 fix: global role state
 
 const TIPO_CONFIG = {
@@ -2822,7 +2851,7 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
-          <button class="ibtn" onclick="window.editVenta('${v.id}')"><i class="fas fa-pen"></i></button>
+          <button class="ibtn" onclick="window.editVenta(${v.id})"><i class="fas fa-pen"></i></button>
           <button class="ibtn del" onclick="window.deleteVenta('${v.id}')"><i class="fas fa-trash-alt"></i></button>
         </div>
       </td></tr>`;
@@ -2834,7 +2863,7 @@ function renderVentas() {
 }
 
 function openVentaModal() {
-  editingVentaId = null;
+  window.editingVentaId = null;
   document.getElementById('vc-m-title').textContent = 'Nueva Venta';
   document.getElementById('vc-f-parse').value = '';
   // Reset chips
@@ -2845,7 +2874,8 @@ function openVentaModal() {
   if (lp) lp.textContent = 'Producto';
   // Reset fields
   ['vc-f-cliente','vc-f-ingreso','vc-f-notas','vc-f-producto','vc-f-wa','vc-f-id',
-   'vc-f-costo-real','vc-f-neta-ceo'].forEach(id => {
+   'vc-f-costo-real','vc-f-neta-ceo','vc-f-pago-parcial','vc-f-pago-pendiente',
+   'vc-f-cuota-adicional', 'vc-f-interes-pct'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
@@ -2853,6 +2883,11 @@ function openVentaModal() {
   if (statusEl) statusEl.value = 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
+  const plazoEl = document.getElementById('vc-f-plazo');
+  if (plazoEl) {
+    plazoEl.value = "0";
+    window.updateInterestPct();
+  }
   // Reset comprobante
   window.vmClearReceipt();
   // Set current date/time
@@ -2863,10 +2898,10 @@ function openVentaModal() {
   document.getElementById('modal-venta').classList.add('open');
 }
 
-function editVenta(id) {
-  const v = currentVentas.find(x => x.id === id);
+window.editVenta = function(id) {
+  const v = currentVentas.find(x => String(x.id) === String(id));
   if (!v) return;
-  editingVentaId = id;
+  window.editingVentaId = id;
   document.getElementById('vc-m-title').textContent = `Editar Venta`;
   document.getElementById('vc-f-parse').value = '';
   // Restore tipo via chips
@@ -2891,6 +2926,21 @@ function editVenta(id) {
   if (metEl) metEl.value = v.metodo_pago || '';
   const crEl = document.getElementById('vc-f-costo-real');
   if (crEl) crEl.value = v.costo_real || '';
+  const ppEl = document.getElementById('vc-f-pago-parcial');
+  if (ppEl) ppEl.value = v.pago_parcial || '';
+  const ppeEl = document.getElementById('vc-f-pago-pendiente');
+  if (ppeEl) ppeEl.value = v.pago_pendiente || '';
+  const caEl = document.getElementById('vc-f-cuota-adicional');
+  if (caEl) caEl.value = v.cuota_adicional || '';
+  const ipEl = document.getElementById('vc-f-interes-pct');
+  if (ipEl) ipEl.value = v.interes_porcentaje || 0;
+  const plEl = document.getElementById('vc-f-plazo');
+  if (plEl) {
+    // Intentar emparejar el porcentaje con una opción predefinida o poner custom
+    const match = Array.from(plEl.options).find(o => o.value == (v.interes_porcentaje || 0));
+    plEl.value = match ? match.value : 'custom';
+    window.updateInterestPct();
+  }
   // Restore date
   document.getElementById('vc-f-fecha').value = v.created_at ? v.created_at.substring(0,16) : '';
   // Restore receipt preview if exists
@@ -2912,21 +2962,53 @@ function closeVentaModal() {
   document.getElementById('modal-venta').classList.remove('open');
 }
 
+window.updateInterestPct = function() {
+  const plazo = document.getElementById('vc-f-plazo').value;
+  const interesInput = document.getElementById('vc-f-interes-pct');
+  if (plazo !== 'custom') {
+    interesInput.value = plazo;
+    interesInput.readOnly = true;
+    interesInput.style.opacity = "0.7";
+  } else {
+    interesInput.readOnly = false;
+    interesInput.style.opacity = "1";
+  }
+  window.calcVentaMargen();
+};
+
 window.calcVentaMargen = function() {
-  const ingreso = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
-  const costo   = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
-  const ganancia = ingreso - costo;
+  const ingresoBase = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
+  const interesPct = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
+  
+  // Cálculo de interés
+  const cuotaAdicional = ingresoBase * (interesPct / 100);
+  const totalVenta = ingresoBase + cuotaAdicional;
+  
+  const cuotaEl = document.getElementById('vc-f-cuota-adicional');
+  if (cuotaEl) cuotaEl.value = cuotaAdicional.toFixed(2);
+
+  const costo = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+  const ganancia = totalVenta - costo;
 
   const netaEl = document.getElementById('vc-f-neta-ceo');
   if (netaEl) {
     netaEl.value = ganancia.toFixed(2);
     netaEl.style.color = ganancia >= 0 ? 'var(--gold)' : 'var(--red)';
   }
-  window.vmUpdateTotal();
+
+  // Cálculo automático de pago pendiente basado en el TOTAL (Base + Interés)
+  const parcial = parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0;
+  const pendienteEl = document.getElementById('vc-f-pago-pendiente');
+  if (pendienteEl) {
+    const pendiente = totalVenta - parcial;
+    pendienteEl.value = pendiente > 0 ? pendiente.toFixed(2) : '0.00';
+  }
+
+  window.vmUpdateTotal(totalVenta);
 };
 
-window.vmUpdateTotal = function() {
-  const ingreso = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
+window.vmUpdateTotal = function(val) {
+  const ingreso = val !== undefined ? val : (parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0);
   const disp = document.getElementById('vm-total-display');
   if (disp) disp.textContent = '$' + ingreso.toFixed(2);
 };
@@ -3024,7 +3106,7 @@ async function cargarSugerenciasClientes() {
 
 // Bug 4 fix: save the date from the form field
 async function saveVenta() {
-  const ingreso = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
+  const ingreso = parseFloat(document.getElementById('vc-f-ingreso')?.value || 0);
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingreso || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
 
@@ -3048,14 +3130,18 @@ async function saveVenta() {
     metodo_pago: document.getElementById('vc-f-metodo')?.value || '',
     producto: document.getElementById('vc-f-producto')?.value || '',
     comprobante: document.getElementById('vc-f-receipt-base64')?.value || null,
+    pago_parcial: parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0,
+    pago_pendiente: parseFloat(document.getElementById('vc-f-pago-pendiente')?.value) || 0,
+    cuota_adicional: parseFloat(document.getElementById('vc-f-cuota-adicional')?.value) || 0,
+    interes_porcentaje: parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0,
     created_at: fechaVal ? new Date(fechaVal).toISOString() : new Date().toISOString()
   };
-  if (editingVentaId) record.id = editingVentaId;
+  if (window.editingVentaId) record.id = window.editingVentaId;
 
   try {
     let error;
-    if (editingVentaId) {
-      const { error: err } = await supabase.from('ventas').update(record).eq('id', editingVentaId);
+    if (window.editingVentaId) {
+      const { error: err } = await supabase.from('ventas').update(record).eq('id', window.editingVentaId);
       error = err;
     } else {
       const { error: err } = await supabase.from('ventas').insert([record]);
@@ -3579,6 +3665,7 @@ window.saveVenta = saveVenta;
 window.parseVentaAutomatica = parseVentaAutomatica;
 window.vcClearDates = vcClearDates;
 window.exportVentasCSV = exportVentasCSV;
+window.updateInterestPct = updateInterestPct;
 window.vmSelectTipo = window.vmSelectTipo;
 window.vmToggleParse = window.vmToggleParse;
 window.vmUpdateTotal = window.vmUpdateTotal;
