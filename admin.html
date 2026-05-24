@@ -1610,6 +1610,19 @@ function setDefaultMonth() {
   document.getElementById('month-sel').value = `${y}-${m}`;
 }
 
+async function setupRealtime() {
+  console.log("Activando monitoreo en tiempo real...");
+  supabase
+    .channel('custom-all-channel')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
+      fetchOrders();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'ventas' }, () => {
+      fetchVentas();
+    })
+    .subscribe();
+}
+
 // --- CLOUD CRUD VIA SUPABASE ---
 async function fetchOrders() {
   const area = document.getElementById('table-area');
@@ -2457,6 +2470,7 @@ function mostrarPanel(email, role) {
   aplicarRestriccionesRol(role);
   setDefaultMonth();
   fetchOrders();
+  setupRealtime();
   cargarSugerenciasClientes();
   loadSavedWallpaper();
 }
@@ -3570,6 +3584,7 @@ window.vmToggleParse = window.vmToggleParse;
 window.vmUpdateTotal = window.vmUpdateTotal;
 window.vmHandleDrop = window.vmHandleDrop;
 window.vmClearReceipt = window.vmClearReceipt;
+window.setupRealtime = setupRealtime;
 window.fetchRecoveries = fetchRecoveries;
 window.openRecoveryModal = openRecoveryModal;
 window.editRecovery = editRecovery;
