@@ -47,7 +47,7 @@ body.role-ceo {
 }
 
 /* ── LOGIN ──────────────────────────────── */
-#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;background-image:linear-gradient(rgba(0,0,0,0.85),rgba(0,0,0,0.85)),url('https://wallpapercave.com/wp/wp3031122.jpg');background-size:cover;background-position:center}
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;background-image:linear-gradient(rgba(0,0,0,0.85),rgba(0,0,0,0.85)),url('https://wallpapercave.com/wp/wp3031122.jpg');background-size:cover;background-position:center;visibility:hidden;opacity:0;transition:opacity 0.2s ease}
 .login-card{background:rgba(10,10,10,0.95);border:1px solid var(--border2);padding:48px 40px;width:360px;text-align:center;backdrop-filter:blur(20px);border-top:2px solid var(--accent)}
 .login-logo{font-family:'BurbankBigCondensed','Poppins',sans-serif;font-size:2.8em;color:#fff;text-transform:uppercase;letter-spacing:2px;font-style:italic;line-height:1}
 .login-logo span{color:var(--accent)}
@@ -60,8 +60,8 @@ body.role-ceo {
 
 /* ── SHELL ──────────────────────────────── */
 #app{display:none;min-height:100vh}
-.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;padding:0 28px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.topbar-brand{font-family:var(--font-title);font-size:1.6em;color:var(--text);text-transform:uppercase;letter-spacing:2px;font-style:italic}
+.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.topbar-brand{font-family:'BurbankBigCondensed','Poppins',sans-serif;font-size:1.5em;color:var(--text);text-transform:uppercase;letter-spacing:2px;font-style:italic;white-space:nowrap;line-height:1;flex-shrink:0}
 .topbar-brand span{color:var(--accent)}
 .topbar-right{display:flex;align-items:center;gap:18px}
 .topbar-revenue{font-size:0.78em;color:var(--text2);font-weight:500}
@@ -436,8 +436,8 @@ td{padding:12px 14px;vertical-align:middle}
 
 /* Mobile topbar adjustments */
 @media (max-width: 768px) {
-  .topbar { padding: 0 14px; height: 52px; }
-  .topbar-brand { font-size: 1.2em; }
+  .topbar { padding: 0 10px; height: 52px; gap:6px; }
+  .topbar-brand { font-size: 1.0em; letter-spacing:1px; }
   .topbar-revenue { display: none; }
   .btn-logout span { display: none; }
   .btn-logout { padding: 7px 10px; }
@@ -683,8 +683,110 @@ td{padding:12px 14px;vertical-align:middle}
 }
 .vm-total-label { font-size: 0.72em; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); font-weight: 600; }
 .vm-total-val { font-family: var(--font-title); font-size: 1.8em; color: var(--accent); font-style: italic; letter-spacing: 1px; }
+
+/* ── NOTAS / BORRADORES ──────────────────── */
+.notes-grid { display: grid; grid-template-columns: 260px 1fr; gap: 16px; }
+@media(max-width:768px){ .notes-grid { grid-template-columns: 1fr; } }
+.note-card {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 14px 16px; cursor: pointer;
+  transition: border-color .2s; position: relative;
+}
+.note-card:hover, .note-card.active { border-color: var(--accent); }
+.note-card.active::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); border-radius:4px 0 0 4px; }
+.note-card-title { font-weight:700; font-size:0.85em; color:var(--text); margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.note-card-preview { font-size:0.72em; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.note-card-date { font-size:0.65em; color:var(--text3); margin-top:6px; }
+.note-editor-wrap { background: var(--surface2); border: 1px solid var(--border2); border-radius:8px; display:flex; flex-direction:column; min-height:400px; }
+.note-editor-topbar { display:flex; align-items:center; gap:10px; padding:12px 14px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+.note-editor-topbar input { flex:1; min-width:140px; background:transparent; border:none; outline:none; color:var(--text); font-family:var(--font-body); font-size:0.9em; font-weight:700; }
+.note-editor-topbar input::placeholder { color:var(--text3); }
+.note-textarea { flex:1; background:transparent; border:none; resize:none; color:var(--text); font-family:var(--font-body); font-size:0.85em; line-height:1.7; padding:16px; outline:none; min-height:360px; }
+.note-empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:10px; color:var(--text3); font-size:0.82em; padding:40px; }
+.note-empty-state i { font-size:2.5em; color:var(--border2); }
+
+/* ── APARTAR CUENTAS PAGO CHIPS ──────────── */
+.vm-apago-chips { display:flex; gap:8px; flex-wrap:wrap; }
+.vm-apago-chip {
+  flex:1; min-width:100px;
+  background:var(--bg); border:1px solid var(--border2);
+  color:var(--text2); padding:9px 10px; border-radius:6px;
+  cursor:pointer; transition:all .2s; font-family:var(--font-body);
+  font-size:0.72em; font-weight:700; text-transform:uppercase;
+  letter-spacing:.8px; display:flex; flex-direction:column;
+  align-items:center; gap:4px; text-align:center;
+}
+.vm-apago-chip i { font-size:1.2em; }
+.vm-apago-chip:hover { border-color:#f97316; color:#f97316; }
+.vm-apago-chip.active { background:rgba(249,115,22,.1); border-color:#f97316; color:#f97316; }
+/* Password recovery modal new password input */
+#new-pwd-modal input { letter-spacing: 0; text-align: left; }
+
+/* ── CUSTOM CONFIRM MODAL ─────────────────── */
+#modal-confirm { z-index: 99990; }
+.confirm-card {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 32px 28px; max-width: 360px; width: 100%;
+  text-align: center; position: relative; overflow: hidden;
+}
+.confirm-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--red); }
+.confirm-icon { font-size: 2.2em; color: var(--red); margin-bottom: 14px; }
+.confirm-title { font-family: var(--font-title); font-size: 1.3em; font-style: italic; text-transform: uppercase; letter-spacing: 1px; color: var(--text); margin-bottom: 8px; }
+.confirm-msg { font-size: 0.82em; color: var(--text2); line-height: 1.6; margin-bottom: 24px; }
+.confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+/* ── CUSTOM DATE PICKER ─────────────────── */
+.date-picker-wrap { position: relative; }
+.date-picker-input-row { position: relative; }
+.date-picker-input-row .finput,
+.date-picker-input-row .month-input { padding-right: 36px; cursor: pointer; }
+.date-picker-icon {
+  position: absolute; right: 11px; top: 50%;
+  transform: translateY(-50%); color: var(--accent);
+  font-size: .82em; pointer-events: none; z-index: 1;
+}
+.cal-popup {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 5000;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 16px; width: 280px;
+  box-shadow: 0 16px 48px rgba(0,0,0,.7);
+  backdrop-filter: blur(20px); animation: calFadeIn .15s ease;
+  display: none;
+}
+.cal-popup.open { display: block; }
+@keyframes calFadeIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-nav { background: none; border: none; color: var(--text2); cursor: pointer; padding: 4px 8px; border-radius: 4px; font-size: .9em; transition: color .2s; }
+.cal-nav:hover { color: var(--accent); }
+.cal-month-label { font-size: .82em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); cursor: pointer; }
+.cal-month-label:hover { color: var(--accent); }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.cal-dow { text-align: center; font-size: .62em; font-weight: 700; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; padding: 4px 0; }
+.cal-day {
+  text-align: center; padding: 6px 2px; font-size: .78em; font-weight: 600;
+  cursor: pointer; border-radius: 5px; color: var(--text2); transition: all .15s;
+  border: 1px solid transparent;
+}
+.cal-day:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(40,254,182,.3); }
+.cal-day.today { color: var(--accent); font-weight: 800; }
+.cal-day.selected { background: var(--accent); color: #000; font-weight: 800; border-color: var(--accent); }
+.cal-day.other-month { color: var(--text3); opacity: .4; }
+.cal-day.disabled { opacity: .2; cursor: default; pointer-events: none; }
+.cal-time-row { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.cal-time-label { font-size: .68em; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+.cal-time-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); color: var(--text); padding: 6px 8px; border-radius: 4px; font-family: var(--font-body); font-size: .78em; outline: none; text-align: center; }
+.cal-time-input:focus { border-color: var(--accent); }
+.cal-footer { margin-top: 10px; display: flex; gap: 6px; }
+.cal-btn-today { flex: 1; background: none; border: 1px solid var(--border2); color: var(--text2); padding: 7px; font-size: .7em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-radius: 4px; font-family: var(--font-body); transition: all .2s; }
+.cal-btn-today:hover { border-color: var(--accent); color: var(--accent); }
+.cal-btn-ok { flex: 1; background: var(--accent); border: none; color: #000; padding: 7px; font-size: .7em; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border-radius: 4px; font-family: var(--font-title); font-style: italic; }
+.cal-btn-ok:hover { opacity: .85; }
+/* Month-only picker variant */
+.cal-month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+.cal-month-item { text-align: center; padding: 8px 4px; font-size: .75em; font-weight: 700; cursor: pointer; border-radius: 5px; color: var(--text2); transition: all .15s; text-transform: uppercase; letter-spacing: .5px; border: 1px solid transparent; }
+.cal-month-item:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(40,254,182,.3); }
+.cal-month-item.selected { background: var(--accent); color: #000; border-color: var(--accent); }
 </style>
-</head>
 <body>
 
 <div id="login-screen">
@@ -740,7 +842,7 @@ td{padding:12px 14px;vertical-align:middle}
 
 <div id="app">
   <div class="topbar">
-    <div class="topbar-brand" style="position:absolute;left:50%;transform:translateX(-50%)">PANEL <span>SHEGOS</span> STORE</div>
+    <div class="topbar-brand">SHEGOS <span>STORE</span></div>
     <div class="topbar-right">
       <div class="topbar-revenue" id="topbar-rev"></div>
       <div class="topbar-revenue" id="topbar-user" style="font-size:0.72em;color:var(--text2)"></div>
@@ -757,6 +859,7 @@ td{padding:12px 14px;vertical-align:middle}
     <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)"><i class="fas fa-chart-bar"></i> Contabilidad</button>
     <button class="tab-nav-btn" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)" style="display:none"><i class="fas fa-coins"></i> Cuentas</button>
     <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
+    <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
   </div>
 
   <!-- Mobile Bottom Navigation -->
@@ -773,6 +876,9 @@ td{padding:12px 14px;vertical-align:middle}
       </button>
       <button class="mnav-btn" id="mnav-recovery" onclick="window.switchTab('recovery', document.getElementById('btn-tab-recovery')); window.setActiveMNav('recovery')">
         <i class="fas fa-shield-alt"></i>Recup.
+      </button>
+      <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
+        <i class="fas fa-sticky-note"></i>Notas
       </button>
     </div>
   </nav>
@@ -839,7 +945,13 @@ td{padding:12px 14px;vertical-align:middle}
 
       <div class="month-picker">
         <label>Período:</label>
-        <input type="month" class="month-input" id="month-sel">
+        <div class="date-picker-wrap" style="position:relative">
+          <div class="date-picker-input-row">
+            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" readonly onclick="window.openCal('month-sel','month')">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-month-sel"></div>
+        </div>
         <button class="btn btn-ghost" onclick="window.setMonthAll()">Ver todo</button>
         <button class="btn btn-accent" onclick="window.exportAccounting()"><i class="fas fa-download"></i> Exportar CSV</button>
       </div>
@@ -877,7 +989,7 @@ td{padding:12px 14px;vertical-align:middle}
       <div class="method-breakdown" id="method-breakdown"></div>
 
       <div class="sec-ceo-only" style="margin-top:20px">
-        <div class="sec-title"><h3 style="color:var(--gold)">Resumen de Rentabilidad (Solo CEO)</h3><div class="sec-line"></div></div>
+        <div class="sec-title"><h3 style="color:var(--gold)">Resumen de Rentabilidad</h3><div class="sec-line"></div></div>
         <div class="accounting-grid" style="grid-template-columns: 1fr 1fr">
           <div class="acc-card" style="--tc:var(--red)"><div class="acc-label">Inversión Total</div><div class="acc-val" id="acc-total-costo">$0.00</div></div>
           <div class="acc-card" style="--tc:var(--gold)"><div class="acc-label">Ganancia Neta Real</div><div class="acc-val" id="acc-total-neta">$0.00</div></div>
@@ -895,7 +1007,7 @@ td{padding:12px 14px;vertical-align:middle}
     <div class="tab-panel" id="tab-cuentas">
 
       <!-- Tarjetas por tipo de venta -->
-      <div class="stats-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:14px">
+      <div class="stats-row" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px">
         <div class="stat-card" style="--accent-c:#a855f7">
           <div class="stat-label" style="color:#a855f7"><i class="fas fa-gamepad"></i> Cuenta FN</div>
           <div class="stat-value" style="color:#a855f7;font-size:1.8em" id="vc-t-cuenta">0</div>
@@ -920,6 +1032,11 @@ td{padding:12px 14px;vertical-align:middle}
           <div class="stat-label" style="color:#ec4899"><i class="fas fa-gift"></i> Regalo</div>
           <div class="stat-value" style="color:#ec4899;font-size:1.8em" id="vc-t-regalo">0</div>
           <div class="stat-sub" id="vc-t-regalo-sum">$0.00</div>
+        </div>
+        <div class="stat-card" style="--accent-c:#f97316">
+          <div class="stat-label" style="color:#f97316"><i class="fas fa-bookmark"></i> Apartar</div>
+          <div class="stat-value" style="color:#f97316;font-size:1.8em" id="vc-t-apartar">0</div>
+          <div class="stat-sub" id="vc-t-apartar-sum">$0.00</div>
         </div>
       </div>
 
@@ -948,9 +1065,22 @@ td{padding:12px 14px;vertical-align:middle}
           <option value="Recarga de pavos">Pavos</option>
           <option value="Packs">Packs</option>
           <option value="Venta via regalo">Regalo</option>
+          <option value="Apartar cuentas">Apartar Cuenta</option>
         </select>
-        <input type="date" class="month-input" id="vc-date-from" title="Desde">
-        <input type="date" class="month-input" id="vc-date-to" title="Hasta">
+        <div class="date-picker-wrap" style="position:relative">
+          <div class="date-picker-input-row">
+            <input type="text" class="month-input" id="vc-date-from" title="Desde" placeholder="Desde" readonly onclick="window.openCal('vc-date-from','date')">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-vc-date-from"></div>
+        </div>
+        <div class="date-picker-wrap" style="position:relative">
+          <div class="date-picker-input-row">
+            <input type="text" class="month-input" id="vc-date-to" title="Hasta" placeholder="Hasta" readonly onclick="window.openCal('vc-date-to','date')">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-vc-date-to"></div>
+        </div>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
         <button class="btn btn-accent" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
         <button class="btn btn-outline" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
@@ -1051,6 +1181,39 @@ td{padding:12px 14px;vertical-align:middle}
 
     </div>
 
+    <!-- ── TAB NOTAS / BORRADORES ─────────────── -->
+    <div class="tab-panel" id="tab-notas">
+      <div class="toolbar" style="margin-bottom:20px">
+        <button class="btn btn-accent" onclick="window.newNote()"><i class="fas fa-plus"></i> Nueva Nota</button>
+        <button class="btn btn-ghost" onclick="window.saveCurrentNote()"><i class="fas fa-save"></i> Guardar</button>
+        <button class="btn btn-danger" id="btn-delete-note" onclick="window.deleteCurrentNote()" style="display:none"><i class="fas fa-trash-alt"></i> Eliminar</button>
+        <div style="flex:1"></div>
+        <span style="font-size:0.72em;color:var(--text3);align-self:center"><i class="fas fa-info-circle" style="margin-right:5px"></i>Visible para CEO y Admin</span>
+      </div>
+      <div class="notes-grid" id="notes-grid">
+        <div>
+          <div style="font-size:0.7em;letter-spacing:2px;text-transform:uppercase;color:var(--text2);font-weight:700;margin-bottom:10px">Borradores</div>
+          <div id="notes-list">
+            <div class="note-empty-state" style="min-height:120px;border:1px dashed var(--border);border-radius:8px">
+              <i class="fas fa-sticky-note"></i>
+              <p>No hay notas aún</p>
+            </div>
+          </div>
+        </div>
+        <div class="note-editor-wrap" id="note-editor">
+          <div class="note-editor-topbar">
+            <input type="text" id="note-title-input" placeholder="Título de la nota..." maxlength="100">
+            <span id="note-save-status" style="font-size:0.65em;color:var(--text3);white-space:nowrap"></span>
+          </div>
+          <div class="note-empty-state" id="note-editor-placeholder">
+            <i class="fas fa-pen-to-square"></i>
+            <p>Selecciona o crea una nota para editar</p>
+          </div>
+          <textarea class="note-textarea" id="note-content-input" placeholder="Escribe tu idea, dinámica de sorteo, borrador..." style="display:none"></textarea>
+        </div>
+      </div>
+    </div>
+
   </div></div><div class="overlay" id="modal-order">
   <div class="mcard">
     <div class="mhead">
@@ -1119,7 +1282,13 @@ td{padding:12px 14px;vertical-align:middle}
         </div>
         <div class="fgroup">
           <label class="flabel">Fecha</label>
-          <input class="finput" id="f-date" type="datetime-local">
+          <div class="date-picker-wrap">
+            <div class="date-picker-input-row">
+              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('f-date','datetime')">
+              <i class="fas fa-calendar-alt date-picker-icon"></i>
+            </div>
+            <div class="cal-popup" id="cal-f-date"></div>
+          </div>
         </div>
       </div>
       <div class="fgroup">
@@ -1276,7 +1445,51 @@ td{padding:12px 14px;vertical-align:middle}
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<!-- ── MODAL NUEVA CONTRASEÑA (recuperación vía email) ─────── -->
+<div class="overlay" id="new-pwd-modal" style="z-index:99999">
+  <div class="mcard" style="max-width:400px">
+    <div class="mhead">
+      <div class="mtitle" style="color:var(--accent)"><i class="fas fa-key" style="margin-right:8px"></i>Nueva Contraseña</div>
+    </div>
+    <div class="mbody">
+      <p style="font-size:0.8em;color:var(--text2);margin-bottom:16px;line-height:1.6">
+        Ingresa tu nueva contraseña. Asegúrate de que sea segura.
+      </p>
+      <div class="fgroup">
+        <label class="flabel">Nueva Contraseña</label>
+        <div style="position:relative">
+          <input class="finput" id="new-pwd-input" type="password" placeholder="Mínimo 6 caracteres"
+            style="padding-right:44px;letter-spacing:0;text-align:left"
+            onkeydown="if(event.key==='Enter') window.submitNewPassword()">
+          <button onclick="window.toggleNewPwd()" style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:1em;padding:4px" tabindex="-1">
+            <i class="fas fa-eye" id="new-pwd-eye-icon"></i>
+          </button>
+        </div>
+      </div>
+      <div id="new-pwd-msg" style="display:none;font-size:0.78em;margin-top:10px;padding:10px 13px;border-radius:4px;font-weight:500"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-accent" onclick="window.submitNewPassword()" id="new-pwd-btn" style="width:100%">
+        <i class="fas fa-check"></i> Cambiar Contraseña
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ── MODAL CONFIRMACIÓN PERSONALIZADO ──────────── -->
+<div class="overlay" id="modal-confirm">
+  <div class="confirm-card">
+    <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
+    <div class="confirm-title" id="confirm-title">Confirmar</div>
+    <div class="confirm-msg" id="confirm-msg">¿Estás seguro?</div>
+    <div class="confirm-actions">
+      <button class="btn btn-ghost" id="confirm-cancel-btn" onclick="window.closeConfirmModal()">Cancelar</button>
+      <button class="btn btn-danger" id="confirm-ok-btn" onclick="window.doConfirmAction()"><i class="fas fa-trash-alt"></i> Eliminar</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── MODAL RECUPERACIÓN DE CUENTA ──────── -->
 <div class="overlay" id="modal-recovery">
@@ -1297,7 +1510,13 @@ td{padding:12px 14px;vertical-align:middle}
         </div>
         <div class="fgroup">
           <label class="flabel">Fecha de Recuperación *</label>
-          <input class="finput" id="rec-f-fecha" type="date">
+          <div class="date-picker-wrap">
+            <div class="date-picker-input-row">
+              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" readonly onclick="window.openCal('rec-f-fecha','date')">
+              <i class="fas fa-calendar-alt date-picker-icon"></i>
+            </div>
+            <div class="cal-popup" id="cal-rec-f-fecha"></div>
+          </div>
         </div>
       </div>
       <div class="fgroup">
@@ -1372,6 +1591,9 @@ td{padding:12px 14px;vertical-align:middle}
           <button type="button" class="vm-tipo-chip" data-tipo="Venta via regalo" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-gift"></i>Regalo
           </button>
+          <button type="button" class="vm-tipo-chip" data-tipo="Apartar cuentas" onclick="window.vmSelectTipo(this)">
+            <i class="fas fa-bookmark"></i>Apartar Cuenta
+          </button>
         </div>
         <!-- Hidden real select for compatibility -->
         <input type="hidden" id="vc-f-tipo">
@@ -1380,7 +1602,13 @@ td{padding:12px 14px;vertical-align:middle}
       <!-- Fecha -->
       <div class="fgroup">
         <label class="flabel">Fecha</label>
-        <input class="finput" id="vc-f-fecha" type="datetime-local">
+        <div class="date-picker-wrap">
+          <div class="date-picker-input-row">
+            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('vc-f-fecha','datetime')">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-vc-f-fecha"></div>
+        </div>
       </div>
 
       <!-- ─── Campos exclusivos: Cuenta de Fortnite ─── -->
@@ -1460,6 +1688,40 @@ td{padding:12px 14px;vertical-align:middle}
         <div class="fgroup">
           <label class="flabel">Cuota Adicional / Interés (USD)</label>
           <input class="finput" id="vc-f-cuota-adicional" type="number" step="0.01" readonly style="background:var(--surface2); opacity: 0.8">
+        </div>
+      </div>
+
+      <!-- ─── Campos exclusivos: Apartar Cuentas ─── -->
+      <div id="vm-apartar-fields" style="display:none">
+        <div class="vm-sep"><span style="color:#f97316">Tipo de Pago para Apartar</span></div>
+        <div class="fgroup">
+          <label class="flabel">Tipo de Cuota *</label>
+          <div class="vm-apago-chips">
+            <button type="button" class="vm-apago-chip" data-apago="anticipo" onclick="window.vmSelectApartarPago(this)">
+              <i class="fas fa-hand-holding-dollar"></i>Anticipo
+            </button>
+            <button type="button" class="vm-apago-chip" data-apago="cuota_pendiente" onclick="window.vmSelectApartarPago(this)">
+              <i class="fas fa-calendar-check"></i>Cuota Pendiente
+            </button>
+            <button type="button" class="vm-apago-chip" data-apago="interes" onclick="window.vmSelectApartarPago(this)">
+              <i class="fas fa-percent"></i>Interés
+            </button>
+          </div>
+          <input type="hidden" id="vc-f-apartarpago">
+        </div>
+        <div class="frow">
+          <div class="fgroup">
+            <label class="flabel">Monto Total Cuenta (USD)</label>
+            <input class="finput" id="vc-f-apartar-total" type="number" step="0.01" placeholder="0.00" oninput="window.calcApartarPendiente()">
+          </div>
+          <div class="fgroup">
+            <label class="flabel">Monto Abonado (USD)</label>
+            <input class="finput" id="vc-f-apartar-abono" type="number" step="0.01" placeholder="0.00" oninput="window.calcApartarPendiente()">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Saldo Pendiente (USD)</label>
+          <input class="finput" id="vc-f-apartar-pendiente" type="number" step="0.01" placeholder="0.00" readonly style="background:var(--surface2);opacity:.8;color:var(--gold);font-weight:700">
         </div>
       </div>
 
@@ -1577,6 +1839,16 @@ window.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
   renderQuickTags();
 
+  // Manejar recuperación de contraseña vía enlace de email
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      // Mostrar modal para nueva contraseña
+      document.getElementById('login-screen').style.visibility = 'hidden';
+      document.getElementById('login-screen').style.opacity = '0';
+      document.getElementById('new-pwd-modal').classList.add('open');
+    }
+  });
+
   // Revisar sesión activa de Supabase Auth
   const { data: { session } } = await supabase.auth.getSession();
   if (session?.user) {
@@ -1585,6 +1857,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     sessionStorage.setItem('shegos_role', role);
     sessionStorage.setItem('shegos_email', email);
     mostrarPanel(email, role);
+  } else {
+    // No hay sesión — mostrar pantalla de login con fade-in
+    const ls = document.getElementById('login-screen');
+    ls.style.visibility = 'visible';
+    ls.style.opacity = '1';
   }
 });
 
@@ -1592,7 +1869,7 @@ function setupEventListeners() {
   document.getElementById('search')?.addEventListener('input', renderTable);
   document.getElementById('filt-status')?.addEventListener('change', renderTable);
   document.getElementById('filt-group')?.addEventListener('change', renderTable);
-  document.getElementById('month-sel')?.addEventListener('change', renderAccounting);
+  // month-sel is now a custom calendar picker — renderAccounting is called directly from calendar
   
   // Tags input keydown
   document.getElementById('tag-input')?.addEventListener('keydown', (e) => {
@@ -1752,21 +2029,20 @@ async function saveOrder() {
 }
 
 async function deleteOrder(id) {
-  if (!confirm(`¿Seguro que deseas eliminar el pedido ${id} permanentemente de la nube?`)) return;
-  try {
-    const { error } = await supabase
-      .from('pedidos')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-
-    showToast('Pedido eliminado de la nube');
-    fetchOrders();
-  } catch (err) {
-    showToast('Error al eliminar de Supabase', true);
-    console.error(err);
-  }
+  window.openConfirmModal('Eliminar Pedido', `¿Seguro que deseas eliminar el pedido ${id} permanentemente de la nube?`, async function() {
+    try {
+      const { error } = await supabase
+        .from('pedidos')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+      showToast('Pedido eliminado de la nube');
+      fetchOrders();
+    } catch (err) {
+      showToast('Error al eliminar de Supabase', true);
+      console.error(err);
+    }
+  });
 }
 
 async function updateOrderStatus(id, newStatus) {
@@ -1797,12 +2073,19 @@ function updateStats() {
     else if (o.estado === 'Cancelado') cancel++;
   });
 
+  // Also include ventas income (completed/ingreso) in total revenue
+  let ventasRevenue = 0;
+  currentVentas.forEach(v => {
+    ventasRevenue += (parseFloat(v.ingreso) || 0);
+  });
+  const totalRevenue = revenue + ventasRevenue;
+
   document.getElementById('s-pend').textContent = pend;
   document.getElementById('s-proc').textContent = proc;
   document.getElementById('s-done').textContent = done;
   document.getElementById('s-cancel').textContent = cancel;
   document.getElementById('s-total').textContent = currentOrders.length;
-  document.getElementById('topbar-rev').innerHTML = `Ingresos Totales: <strong>$${revenue.toFixed(2)} USD</strong>`;
+  document.getElementById('topbar-rev').innerHTML = `Ingresos Totales: <strong>$${totalRevenue.toFixed(2)} USD</strong>`;
 }
 
 function renderTable() {
@@ -1926,18 +2209,29 @@ function renderAccounting() {
   const area = document.getElementById('acc-table-area');
   const isCEO = currentRole === 'CEO';
 
-  let filtered = currentOrders;
+  let filteredOrders = currentOrders;
   if (period) {
-    filtered = currentOrders.filter(o => o.date && o.date.startsWith(period));
+    filteredOrders = currentOrders.filter(o => {
+      const dateStr = o.fecha || o.created_at || '';
+      return dateStr.startsWith(period);
+    });
   }
 
-  let totalRevenue = 0, completedCount = 0, pendingCollect = 0, totalInvestment = 0;
+  let filteredVentas = currentVentas;
+  if (period) {
+    filteredVentas = currentVentas.filter(v => {
+      const dateStr = v.created_at || '';
+      return dateStr.startsWith(period);
+    });
+  }
+
+  let totalRevenuePedidos = 0, completedCount = 0, pendingCollect = 0, totalInvestment = 0;
   let methods = {};
 
-  filtered.forEach(o => {
+  filteredOrders.forEach(o => {
     const val = parseFloat(o.total_usd) || 0;
     if (o.estado === 'Completado') {
-      totalRevenue += val;
+      totalRevenuePedidos += val;
       completedCount++;
       if (o.metodo_pago) {
         methods[o.metodo_pago] = (methods[o.metodo_pago] || 0) + val;
@@ -1947,23 +2241,36 @@ function renderAccounting() {
     }
   });
 
-  // Sumar costos de la tabla ventas para el periodo
+  // Add ventas income to total revenue
+  let totalRevenueVentas = 0;
+  filteredVentas.forEach(v => {
+    const val = parseFloat(v.ingreso) || 0;
+    totalRevenueVentas += val;
+    if (v.metodo_pago) {
+      methods[v.metodo_pago] = (methods[v.metodo_pago] || 0) + val;
+    }
+  });
+
+  const totalRevenue = totalRevenuePedidos + totalRevenueVentas;
+
+  // Sumar costos de la tabla ventas para el periodo (CEO)
   if (isCEO) {
-    const ventasPeriodo = currentVentas.filter(v => v.created_at && v.created_at.startsWith(period || ''));
-    ventasPeriodo.forEach(v => {
-        totalInvestment += (parseFloat(v.costo_real) || 0) + (parseFloat(v.costo_venta) || 0);
+    filteredVentas.forEach(v => {
+      totalInvestment += (parseFloat(v.costo_real) || 0) + (parseFloat(v.costo) || 0);
     });
     document.getElementById('acc-total-costo').textContent = `$${totalInvestment.toFixed(2)}`;
     document.getElementById('acc-total-neta').textContent = `$${(totalRevenue - totalInvestment).toFixed(2)}`;
   }
 
-  const averageTicket = completedCount > 0 ? (totalRevenue / completedCount) : 0;
+  const totalItems = completedCount + filteredVentas.length;
+  const averageTicket = totalItems > 0 ? (totalRevenue / totalItems) : 0;
 
   document.getElementById('acc-total').textContent = `$${totalRevenue.toFixed(2)}`;
-  document.getElementById('acc-cnt').textContent = completedCount;
+  document.getElementById('acc-cnt').textContent = totalItems;
   document.getElementById('acc-avg').textContent = `$${averageTicket.toFixed(2)}`;
   document.getElementById('acc-pend').textContent = `$${pendingCollect.toFixed(2)}`;
-  document.getElementById('acc-total-sub').textContent = period ? `Completados en ${period}` : 'Todos los completados';
+  document.getElementById('acc-total-sub').textContent = period ? `Período ${period} (pedidos + ventas)` : 'Todos los registros';
+  document.getElementById('acc-cnt-sub').textContent = `${completedCount} pedidos + ${filteredVentas.length} ventas`;
 
   // Render metodos de pago
   const breakArea = document.getElementById('method-breakdown');
@@ -1977,18 +2284,27 @@ function renderAccounting() {
     breakArea.innerHTML = mHtml;
   }
 
+  // Render distribución de ventas por tipo (ventas + pedidos)
+  renderDistribucionChart(filteredOrders, filteredVentas);
+
   // Render tabla resumen
-  if (filtered.length === 0) {
-    area.innerHTML = `<p style="font-size:0.82em;color:var(--text3)">Ningún registro de pedidos este mes.</p>`;
+  const allItems = [
+    ...filteredOrders.map(o => ({ id: o.id_pedido, cliente: o.nombre_cliente, metodo: o.metodo_pago, total: parseFloat(o.total_usd) || 0, estado: o.estado, fuente: 'Pedido' })),
+    ...filteredVentas.map(v => ({ id: v.id_pedido || v.id, cliente: v.cliente, metodo: v.metodo_pago, total: parseFloat(v.ingreso) || 0, estado: v.estado || 'Completado', fuente: v.tipo || 'Venta' }))
+  ];
+
+  if (allItems.length === 0) {
+    area.innerHTML = `<p style="font-size:0.82em;color:var(--text3)">Ningún registro en este período.</p>`;
   } else {
     let tHtml = `<div class="table-wrap"><table class="orders-table-acc">
-      <thead><tr><th>ID</th><th>Cliente</th><th>Método</th><th>Total</th><th>Estado</th></tr></thead><tbody>`;
-    filtered.forEach(o => {
+      <thead><tr><th>ID</th><th>Fuente</th><th>Cliente</th><th>Método</th><th>Total</th><th>Estado</th></tr></thead><tbody>`;
+    allItems.forEach(o => {
       tHtml += `<tr>
-        <td class="td-id">${o.id_pedido}</td>
-        <td>${o.nombre_cliente}</td>
-        <td style="text-transform:uppercase;font-size:0.9em">${o.metodo_pago || '—'}</td>
-        <td class="td-money">$${parseFloat(o.total_usd).toFixed(2)}</td>
+        <td class="td-id">${o.id || '—'}</td>
+        <td style="color:var(--text2);font-size:0.8em">${o.fuente}</td>
+        <td>${o.cliente || '—'}</td>
+        <td style="text-transform:uppercase;font-size:0.9em">${o.metodo || '—'}</td>
+        <td class="td-money">$${o.total.toFixed(2)}</td>
         <td><span class="badge ${o.estado === 'Pendiente' ? 'b-pend' : o.estado === 'En Proceso' ? 'b-proc' : o.estado === 'Completado' ? 'b-done' : 'b-cancel'}">${o.estado}</span></td>
       </tr>`;
     });
@@ -1999,42 +2315,121 @@ function renderAccounting() {
   renderChart();
 }
 
+function renderDistribucionChart(filteredOrders, filteredVentas) {
+  const container = document.getElementById('distribucion-ventas-chart-acc');
+  if (!container) return;
+
+  // Collect by type
+  const tipos = {};
+  const COLORS = {
+    'Pedidos': 'var(--accent)',
+    'Cuenta de fortnite': '#a855f7',
+    'Club de fortnite': 'var(--blue)',
+    'Recarga de pavos': '#f97316',
+    'Packs': 'var(--accent)',
+    'Venta via regalo': '#ec4899',
+    'Apartar cuentas': '#f97316',
+  };
+
+  // Pedidos como grupo
+  const pedidosIncome = filteredOrders.filter(o => o.estado === 'Completado').reduce((s, o) => s + (parseFloat(o.total_usd) || 0), 0);
+  if (pedidosIncome > 0) tipos['Pedidos'] = { val: pedidosIncome, color: COLORS['Pedidos'] };
+
+  filteredVentas.forEach(v => {
+    const t = v.tipo || 'Otro';
+    const c = COLORS[t] || 'var(--text2)';
+    if (!tipos[t]) tipos[t] = { val: 0, color: c };
+    tipos[t].val += parseFloat(v.ingreso) || 0;
+  });
+
+  if (Object.keys(tipos).length === 0) {
+    container.innerHTML = `<div style="font-size:0.8em;color:var(--text3);padding:20px">Sin datos para mostrar en este período.</div>`;
+    return;
+  }
+
+  const maxVal = Math.max(...Object.values(tipos).map(t => t.val), 1);
+  const total = Object.values(tipos).reduce((s, t) => s + t.val, 0);
+
+  let html = `
+    <div class="chart-title">DISTRIBUCIÓN COMPARATIVA DE INGRESOS</div>
+    <div style="display:flex;gap:12px;align-items:flex-end;height:130px;margin-bottom:12px">
+  `;
+  for (const [name, data] of Object.entries(tipos)) {
+    const pct = (data.val / maxVal) * 100;
+    const shortName = name.replace('Cuenta de fortnite','Cta FN').replace('Club de fortnite','Club FN').replace('Recarga de pavos','Pavos').replace('Venta via regalo','Regalo').replace('Apartar cuentas','Apartar');
+    html += `
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">
+        <div style="font-size:0.62em;color:${data.color};font-weight:700">$${data.val.toFixed(0)}</div>
+        <div style="width:100%;background:linear-gradient(180deg,${data.color},${data.color}55);border-radius:3px 3px 0 0;min-height:2px;height:${Math.max(pct,2)}%;transition:height .4s ease"></div>
+        <div style="font-size:0.6em;color:var(--text2);font-weight:600;text-align:center;white-space:nowrap">${shortName}</div>
+        <div style="font-size:0.55em;color:var(--text3)">${total > 0 ? ((data.val/total)*100).toFixed(1) : 0}%</div>
+      </div>
+    `;
+  }
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
 function renderChart() {
   const chartContainer = document.getElementById('bar-chart');
   if (!chartContainer) return;
 
-  // Extraer últimos 6 meses cronológicos
+  // Extraer últimos 6 meses cronológicos — combinar pedidos + ventas
   let monthlyData = {};
   const now = new Date();
   for (let i = 5; i >= 0; i--) {
     let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     let key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    monthlyData[key] = { label: d.toLocaleString('es', { month: 'short' }).toUpperCase(), value: 0 };
+    monthlyData[key] = { label: d.toLocaleString('es', { month: 'short' }).toUpperCase(), pedidos: 0, ventas: 0 };
   }
 
   currentOrders.forEach(o => {
     if (o.estado === 'Completado' && (o.fecha || o.created_at)) {
       let k = (o.fecha || o.created_at).substring(0, 7);
       if (monthlyData[k]) {
-        monthlyData[k].value += (parseFloat(o.total_usd) || 0);
+        monthlyData[k].pedidos += (parseFloat(o.total_usd) || 0);
       }
     }
   });
 
-  let maxVal = Math.max(...Object.values(monthlyData).map(m => m.value), 1);
+  currentVentas.forEach(v => {
+    if (v.created_at) {
+      let k = v.created_at.substring(0, 7);
+      if (monthlyData[k]) {
+        monthlyData[k].ventas += (parseFloat(v.ingreso) || 0);
+      }
+    }
+  });
+
+  let maxVal = Math.max(...Object.values(monthlyData).map(m => m.pedidos + m.ventas), 1);
   let cHtml = '';
 
   for (let k in monthlyData) {
     const m = monthlyData[k];
-    const pct = (m.value / maxVal) * 100;
+    const total = m.pedidos + m.ventas;
+    const pctPedidos = (m.pedidos / maxVal) * 100;
+    const pctVentas = (m.ventas / maxVal) * 100;
     cHtml += `
-    <div class="bar-col">
-      <div class="bar-val">$${m.value.toFixed(0)}</div>
-      <div class="bar-fill" style="height:${Math.max(pct, 2)}%"></div>
+    <div class="bar-col" title="${m.label}: Pedidos $${m.pedidos.toFixed(0)} | Ventas $${m.ventas.toFixed(0)}">
+      <div class="bar-val">$${total.toFixed(0)}</div>
+      <div style="display:flex;flex-direction:column;align-items:center;width:100%;flex:1;justify-content:flex-end;gap:1px">
+        <div style="width:100%;background:linear-gradient(180deg,#a855f7,#a855f755);border-radius:2px 2px 0 0;min-height:${m.ventas>0?'2':'0'}px;height:${Math.max(pctVentas,m.ventas>0?2:0)}%;transition:height .4s ease" title="Ventas: $${m.ventas.toFixed(0)}"></div>
+        <div style="width:100%;background:linear-gradient(180deg,var(--accent),rgba(40,254,182,.3));border-radius:${m.ventas>0?'0':'3px 3px'} 0 0;min-height:${m.pedidos>0?'2':'0'}px;height:${Math.max(pctPedidos,m.pedidos>0?2:0)}%;transition:height .4s ease" title="Pedidos: $${m.pedidos.toFixed(0)}"></div>
+      </div>
       <div class="bar-label">${m.label}</div>
     </div>`;
   }
+
+  // Add legend
+  cHtml += ``;
   chartContainer.innerHTML = cHtml;
+
+  // Update chart title and legend
+  const chartWrap = chartContainer.closest('.month-chart');
+  if (chartWrap) {
+    const titleEl = chartWrap.querySelector('.chart-title');
+    if (titleEl) titleEl.innerHTML = `ÚLTIMOS 6 MESES — Ingresos totales (USD) &nbsp;<span style="font-size:.85em"><span style="color:var(--accent)">■</span> Pedidos &nbsp;<span style="color:#a855f7">■</span> Ventas</span>`;
+  }
 }
 
 // --- MODALES Y ACCIONES ---
@@ -2406,27 +2801,28 @@ function setIMode(mode) {
 
 async function confirmImport() {
   if (currentImportOrders.length === 0) return;
-  try {
-    if (importMode === 'replace') {
-      if (!confirm('¡ATENCIÓN! Reemplazar borrará absolutamente todos los pedidos de la base de datos de Supabase. ¿Estás seguro?')) return;
-      // Borrar todo de la tabla
-      const { error: delErr } = await supabase.from('pedidos').delete().neq('id', 'TRUNCATE_FORCE');
-      if (delErr) throw delErr;
+  
+  const doImport = async () => {
+    try {
+      if (importMode === 'replace') {
+        const { error: delErr } = await supabase.from('pedidos').delete().neq('id', 'TRUNCATE_FORCE');
+        if (delErr) throw delErr;
+      }
+      const { error: upsertErr } = await supabase.from('pedidos').upsert(currentImportOrders);
+      if (upsertErr) throw upsertErr;
+      showToast(`Se importaron ${currentImportOrders.length} pedidos exitosamente.`);
+      closeImport();
+      fetchOrders();
+    } catch (err) {
+      showToast('Error al importar lotes hacia la nube', true);
+      console.error(err);
     }
+  };
 
-    // Upsert masivo (Supabase maneja la llave primaria 'id')
-    const { error: upsertErr } = await supabase
-      .from('pedidos')
-      .upsert(currentImportOrders);
-
-    if (upsertErr) throw upsertErr;
-
-    showToast(`Se importaron ${currentImportOrders.length} pedidos exitosamente.`);
-    closeImport();
-    fetchOrders();
-  } catch (err) {
-    showToast('Error al importar lotes hacia la nube', true);
-    console.error(err);
+  if (importMode === 'replace') {
+    window.openConfirmModal('Reemplazar Todo', '¡ATENCIÓN! Reemplazar borrará absolutamente todos los pedidos existentes. ¿Estás seguro?', doImport);
+  } else {
+    doImport();
   }
 }
 
@@ -2442,13 +2838,16 @@ function exportJSON() {
 function exportAccounting() {
   const period = document.getElementById('month-sel').value;
   let filtered = currentOrders;
-  if (period) filtered = currentOrders.filter(o => o.date && o.date.startsWith(period));
+  if (period) filtered = currentOrders.filter(o => {
+    const dateStr = o.fecha || o.created_at || '';
+    return dateStr.startsWith(period);
+  });
 
   if (filtered.length === 0) { showToast('No hay registros en este mes', true); return; }
 
   let csv = 'ID Pedido,Fecha,Cliente,WhatsApp,EpicID,Metodo Pago,Total USD,Estado\n';
   filtered.forEach(o => {
-    csv += `"${o.id}","${o.date ? o.date.substring(0,16) : ''}","${o.name}","${o.phone}","${o.epic || ''}","${o.payment || ''}",${parseFloat(o.total).toFixed(2)},"${o.status}"\n`;
+    csv += `"${o.id_pedido||o.id}","${(o.fecha||o.created_at||'').substring(0,16)}","${o.nombre_cliente||''}","${o.telefono_cliente||''}","${o.epic_id_cliente||''}","${o.metodo_pago||''}",${parseFloat(o.total_usd||0).toFixed(2)},"${o.estado||''}"\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2467,6 +2866,12 @@ function switchTab(tab, btn) {
   
   btn.classList.add('active');
   document.getElementById(`tab-${tab}`).classList.add('active');
+
+  // Load notes when switching to notas tab
+  if (tab === 'notas') {
+    loadNotes();
+    setupNotesAutoSave();
+  }
 }
 
 function filterByStatus(st) {
@@ -2495,11 +2900,14 @@ function showToast(msg, isErr = false) {
 
 // --- AUTH CON SUPABASE ---
 function mostrarPanel(email, role) {
-  document.getElementById('login-screen').style.display = 'none';
+  const ls = document.getElementById('login-screen');
+  ls.style.opacity = '0';
+  ls.style.visibility = 'hidden';
   document.getElementById('app').style.display = 'block';
   document.getElementById('topbar-user').innerHTML = `<i class="fas fa-circle" style="color:var(--accent);font-size:.55em;vertical-align:middle"></i> <strong style="color:var(--text)">${email}</strong>`;
   aplicarRestriccionesRol(role);
   setDefaultMonth();
+  fetchVentas(); // Load ventas first for total revenue accuracy
   fetchOrders();
   setupRealtime();
   cargarSugerenciasClientes();
@@ -2676,7 +3084,8 @@ const TIPO_CONFIG = {
   'Club de fortnite':   { label:'Club FN',      color:'var(--blue)', icon:'fa-crown', id:'vc-t-club'   },
   'Recarga de pavos':   { label:'Pavos',        color:'#f97316', icon:'fa-bolt',     id:'vc-t-pavos'  },
   'Packs':              { label:'Packs',        color:'var(--accent)', icon:'fa-box-open', id:'vc-t-packs' },
-  'Venta via regalo':   { label:'Regalo',       color:'#ec4899', icon:'fa-gift',     id:'vc-t-regalo' }
+  'Venta via regalo':   { label:'Regalo',       color:'#ec4899', icon:'fa-gift',     id:'vc-t-regalo' },
+  'Apartar cuentas':    { label:'Apartar',      color:'#f97316', icon:'fa-bookmark', id:'vc-t-apartar'}
 };
 
 async function fetchVentas() {
@@ -2688,6 +3097,7 @@ async function fetchVentas() {
     currentVentas = (data || []).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     renderVentas();
     updateVentasStats();
+    updateStats(); // Refresh topbar total with ventas included
   } catch (err) {
     console.error(err);
     const msg = err?.message || 'Sin detalles';
@@ -2851,7 +3261,7 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
-          <button class="ibtn" onclick="window.editVenta(${v.id})"><i class="fas fa-pen"></i></button>
+          <button class="ibtn" onclick="window.editVenta('${v.id}')"><i class="fas fa-pen"></i></button>
           <button class="ibtn del" onclick="window.deleteVenta('${v.id}')"><i class="fas fa-trash-alt"></i></button>
         </div>
       </td></tr>`;
@@ -2888,12 +3298,22 @@ function openVentaModal() {
     plazoEl.value = "0";
     window.updateInterestPct();
   }
+  // Reset apertar fields
+  document.querySelectorAll('.vm-apago-chip').forEach(c => c.classList.remove('active'));
+  const apartarPagoEl = document.getElementById('vc-f-apartarpago');
+  if (apartarPagoEl) apartarPagoEl.value = '';
+  ['vc-f-apartar-total','vc-f-apartar-abono','vc-f-apartar-pendiente'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const apartarBlock = document.getElementById('vm-apartar-fields');
+  if (apartarBlock) apartarBlock.style.display = 'none';
   // Reset comprobante
   window.vmClearReceipt();
   // Set current date/time
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  document.getElementById('vc-f-fecha').value = now.toISOString().slice(0,16);
+  const isoStr = now.toISOString().slice(0,16);
+  document.getElementById('vc-f-fecha').value = isoStr;
   window.vmUpdateTotal();
   document.getElementById('modal-venta').classList.add('open');
 }
@@ -2943,6 +3363,19 @@ window.editVenta = function(id) {
   }
   // Restore date
   document.getElementById('vc-f-fecha').value = v.created_at ? v.created_at.substring(0,16) : '';
+  // Restore apartar cuentas fields if applicable
+  if (v.tipo === 'Apartar cuentas') {
+    if (v.tipo_pago_apartar) {
+      document.querySelectorAll('.vm-apago-chip').forEach(c => {
+        c.classList.toggle('active', c.dataset.apago === v.tipo_pago_apartar);
+      });
+      const apEl = document.getElementById('vc-f-apartarpago');
+      if (apEl) apEl.value = v.tipo_pago_apartar;
+    }
+    const atEl = document.getElementById('vc-f-apartar-total'); if (atEl) atEl.value = v.apartado_total || '';
+    const aaEl = document.getElementById('vc-f-apartar-abono'); if (aaEl) aaEl.value = v.apartado_abono || '';
+    const apEl2 = document.getElementById('vc-f-apartar-pendiente'); if (apEl2) apEl2.value = v.apartado_pendiente || '';
+  }
   // Restore receipt preview if exists
   if (v.comprobante) {
     document.getElementById('vc-f-receipt-base64').value = v.comprobante;
@@ -3031,13 +3464,20 @@ window.vmToggleParse = function() {
 window.toggleVentaFields = function() {
   const tipo = document.getElementById('vc-f-tipo').value;
   const isCuenta = tipo === 'Cuenta de fortnite';
+  const isApartar = tipo === 'Apartar cuentas';
   const cuentaBlock = document.getElementById('vm-cuenta-fields');
+  const apartarBlock = document.getElementById('vm-apartar-fields');
   if (cuentaBlock) cuentaBlock.style.display = isCuenta ? 'block' : 'none';
+  if (apartarBlock) apartarBlock.style.display = isApartar ? 'block' : 'none';
   const labelProd = document.getElementById('label-vc-f-producto');
-  if (labelProd) labelProd.textContent = isCuenta ? 'Nombre de la Cuenta' : 'Nombre del Producto';
+  if (labelProd) {
+    if (isCuenta) labelProd.textContent = 'Nombre de la Cuenta';
+    else if (isApartar) labelProd.textContent = 'Nombre / Referencia de la Cuenta';
+    else labelProd.textContent = 'Nombre del Producto';
+  }
   // Auto-generate ID for cuentas
   const idInp = document.getElementById('vc-f-id');
-  if (isCuenta && idInp && !idInp.value) {
+  if ((isCuenta || isApartar) && idInp && !idInp.value) {
     idInp.value = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
   }
 };
@@ -3134,6 +3574,11 @@ async function saveVenta() {
     pago_pendiente: parseFloat(document.getElementById('vc-f-pago-pendiente')?.value) || 0,
     cuota_adicional: parseFloat(document.getElementById('vc-f-cuota-adicional')?.value) || 0,
     interes_porcentaje: parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0,
+    // Apartar cuentas fields
+    tipo_pago_apartar: document.getElementById('vc-f-apartarpago')?.value || null,
+    apartado_total: parseFloat(document.getElementById('vc-f-apartar-total')?.value) || null,
+    apartado_abono: parseFloat(document.getElementById('vc-f-apartar-abono')?.value) || null,
+    apartado_pendiente: parseFloat(document.getElementById('vc-f-apartar-pendiente')?.value) || null,
     created_at: fechaVal ? new Date(fechaVal).toISOString() : new Date().toISOString()
   };
   if (window.editingVentaId) record.id = window.editingVentaId;
@@ -3148,7 +3593,7 @@ async function saveVenta() {
       error = err;
     }
     if (error) throw error;
-    showToast(editingVentaId ? 'Venta actualizada' : 'Venta guardada en la nube');
+    showToast(window.editingVentaId ? 'Venta actualizada ✓' : 'Venta guardada en la nube ✓');
     closeVentaModal();
     fetchVentas();
   } catch (err) {
@@ -3158,16 +3603,17 @@ async function saveVenta() {
 }
 
 async function deleteVenta(id) {
-  if (!confirm(`¿Eliminar la venta ${id} permanentemente?`)) return;
-  try {
-    const { error } = await supabase.from('ventas').delete().eq('id', id);
-    if (error) throw error;
-    showToast('Venta eliminada');
-    fetchVentas();
-  } catch (err) {
-    showToast('Error al eliminar', true);
-    console.error(err);
-  }
+  window.openConfirmModal('Eliminar Venta', `¿Eliminar la venta ${id} permanentemente?`, async function() {
+    try {
+      const { error } = await supabase.from('ventas').delete().eq('id', id);
+      if (error) throw error;
+      showToast('Venta eliminada');
+      fetchVentas();
+    } catch (err) {
+      showToast('Error al eliminar', true);
+      console.error(err);
+    }
+  });
 }
 
 function vcClearDates() {
@@ -3475,15 +3921,16 @@ async function saveRecovery() {
 }
 
 async function deleteRecovery(id) {
-  if (!confirm('¿Eliminar este registro de recuperación permanentemente?')) return;
-  try {
-    const { error } = await supabase.from('recuperaciones').delete().eq('id', id);
-    if (error) throw error;
-    showToast('Registro eliminado');
-    fetchRecoveries();
-  } catch(err) {
-    showToast('Error al eliminar', true);
-  }
+  window.openConfirmModal('Eliminar Registro', '¿Eliminar este registro de recuperación permanentemente?', async function() {
+    try {
+      const { error } = await supabase.from('recuperaciones').delete().eq('id', id);
+      if (error) throw error;
+      showToast('Registro eliminado');
+      fetchRecoveries();
+    } catch(err) {
+      showToast('Error al eliminar', true);
+    }
+  });
 }
 
 function recClearFilter() {
@@ -3618,6 +4065,441 @@ window.resetWallpaper = function() {
   showToast('Fondo restaurado al original');
 };
 
+// --- APARTAR CUENTAS: selección tipo pago ---
+window.vmSelectApartarPago = function(chip) {
+  document.querySelectorAll('.vm-apago-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  document.getElementById('vc-f-apartarpago').value = chip.dataset.apago;
+};
+
+window.calcApartarPendiente = function() {
+  const total = parseFloat(document.getElementById('vc-f-apartar-total')?.value) || 0;
+  const abono = parseFloat(document.getElementById('vc-f-apartar-abono')?.value) || 0;
+  const pendiente = document.getElementById('vc-f-apartar-pendiente');
+  if (pendiente) {
+    const diff = total - abono;
+    pendiente.value = diff > 0 ? diff.toFixed(2) : '0.00';
+  }
+  // Sync ingreso field with abono
+  const ingresoEl = document.getElementById('vc-f-ingreso');
+  if (ingresoEl && abono > 0) {
+    ingresoEl.value = abono.toFixed(2);
+    window.calcVentaMargen();
+    window.vmUpdateTotal();
+  }
+};
+
+// --- NUEVA CONTRASEÑA (recuperación por email) ---
+window.toggleNewPwd = function() {
+  const inp = document.getElementById('new-pwd-input');
+  const icon = document.getElementById('new-pwd-eye-icon');
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+};
+
+window.submitNewPassword = async function() {
+  const pwd = document.getElementById('new-pwd-input').value;
+  const msgEl = document.getElementById('new-pwd-msg');
+  const btn = document.getElementById('new-pwd-btn');
+
+  if (!pwd || pwd.length < 6) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+    return;
+  }
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+  btn.disabled = true;
+  msgEl.style.display = 'none';
+
+  try {
+    const { error } = await supabase.auth.updateUser({ password: pwd });
+    if (error) throw error;
+    msgEl.style.cssText = 'display:block;background:rgba(40,254,182,.08);color:var(--accent);border:1px solid rgba(40,254,182,.25)';
+    msgEl.textContent = '✓ Contraseña actualizada. Ya puedes iniciar sesión.';
+    setTimeout(() => {
+      document.getElementById('new-pwd-modal').classList.remove('open');
+      supabase.auth.signOut();
+      location.reload();
+    }, 2200);
+  } catch (err) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'Error: ' + (err.message || 'No se pudo actualizar la contraseña.');
+    btn.innerHTML = '<i class="fas fa-check"></i> Cambiar Contraseña';
+    btn.disabled = false;
+  }
+};
+
+// ═══════════════════════════════════════════════
+// SECCIÓN NOTAS / BORRADORES
+// ═══════════════════════════════════════════════
+let currentNotes = [];
+let activeNoteId = null;
+const NOTES_STORAGE_KEY = 'shegos_notas_v2';
+
+function loadNotes() {
+  try {
+    const saved = localStorage.getItem(NOTES_STORAGE_KEY);
+    currentNotes = saved ? JSON.parse(saved) : [];
+  } catch(e) { currentNotes = []; }
+  renderNotesList();
+}
+
+function saveNotesToStorage() {
+  localStorage.setItem(NOTES_STORAGE_KEY, JSON.stringify(currentNotes));
+}
+
+function renderNotesList() {
+  const list = document.getElementById('notes-list');
+  if (!list) return;
+  if (currentNotes.length === 0) {
+    list.innerHTML = `<div class="note-empty-state" style="min-height:120px;border:1px dashed var(--border);border-radius:8px"><i class="fas fa-sticky-note"></i><p>No hay notas aún</p></div>`;
+    return;
+  }
+  list.innerHTML = currentNotes.map(n => `
+    <div class="note-card ${n.id === activeNoteId ? 'active' : ''}" onclick="window.openNote('${n.id}')">
+      <div class="note-card-title">${n.title || 'Sin título'}</div>
+      <div class="note-card-preview">${(n.content || '').substring(0, 60) || '—'}</div>
+      <div class="note-card-date">${new Date(n.updated).toLocaleString('es', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' })}</div>
+    </div>
+  `).join('');
+}
+
+window.newNote = function() {
+  const id = 'note-' + Date.now();
+  const note = { id, title: '', content: '', updated: new Date().toISOString() };
+  currentNotes.unshift(note);
+  saveNotesToStorage();
+  window.openNote(id);
+};
+
+window.openNote = function(id) {
+  activeNoteId = id;
+  const note = currentNotes.find(n => n.id === id);
+  if (!note) return;
+  document.getElementById('note-title-input').value = note.title || '';
+  const contentEl = document.getElementById('note-content-input');
+  const placeholderEl = document.getElementById('note-editor-placeholder');
+  contentEl.value = note.content || '';
+  contentEl.style.display = 'block';
+  placeholderEl.style.display = 'none';
+  document.getElementById('btn-delete-note').style.display = '';
+  document.getElementById('note-save-status').textContent = '';
+  renderNotesList();
+  contentEl.focus();
+};
+
+window.saveCurrentNote = function() {
+  if (!activeNoteId) return;
+  const note = currentNotes.find(n => n.id === activeNoteId);
+  if (!note) return;
+  note.title = document.getElementById('note-title-input').value || 'Sin título';
+  note.content = document.getElementById('note-content-input').value || '';
+  note.updated = new Date().toISOString();
+  // Move to top
+  currentNotes = [note, ...currentNotes.filter(n => n.id !== activeNoteId)];
+  saveNotesToStorage();
+  renderNotesList();
+  document.getElementById('note-save-status').textContent = '✓ Guardado';
+  setTimeout(() => { const el = document.getElementById('note-save-status'); if (el) el.textContent = ''; }, 2000);
+  showToast('Nota guardada ✓');
+};
+
+window.deleteCurrentNote = function() {
+  if (!activeNoteId) return;
+  window.openConfirmModal('Eliminar Nota', '¿Eliminar esta nota permanentemente? Esta acción no se puede deshacer.', function() {
+    currentNotes = currentNotes.filter(n => n.id !== activeNoteId);
+    activeNoteId = null;
+    saveNotesToStorage();
+    document.getElementById('note-title-input').value = '';
+    document.getElementById('note-content-input').style.display = 'none';
+    document.getElementById('note-editor-placeholder').style.display = 'flex';
+    document.getElementById('btn-delete-note').style.display = 'none';
+    renderNotesList();
+    showToast('Nota eliminada');
+  });
+};
+
+// Auto-save on typing
+function setupNotesAutoSave() {
+  const titleEl = document.getElementById('note-title-input');
+  const contentEl = document.getElementById('note-content-input');
+  let autoSaveTimer;
+  const triggerAutoSave = () => {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      if (activeNoteId) window.saveCurrentNote();
+    }, 1200);
+  };
+  titleEl?.addEventListener('input', triggerAutoSave);
+  contentEl?.addEventListener('input', triggerAutoSave);
+}
+
+// ═══════════════════════════════════════════════
+// CUSTOM CONFIRM MODAL
+// ═══════════════════════════════════════════════
+let confirmCallback = null;
+
+window.openConfirmModal = function(title, msg, callback) {
+  confirmCallback = callback;
+  document.getElementById('confirm-title').textContent = title || 'Confirmar';
+  document.getElementById('confirm-msg').textContent = msg || '¿Estás seguro?';
+  document.getElementById('modal-confirm').classList.add('open');
+};
+
+window.closeConfirmModal = function() {
+  confirmCallback = null;
+  document.getElementById('modal-confirm').classList.remove('open');
+};
+
+window.doConfirmAction = async function() {
+  window.closeConfirmModal();
+  if (typeof confirmCallback === 'function') {
+    await confirmCallback();
+  }
+};
+
+// ═══════════════════════════════════════════════
+// CUSTOM CALENDAR DATE PICKER
+// ═══════════════════════════════════════════════
+const calState = {};
+
+window.openCal = function(inputId, mode) {
+  // Close any other open pickers
+  document.querySelectorAll('.cal-popup.open').forEach(p => {
+    if (p.id !== 'cal-' + inputId) p.classList.remove('open');
+  });
+
+  const popup = document.getElementById('cal-' + inputId);
+  if (!popup) return;
+
+  if (popup.classList.contains('open')) {
+    popup.classList.remove('open');
+    return;
+  }
+
+  // Init state
+  const existing = document.getElementById(inputId).value;
+  let now = new Date();
+  if (existing) {
+    // Try to parse existing value
+    if (mode === 'month') {
+      const parts = existing.split('-');
+      if (parts.length >= 2) {
+        now = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
+      }
+    } else {
+      const parsed = new Date(existing);
+      if (!isNaN(parsed)) now = parsed;
+    }
+  }
+
+  calState[inputId] = {
+    mode,
+    year: now.getFullYear(),
+    month: now.getMonth(),
+    selected: isNaN(now) ? null : new Date(now),
+    time: mode === 'datetime' ? `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}` : null
+  };
+
+  renderCalPopup(inputId);
+  popup.classList.add('open');
+
+  // Click outside to close
+  setTimeout(() => {
+    const handler = (e) => {
+      if (!popup.contains(e.target) && e.target.id !== inputId && !e.target.closest('.date-picker-input-row')) {
+        popup.classList.remove('open');
+        document.removeEventListener('click', handler);
+      }
+    };
+    document.addEventListener('click', handler);
+  }, 50);
+};
+
+function renderCalPopup(inputId) {
+  const s = calState[inputId];
+  const popup = document.getElementById('cal-' + inputId);
+  if (!popup || !s) return;
+
+  if (s.mode === 'month') {
+    renderMonthPicker(inputId, popup, s);
+  } else {
+    renderDayPicker(inputId, popup, s);
+  }
+}
+
+function renderMonthPicker(inputId, popup, s) {
+  const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const selectedKey = s.selected ? `${s.selected.getFullYear()}-${String(s.selected.getMonth()+1).padStart(2,'0')}` : null;
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav" onclick="window.calNavYear('${inputId}',-1)"><i class="fas fa-chevron-left"></i></button>
+      <span class="cal-month-label">${s.year}</span>
+      <button class="cal-nav" onclick="window.calNavYear('${inputId}',1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="cal-month-grid">
+  `;
+
+  monthNames.forEach((name, idx) => {
+    const key = `${s.year}-${String(idx+1).padStart(2,'0')}`;
+    const isSel = key === selectedKey;
+    html += `<div class="cal-month-item${isSel ? ' selected' : ''}" onclick="window.calSelectMonth('${inputId}',${idx})">${name.substring(0,3)}</div>`;
+  });
+
+  html += `</div>
+    <div class="cal-footer">
+      <button class="cal-btn-today" onclick="window.calMonthToday('${inputId}')">Este Mes</button>
+      <button class="cal-btn-ok" onclick="window.calClear('${inputId}')">Limpiar</button>
+    </div>`;
+  popup.innerHTML = html;
+}
+
+function renderDayPicker(inputId, popup, s) {
+  const DOW = ['L','M','X','J','V','S','D'];
+  const now = new Date();
+  const firstDay = new Date(s.year, s.month, 1);
+  const lastDay = new Date(s.year, s.month + 1, 0);
+  let startDow = firstDay.getDay(); // 0=Sun
+  startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
+
+  const monthName = firstDay.toLocaleString('es', { month: 'long' }).toUpperCase();
+
+  let html = `
+    <div class="cal-header">
+      <button class="cal-nav" onclick="window.calNav('${inputId}',-1)"><i class="fas fa-chevron-left"></i></button>
+      <span class="cal-month-label" onclick="window.calNavYear('${inputId}',0)">${monthName} ${s.year}</span>
+      <button class="cal-nav" onclick="window.calNav('${inputId}',1)"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="cal-grid">
+  `;
+
+  DOW.forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
+
+  // Empty cells before month start
+  for (let i = 0; i < startDow; i++) {
+    html += `<div class="cal-day other-month"></div>`;
+  }
+
+  for (let day = 1; day <= lastDay.getDate(); day++) {
+    const date = new Date(s.year, s.month, day);
+    const isToday = date.toDateString() === now.toDateString();
+    const isSel = s.selected && date.toDateString() === s.selected.toDateString();
+    let cls = 'cal-day';
+    if (isToday) cls += ' today';
+    if (isSel) cls += ' selected';
+    html += `<div class="${cls}" onclick="window.calSelectDay('${inputId}',${day})">${day}</div>`;
+  }
+
+  html += `</div>`;
+
+  // Time picker for datetime mode
+  if (s.mode === 'datetime') {
+    html += `
+      <div class="cal-time-row">
+        <span class="cal-time-label"><i class="fas fa-clock"></i> Hora</span>
+        <input class="cal-time-input" type="time" id="cal-time-${inputId}" value="${s.time || '12:00'}" onchange="window.calTimeChange('${inputId}',this.value)">
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="cal-footer">
+      <button class="cal-btn-today" onclick="window.calGoToday('${inputId}')">Hoy</button>
+      <button class="cal-btn-ok" onclick="window.calConfirm('${inputId}')">Confirmar</button>
+    </div>
+  `;
+  popup.innerHTML = html;
+}
+
+window.calNav = function(inputId, dir) {
+  const s = calState[inputId];
+  if (!s) return;
+  s.month += dir;
+  if (s.month > 11) { s.month = 0; s.year++; }
+  if (s.month < 0) { s.month = 11; s.year--; }
+  renderCalPopup(inputId);
+};
+
+window.calNavYear = function(inputId, dir) {
+  const s = calState[inputId];
+  if (!s) return;
+  s.year += dir;
+  renderCalPopup(inputId);
+};
+
+window.calSelectDay = function(inputId, day) {
+  const s = calState[inputId];
+  if (!s) return;
+  s.selected = new Date(s.year, s.month, day);
+  renderCalPopup(inputId);
+  if (s.mode === 'date') window.calConfirm(inputId);
+};
+
+window.calSelectMonth = function(inputId, monthIdx) {
+  const s = calState[inputId];
+  if (!s) return;
+  s.selected = new Date(s.year, monthIdx, 1);
+  const val = `${s.year}-${String(monthIdx+1).padStart(2,'0')}`;
+  document.getElementById(inputId).value = val;
+  document.getElementById('cal-' + inputId).classList.remove('open');
+  // Trigger change for accounting
+  if (inputId === 'month-sel') renderAccounting();
+};
+
+window.calTimeChange = function(inputId, val) {
+  const s = calState[inputId];
+  if (s) s.time = val;
+};
+
+window.calGoToday = function(inputId) {
+  const s = calState[inputId];
+  if (!s) return;
+  const now = new Date();
+  s.year = now.getFullYear();
+  s.month = now.getMonth();
+  s.selected = new Date(now);
+  s.time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  renderCalPopup(inputId);
+};
+
+window.calMonthToday = function(inputId) {
+  const s = calState[inputId];
+  if (!s) return;
+  const now = new Date();
+  const val = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById(inputId).value = val;
+  document.getElementById('cal-' + inputId).classList.remove('open');
+  if (inputId === 'month-sel') renderAccounting();
+};
+
+window.calClear = function(inputId) {
+  document.getElementById(inputId).value = '';
+  document.getElementById('cal-' + inputId).classList.remove('open');
+  if (inputId === 'month-sel') renderAccounting();
+};
+
+window.calConfirm = function(inputId) {
+  const s = calState[inputId];
+  if (!s || !s.selected) {
+    document.getElementById('cal-' + inputId).classList.remove('open');
+    return;
+  }
+  const d = s.selected;
+  let val;
+  if (s.mode === 'datetime') {
+    const timeStr = s.time || '00:00';
+    val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${timeStr}`;
+  } else {
+    val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  document.getElementById(inputId).value = val;
+  document.getElementById('cal-' + inputId).classList.remove('open');
+  // Trigger dependent filters
+  if (inputId === 'vc-date-from' || inputId === 'vc-date-to') renderVentas();
+};
+
 // --- ASIGNACIÓN DE CONTRASTES EN WINDOW PARA BOTONES HTML ---
 window.doLogin = doLogin;
 window.doLogout = doLogout;
@@ -3680,6 +4562,8 @@ window.saveRecovery = saveRecovery;
 window.deleteRecovery = deleteRecovery;
 window.recClearFilter = recClearFilter;
 window.exportRecoveryCSV = exportRecoveryCSV;
+window.loadNotes = loadNotes;
+window.renderNotesList = renderNotesList;
 </script>
 </body>
 </html>
