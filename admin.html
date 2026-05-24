@@ -1777,29 +1777,25 @@ td{padding:12px 14px;vertical-align:middle}
         <!-- Panel informativo colapsable -->
         <div id="fin-info-panel" style="display:none;background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:14px;margin-bottom:14px;font-size:0.76em;line-height:1.75;color:var(--text2)">
           <strong style="color:#f97316;font-size:1em;display:block;margin-bottom:8px"><i class="fas fa-landmark"></i> Sistema de Financiamiento Shegos Store</strong>
-          <b style="color:var(--text)">¿Qué es apartar?</b> El cliente paga un anticipo hoy. El <b style="color:#f97316">saldo restante</b> (precio − anticipo) se financia con interés y se paga en cuotas.<br><br>
-          <b style="color:var(--text)">Anticipo mínimo requerido:</b><br>
-          &nbsp;&nbsp;• Cuentas hasta $30: <b style="color:#f97316">30%</b> del precio<br>
-          &nbsp;&nbsp;• Cuentas $31–$60: <b style="color:#f97316">35%</b> del precio<br>
-          &nbsp;&nbsp;• Cuentas $61+: <b style="color:#f97316">40%</b> del precio<br><br>
-          <b style="color:var(--text)">Interés por plazo</b> <span style="color:#f97316">(se aplica solo sobre el saldo financiado)</span>:<br>
+          <b style="color:var(--text)">¿Cómo funciona?</b> El cliente paga un anticipo hoy (precio de cuenta − monto a financiar). El <b style="color:#f97316">monto a financiar</b> es el restante, y sobre ese monto se aplica el interés según el plan elegido.<br><br>
+          <b style="color:var(--text)">Interés por plazo</b> <span style="color:#f97316">(se aplica sobre el monto a financiar)</span>:<br>
           &nbsp;&nbsp;• 1 semana (7d): <b style="color:#f97316">+8%</b> — 1 cuota<br>
           &nbsp;&nbsp;• 2 semanas (15d): <b style="color:#f97316">+15%</b> — 1 cuota<br>
           &nbsp;&nbsp;• 1 mes (30d): <b style="color:#f97316">+25%</b> — 2 cuotas cada 15d<br>
           &nbsp;&nbsp;• 45 días: <b style="color:#f97316">+40%</b> — 3 cuotas cada 15d<br>
           &nbsp;&nbsp;• 2 meses (60d): <b style="color:#f97316">+60%</b> — 4 cuotas cada 15d<br><br>
-          <span style="color:#f97316">Ejemplo: Cuenta $50 · Anticipo 35% = $17.50 · Saldo a financiar: $32.50 · Plan 30d (+25%) → interés: $8.13 · Total: $58.13 · 2 cuotas de $20.31 cada 15 días</span>
+          <span style="color:#f97316">Ejemplo: Cuenta $50 · El cliente paga $20 de anticipo · Monto a financiar: $30 · Plan 30d (+25%) → interés: $7.50 · Total con interés: $37.50 · 2 cuotas de $18.75 cada 15 días</span>
         </div>
 
         <!-- Calculadora -->
         <div style="background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.18);border-radius:10px;padding:16px;margin-bottom:8px">
           <div class="frow" style="margin-bottom:14px">
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel">Precio de la Cuenta (USD) *</label>
+              <label class="flabel">Monto a Financiar (USD) *</label>
               <div class="vm-price-wrap">
                 <span class="vm-price-prefix">$</span>
-                <input class="finput" id="fin-precio-base" type="number" step="0.01" min="21"
-                  placeholder="21.00" oninput="window.calcFinanciamiento()"
+                <input class="finput" id="fin-precio-base" type="number" step="0.01" min="1"
+                  placeholder="0.00" oninput="window.calcFinanciamiento()"
                   style="border-color:rgba(249,115,22,.3)">
               </div>
             </div>
@@ -1819,23 +1815,19 @@ td{padding:12px 14px;vertical-align:middle}
           <!-- Resultado calculadora -->
           <div id="fin-resultado" style="display:none">
             <!-- Resumen en tarjetas -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
-              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px">Total a Pagar</div>
-                <div style="font-size:1.4em;font-weight:800;color:var(--text);font-family:var(--font-title);font-style:italic" id="fin-total-display">$0.00</div>
-                <input type="hidden" id="fin-total-con-interes">
-              </div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px">
               <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:#f97316;margin-bottom:4px">Anticipo Requerido</div>
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:#f97316;margin-bottom:4px">Interés (USD)</div>
                 <div style="font-size:1.4em;font-weight:800;color:#f97316;font-family:var(--font-title);font-style:italic" id="fin-anticipo-display">$0.00</div>
                 <input type="hidden" id="fin-anticipo-usd">
               </div>
               <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Saldo Financiado + Interés</div>
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Total a Cobrar</div>
                 <div style="font-size:1.4em;font-weight:800;color:var(--gold);font-family:var(--font-title);font-style:italic" id="fin-pendiente-display">$0.00</div>
                 <input type="hidden" id="fin-pendiente">
               </div>
             </div>
+            <input type="hidden" id="fin-total-con-interes">
 
             <!-- Plan de cuotas -->
             <div id="fin-cuotas-plan" style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;margin-bottom:12px">
@@ -1850,7 +1842,7 @@ td{padding:12px 14px;vertical-align:middle}
             <!-- Abono recibido -->
             <div class="frow" style="margin-bottom:0">
               <div class="fgroup" style="margin-bottom:0">
-                <label class="flabel" style="color:#f97316">Anticipo Recibido (USD)</label>
+                <label class="flabel" style="color:#f97316">Abono Recibido (USD)</label>
                 <input class="finput" id="fin-abono-recibido" type="number" step="0.01" placeholder="0.00"
                   oninput="window.calcFinAbonoRecibido()" style="border-color:rgba(249,115,22,.3)">
               </div>
@@ -1864,7 +1856,7 @@ td{padding:12px 14px;vertical-align:middle}
 
           <!-- Mensaje mínimo -->
           <div id="fin-min-msg" style="font-size:0.75em;color:var(--text3);text-align:center;padding:8px 0">
-            Ingresa el precio de la cuenta para calcular el financiamiento
+            Ingresa el monto a financiar para calcular las cuotas
           </div>
         </div>
 
@@ -4327,60 +4319,47 @@ window.toggleFinInfo = function() {
 };
 
 window.calcFinanciamiento = function() {
-  const precio = parseFloat(document.getElementById('fin-precio-base')?.value) || 0;
+  const monto = parseFloat(document.getElementById('fin-precio-base')?.value) || 0;
   const plazoEl = document.getElementById('fin-plazo');
   const resultado = document.getElementById('fin-resultado');
   const minMsg = document.getElementById('fin-min-msg');
 
-  if (precio < 21) {
+  if (monto <= 0) {
     if (resultado) resultado.style.display = 'none';
-    if (minMsg) { minMsg.style.display = 'block'; minMsg.textContent = precio > 0 ? 'Precio mínimo para financiamiento: $21 USD' : 'Ingresa el precio de la cuenta para calcular el financiamiento'; }
+    if (minMsg) { minMsg.style.display = 'block'; minMsg.textContent = 'Ingresa el monto a financiar para calcular las cuotas'; }
     return;
   }
 
   const [dias, interesPct, numCuotas] = (plazoEl?.value || '0|0|1').split('|').map(Number);
 
-  // Anticipo % según precio de la cuenta (sin interés — el anticipo es fijo)
-  let anticipoPct = 0.30;
-  if (precio > 60) anticipoPct = 0.40;
-  else if (precio > 30) anticipoPct = 0.35;
-
-  const anticipo = precio * anticipoPct;
-
-  // El interés se aplica SOLO sobre el saldo restante (lo que se financia)
-  const saldoAFinanciar = precio - anticipo;
-  const saldoConInteres = saldoAFinanciar * (1 + interesPct / 100);
-  const interesUSD = saldoConInteres - saldoAFinanciar;
-
-  // Total real que paga el cliente = anticipo + saldo financiado con interés
-  const totalConInteres = anticipo + saldoConInteres;
-  const saldoPendiente = saldoConInteres; // lo que queda después del anticipo
-  const montoCuota = numCuotas > 0 ? saldoPendiente / numCuotas : 0;
+  // Interés aplicado sobre el monto a financiar
+  const interesUSD = monto * (interesPct / 100);
+  const totalConInteres = monto + interesUSD;
+  const montoCuota = numCuotas > 0 ? totalConInteres / numCuotas : totalConInteres;
 
   // Actualizar hidden inputs
   document.getElementById('fin-total-con-interes').value = totalConInteres.toFixed(2);
-  document.getElementById('fin-anticipo-usd').value = anticipo.toFixed(2);
-  document.getElementById('fin-pendiente').value = saldoPendiente.toFixed(2);
+  document.getElementById('fin-anticipo-usd').value = interesUSD.toFixed(2);   // reutilizamos el campo para interés
+  document.getElementById('fin-pendiente').value = totalConInteres.toFixed(2);
   document.getElementById('fin-monto-cuota').value = montoCuota.toFixed(2);
   document.getElementById('fin-num-cuotas').value = numCuotas;
 
   // Actualizar displays
-  document.getElementById('fin-total-display').textContent = '$' + totalConInteres.toFixed(2);
-  document.getElementById('fin-anticipo-display').textContent = '$' + anticipo.toFixed(2);
-  document.getElementById('fin-pendiente-display').textContent = '$' + saldoPendiente.toFixed(2);
+  document.getElementById('fin-anticipo-display').textContent = '$' + interesUSD.toFixed(2);
+  document.getElementById('fin-pendiente-display').textContent = '$' + totalConInteres.toFixed(2);
 
   // Plan de cuotas
   const listaEl = document.getElementById('fin-cuotas-list');
   if (listaEl) {
-    const intervaloDias = dias > 0 ? Math.round(dias / numCuotas) : 0;
-    let cuotasHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(249,115,22,.08);border-radius:6px;border-left:3px solid #f97316">
-        <div style="font-size:0.8em"><i class="fas fa-hand-holding-dollar" style="color:#f97316;margin-right:6px"></i><b>Anticipo inicial</b> <span style="color:var(--text3)">(hoy)</span></div>
-        <div style="font-weight:800;color:#f97316">$${anticipo.toFixed(2)}</div>
-      </div>`;
+    const intervaloDias = dias > 0 && numCuotas > 0 ? Math.round(dias / numCuotas) : 0;
+    let cuotasHTML = '';
 
     if (dias === 0) {
-      cuotasHTML += `<div style="text-align:center;font-size:0.75em;color:var(--accent);padding:6px">✓ Pago de contado — sin cuotas adicionales</div>`;
+      cuotasHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(249,115,22,.08);border-radius:6px;border-left:3px solid #f97316">
+          <div style="font-size:0.8em"><i class="fas fa-hand-holding-dollar" style="color:#f97316;margin-right:6px"></i><b>Pago único</b> <span style="color:var(--text3)">(contado, sin interés)</span></div>
+          <div style="font-weight:800;color:#f97316">$${monto.toFixed(2)}</div>
+        </div>`;
     } else {
       for (let i = 1; i <= numCuotas; i++) {
         const dayOffset = intervaloDias * i;
@@ -4391,28 +4370,27 @@ window.calcFinanciamiento = function() {
           </div>`;
       }
       cuotasHTML += `<div style="text-align:right;font-size:0.7em;color:var(--text3);padding:4px 4px 0">
-        Saldo financiado: $${saldoAFinanciar.toFixed(2)} · Interés: $${interesUSD.toFixed(2)} (${interesPct}% sobre saldo) · Total: $${totalConInteres.toFixed(2)}
+        Financiado: $${monto.toFixed(2)} · Interés: $${interesUSD.toFixed(2)} (${interesPct}%) · Total: $${totalConInteres.toFixed(2)}
       </div>`;
     }
     listaEl.innerHTML = cuotasHTML;
   }
 
-  // Recalcular abono recibido si ya hay algo
   window.calcFinAbonoRecibido();
 
   if (resultado) resultado.style.display = 'block';
   if (minMsg) minMsg.style.display = 'none';
 
-  // Sync anticipo al campo ingreso principal
+  // Sync total al campo ingreso principal
   const ingresoEl = document.getElementById('vc-f-ingreso');
-  if (ingresoEl) { ingresoEl.value = anticipo.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
+  if (ingresoEl) { ingresoEl.value = totalConInteres.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
 };
 
 window.calcFinAbonoRecibido = function() {
-  const pendiente = parseFloat(document.getElementById('fin-pendiente')?.value) || 0;
+  const total = parseFloat(document.getElementById('fin-pendiente')?.value) || 0;
   const abono = parseFloat(document.getElementById('fin-abono-recibido')?.value) || 0;
   const saldoEl = document.getElementById('fin-saldo-cobrar');
-  if (saldoEl) saldoEl.value = Math.max(0, pendiente - abono).toFixed(2);
+  if (saldoEl) saldoEl.value = Math.max(0, total - abono).toFixed(2);
   const ingresoEl = document.getElementById('vc-f-ingreso');
   if (ingresoEl && abono > 0) { ingresoEl.value = abono.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
 };
