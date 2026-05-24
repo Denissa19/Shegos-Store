@@ -1777,18 +1777,18 @@ td{padding:12px 14px;vertical-align:middle}
         <!-- Panel informativo colapsable -->
         <div id="fin-info-panel" style="display:none;background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:14px;margin-bottom:14px;font-size:0.76em;line-height:1.75;color:var(--text2)">
           <strong style="color:#f97316;font-size:1em;display:block;margin-bottom:8px"><i class="fas fa-landmark"></i> Sistema de Financiamiento Shegos Store</strong>
-          <b style="color:var(--text)">¿Qué es apartar?</b> El cliente reserva una cuenta pagando un anticipo. El saldo restante se paga en cuotas según el plan elegido.<br><br>
+          <b style="color:var(--text)">¿Qué es apartar?</b> El cliente paga un anticipo hoy. El <b style="color:#f97316">saldo restante</b> (precio − anticipo) se financia con interés y se paga en cuotas.<br><br>
           <b style="color:var(--text)">Anticipo mínimo requerido:</b><br>
-          &nbsp;&nbsp;• Cuentas hasta $30: <b style="color:#f97316">30%</b> del total<br>
-          &nbsp;&nbsp;• Cuentas $31–$60: <b style="color:#f97316">35%</b> del total<br>
-          &nbsp;&nbsp;• Cuentas $61+: <b style="color:#f97316">40%</b> del total<br><br>
-          <b style="color:var(--text)">Interés por plazo:</b><br>
+          &nbsp;&nbsp;• Cuentas hasta $30: <b style="color:#f97316">30%</b> del precio<br>
+          &nbsp;&nbsp;• Cuentas $31–$60: <b style="color:#f97316">35%</b> del precio<br>
+          &nbsp;&nbsp;• Cuentas $61+: <b style="color:#f97316">40%</b> del precio<br><br>
+          <b style="color:var(--text)">Interés por plazo</b> <span style="color:#f97316">(se aplica solo sobre el saldo financiado)</span>:<br>
           &nbsp;&nbsp;• 1 semana (7d): <b style="color:#f97316">+8%</b> — 1 cuota<br>
           &nbsp;&nbsp;• 2 semanas (15d): <b style="color:#f97316">+15%</b> — 1 cuota<br>
           &nbsp;&nbsp;• 1 mes (30d): <b style="color:#f97316">+25%</b> — 2 cuotas cada 15d<br>
           &nbsp;&nbsp;• 45 días: <b style="color:#f97316">+40%</b> — 3 cuotas cada 15d<br>
           &nbsp;&nbsp;• 2 meses (60d): <b style="color:#f97316">+60%</b> — 4 cuotas cada 15d<br><br>
-          <span style="color:#f97316">Ejemplo: Cuenta $21 · Plan 30d · Anticipo: $9.19 · Total con interés: $26.25 · 2 cuotas de $8.53 cada 15 días</span>
+          <span style="color:#f97316">Ejemplo: Cuenta $50 · Anticipo 35% = $17.50 · Saldo a financiar: $32.50 · Plan 30d (+25%) → interés: $8.13 · Total: $58.13 · 2 cuotas de $20.31 cada 15 días</span>
         </div>
 
         <!-- Calculadora -->
@@ -1821,7 +1821,7 @@ td{padding:12px 14px;vertical-align:middle}
             <!-- Resumen en tarjetas -->
             <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px">Total con Interés</div>
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px">Total a Pagar</div>
                 <div style="font-size:1.4em;font-weight:800;color:var(--text);font-family:var(--font-title);font-style:italic" id="fin-total-display">$0.00</div>
                 <input type="hidden" id="fin-total-con-interes">
               </div>
@@ -1831,7 +1831,7 @@ td{padding:12px 14px;vertical-align:middle}
                 <input type="hidden" id="fin-anticipo-usd">
               </div>
               <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Saldo Pendiente</div>
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Saldo Financiado + Interés</div>
                 <div style="font-size:1.4em;font-weight:800;color:var(--gold);font-family:var(--font-title);font-style:italic" id="fin-pendiente-display">$0.00</div>
                 <input type="hidden" id="fin-pendiente">
               </div>
@@ -4339,15 +4339,22 @@ window.calcFinanciamiento = function() {
   }
 
   const [dias, interesPct, numCuotas] = (plazoEl?.value || '0|0|1').split('|').map(Number);
-  const totalConInteres = precio * (1 + interesPct / 100);
 
-  // Anticipo según precio
+  // Anticipo % según precio de la cuenta (sin interés — el anticipo es fijo)
   let anticipoPct = 0.30;
   if (precio > 60) anticipoPct = 0.40;
   else if (precio > 30) anticipoPct = 0.35;
 
-  const anticipo = totalConInteres * anticipoPct;
-  const saldoPendiente = totalConInteres - anticipo;
+  const anticipo = precio * anticipoPct;
+
+  // El interés se aplica SOLO sobre el saldo restante (lo que se financia)
+  const saldoAFinanciar = precio - anticipo;
+  const saldoConInteres = saldoAFinanciar * (1 + interesPct / 100);
+  const interesUSD = saldoConInteres - saldoAFinanciar;
+
+  // Total real que paga el cliente = anticipo + saldo financiado con interés
+  const totalConInteres = anticipo + saldoConInteres;
+  const saldoPendiente = saldoConInteres; // lo que queda después del anticipo
   const montoCuota = numCuotas > 0 ? saldoPendiente / numCuotas : 0;
 
   // Actualizar hidden inputs
@@ -4383,8 +4390,9 @@ window.calcFinanciamiento = function() {
             <div style="font-weight:800;color:var(--gold)">$${montoCuota.toFixed(2)}</div>
           </div>`;
       }
-      const interesUSD = totalConInteres - precio;
-      cuotasHTML += `<div style="text-align:right;font-size:0.7em;color:var(--text3);padding:4px 4px 0">Interés aplicado: $${interesUSD.toFixed(2)} (${interesPct}%) · Total: $${totalConInteres.toFixed(2)}</div>`;
+      cuotasHTML += `<div style="text-align:right;font-size:0.7em;color:var(--text3);padding:4px 4px 0">
+        Saldo financiado: $${saldoAFinanciar.toFixed(2)} · Interés: $${interesUSD.toFixed(2)} (${interesPct}% sobre saldo) · Total: $${totalConInteres.toFixed(2)}
+      </div>`;
     }
     listaEl.innerHTML = cuotasHTML;
   }
@@ -4395,7 +4403,7 @@ window.calcFinanciamiento = function() {
   if (resultado) resultado.style.display = 'block';
   if (minMsg) minMsg.style.display = 'none';
 
-  // Sync precio al campo ingreso principal
+  // Sync anticipo al campo ingreso principal
   const ingresoEl = document.getElementById('vc-f-ingreso');
   if (ingresoEl) { ingresoEl.value = anticipo.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
 };
