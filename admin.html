@@ -3206,10 +3206,13 @@ function aplicarRestriccionesRol(role) {
   const ceoBlock = document.querySelector('.sec-ceo-only');
   const ceoInputs = ceoBlock ? ceoBlock.querySelectorAll('input') : [];
 
+  const clientesTab = document.getElementById('btn-tab-clientes');
+
   if (role === 'CEO') {
     if (accountingTab) accountingTab.style.display = '';
     if (cuentasTab) cuentasTab.style.display = '';
     if (recoveryTab) recoveryTab.style.display = '';
+    if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.add('role-ceo');
     document.body.classList.add('role-ceo');
     if (ceoBlock) ceoBlock.style.removeProperty('display');
@@ -3220,10 +3223,11 @@ function aplicarRestriccionesRol(role) {
     fetchVentas();
     fetchRecoveries();
   } else {
-    // ADMIN: can access Cuentas and Recovery but NOT Contabilidad
+    // ADMIN: can access Cuentas, Recovery and Clientes but NOT Contabilidad
     if (accountingTab) accountingTab.style.display = 'none';
     if (cuentasTab) cuentasTab.style.display = '';
     if (recoveryTab) recoveryTab.style.display = '';
+    if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.remove('role-ceo');
     document.body.classList.remove('role-ceo');
 
