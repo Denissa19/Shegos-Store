@@ -691,12 +691,52 @@ td{padding:12px 14px;vertical-align:middle}
   <div class="login-card">
     <div class="login-logo">SHEGOS <span>STORE</span></div>
     <div class="login-sub">Panel de Gestión</div>
-    <input class="login-input" id="email-input" type="email" placeholder="Usuario" autocomplete="username">
-    <input class="login-input" id="pwd-input" type="password" placeholder="Contraseña" autocomplete="current-password" onkeydown="if(event.key==='Enter') window.doLogin()">
+    <input class="login-input" id="email-input" type="email" placeholder="Correo" autocomplete="username">
+    <div style="position:relative;width:100%;margin-bottom:12px">
+      <input class="login-input" id="pwd-input" type="password" placeholder="Contraseña" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter') window.doLogin()"
+        style="margin-bottom:0;padding-right:44px;width:100%">
+      <button onclick="window.togglePwd()" id="pwd-eye"
+        style="position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:1em;padding:4px;transition:color .2s"
+        tabindex="-1"><i class="fas fa-eye" id="pwd-eye-icon"></i></button>
+    </div>
     <button class="login-btn" onclick="window.doLogin()">ENTRAR</button>
     <div class="login-error" id="login-err">Credenciales incorrectas</div>
+    <button onclick="window.openForgot()"
+      style="background:none;border:none;color:var(--text2);font-size:0.75em;margin-top:16px;cursor:pointer;font-family:var(--font-body);text-decoration:underline;transition:color .2s"
+      onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text2)'">
+      ¿Olvidaste tu contraseña?
+    </button>
   </div>
 </div>
+
+<!-- ── MODAL RECUPERAR CONTRASEÑA ─────── -->
+<div class="overlay" id="modal-forgot" style="z-index:99999">
+  <div class="mcard" style="max-width:400px">
+    <div class="mhead">
+      <div class="mtitle" style="color:var(--accent)">Recuperar Contraseña</div>
+      <button class="mclose" onclick="window.closeForgot()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <p style="font-size:0.8em;color:var(--text2);margin-bottom:16px;line-height:1.6">
+        Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+      </p>
+      <div class="fgroup">
+        <label class="flabel">Correo electrónico</label>
+        <input class="finput" id="forgot-email" type="email" placeholder="tucorreo@gmail.com"
+          onkeydown="if(event.key==='Enter') window.sendReset()">
+      </div>
+      <div id="forgot-msg" style="display:none;font-size:0.78em;margin-top:10px;padding:10px 13px;border-radius:4px;font-weight:500"></div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="window.closeForgot()">Cancelar</button>
+      <button class="btn btn-accent" onclick="window.sendReset()" id="forgot-btn">
+        <i class="fas fa-paper-plane"></i> Enviar enlace
+      </button>
+    </div>
+  </div>
+</div>
+
 
 <div id="app">
   <div class="topbar">
@@ -1415,17 +1455,10 @@ td{padding:12px 14px;vertical-align:middle}
 </div>
 
 <script type="module">
-const CREDENTIALS = {
-  ceo: {
-    user: "deni@shegos.com",
-    pass: "Liam2004",
-    role: "CEO"
-  },
-  admin: {
-    user: "maidas@shegos.com",
-    pass: "Maidas-S",
-    role: "ADMIN"
-  }
+// Mapa de rol por correo real
+const ROLE_MAP = {
+  'codedenissa19@gmail.com': 'CEO',
+  'carlos.arteaga.milan.2008@gmail.com': 'ADMIN'
 };
 
 // 2. Credenciales de Supabase
@@ -1446,25 +1479,19 @@ let importMode = 'merge';
 let toastTimer;
 
 // --- INICIALIZACIÓN ---
-// Al cargar la página comprueba la sesión activa
-window.addEventListener('DOMContentLoaded', () => {
-  if (sessionStorage.getItem('shegos_session') === 'active') {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    
-    const savedRole = sessionStorage.getItem('shegos_role') || 'ADMIN';
-    const savedEmail = sessionStorage.getItem('shegos_email') || '';
-    if (savedEmail) {
-      document.getElementById('topbar-user').innerHTML = `<i class="fas fa-circle" style="color:var(--accent);font-size:.55em;vertical-align:middle"></i> Logueado como: <strong style="color:var(--text)">${savedEmail}</strong>`;
-    }
-    cargarSugerenciasClientes();
-    aplicarRestriccionesRol(savedRole);
-
-    setDefaultMonth();
-    fetchOrders();
-  }
+window.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
   renderQuickTags();
+
+  // Revisar sesión activa de Supabase Auth
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    const email = session.user.email;
+    const role = ROLE_MAP[email] || 'ADMIN';
+    sessionStorage.setItem('shegos_role', role);
+    sessionStorage.setItem('shegos_email', email);
+    mostrarPanel(email, role);
+  }
 });
 
 function setupEventListeners() {
@@ -2359,33 +2386,125 @@ function showToast(msg, isErr = false) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
-// --- CLIENT-SIDE AUTH DE PRESTACIONES ---
-function doLogin() {
+// --- AUTH CON SUPABASE ---
+function mostrarPanel(email, role) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('topbar-user').innerHTML = `<i class="fas fa-circle" style="color:var(--accent);font-size:.55em;vertical-align:middle"></i> <strong style="color:var(--text)">${email}</strong>`;
+  aplicarRestriccionesRol(role);
+  setDefaultMonth();
+  fetchOrders();
+  cargarSugerenciasClientes();
+}
+
+async function doLogin() {
   const email = document.getElementById('email-input').value.trim();
   const pwd = document.getElementById('pwd-input').value;
+  const errEl = document.getElementById('login-err');
+  const btn = document.querySelector('.login-btn');
 
-  const userMatch = Object.values(CREDENTIALS).find(c => c.user === email && c.pass === pwd);
-
-  if (userMatch) {
-    // Sesión ficticia del front-end para renderizar el panel
-    sessionStorage.setItem('shegos_session', 'active');
-    sessionStorage.setItem('shegos_role', userMatch.role);
-    sessionStorage.setItem('shegos_email', email);
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('topbar-user').innerHTML = `<i class="fas fa-circle" style="color:var(--accent);font-size:.55em;vertical-align:middle"></i> Logueado como: <strong style="color:var(--text)">${email}</strong>`;
-    aplicarRestriccionesRol(userMatch.role);
-    setDefaultMonth();
-    fetchOrders();
-    showToast(`Bienvenido ${userMatch.role}`);
-    cargarSugerenciasClientes();
-  } else {
-    const errEl = document.getElementById('login-err');
-    if (errEl) errEl.style.display = 'block';
+  if (!email || !pwd) {
+    errEl.textContent = 'Completa todos los campos';
+    errEl.style.display = 'block';
+    return;
   }
+
+  if (!ROLE_MAP[email]) {
+    errEl.textContent = 'Usuario no autorizado';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'Entrando...';
+  btn.style.opacity = '0.7';
+  errEl.style.display = 'none';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pwd });
+
+  btn.textContent = 'ENTRAR';
+  btn.style.opacity = '1';
+
+  if (error) {
+    errEl.textContent = 'Correo o contraseña incorrectos';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const role = ROLE_MAP[email] || 'ADMIN';
+  sessionStorage.setItem('shegos_role', role);
+  sessionStorage.setItem('shegos_email', email);
+  mostrarPanel(email, role);
+  showToast(`Bienvenido/a ${role === 'CEO' ? 'CEO 👑' : 'Admin'}`);
 }
+
+async function doLogout() {
+  await supabase.auth.signOut();
+  sessionStorage.clear();
+  location.reload();
+}
+
+// --- OJITO CONTRASEÑA ---
+window.togglePwd = function() {
+  const input = document.getElementById('pwd-input');
+  const icon = document.getElementById('pwd-eye-icon');
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  icon.className = isHidden ? 'fas fa-eye-slash' : 'fas fa-eye';
+};
+
+// --- RECUPERAR CONTRASEÑA ---
+window.openForgot = function() {
+  document.getElementById('forgot-email').value = document.getElementById('email-input').value || '';
+  document.getElementById('forgot-msg').style.display = 'none';
+  document.getElementById('modal-forgot').classList.add('open');
+};
+
+window.closeForgot = function() {
+  document.getElementById('modal-forgot').classList.remove('open');
+};
+
+window.sendReset = async function() {
+  const email = document.getElementById('forgot-email').value.trim();
+  const msgEl = document.getElementById('forgot-msg');
+  const btn = document.getElementById('forgot-btn');
+
+  if (!email) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'Ingresa tu correo electrónico.';
+    return;
+  }
+
+  if (!ROLE_MAP[email]) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'Este correo no está registrado en el panel.';
+    return;
+  }
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+  btn.disabled = true;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  });
+
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar enlace';
+  btn.disabled = false;
+
+  if (error) {
+    msgEl.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msgEl.textContent = 'Error al enviar: ' + error.message;
+  } else {
+    msgEl.style.cssText = 'display:block;background:rgba(40,254,182,.08);color:var(--accent);border:1px solid rgba(40,254,182,.25)';
+    msgEl.textContent = '✓ Enlace enviado. Revisa tu correo (también el spam).';
+  }
+};
+
+// ═══════════════════════════════════════════════
+// SECCIÓN CUENTAS — VENTAS DIARIAS
+// ═══════════════════════════════════════════════
+
 function aplicarRestriccionesRol(role) {
-  currentRole = role; // Bug 9 fix: store globally
+  currentRole = role;
   const accountingTab = document.getElementById('btn-tab-contabilidad');
   const cuentasTab = document.getElementById('btn-tab-cuentas');
   const recoveryTab = document.getElementById('btn-tab-recovery');
@@ -2440,13 +2559,6 @@ function aplicarRestriccionesRol(role) {
   }
 }
 
-function doLogout() {
-  sessionStorage.removeItem('shegos_session');
-  location.reload();
-}
-
-// ═══════════════════════════════════════════════
-// SECCIÓN CUENTAS — VENTAS DIARIAS
 // ═══════════════════════════════════════════════
 let currentVentas = [];
 let editingVentaId = null;
