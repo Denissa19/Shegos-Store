@@ -1344,6 +1344,26 @@
                 opacity: 1 !important;
                 z-index: 1200 !important;
             }
+        
+        /* Animación de carga para el botón de pedido */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%; left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 3px solid rgba(0,0,0,0.2);
+            border-top-color: #000;
+            border-radius: 50%;
+            animation: shegos-spin 0.8s linear infinite;
+        }
+
             nav { display: none !important; }
 
             /* Posicionamiento del contador en la esquina superior derecha */
@@ -1790,6 +1810,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <div class="banner-codigo">Apóyanos en la tienda de Fortnite: Código <strong class="codigo-banner">DENISSA_7U7</strong></div>
  
     <!-- SIDEBAR PARA MÓVIL -->
@@ -2292,6 +2313,11 @@
                             </div>
                         </div>
                       </div>
+                      <div class="form-section">
+                        <h4>4. Adjuntar Comprobante</h4>
+                        <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">Selecciona la captura de tu pago realizado.</p>
+                        <input type="file" id="cliente-comprobante" accept="image/*" style="background: #121212; border: 1px solid #333; color: white; padding: 10px; width: 100%; border-radius: 5px;">
+                      </div>
                     </div>
                 </div>
 
@@ -2501,6 +2527,11 @@
     </div>
 
     <script>
+        // Inicialización de Supabase para index.html
+        const SUPABASE_URL = "https://boifqdoojssmofanhxhj.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         // ==========================================
         // CONFIGURACIÓN Y VARIABLES GLOBALES
         // ==========================================
@@ -3131,7 +3162,7 @@
             }
         }
         
-        function enviarPedidoFinal() {
+        async function enviarPedidoFinal() {
             const btnFinal = document.querySelector('.btn-pulse');
             if (btnFinal.disabled) return;
 
@@ -3139,6 +3170,9 @@
             const telefono = document.getElementById('cliente-whatsapp').value;
             const epicId = document.getElementById('cliente-epic').value;
             
+            // 1. Generar ID de pedido único (Requerimiento)
+            const orderId = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
+
             // Validación de número de WhatsApp (10 a 15 dígitos)
             const telRegex = /^[0-9]{10,15}$/;
 
@@ -3147,16 +3181,19 @@
 
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const metodoRaw = seleccionado ? seleccionado.value : "";
-            const metodo = metodoRaw.toUpperCase();
 
-            if(!nombre || !telefono || !epicId || !metodo || !cuentaSeleccionada) {
+            if(!nombre || !telefono || !epicId || !metodoRaw || !cuentaSeleccionada) {
                 return alert("Por favor completa todos tus datos, selecciona al menos una cuenta donde nos agregaste y elige un método de pago.");
             }
 
-            if(!telRegex.test(telefono.replace(/\s/g, ""))) {
+            telefono = telefono.replace(/\s/g, "");
+            if(!telRegex.test(telefono)) {
                 document.getElementById('cliente-whatsapp').classList.add('input-error');
                 return alert("Por favor ingresa un número de WhatsApp válido (solo números, entre 10 y 15 dígitos).");
             }
+
+            // Agregar el prefijo +
+            if (!telefono.startsWith('+')) telefono = '+' + telefono;
 
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
             
@@ -3167,48 +3204,74 @@
             }).join('\n');
             const total = totalSum.toFixed(2);
 
-            // Deshabilitar botón temporalmente para evitar duplicados
+            // Activar estado de carga en el botón
+            btnFinal.classList.add('btn-loading');
             btnFinal.disabled = true;
-            btnFinal.style.opacity = '0.7';
-            btnFinal.innerText = 'PROCESANDO...';
 
-            // Re-habilitar después de 5 segundos por si el usuario regresa
-            setTimeout(() => {
+            // 2. Procesar comprobante si existe para guardarlo en la DB
+            const fileInput = document.getElementById('cliente-comprobante');
+            let base64Receipt = "";
+            if (fileInput && fileInput.files[0]) {
+                base64Receipt = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            // 3. Registro automático en Supabase (Exportación automática al Admin)
+            const orderData = {
+                id_pedido: orderId,
+                nombre_cliente: nombre,
+                telefono_cliente: telefono,
+                epic_id_cliente: epicId,
+                cuentas_agregadas: Array.from(cuentasCheckboxes).map(cb => cb.value),
+                productos: carrito,
+                total_usd: total,
+                metodo_pago: metodoRaw,
+                estado: 'En Proceso',
+                fecha: new Date().toISOString(),
+                comprobante: base64Receipt
+            };
+
+            try {
+                await supabaseClient.from('pedidos').insert([orderData]);
+                
+                // Efecto de sonido de pedido completado
+                const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
+                audio.play().catch(e => {});
+
+                // Mostrar pantalla de éxito
+                document.getElementById('modal-pedido-exito').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Vaciar carrito para evitar duplicados si el usuario regresa
+                vaciarCarrito();
+
+            } catch (err) {
+                console.error("Error al exportar pedido a Supabase:", err);
+                btnFinal.classList.remove('btn-loading');
                 btnFinal.disabled = false;
-                btnFinal.style.opacity = '1';
-                btnFinal.innerText = 'REALIZAR PEDIDO';
-            }, 5000);
-            setTimeout(() => { btnFinal.disabled = false; btnFinal.style.opacity = '1'; btnFinal.innerText = 'REALIZAR PEDIDO'; }, 5000);
+                alert("Hubo un error al registrar el pedido. Por favor intenta de nuevo.");
+            }
+        }
 
-            // Efecto de sonido de pedido completado
-            const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
-            audio.play().catch(e => console.log("Sonido bloqueado por navegador"));
-
-            // Flujo PayPal: abrir link de pago primero, luego mostrar botón de comprobante
+        function confirmarYRedirigirFinal() {
+            const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
+            const metodoRaw = seleccionado ? seleccionado.value : "";
+            
             if (metodoRaw === 'paypal') {
                 window.open("https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2", '_blank');
-                // Mostrar modal de confirmación PayPal (NO redirigir a WA todavía)
-                const modalPP = document.getElementById('modal-paypal-comprobante');
-                if (modalPP) {
-                    modalPP.style.display = 'flex';
-                    document.body.style.overflow = 'hidden';
-                }
-                return;
-            }
-
-            // Si es transferencia o popular, abrir Modal en lugar de ir directo
-            if (metodoRaw === 'transferencia_mx' || metodoRaw === 'popular') {
+            } else if (metodoRaw === 'transferencia_mx' || metodoRaw === 'popular') {
+                // Estas requieren ver instrucciones específicas
                 abrirModalInstrucciones(metodoRaw);
+                document.getElementById('modal-pedido-exito').classList.remove('active');
                 return;
             }
-
-            // Si es Binance, abrimos el modal en lugar de ir a WhatsApp directamente
-            if (metodoRaw === 'binance') {
-                abrirPagoBinance(total);
-                return;
-            }
-
+            
             confirmarYEnviarWhatsApp();
+            document.getElementById('modal-pedido-exito').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function abrirModalInstrucciones(metodo) {
@@ -3271,7 +3334,7 @@
 
 💳 *Método:* ${metodo}
 
-
+📊 *Estado:* PROCESANDO
 
 🛍️ *Productos:*
 
