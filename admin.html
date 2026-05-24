@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel Shegos Store</title>
+<link rel="icon" type="image/png" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
+<link rel="shortcut icon" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -60,7 +62,7 @@ body.role-ceo {
 
 /* ── SHELL ──────────────────────────────── */
 #app{display:none;min-height:100vh}
-.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;gap:12px;padding:0 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.topbar{height:60px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .topbar-brand{font-family:'BurbankBigCondensed','Poppins',sans-serif;font-size:1.5em;color:var(--text);text-transform:uppercase;letter-spacing:2px;font-style:italic;white-space:nowrap;line-height:1;flex-shrink:0}
 .topbar-brand span{color:var(--accent)}
 .topbar-right{display:flex;align-items:center;gap:18px}
@@ -1976,6 +1978,9 @@ async function saveOrder() {
     return;
   }
 
+  const saveBtn = document.querySelector('#modal-order .btn-accent[onclick*="saveOrder"]');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
+
   // Estructurar productos desde las filas dinámicas
   const products = [];
   document.querySelectorAll('.prod-row').forEach(row => {
@@ -1984,6 +1989,15 @@ async function saveOrder() {
     const price = parseFloat(row.querySelector('.p-price')?.value) || 0;
     if (desc) products.push({ desc, qty, price });
   });
+
+  // Robust date parsing for text-based date picker
+  let fechaOrderISO = new Date().toISOString();
+  const fechaOrderVal = (document.getElementById('f-date')?.value || '').trim();
+  if (fechaOrderVal) {
+    const normalized = fechaOrderVal.length === 16 ? fechaOrderVal + ':00' : fechaOrderVal;
+    const parsed = new Date(normalized);
+    if (!isNaN(parsed.getTime())) fechaOrderISO = parsed.toISOString();
+  }
 
   const orderData = {
     id_pedido: editingOrderId ? undefined : (idField || 'SHG-' + Math.floor(1000 + Math.random() * 9000)),
@@ -1995,36 +2009,32 @@ async function saveOrder() {
     cuentas_agregadas: currentTags,
     productos: products,
     total_usd: total,
-    fecha: document.getElementById('f-date').value || new Date().toISOString(),
+    fecha: fechaOrderISO,
     notes: document.getElementById('f-notes').value.trim(),
     comprobante: document.getElementById('f-receipt-base64').value || null
   };
 
   try {
-    let error;
     if (editingOrderId) {
-      // UPDATE
-      const { error: err } = await supabase
-        .from('pedidos')
-        .update(orderData)
-        .eq('id', editingOrderId);
-      error = err;
+      // UPDATE: remove auto/pk fields from body
+      const updateData = { ...orderData };
+      delete updateData.id_pedido;
+      const { error: err } = await supabase.from('pedidos').update(updateData).eq('id', editingOrderId);
+      if (err) throw err;
     } else {
       // INSERT
-      const { error: err } = await supabase
-        .from('pedidos')
-        .insert([orderData]);
-      error = err;
+      const { error: err } = await supabase.from('pedidos').insert([orderData]);
+      if (err) throw err;
     }
-
-    if (error) throw error;
 
     showToast(editingOrderId ? 'Pedido actualizado en la nube' : 'Pedido guardado en la nube');
     closeModal();
     fetchOrders();
   } catch (err) {
-    showToast('Error al sincronizar con Supabase', true);
+    showToast('Error al sincronizar: ' + (err?.message || 'revisa la consola'), true);
     console.error(err);
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar'; }
   }
 }
 
@@ -3550,9 +3560,24 @@ async function saveVenta() {
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingreso || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
 
+  // Show loading state on button
+  const saveBtn = document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
+
   const costoReal  = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
   const ganancia   = parseFloat(document.getElementById('vc-f-neta-ceo')?.value)   || (ingreso - costoReal);
-  const fechaVal = document.getElementById('vc-f-fecha').value;
+  
+  // Robust date parsing — handle text input (YYYY-MM-DDTHH:MM or YYYY-MM-DD)
+  let fechaISO = new Date().toISOString();
+  const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
+  if (fechaVal) {
+    // Normalize: ensure seconds are present for proper parsing
+    const normalized = fechaVal.length === 16 ? fechaVal + ':00' : fechaVal;
+    const parsed = new Date(normalized);
+    if (!isNaN(parsed.getTime())) {
+      fechaISO = parsed.toISOString();
+    }
+  }
 
   const record = {
     tipo,
@@ -3561,7 +3586,6 @@ async function saveVenta() {
     costo: costoReal,
     costo_real: costoReal,
     ganancia_neta: ganancia,
-    
     margen: ingreso > 0 ? ((ganancia / ingreso) * 100).toFixed(1) + '%' : '0%',
     notas: document.getElementById('vc-f-notas')?.value?.trim() || '',
     id_pedido: document.getElementById('vc-f-id')?.value || '',
@@ -3574,31 +3598,34 @@ async function saveVenta() {
     pago_pendiente: parseFloat(document.getElementById('vc-f-pago-pendiente')?.value) || 0,
     cuota_adicional: parseFloat(document.getElementById('vc-f-cuota-adicional')?.value) || 0,
     interes_porcentaje: parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0,
-    // Apartar cuentas fields
     tipo_pago_apartar: document.getElementById('vc-f-apartarpago')?.value || null,
     apartado_total: parseFloat(document.getElementById('vc-f-apartar-total')?.value) || null,
     apartado_abono: parseFloat(document.getElementById('vc-f-apartar-abono')?.value) || null,
     apartado_pendiente: parseFloat(document.getElementById('vc-f-apartar-pendiente')?.value) || null,
-    created_at: fechaVal ? new Date(fechaVal).toISOString() : new Date().toISOString()
+    created_at: fechaISO
   };
   if (window.editingVentaId) record.id = window.editingVentaId;
 
   try {
-    let error;
     if (window.editingVentaId) {
-      const { error: err } = await supabase.from('ventas').update(record).eq('id', window.editingVentaId);
-      error = err;
+      // For UPDATE: never include 'id' or auto-managed fields in the body
+      const updateRecord = { ...record };
+      delete updateRecord.id;
+      delete updateRecord.created_at; // Don't overwrite original creation date on edit
+      const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId);
+      if (err) throw err;
     } else {
       const { error: err } = await supabase.from('ventas').insert([record]);
-      error = err;
+      if (err) throw err;
     }
-    if (error) throw error;
     showToast(window.editingVentaId ? 'Venta actualizada ✓' : 'Venta guardada en la nube ✓');
     closeVentaModal();
     fetchVentas();
   } catch (err) {
     showToast('Error al guardar: ' + (err?.message || ''), true);
     console.error(err);
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Venta'; }
   }
 }
 
@@ -4499,6 +4526,45 @@ window.calConfirm = function(inputId) {
   // Trigger dependent filters
   if (inputId === 'vc-date-from' || inputId === 'vc-date-to') renderVentas();
 };
+
+// ═══════════════════════════════════════════════
+// CLOSE MODALS ON ESC / CLICK OUTSIDE
+// ═══════════════════════════════════════════════
+(function setupModalDismiss() {
+  // ESC key closes topmost open overlay
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    // Find all open overlays, close the last one opened
+    const open = Array.from(document.querySelectorAll('.overlay.open'));
+    if (open.length === 0) return;
+    const top = open[open.length - 1];
+    closeOverlayById(top.id);
+  });
+
+  // Click on the dark backdrop (not on .mcard or .confirm-card) closes it
+  document.addEventListener('click', function(e) {
+    if (!e.target.classList.contains('overlay')) return;
+    closeOverlayById(e.target.id);
+  });
+
+  function closeOverlayById(id) {
+    if (!id) return;
+    switch(id) {
+      case 'modal-order':       window.closeModal?.(); break;
+      case 'modal-venta':       window.closeVentaModal?.(); break;
+      case 'modal-recovery':    window.closeRecoveryModal?.(); break;
+      case 'modal-import':      window.closeImport?.(); break;
+      case 'modal-detail':      window.closeDetail?.(); break;
+      case 'modal-parse':       window.closeParseModal?.(); break;
+      case 'modal-wallpaper':   window.closeWallpaperModal?.(); break;
+      case 'modal-forgot':      window.closeForgot?.(); break;
+      case 'modal-confirm':     window.closeConfirmModal?.(); break;
+      default:
+        // Generic fallback: just remove 'open'
+        document.getElementById(id)?.classList.remove('open');
+    }
+  }
+})();
 
 // --- ASIGNACIÓN DE CONTRASTES EN WINDOW PARA BOTONES HTML ---
 window.doLogin = doLogin;
