@@ -1229,6 +1229,9 @@ td{padding:12px 14px;vertical-align:middle}
         <button class="btn btn-accent" onclick="window.openAddClienteModal()" style="background:#a855f7">
           <i class="fas fa-user-plus"></i> Nuevo Cliente
         </button>
+        <button class="btn" onclick="window.openFeedbackModal()" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none">
+          <i class="fab fa-whatsapp"></i> Pedir Feedback
+        </button>
         <button class="btn btn-ghost" onclick="window.exportClientesCSV()">
           <i class="fas fa-download"></i> Exportar CSV
         </button>
@@ -4851,6 +4854,7 @@ window.calConfirm = function(inputId) {
       case 'modal-forgot':      window.closeForgot?.(); break;
       case 'modal-confirm':     window.closeConfirmModal?.(); break;
       case 'modal-add-cliente': window.closeAddClienteModal?.(); break;
+      case 'modal-feedback':    window.closeFeedbackModal?.(); break;
       case 'modal-retiro':      window.closeRetiroModal?.(); break;
       default:
         // Generic fallback: just remove 'open'
@@ -5158,6 +5162,114 @@ window.exportClientesCSV = function() {
   showToast('CSV exportado ✓');
 };
 
+// ═══════════════════════════════════════════════
+// FEEDBACK WHATSAPP
+// ═══════════════════════════════════════════════
+const FB_DEFAULT_MSG = `No haz enviado tu referencia, Porfavor deja tu feedback!\nhttps://discord.gg/jyDF3QgDXG`;
+
+let fbSelectedWA = new Set();
+
+window.openFeedbackModal = function() {
+  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
+  document.getElementById('fb-msg-text').value = FB_DEFAULT_MSG;
+  window.fbUpdatePreview();
+  fbSelectedWA = new Set(clientes.map(c => c.wa.trim()));
+  window.fbRenderClientsList();
+  document.getElementById('fb-no-wa').style.display = clientes.length === 0 ? 'block' : 'none';
+  document.getElementById('modal-feedback').classList.add('open');
+};
+
+window.closeFeedbackModal = function() {
+  document.getElementById('modal-feedback').classList.remove('open');
+};
+
+window.fbUpdatePreview = function() {
+  const txt = document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG;
+  document.getElementById('fb-msg-preview').textContent = txt;
+};
+
+window.fbRenderClientsList = function() {
+  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
+  const list = document.getElementById('fb-clients-list');
+  const countEl = document.getElementById('fb-sel-count');
+
+  if (!clientes.length) {
+    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);font-size:0.82em"><i class="fas fa-user-slash" style="font-size:1.5em;display:block;margin-bottom:8px"></i>Ningún cliente tiene WhatsApp registrado</div>`;
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+
+  list.innerHTML = clientes.map((c, i) => {
+    const selected = fbSelectedWA.has(c.wa.trim());
+    return `
+      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s${i===clientes.length-1?';border-bottom:none':''}"
+        onclick="window.fbToggleClient('${c.wa.trim().replace(/'/g,"\\'")}')">
+        <div style="width:20px;height:20px;border-radius:5px;border:2px solid ${selected?'#25D366':'var(--border2)'};background:${selected?'#25D366':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s">
+          ${selected ? '<i class="fas fa-check" style="color:#000;font-size:0.6em"></i>' : ''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:600;font-size:0.85em;color:var(--text)">${c.nombre}</div>
+          <div style="font-size:0.75em;color:#25D366"><i class="fab fa-whatsapp" style="margin-right:4px"></i>${c.wa}</div>
+        </div>
+        <a href="https://wa.me/${c.wa.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()"
+          style="font-size:0.7em;color:var(--text3);text-decoration:none;padding:4px 8px;border:1px solid var(--border2);border-radius:4px;transition:all .2s;white-space:nowrap"
+          onmouseover="this.style.borderColor='#25D366';this.style.color='#25D366'"
+          onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">
+          <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>`;
+  }).join('');
+
+  window.fbUpdateSelCount();
+};
+
+window.fbToggleClient = function(wa) {
+  if (fbSelectedWA.has(wa)) fbSelectedWA.delete(wa);
+  else fbSelectedWA.add(wa);
+  window.fbRenderClientsList();
+};
+
+window.fbSelectAll = function() {
+  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
+  fbSelectedWA = new Set(clientes.map(c => c.wa.trim()));
+  window.fbRenderClientsList();
+};
+
+window.fbDeselectAll = function() {
+  fbSelectedWA = new Set();
+  window.fbRenderClientsList();
+};
+
+window.fbUpdateSelCount = function() {
+  const countEl = document.getElementById('fb-sel-count');
+  if (countEl) countEl.textContent = `${fbSelectedWA.size} seleccionado${fbSelectedWA.size !== 1 ? 's' : ''}`;
+};
+
+window.sendFeedbackMessages = function() {
+  const msg = (document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG).trim();
+  const selected = Array.from(fbSelectedWA);
+
+  if (!selected.length) {
+    showToast('Selecciona al menos un cliente', true);
+    return;
+  }
+
+  const encoded = encodeURIComponent(msg);
+  let delay = 0;
+
+  selected.forEach(wa => {
+    const clean = wa.replace(/\D/g, '');
+    setTimeout(() => {
+      window.open(`https://wa.me/${clean}?text=${encoded}`, '_blank');
+    }, delay);
+    delay += 700;
+  });
+
+  window.closeFeedbackModal();
+  showToast(`Abriendo WhatsApp para ${selected.length} cliente${selected.length !== 1 ? 's' : ''} ✓`);
+};
+
+
 // Modal Agregar Cliente
 window.openAddClienteModal = function() {
   document.getElementById('ac-nombre').value = '';
@@ -5410,6 +5522,66 @@ window.resetWallpaper = function() {
       <button class="btn btn-accent" onclick="window.saveAddCliente()" style="background:#a855f7">
         <i class="fas fa-save"></i> Guardar Cliente
       </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL FEEDBACK WHATSAPP ──────────── -->
+<div class="overlay" id="modal-feedback">
+  <div class="mcard" style="max-width:540px">
+    <div class="mhead">
+      <div class="mtitle" style="color:#25D366"><i class="fab fa-whatsapp" style="margin-right:8px"></i>Pedir Feedback</div>
+      <button class="mclose" onclick="window.closeFeedbackModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+
+      <!-- Mensaje preview -->
+      <div style="background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.2);border-radius:10px;padding:14px 16px;margin-bottom:18px">
+        <div style="font-size:0.68em;letter-spacing:2px;text-transform:uppercase;color:#25D366;font-weight:700;margin-bottom:8px"><i class="fas fa-comment-dots" style="margin-right:5px"></i>Mensaje que se enviará</div>
+        <div id="fb-msg-preview" style="font-size:0.85em;color:var(--text);line-height:1.7;white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:12px 14px;border:1px solid var(--border2)"></div>
+      </div>
+
+      <!-- Editar mensaje -->
+      <div class="fgroup">
+        <label class="flabel">Personalizar mensaje <span style="color:var(--text3);font-size:.85em">(opcional)</span></label>
+        <textarea class="ftarea" id="fb-msg-text" style="min-height:80px" oninput="window.fbUpdatePreview()"></textarea>
+      </div>
+
+      <!-- Separador -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <span style="font-size:0.7em;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:600">Seleccionar destinatarios</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+
+      <!-- Acciones rápidas de selección -->
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost" style="font-size:0.72em;padding:7px 14px" onclick="window.fbSelectAll()">
+          <i class="fas fa-check-double"></i> Seleccionar todos
+        </button>
+        <button type="button" class="btn btn-ghost" style="font-size:0.72em;padding:7px 14px" onclick="window.fbDeselectAll()">
+          <i class="fas fa-times"></i> Deseleccionar todos
+        </button>
+        <span id="fb-sel-count" style="font-size:0.75em;color:var(--accent);align-self:center;font-weight:700;margin-left:auto"></span>
+      </div>
+
+      <!-- Lista de clientes con WA -->
+      <div id="fb-clients-list" style="max-height:260px;overflow-y:auto;border:1px solid var(--border2);border-radius:8px;background:var(--bg)"></div>
+
+      <div id="fb-no-wa" style="display:none;font-size:0.75em;color:var(--text3);margin-top:10px;text-align:center;padding:8px">
+        <i class="fas fa-info-circle" style="margin-right:5px"></i>Los clientes sin WhatsApp no aparecen en la lista.
+      </div>
+    </div>
+    <div class="mfoot" style="flex-direction:column;gap:10px;align-items:stretch">
+      <div style="font-size:0.72em;color:var(--text3);text-align:center;line-height:1.5">
+        <i class="fas fa-info-circle" style="margin-right:4px"></i>Se abrirá WhatsApp Web por cada cliente seleccionado. Tu navegador puede bloquear ventanas emergentes — permítelas si es necesario.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="window.closeFeedbackModal()">Cancelar</button>
+        <button class="btn" id="fb-send-btn" onclick="window.sendFeedbackMessages()" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none">
+          <i class="fab fa-whatsapp"></i> Enviar a seleccionados
+        </button>
+      </div>
     </div>
   </div>
 </div>
