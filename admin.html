@@ -1008,51 +1008,76 @@ td{padding:12px 14px;vertical-align:middle}
     <!-- ── TAB CUENTAS ─────────────────────────── -->
     <div class="tab-panel" id="tab-cuentas">
 
-      <!-- Tarjetas por tipo de venta -->
+      <!-- Tarjetas por tipo — solo contador visible para ADMIN, $ solo CEO -->
       <div class="stats-row" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px">
         <div class="stat-card" style="--accent-c:#a855f7">
           <div class="stat-label" style="color:#a855f7"><i class="fas fa-gamepad"></i> Cuenta FN</div>
           <div class="stat-value" style="color:#a855f7;font-size:1.8em" id="vc-t-cuenta">0</div>
-          <div class="stat-sub" id="vc-t-cuenta-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-cuenta-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:var(--blue)">
           <div class="stat-label" style="color:var(--blue)"><i class="fas fa-crown"></i> Club FN</div>
           <div class="stat-value" style="color:var(--blue);font-size:1.8em" id="vc-t-club">0</div>
-          <div class="stat-sub" id="vc-t-club-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-club-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:#f97316">
           <div class="stat-label" style="color:#f97316"><i class="fas fa-bolt"></i> Pavos</div>
           <div class="stat-value" style="color:#f97316;font-size:1.8em" id="vc-t-pavos">0</div>
-          <div class="stat-sub" id="vc-t-pavos-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-pavos-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:var(--accent)">
           <div class="stat-label" style="color:var(--accent)"><i class="fas fa-box-open"></i> Packs</div>
           <div class="stat-value" style="color:var(--accent);font-size:1.8em" id="vc-t-packs">0</div>
-          <div class="stat-sub" id="vc-t-packs-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-packs-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:#ec4899">
           <div class="stat-label" style="color:#ec4899"><i class="fas fa-gift"></i> Regalo</div>
           <div class="stat-value" style="color:#ec4899;font-size:1.8em" id="vc-t-regalo">0</div>
-          <div class="stat-sub" id="vc-t-regalo-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-regalo-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:#f97316">
           <div class="stat-label" style="color:#f97316"><i class="fas fa-bookmark"></i> Apartar</div>
           <div class="stat-value" style="color:#f97316;font-size:1.8em" id="vc-t-apartar">0</div>
-          <div class="stat-sub" id="vc-t-apartar-sum">$0.00</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-apartar-sum">$0.00</div>
         </div>
       </div>
 
-      <!-- Total + gráfica -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px">
-        <div class="stat-card" style="--accent-c:var(--gold)">
-          <div class="stat-label">Total Ventas del Período</div>
-          <div class="stat-value green" id="vc-s-total">$0.00</div>
-          <div class="stat-sub" id="vc-s-count">0 transacciones</div>
+      <!-- CEO ONLY: Resumen financiero + Gráfica de ganancias -->
+      <div class="sec-ceo-only" style="margin-bottom:24px">
+        <!-- Tarjetas financieras CEO -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px">
+          <div class="stat-card" style="--accent-c:var(--accent)">
+            <div class="stat-label">Total Ventas (Ingresos)</div>
+            <div class="stat-value green" id="vc-s-total">$0.00</div>
+            <div class="stat-sub" id="vc-s-count">0 transacciones</div>
+          </div>
+          <div class="stat-card" style="--accent-c:var(--gold);border-top:2px solid var(--gold)">
+            <div class="stat-label" style="color:var(--gold)">Ganancia Total</div>
+            <div class="stat-value" style="color:var(--gold)" id="vc-s-ganancia">$0.00</div>
+            <div class="stat-sub">Ingreso − Costo</div>
+          </div>
+          <div class="stat-card" style="--accent-c:var(--blue)">
+            <div class="stat-label">Margen Promedio</div>
+            <div class="stat-value" style="color:var(--blue)" id="vc-s-margen">0%</div>
+            <div class="stat-sub">Rentabilidad total</div>
+          </div>
         </div>
+
+        <!-- Gráfica ganancia por tipo -->
         <div class="month-chart" style="margin-bottom:0">
-          <div class="chart-title">INGRESOS POR TIPO DE VENTA</div>
-          <div id="vc-tipo-chart" style="display:flex;align-items:flex-end;gap:10px;height:80px"></div>
+          <div class="chart-title" style="display:flex;align-items:center;gap:8px">
+            <span>GANANCIA POR TIPO DE VENTA</span>
+            <span style="background:rgba(255,215,0,.1);color:var(--gold);font-size:0.7em;padding:2px 8px;border-radius:10px;border:1px solid rgba(255,215,0,.25)">Solo CEO</span>
+          </div>
+          <div id="vc-ganancia-chart" style="display:flex;align-items:flex-end;gap:16px;height:100px;margin-top:12px;padding:0 4px"></div>
         </div>
+      </div>
+
+      <!-- Transacciones totales visible para ADMIN -->
+      <div class="stat-card" id="vc-admin-count-card" style="--accent-c:var(--accent);margin-bottom:20px;display:none">
+        <div class="stat-label">Ventas Registradas</div>
+        <div class="stat-value green" id="vc-s-count-admin">0</div>
+        <div class="stat-sub">transacciones totales</div>
       </div>
 
       <div class="toolbar">
@@ -1085,7 +1110,7 @@ td{padding:12px 14px;vertical-align:middle}
         </div>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
         <button class="btn btn-accent" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
-        <button class="btn btn-outline" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
+        <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
       </div>
 
       <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div></div>
@@ -1693,37 +1718,125 @@ td{padding:12px 14px;vertical-align:middle}
         </div>
       </div>
 
-      <!-- ─── Campos exclusivos: Apartar Cuentas ─── -->
+      <!-- ─── CALCULADORA DE FINANCIAMIENTO (Apartar Cuentas) ─── -->
       <div id="vm-apartar-fields" style="display:none">
-        <div class="vm-sep"><span style="color:#f97316">Tipo de Pago para Apartar</span></div>
+        <div class="vm-sep">
+          <span style="color:#f97316"><i class="fas fa-bookmark" style="margin-right:5px"></i>Financiamiento — Apartar Cuenta</span>
+          <button type="button" id="fin-info-btn" onclick="window.toggleFinInfo()" title="Cómo funciona el financiamiento"
+            style="background:none;border:1px solid rgba(249,115,22,.35);color:#f97316;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:.75em;margin-left:8px;line-height:1;display:inline-flex;align-items:center;justify-content:center">
+            <i class="fas fa-info"></i>
+          </button>
+        </div>
+
+        <!-- Panel informativo colapsable -->
+        <div id="fin-info-panel" style="display:none;background:rgba(249,115,22,.05);border:1px solid rgba(249,115,22,.2);border-radius:8px;padding:14px;margin-bottom:14px;font-size:0.76em;line-height:1.75;color:var(--text2)">
+          <strong style="color:#f97316;font-size:1em;display:block;margin-bottom:8px"><i class="fas fa-landmark"></i> Sistema de Financiamiento Shegos Store</strong>
+          <b style="color:var(--text)">¿Qué es apartar?</b> El cliente reserva una cuenta pagando un anticipo. El saldo restante se paga en cuotas según el plan elegido.<br><br>
+          <b style="color:var(--text)">Anticipo mínimo requerido:</b><br>
+          &nbsp;&nbsp;• Cuentas hasta $30: <b style="color:#f97316">30%</b> del total<br>
+          &nbsp;&nbsp;• Cuentas $31–$60: <b style="color:#f97316">35%</b> del total<br>
+          &nbsp;&nbsp;• Cuentas $61+: <b style="color:#f97316">40%</b> del total<br><br>
+          <b style="color:var(--text)">Interés por plazo:</b><br>
+          &nbsp;&nbsp;• 1 semana (7d): <b style="color:#f97316">+8%</b> — 1 cuota<br>
+          &nbsp;&nbsp;• 2 semanas (15d): <b style="color:#f97316">+15%</b> — 1 cuota<br>
+          &nbsp;&nbsp;• 1 mes (30d): <b style="color:#f97316">+25%</b> — 2 cuotas cada 15d<br>
+          &nbsp;&nbsp;• 45 días: <b style="color:#f97316">+40%</b> — 3 cuotas cada 15d<br>
+          &nbsp;&nbsp;• 2 meses (60d): <b style="color:#f97316">+60%</b> — 4 cuotas cada 15d<br><br>
+          <span style="color:#f97316">Ejemplo: Cuenta $21 · Plan 30d · Anticipo: $9.19 · Total con interés: $26.25 · 2 cuotas de $8.53 cada 15 días</span>
+        </div>
+
+        <!-- Calculadora -->
+        <div style="background:rgba(249,115,22,.04);border:1px solid rgba(249,115,22,.18);border-radius:10px;padding:16px;margin-bottom:8px">
+          <div class="frow" style="margin-bottom:14px">
+            <div class="fgroup" style="margin-bottom:0">
+              <label class="flabel">Precio de la Cuenta (USD) *</label>
+              <div class="vm-price-wrap">
+                <span class="vm-price-prefix">$</span>
+                <input class="finput" id="fin-precio-base" type="number" step="0.01" min="21"
+                  placeholder="21.00" oninput="window.calcFinanciamiento()"
+                  style="border-color:rgba(249,115,22,.3)">
+              </div>
+            </div>
+            <div class="fgroup" style="margin-bottom:0">
+              <label class="flabel">Plan de Financiamiento</label>
+              <select class="fsel" id="fin-plazo" onchange="window.calcFinanciamiento()" style="border-color:rgba(249,115,22,.3)">
+                <option value="0|0|1">Contado — sin interés</option>
+                <option value="7|8|1">1 semana (7 días) +8%</option>
+                <option value="15|15|1">2 semanas (15 días) +15%</option>
+                <option value="30|25|2">1 mes (30 días) +25%</option>
+                <option value="45|40|3">45 días +40%</option>
+                <option value="60|60|4">2 meses (60 días) +60%</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Resultado calculadora -->
+          <div id="fin-resultado" style="display:none">
+            <!-- Resumen en tarjetas -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;text-align:center">
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px">Total con Interés</div>
+                <div style="font-size:1.4em;font-weight:800;color:var(--text);font-family:var(--font-title);font-style:italic" id="fin-total-display">$0.00</div>
+                <input type="hidden" id="fin-total-con-interes">
+              </div>
+              <div style="background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:12px;text-align:center">
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:#f97316;margin-bottom:4px">Anticipo Requerido</div>
+                <div style="font-size:1.4em;font-weight:800;color:#f97316;font-family:var(--font-title);font-style:italic" id="fin-anticipo-display">$0.00</div>
+                <input type="hidden" id="fin-anticipo-usd">
+              </div>
+              <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:12px;text-align:center">
+                <div style="font-size:0.6em;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Saldo Pendiente</div>
+                <div style="font-size:1.4em;font-weight:800;color:var(--gold);font-family:var(--font-title);font-style:italic" id="fin-pendiente-display">$0.00</div>
+                <input type="hidden" id="fin-pendiente">
+              </div>
+            </div>
+
+            <!-- Plan de cuotas -->
+            <div id="fin-cuotas-plan" style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;margin-bottom:12px">
+              <div style="font-size:0.7em;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Plan de Pagos</div>
+              <div id="fin-cuotas-list" style="display:flex;flex-direction:column;gap:6px"></div>
+            </div>
+
+            <!-- Inputs para guardar -->
+            <input type="hidden" id="fin-monto-cuota">
+            <input type="hidden" id="fin-num-cuotas">
+
+            <!-- Abono recibido -->
+            <div class="frow" style="margin-bottom:0">
+              <div class="fgroup" style="margin-bottom:0">
+                <label class="flabel" style="color:#f97316">Anticipo Recibido (USD)</label>
+                <input class="finput" id="fin-abono-recibido" type="number" step="0.01" placeholder="0.00"
+                  oninput="window.calcFinAbonoRecibido()" style="border-color:rgba(249,115,22,.3)">
+              </div>
+              <div class="fgroup" style="margin-bottom:0">
+                <label class="flabel" style="color:var(--gold)">Saldo a Cobrar aún</label>
+                <input class="finput" id="fin-saldo-cobrar" type="number" step="0.01" placeholder="0.00"
+                  readonly style="border-color:rgba(255,215,0,.3);color:var(--gold);font-weight:700">
+              </div>
+            </div>
+          </div>
+
+          <!-- Mensaje mínimo -->
+          <div id="fin-min-msg" style="font-size:0.75em;color:var(--text3);text-align:center;padding:8px 0">
+            Ingresa el precio de la cuenta para calcular el financiamiento
+          </div>
+        </div>
+
+        <!-- Tipo de registro -->
         <div class="fgroup">
-          <label class="flabel">Tipo de Cuota *</label>
+          <label class="flabel">¿Qué estás registrando?</label>
           <div class="vm-apago-chips">
             <button type="button" class="vm-apago-chip" data-apago="anticipo" onclick="window.vmSelectApartarPago(this)">
-              <i class="fas fa-hand-holding-dollar"></i>Anticipo
+              <i class="fas fa-hand-holding-dollar"></i>Anticipo inicial
             </button>
-            <button type="button" class="vm-apago-chip" data-apago="cuota_pendiente" onclick="window.vmSelectApartarPago(this)">
-              <i class="fas fa-calendar-check"></i>Cuota Pendiente
+            <button type="button" class="vm-apago-chip" data-apago="cuota" onclick="window.vmSelectApartarPago(this)">
+              <i class="fas fa-calendar-check"></i>Pago de cuota
             </button>
-            <button type="button" class="vm-apago-chip" data-apago="interes" onclick="window.vmSelectApartarPago(this)">
-              <i class="fas fa-percent"></i>Interés
+            <button type="button" class="vm-apago-chip" data-apago="liquidacion" onclick="window.vmSelectApartarPago(this)">
+              <i class="fas fa-check-circle"></i>Liquidación total
             </button>
           </div>
           <input type="hidden" id="vc-f-apartarpago">
-        </div>
-        <div class="frow">
-          <div class="fgroup">
-            <label class="flabel">Monto Total Cuenta (USD)</label>
-            <input class="finput" id="vc-f-apartar-total" type="number" step="0.01" placeholder="0.00" oninput="window.calcApartarPendiente()">
-          </div>
-          <div class="fgroup">
-            <label class="flabel">Monto Abonado (USD)</label>
-            <input class="finput" id="vc-f-apartar-abono" type="number" step="0.01" placeholder="0.00" oninput="window.calcApartarPendiente()">
-          </div>
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Saldo Pendiente (USD)</label>
-          <input class="finput" id="vc-f-apartar-pendiente" type="number" step="0.01" placeholder="0.00" readonly style="background:var(--surface2);opacity:.8;color:var(--gold);font-weight:700">
         </div>
       </div>
 
@@ -1745,7 +1858,7 @@ td{padding:12px 14px;vertical-align:middle}
 
       <!-- CEO ONLY: Costos y margen -->
       <div class="sec-ceo-only">
-        <div class="vm-sep"><span style="color:var(--red)"><i class="fas fa-lock" style="font-size:.75em;margin-right:4px"></i>Solo CEO — Costos</span></div>
+        <div class="vm-sep"><span style="color:var(--red)"><i class="fas fa-lock" style="font-size:.75em;margin-right:4px"></i> — Costos</span></div>
         <div class="vm-ceo-block">
           <div class="vm-ceo-tag"><i class="fas fa-shield-alt"></i> Información Financiera Restringida</div>
           <div class="frow">
@@ -3124,44 +3237,94 @@ async function fetchVentas() {
 // Bug 3 fix: use correct IDs that exist in the HTML
 function updateVentasStats(filtered) {
   const source = filtered || currentVentas;
-  const counts = {}, sums = {};
-  let totalSum = 0;
-  Object.keys(TIPO_CONFIG).forEach(k => { counts[k] = 0; sums[k] = 0; });
+  const counts = {}, sumIngreso = {}, sumGanancia = {};
+  let totalIngreso = 0, totalGanancia = 0;
+  Object.keys(TIPO_CONFIG).forEach(k => { counts[k] = 0; sumIngreso[k] = 0; sumGanancia[k] = 0; });
 
   source.forEach(v => {
     const t = v.tipo || '';
-    const amt = parseFloat(v.ingreso) || 0;
-    totalSum += amt;
-    if (counts[t] !== undefined) { counts[t]++; sums[t] += amt; }
+    const ingreso  = parseFloat(v.ingreso)      || 0;
+    const costo    = parseFloat(v.costo_real)   || parseFloat(v.costo) || 0;
+    // FÓRMULA CORRECTA: Ganancia = Precio de Venta - Costo
+    const ganancia = parseFloat(v.ganancia_neta) !== 0
+      ? (parseFloat(v.ganancia_neta) || (ingreso - costo))
+      : (ingreso - costo);
+
+    totalIngreso  += ingreso;
+    totalGanancia += ganancia;
+    if (counts[t] !== undefined) {
+      counts[t]++;
+      sumIngreso[t]  += ingreso;
+      sumGanancia[t] += ganancia;
+    }
   });
 
+  // Tarjetas de tipo — contador siempre visible, $ solo CEO
   Object.entries(TIPO_CONFIG).forEach(([tipo, cfg]) => {
     const cntEl = document.getElementById(cfg.id);
     const sumEl = document.getElementById(cfg.id + '-sum');
     if (cntEl) cntEl.textContent = counts[tipo] || 0;
-    if (sumEl) sumEl.textContent = `$${(sums[tipo]||0).toFixed(2)}`;
+    if (sumEl) sumEl.textContent = `$${(sumIngreso[tipo]||0).toFixed(2)}`;
   });
-  const totalEl = document.getElementById('vc-s-total');
-  const countEl = document.getElementById('vc-s-count');
-  if (totalEl) totalEl.textContent = `$${totalSum.toFixed(2)}`;
-  if (countEl) countEl.textContent = `${source.length} transacción${source.length !== 1 ? 'es' : ''}`;
 
-  // Bug 1 fix: render chart inline
-  renderTipoChart(sums);
+  // Totales (CEO only elements)
+  const totalEl   = document.getElementById('vc-s-total');
+  const countEl   = document.getElementById('vc-s-count');
+  const ganEl     = document.getElementById('vc-s-ganancia');
+  const margenEl  = document.getElementById('vc-s-margen');
+  const countAdEl = document.getElementById('vc-s-count-admin');
+
+  if (totalEl)   totalEl.textContent  = `$${totalIngreso.toFixed(2)}`;
+  if (countEl)   countEl.textContent  = `${source.length} transacción${source.length !== 1 ? 'es' : ''}`;
+  if (ganEl)     ganEl.textContent    = `$${totalGanancia.toFixed(2)}`;
+  if (margenEl) {
+    const margen = totalIngreso > 0 ? ((totalGanancia / totalIngreso) * 100) : 0;
+    margenEl.textContent = `${margen.toFixed(1)}%`;
+  }
+  if (countAdEl) countAdEl.textContent = source.length;
+
+  // Mostrar contador simple para ADMIN
+  const adminCard = document.getElementById('vc-admin-count-card');
+  if (adminCard) adminCard.style.display = currentRole !== 'CEO' ? 'block' : 'none';
+
+  // Gráfica ganancia por tipo (CEO only)
+  renderGananciaChart(sumGanancia);
 }
 
-// Bug 1 fix: implement the missing chart function
-function renderTipoChart(sums) {
-  const container = document.getElementById('vc-tipo-chart');
+function renderGananciaChart(sumGanancia) {
+  const container = document.getElementById('vc-ganancia-chart');
   if (!container) return;
-  const vals = Object.entries(TIPO_CONFIG).map(([tipo, cfg]) => ({ label: cfg.label, color: cfg.color, val: sums[tipo] || 0 }));
-  const maxVal = Math.max(...vals.map(v => v.val), 1);
-  container.innerHTML = vals.map(v => `
-    <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">
-      <div style="font-size:0.6em;color:${v.color};font-weight:700">$${v.val.toFixed(0)}</div>
-      <div style="width:100%;background:linear-gradient(180deg,${v.color},${v.color}44);border-radius:3px 3px 0 0;min-height:2px;height:${Math.max((v.val/maxVal)*72,2)}px;transition:height .4s ease"></div>
-      <div style="font-size:0.6em;color:var(--text2);font-weight:600;white-space:nowrap;text-align:center">${v.label}</div>
-    </div>`).join('');
+
+  const vals = Object.entries(TIPO_CONFIG).map(([tipo, cfg]) => ({
+    label: cfg.label,
+    color: cfg.color,
+    ganancia: sumGanancia[tipo] || 0
+  })).filter(v => v.ganancia !== 0 || true); // show all types
+
+  const maxVal = Math.max(...vals.map(v => Math.abs(v.ganancia)), 1);
+
+  container.innerHTML = vals.map(v => {
+    const pct = Math.max((Math.abs(v.ganancia) / maxVal) * 88, 2);
+    const isNeg = v.ganancia < 0;
+    const barColor = isNeg ? 'var(--red)' : 'var(--gold)';
+    return `
+    <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;min-width:0">
+      <div style="font-size:0.62em;font-weight:800;color:${isNeg ? 'var(--red)' : 'var(--gold)'}">
+        ${isNeg ? '-' : ''}$${Math.abs(v.ganancia).toFixed(0)}
+      </div>
+      <div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:88px">
+        <div style="
+          width:70%;
+          height:${pct}px;
+          background:linear-gradient(180deg,${barColor},${barColor}55);
+          border-radius:4px 4px 0 0;
+          transition:height .5s cubic-bezier(.4,0,.2,1);
+          box-shadow:0 0 8px ${barColor}44
+        "></div>
+      </div>
+      <div style="font-size:0.6em;color:var(--text2);font-weight:600;text-align:center;line-height:1.2;word-break:break-word">${v.label}</div>
+    </div>`;
+  }).join('');
 }
 
 // Bug 2 fix: implement parseVentaAutomatica
@@ -3331,7 +3494,7 @@ function openVentaModal() {
 window.editVenta = function(id) {
   const v = currentVentas.find(x => String(x.id) === String(id));
   if (!v) return;
-  window.editingVentaId = id;
+  window.editingVentaId = String(id);
   document.getElementById('vc-m-title').textContent = `Editar Venta`;
   document.getElementById('vc-f-parse').value = '';
   // Restore tipo via chips
@@ -3420,18 +3583,17 @@ window.updateInterestPct = function() {
 };
 
 window.calcVentaMargen = function() {
-  const ingresoBase = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
+  const ingreso    = parseFloat(document.getElementById('vc-f-ingreso')?.value) || 0;
   const interesPct = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
-  
-  // Cálculo de interés
-  const cuotaAdicional = ingresoBase * (interesPct / 100);
-  const totalVenta = ingresoBase + cuotaAdicional;
-  
-  const cuotaEl = document.getElementById('vc-f-cuota-adicional');
-  if (cuotaEl) cuotaEl.value = cuotaAdicional.toFixed(2);
+  const cuota      = ingreso * (interesPct / 100);
+  const total      = ingreso + cuota;
 
-  const costo = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
-  const ganancia = totalVenta - costo;
+  const cuotaEl = document.getElementById('vc-f-cuota-adicional');
+  if (cuotaEl) cuotaEl.value = cuota.toFixed(2);
+
+  // FÓRMULA ÚNICA: Ganancia = Precio de Venta − Costo
+  const costo    = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+  const ganancia = total - costo;
 
   const netaEl = document.getElementById('vc-f-neta-ceo');
   if (netaEl) {
@@ -3439,15 +3601,11 @@ window.calcVentaMargen = function() {
     netaEl.style.color = ganancia >= 0 ? 'var(--gold)' : 'var(--red)';
   }
 
-  // Cálculo automático de pago pendiente basado en el TOTAL (Base + Interés)
-  const parcial = parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0;
+  const parcial     = parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0;
   const pendienteEl = document.getElementById('vc-f-pago-pendiente');
-  if (pendienteEl) {
-    const pendiente = totalVenta - parcial;
-    pendienteEl.value = pendiente > 0 ? pendiente.toFixed(2) : '0.00';
-  }
+  if (pendienteEl) pendienteEl.value = Math.max(0, total - parcial).toFixed(2);
 
-  window.vmUpdateTotal(totalVenta);
+  window.vmUpdateTotal(total);
 };
 
 window.vmUpdateTotal = function(val) {
@@ -3555,79 +3713,83 @@ async function cargarSugerenciasClientes() {
 }
 
 // Bug 4 fix: save the date from the form field
-async function saveVenta() {
-  const ingreso = parseFloat(document.getElementById('vc-f-ingreso')?.value || 0);
+window.saveVenta = async function() {
+  const ingresoBase = parseFloat(document.getElementById('vc-f-ingreso')?.value || 0);
   const tipo = document.getElementById('vc-f-tipo').value;
-  if (!ingreso || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
+  if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
 
-  // Show loading state on button
   const saveBtn = document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
 
-  const costoReal  = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
-  const ganancia   = parseFloat(document.getElementById('vc-f-neta-ceo')?.value)   || (ingreso - costoReal);
-  
-  // Robust date parsing — handle text input (YYYY-MM-DDTHH:MM or YYYY-MM-DD)
+  const interesPct    = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
+  const cuotaAdicional = ingresoBase * (interesPct / 100);
+  const totalVenta    = ingresoBase + cuotaAdicional;
+  const costoReal     = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+  const ganancia      = parseFloat(document.getElementById('vc-f-neta-ceo')?.value) || (totalVenta - costoReal);
+
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
   if (fechaVal) {
-    // Normalize: ensure seconds are present for proper parsing
-    const normalized = fechaVal.length === 16 ? fechaVal + ':00' : fechaVal;
-    const parsed = new Date(normalized);
-    if (!isNaN(parsed.getTime())) {
-      fechaISO = parsed.toISOString();
-    }
+    const parsed = new Date(fechaVal.length === 16 ? fechaVal + ':00' : fechaVal);
+    if (!isNaN(parsed.getTime())) fechaISO = parsed.toISOString();
   }
 
   const record = {
     tipo,
-    cliente: document.getElementById('vc-f-cliente')?.value?.trim() || '',
-    ingreso,
-    costo: costoReal,
-    costo_real: costoReal,
-    ganancia_neta: ganancia,
-    margen: ingreso > 0 ? ((ganancia / ingreso) * 100).toFixed(1) + '%' : '0%',
-    notas: document.getElementById('vc-f-notas')?.value?.trim() || '',
-    id_pedido: document.getElementById('vc-f-id')?.value || '',
-    estado: document.getElementById('vc-f-status')?.value || '',
-    whatsapp: document.getElementById('vc-f-wa')?.value || '',
-    metodo_pago: document.getElementById('vc-f-metodo')?.value || '',
-    producto: document.getElementById('vc-f-producto')?.value || '',
-    comprobante: document.getElementById('vc-f-receipt-base64')?.value || null,
-    pago_parcial: parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0,
-    pago_pendiente: parseFloat(document.getElementById('vc-f-pago-pendiente')?.value) || 0,
-    cuota_adicional: parseFloat(document.getElementById('vc-f-cuota-adicional')?.value) || 0,
-    interes_porcentaje: parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0,
-    tipo_pago_apartar: document.getElementById('vc-f-apartarpago')?.value || null,
-    apartado_total: parseFloat(document.getElementById('vc-f-apartar-total')?.value) || null,
-    apartado_abono: parseFloat(document.getElementById('vc-f-apartar-abono')?.value) || null,
-    apartado_pendiente: parseFloat(document.getElementById('vc-f-apartar-pendiente')?.value) || null,
-    created_at: fechaISO
+    cliente:             document.getElementById('vc-f-cliente')?.value?.trim()  || '',
+    ingreso:             totalVenta,
+    costo:               costoReal,
+    costo_real:          costoReal,
+    ganancia_neta:       ganancia,
+    margen:              totalVenta > 0 ? ((ganancia / totalVenta) * 100).toFixed(1) + '%' : '0%',
+    notas:               document.getElementById('vc-f-notas')?.value?.trim()    || '',
+    id_pedido:           document.getElementById('vc-f-id')?.value               || '',
+    estado:              document.getElementById('vc-f-status')?.value            || '',
+    whatsapp:            document.getElementById('vc-f-wa')?.value                || '',
+    metodo_pago:         document.getElementById('vc-f-metodo')?.value            || '',
+    producto:            document.getElementById('vc-f-producto')?.value          || '',
+    comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
+    pago_parcial:        parseFloat(document.getElementById('vc-f-pago-parcial')?.value)     || 0,
+    pago_pendiente:      parseFloat(document.getElementById('vc-f-pago-pendiente')?.value)   || 0,
+    cuota_adicional:     parseFloat(document.getElementById('vc-f-cuota-adicional')?.value)  || 0,
+    interes_porcentaje:  parseFloat(document.getElementById('vc-f-interes-pct')?.value)      || 0,
+    tipo_pago_apartar:   document.getElementById('vc-f-apartarpago')?.value       || null,
+    apartado_anticipo:   parseFloat(document.getElementById('fin-anticipo-usd')?.value)      || null,
+    apartado_total:      parseFloat(document.getElementById('fin-total-con-interes')?.value) || null,
+    apartado_pendiente:  parseFloat(document.getElementById('fin-pendiente')?.value)         || null,
+    fin_plazo:           document.getElementById('fin-plazo')?.value              || null,
+    fin_cuota:           parseFloat(document.getElementById('fin-monto-cuota')?.value)       || null,
+    fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value)          || null,
+    created_at:          fechaISO
   };
   if (window.editingVentaId) record.id = window.editingVentaId;
 
   try {
     if (window.editingVentaId) {
-      // For UPDATE: never include 'id' or auto-managed fields in the body
       const updateRecord = { ...record };
       delete updateRecord.id;
-      delete updateRecord.created_at; // Don't overwrite original creation date on edit
+      delete updateRecord.created_at;
       const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId);
       if (err) throw err;
     } else {
       const { error: err } = await supabase.from('ventas').insert([record]);
       if (err) throw err;
     }
-    showToast(window.editingVentaId ? 'Venta actualizada ✓' : 'Venta guardada en la nube ✓');
+    showToast(window.editingVentaId ? 'Venta actualizada ✓' : 'Venta guardada ✓');
+    window.editingVentaId = null;
     closeVentaModal();
-    fetchVentas();
+    await fetchVentas();
   } catch (err) {
-    showToast('Error al guardar: ' + (err?.message || ''), true);
-    console.error(err);
+    console.error('saveVenta error:', err);
+    if (err?.message?.includes('column') || err?.code === '42703') {
+      showToast('Faltan columnas en Supabase — corre el SQL de actualización', true);
+    } else {
+      showToast('Error: ' + (err?.message || JSON.stringify(err)), true);
+    }
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Venta'; }
   }
-}
+};
 
 async function deleteVenta(id) {
   window.openConfirmModal('Eliminar Venta', `¿Eliminar la venta ${id} permanentemente?`, async function() {
@@ -4099,22 +4261,99 @@ window.vmSelectApartarPago = function(chip) {
   document.getElementById('vc-f-apartarpago').value = chip.dataset.apago;
 };
 
-window.calcApartarPendiente = function() {
-  const total = parseFloat(document.getElementById('vc-f-apartar-total')?.value) || 0;
-  const abono = parseFloat(document.getElementById('vc-f-apartar-abono')?.value) || 0;
-  const pendiente = document.getElementById('vc-f-apartar-pendiente');
-  if (pendiente) {
-    const diff = total - abono;
-    pendiente.value = diff > 0 ? diff.toFixed(2) : '0.00';
-  }
-  // Sync ingreso field with abono
-  const ingresoEl = document.getElementById('vc-f-ingreso');
-  if (ingresoEl && abono > 0) {
-    ingresoEl.value = abono.toFixed(2);
-    window.calcVentaMargen();
-    window.vmUpdateTotal();
-  }
+// ── CALCULADORA DE FINANCIAMIENTO ──────────────────────
+window.toggleFinInfo = function() {
+  const panel = document.getElementById('fin-info-panel');
+  if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 };
+
+window.calcFinanciamiento = function() {
+  const precio = parseFloat(document.getElementById('fin-precio-base')?.value) || 0;
+  const plazoEl = document.getElementById('fin-plazo');
+  const resultado = document.getElementById('fin-resultado');
+  const minMsg = document.getElementById('fin-min-msg');
+
+  if (precio < 21) {
+    if (resultado) resultado.style.display = 'none';
+    if (minMsg) { minMsg.style.display = 'block'; minMsg.textContent = precio > 0 ? 'Precio mínimo para financiamiento: $21 USD' : 'Ingresa el precio de la cuenta para calcular el financiamiento'; }
+    return;
+  }
+
+  const [dias, interesPct, numCuotas] = (plazoEl?.value || '0|0|1').split('|').map(Number);
+  const totalConInteres = precio * (1 + interesPct / 100);
+
+  // Anticipo según precio
+  let anticipoPct = 0.30;
+  if (precio > 60) anticipoPct = 0.40;
+  else if (precio > 30) anticipoPct = 0.35;
+
+  const anticipo = totalConInteres * anticipoPct;
+  const saldoPendiente = totalConInteres - anticipo;
+  const montoCuota = numCuotas > 0 ? saldoPendiente / numCuotas : 0;
+
+  // Actualizar hidden inputs
+  document.getElementById('fin-total-con-interes').value = totalConInteres.toFixed(2);
+  document.getElementById('fin-anticipo-usd').value = anticipo.toFixed(2);
+  document.getElementById('fin-pendiente').value = saldoPendiente.toFixed(2);
+  document.getElementById('fin-monto-cuota').value = montoCuota.toFixed(2);
+  document.getElementById('fin-num-cuotas').value = numCuotas;
+
+  // Actualizar displays
+  document.getElementById('fin-total-display').textContent = '$' + totalConInteres.toFixed(2);
+  document.getElementById('fin-anticipo-display').textContent = '$' + anticipo.toFixed(2);
+  document.getElementById('fin-pendiente-display').textContent = '$' + saldoPendiente.toFixed(2);
+
+  // Plan de cuotas
+  const listaEl = document.getElementById('fin-cuotas-list');
+  if (listaEl) {
+    const intervaloDias = dias > 0 ? Math.round(dias / numCuotas) : 0;
+    let cuotasHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(249,115,22,.08);border-radius:6px;border-left:3px solid #f97316">
+        <div style="font-size:0.8em"><i class="fas fa-hand-holding-dollar" style="color:#f97316;margin-right:6px"></i><b>Anticipo inicial</b> <span style="color:var(--text3)">(hoy)</span></div>
+        <div style="font-weight:800;color:#f97316">$${anticipo.toFixed(2)}</div>
+      </div>`;
+
+    if (dias === 0) {
+      cuotasHTML += `<div style="text-align:center;font-size:0.75em;color:var(--accent);padding:6px">✓ Pago de contado — sin cuotas adicionales</div>`;
+    } else {
+      for (let i = 1; i <= numCuotas; i++) {
+        const dayOffset = intervaloDias * i;
+        cuotasHTML += `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--surface2);border-radius:6px">
+            <div style="font-size:0.8em"><i class="fas fa-calendar-check" style="color:var(--gold);margin-right:6px"></i>Cuota ${i} de ${numCuotas} <span style="color:var(--text3)">(día +${dayOffset})</span></div>
+            <div style="font-weight:800;color:var(--gold)">$${montoCuota.toFixed(2)}</div>
+          </div>`;
+      }
+      const interesUSD = totalConInteres - precio;
+      cuotasHTML += `<div style="text-align:right;font-size:0.7em;color:var(--text3);padding:4px 4px 0">Interés aplicado: $${interesUSD.toFixed(2)} (${interesPct}%) · Total: $${totalConInteres.toFixed(2)}</div>`;
+    }
+    listaEl.innerHTML = cuotasHTML;
+  }
+
+  // Recalcular abono recibido si ya hay algo
+  window.calcFinAbonoRecibido();
+
+  if (resultado) resultado.style.display = 'block';
+  if (minMsg) minMsg.style.display = 'none';
+
+  // Sync precio al campo ingreso principal
+  const ingresoEl = document.getElementById('vc-f-ingreso');
+  if (ingresoEl) { ingresoEl.value = anticipo.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
+};
+
+window.calcFinAbonoRecibido = function() {
+  const pendiente = parseFloat(document.getElementById('fin-pendiente')?.value) || 0;
+  const abono = parseFloat(document.getElementById('fin-abono-recibido')?.value) || 0;
+  const saldoEl = document.getElementById('fin-saldo-cobrar');
+  if (saldoEl) saldoEl.value = Math.max(0, pendiente - abono).toFixed(2);
+  const ingresoEl = document.getElementById('vc-f-ingreso');
+  if (ingresoEl && abono > 0) { ingresoEl.value = abono.toFixed(2); window.calcVentaMargen(); window.vmUpdateTotal(); }
+};
+
+// Mantener retrocompatibilidad con el nombre antiguo
+window.calcApartarPendiente = window.calcFinanciamiento;
+
+
 
 // --- NUEVA CONTRASEÑA (recuperación por email) ---
 window.toggleNewPwd = function() {
