@@ -744,9 +744,13 @@ td{padding:12px 14px;vertical-align:middle}
     <div class="topbar-right">
       <div class="topbar-revenue" id="topbar-rev"></div>
       <div class="topbar-revenue" id="topbar-user" style="font-size:0.72em;color:var(--text2)"></div>
+      <button class="btn-logout" onclick="window.openWallpaperPicker()" title="Cambiar fondo" style="border-color:var(--border2);margin-right:4px">
+        <i class="fas fa-image"></i>
+      </button>
       <button class="btn-logout" onclick="window.doLogout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
     </div>
   </div>
+  <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none" onchange="window.applyWallpaper(this)">
 
   <div class="tabs-nav">
     <button class="tab-nav-btn active" id="btn-tab-pedidos" onclick="window.switchTab('pedidos',this)"><i class="fas fa-list-ul"></i> Pedidos</button>
@@ -1209,6 +1213,65 @@ td{padding:12px 14px;vertical-align:middle}
     <div class="mfoot">
       <button class="btn btn-ghost" onclick="window.closeParseModal()">Cancelar</button>
       <button class="btn btn-accent" onclick="window.processOrderText()"><i class="fas fa-magic"></i> Procesar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL FONDO DE PANTALLA ────────────── -->
+<div class="overlay" id="modal-wallpaper">
+  <div class="mcard" style="max-width:420px">
+    <div class="mhead">
+      <div class="mtitle" style="color:var(--accent)"><i class="fas fa-image" style="margin-right:8px"></i>Fondo de Pantalla</div>
+      <button class="mclose" onclick="window.closeWallpaperModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <p style="font-size:0.8em;color:var(--text2);margin-bottom:18px;line-height:1.6">
+        Elige una foto desde tu dispositivo para usarla como fondo del panel.
+      </p>
+
+      <!-- Preview -->
+      <div id="wp-preview-wrap" style="display:none;margin-bottom:16px">
+        <div style="font-size:0.68em;letter-spacing:2px;text-transform:uppercase;color:var(--text2);font-weight:700;margin-bottom:8px">Vista previa</div>
+        <img id="wp-preview-img" src="" alt="preview"
+          style="width:100%;height:140px;object-fit:cover;border-radius:8px;border:1px solid var(--border2)">
+      </div>
+
+      <!-- Upload zone -->
+      <div id="wp-drop-zone"
+        onclick="document.getElementById('wallpaper-file-input').click()"
+        style="border:2px dashed var(--border2);border-radius:8px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;color:var(--text2);"
+        onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+        onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'"
+        ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+        ondragleave="this.style.borderColor='var(--border2)'"
+        ondrop="event.preventDefault();window.handleWallpaperDrop(event)">
+        <i class="fas fa-cloud-upload-alt" style="font-size:1.8em;display:block;margin-bottom:10px"></i>
+        <div style="font-size:0.82em;font-weight:600">Toca para elegir una foto</div>
+        <div style="font-size:0.7em;margin-top:4px;opacity:.6">o arrastra aquí — JPG, PNG, WEBP</div>
+      </div>
+
+      <!-- Overlay opacity slider -->
+      <div style="margin-top:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:0.7em;letter-spacing:2px;text-transform:uppercase;color:var(--text2);font-weight:700">Oscuridad del overlay</span>
+          <span style="font-size:0.78em;color:var(--accent);font-weight:700" id="wp-opacity-val">75%</span>
+        </div>
+        <input type="range" id="wp-opacity" min="40" max="92" value="75" step="1"
+          oninput="window.updateWpOpacity(this.value)"
+          style="width:100%;accent-color:var(--accent);cursor:pointer">
+      </div>
+
+      <!-- Reset button -->
+      <button onclick="window.resetWallpaper()"
+        style="width:100%;margin-top:14px;background:none;border:1px solid var(--border2);color:var(--text2);padding:9px;border-radius:6px;font-family:var(--font-body);font-size:0.75em;font-weight:600;cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:1px"
+        onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+        onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">
+        <i class="fas fa-undo" style="margin-right:6px"></i>Restaurar fondo original
+      </button>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="window.closeWallpaperModal()">Cancelar</button>
+      <button class="btn btn-accent" onclick="window.saveWallpaper()"><i class="fas fa-check"></i> Aplicar</button>
     </div>
   </div>
 </div>
@@ -2395,6 +2458,7 @@ function mostrarPanel(email, role) {
   setDefaultMonth();
   fetchOrders();
   cargarSugerenciasClientes();
+  loadSavedWallpaper();
 }
 
 async function doLogin() {
@@ -3348,6 +3412,111 @@ window.setActiveMNav = function(tab) {
 };
 
 // ── FIN SECCIÓN CUENTAS ─────────────────────────
+
+// ═══════════════════════════════════════════════
+// FONDO DE PANTALLA PERSONALIZADO
+// ═══════════════════════════════════════════════
+let wpPendingDataUrl = null;
+let wpPendingOpacity = 75;
+
+function loadSavedWallpaper() {
+  const saved = localStorage.getItem('shegos_wallpaper');
+  const opacity = localStorage.getItem('shegos_wallpaper_opacity') || '75';
+  if (saved) {
+    applyWallpaperToBody(saved, parseInt(opacity));
+    document.getElementById('wp-opacity').value = opacity;
+    document.getElementById('wp-opacity-val').textContent = opacity + '%';
+  }
+}
+
+function applyWallpaperToBody(dataUrl, opacityPct) {
+  const alpha = (opacityPct / 100).toFixed(2);
+  document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,${alpha}),rgba(0,0,0,${alpha})), url('${dataUrl}')`;
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center';
+  document.body.style.backgroundAttachment = 'fixed';
+}
+
+window.openWallpaperPicker = function() {
+  wpPendingDataUrl = null;
+  document.getElementById('wp-preview-wrap').style.display = 'none';
+  const saved = localStorage.getItem('shegos_wallpaper');
+  if (saved) {
+    document.getElementById('wp-preview-img').src = saved;
+    document.getElementById('wp-preview-wrap').style.display = 'block';
+  }
+  const savedOp = localStorage.getItem('shegos_wallpaper_opacity') || '75';
+  wpPendingOpacity = parseInt(savedOp);
+  document.getElementById('wp-opacity').value = savedOp;
+  document.getElementById('wp-opacity-val').textContent = savedOp + '%';
+  document.getElementById('modal-wallpaper').classList.add('open');
+};
+
+window.closeWallpaperModal = function() {
+  document.getElementById('modal-wallpaper').classList.remove('open');
+  wpPendingDataUrl = null;
+};
+
+window.applyWallpaper = function(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    wpPendingDataUrl = e.target.result;
+    document.getElementById('wp-preview-img').src = wpPendingDataUrl;
+    document.getElementById('wp-preview-wrap').style.display = 'block';
+    // Live preview
+    applyWallpaperToBody(wpPendingDataUrl, wpPendingOpacity);
+  };
+  reader.readAsDataURL(input.files[0]);
+};
+
+window.handleWallpaperDrop = function(event) {
+  const file = event.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const fakeInput = { files: [file] };
+    window.applyWallpaper(fakeInput);
+  }
+};
+
+window.updateWpOpacity = function(val) {
+  wpPendingOpacity = parseInt(val);
+  document.getElementById('wp-opacity-val').textContent = val + '%';
+  const current = wpPendingDataUrl || localStorage.getItem('shegos_wallpaper');
+  if (current) applyWallpaperToBody(current, wpPendingOpacity);
+};
+
+window.saveWallpaper = function() {
+  const toSave = wpPendingDataUrl || localStorage.getItem('shegos_wallpaper');
+  if (!toSave) { showToast('Elige una imagen primero', true); return; }
+  try {
+    localStorage.setItem('shegos_wallpaper', toSave);
+    localStorage.setItem('shegos_wallpaper_opacity', wpPendingOpacity.toString());
+    applyWallpaperToBody(toSave, wpPendingOpacity);
+    window.closeWallpaperModal();
+    showToast('Fondo aplicado ✓');
+  } catch(e) {
+    showToast('La imagen es muy pesada, prueba con una más pequeña', true);
+  }
+};
+
+window.resetWallpaper = function() {
+  localStorage.removeItem('shegos_wallpaper');
+  localStorage.removeItem('shegos_wallpaper_opacity');
+  // Restore original background based on role
+  const role = sessionStorage.getItem('shegos_role') || 'ADMIN';
+  if (role === 'CEO') {
+    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.78),rgba(0,0,0,0.78)), url('https://4kwallpapers.com/images/walls/thumbs_3t/20909.jpg')`;
+  } else {
+    document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.75)), url('https://4kwallpapers.com/images/walls/thumbs_3t/25777.jpg')`;
+  }
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center';
+  document.body.style.backgroundAttachment = 'fixed';
+  wpPendingDataUrl = null;
+  document.getElementById('wp-preview-wrap').style.display = 'none';
+  document.getElementById('wp-preview-img').src = '';
+  showToast('Fondo restaurado al original');
+};
 
 // --- ASIGNACIÓN DE CONTRASTES EN WINDOW PARA BOTONES HTML ---
 window.doLogin = doLogin;
