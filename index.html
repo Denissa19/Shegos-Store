@@ -2042,9 +2042,9 @@
                 <span id="shop-timer">00:00:00</span>
             </div>
 
-            <!-- BOTÓN ACCEDER -->
-            <button id="btn-acceder-header" class="btn-acceder" onclick="abrirModalAuth()">
-                <i class="fas fa-user"></i> <span id="btn-acceder-label">Acceder</span>
+            <!-- BOTÓN ACCEDER / CERRAR SESIÓN -->
+            <button id="btn-acceder-header" class="btn-acceder" onclick="accionHeaderAuth()">
+                <i class="fas fa-user" id="btn-acceder-icon"></i> <span id="btn-acceder-label">Registrarse</span>
             </button>
         </div>
     </header>
@@ -2059,20 +2059,20 @@
     </nav>
 
     <!-- MODAL AUTH -->
-    <div id="auth-modal-overlay" class="auth-modal-overlay" onclick="authModalClickFuera(event)">
+    <div id="auth-modal-overlay" class="auth-modal-overlay">
         <div class="auth-modal-card">
             <button class="auth-modal-close" onclick="cerrarModalAuth()">✕</button>
 
             <!-- PASO 1: EMAIL -->
             <div id="auth-step-email">
                 <div class="auth-modal-brand">Shegos Store</div>
-                <h2 class="auth-modal-title">Acceder</h2>
+                <h2 class="auth-modal-title">Registrarse</h2>
                 <p class="auth-modal-subtitle">Ingresa tu correo electrónico</p>
                 <input type="email" id="auth-email-input" class="auth-modal-input"
                     placeholder="tu@correo.com"
                     onkeydown="if(event.key==='Enter') authEnviarCodigo()">
                 <div id="auth-email-error" class="auth-modal-error"></div>
-                <button class="auth-modal-btn" onclick="authEnviarCodigo()">
+                <button id="auth-btn-enviar" class="auth-modal-btn" onclick="authEnviarCodigo()">
                     Enviar Código
                 </button>
             </div>
@@ -4229,10 +4229,18 @@ _He adjuntado mi comprobante de pago arriba._`;
             }
         });
 
+        /* ── Acción del botón header (registrarse si no hay sesión, cerrar sesión si sí) ── */
+        window.accionHeaderAuth = function() {
+            var email = sessionStorage.getItem("shegos_email");
+            if (email) {
+                authCerrarSesion();
+            } else {
+                abrirModalAuth();
+            }
+        };
+
         /* ── Abrir / cerrar modal ── */
         window.abrirModalAuth = function() {
-            var email = sessionStorage.getItem("shegos_email");
-            if (email) { abrirPestana('rastreo-pedidos'); return; }
             $e("auth-modal-overlay").classList.add("active");
             authMostrarPaso("email");
             setTimeout(function() { var el = $e("auth-email-input"); if(el) el.focus(); }, 100);
@@ -4240,9 +4248,16 @@ _He adjuntado mi comprobante de pago arriba._`;
         window.cerrarModalAuth = function() {
             $e("auth-modal-overlay").classList.remove("active");
         };
-        window.authModalClickFuera = function(e) {
-            if (e.target === $e("auth-modal-overlay")) cerrarModalAuth();
-        };
+
+        /* ── ESC cierra el modal (sin click fuera accidental) ── */
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") {
+                var overlay = $e("auth-modal-overlay");
+                if (overlay && overlay.classList.contains("active")) {
+                    cerrarModalAuth();
+                }
+            }
+        });
 
         function authMostrarPaso(paso) {
             ["email","codigo","ok"].forEach(function(p) {
@@ -4283,7 +4298,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                 errEl.style.display = "block";
                 console.error("Error OTP:", err.message);
             } finally {
-                if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = "Continuar"; }
+                if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = "Enviar Código"; }
             }
         };
 
@@ -4374,10 +4389,12 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         /* ── Activar sesión en UI ── */
         function authActivarSesion(email, cargarPedidos) {
-            var lbl = $e("btn-acceder-label");
-            var btn = $e("btn-acceder-header");
-            if (lbl) lbl.textContent = email.split("@")[0];
-            if (btn) btn.classList.add("logueado");
+            var lbl  = $e("btn-acceder-label");
+            var icon = $e("btn-acceder-icon");
+            var btn  = $e("btn-acceder-header");
+            if (lbl)  lbl.textContent  = "Cerrar Sesión";
+            if (icon) icon.className   = "fas fa-sign-out-alt";
+            if (btn)  btn.classList.add("logueado");
 
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
@@ -4394,10 +4411,12 @@ _He adjuntado mi comprobante de pago arriba._`;
             await supabase.auth.signOut();
             sessionStorage.removeItem("shegos_email");
             sessionStorage.removeItem("shegos_token");
-            var lbl = $e("btn-acceder-label");
-            var btn = $e("btn-acceder-header");
-            if (lbl) lbl.textContent = "Acceder";
-            if (btn) btn.classList.remove("logueado");
+            var lbl  = $e("btn-acceder-label");
+            var icon = $e("btn-acceder-icon");
+            var btn  = $e("btn-acceder-header");
+            if (lbl)  lbl.textContent  = "Registrarse";
+            if (icon) icon.className   = "fas fa-user";
+            if (btn)  btn.classList.remove("logueado");
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
             if (guestEl) guestEl.style.display = "block";
