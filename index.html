@@ -19,7 +19,7 @@
         // ============================================================
         const SUPABASE_URL  = "https://boifqdoojssmofanhxhj.supabase.co";
         const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // supabaseClient se inicializa en el body donde el SDK ya está cargado
     </script>
 
     <style>
@@ -4221,7 +4221,7 @@ _He adjuntado mi comprobante de pago arriba._`;
         /* ── Sesión persistente al cargar la página ── */
         document.addEventListener("DOMContentLoaded", async function() {
             // Recuperar sesión activa de Supabase
-            var { data: { session } } = await supabase.auth.getSession();
+            var { data: { session } } = await supabaseClient.auth.getSession();
             if (session && session.user) {
                 var email = session.user.email;
                 sessionStorage.setItem("shegos_email", email);
@@ -4282,7 +4282,7 @@ _He adjuntado mi comprobante de pago arriba._`;
 
             try {
                 // Supabase envía el código de 6 dígitos al correo automáticamente
-                var { error } = await supabase.auth.signInWithOtp({
+                var { error } = await supabaseClient.auth.signInWithOtp({
                     email: email,
                     options: { shouldCreateUser: true }
                 });
@@ -4336,7 +4336,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             btn.textContent = "Verificando...";
             try {
                 // Verificar el código con Supabase
-                var { data, error } = await supabase.auth.verifyOtp({
+                var { data, error } = await supabaseClient.auth.verifyOtp({
                     email: authEmail,
                     token: codigo,
                     type: "email"
@@ -4408,7 +4408,7 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         /* ── Cerrar sesión ── */
         window.authCerrarSesion = async function() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             sessionStorage.removeItem("shegos_email");
             sessionStorage.removeItem("shegos_token");
             var lbl  = $e("btn-acceder-label");
