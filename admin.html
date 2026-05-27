@@ -863,6 +863,7 @@ td{padding:12px 14px;vertical-align:middle}
     <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
     <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
     <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
+    <button class="tab-nav-btn sec-ceo-only" id="btn-tab-lzt" onclick="window.switchTab('lzt',this)"><i class="fas fa-shopping-cart"></i> Inventario LZT</button>
   </div>
 
   <!-- Mobile Bottom Navigation -->
@@ -1299,7 +1300,175 @@ td{padding:12px 14px;vertical-align:middle}
       </div>
     </div>
 
-  </div></div><div class="overlay" id="modal-order">
+    <!-- ── TAB INVENTARIO LZT ──────────────────────── -->
+    <div class="tab-panel sec-ceo-only" id="tab-lzt">
+
+      <!-- Stats row -->
+      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+        <div class="stat-card" style="--accent-c:var(--accent)">
+          <div class="stat-label">Total Comprado</div>
+          <div class="stat-value green" id="lzt-s-total-usd">$0.00</div>
+          <div class="stat-sub" id="lzt-s-total-cnt">0 ítems</div>
+        </div>
+        <div class="stat-card" style="--accent-c:#a855f7">
+          <div class="stat-label">Disponibles</div>
+          <div class="stat-value" style="color:#a855f7" id="lzt-s-disponibles">0</div>
+          <div class="stat-sub">Sin vender</div>
+        </div>
+        <div class="stat-card" style="--accent-c:var(--gold)">
+          <div class="stat-label">Vendidos</div>
+          <div class="stat-value" style="color:var(--gold)" id="lzt-s-vendidos">0</div>
+          <div class="stat-sub">Con cliente asignado</div>
+        </div>
+        <div class="stat-card" style="--accent-c:var(--accent)">
+          <div class="stat-label">Ganancia Neta</div>
+          <div class="stat-value green" id="lzt-s-ganancia">$0.00</div>
+          <div class="stat-sub">Venta − Costo</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input class="search-input" id="lzt-search" placeholder="LZT ID, título, cliente, Discord..." oninput="window.lztRender()">
+        </div>
+        <select class="filter-sel" id="lzt-filt-estado" onchange="window.lztRender()">
+          <option value="">Todos</option>
+          <option value="disponible">Disponibles</option>
+          <option value="vendido">Vendidos</option>
+        </select>
+        <select class="filter-sel" id="lzt-filt-cat" onchange="window.lztRender()">
+          <option value="">Todas las categorías</option>
+        </select>
+        <button class="btn btn-accent" onclick="window.lztLoad()"><i class="fas fa-sync-alt"></i> Recargar</button>
+        <button class="btn btn-outline" onclick="window.lztOpenAddManual()"><i class="fas fa-plus"></i> Agregar manual</button>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>LZT ID</th>
+              <th>Título</th>
+              <th>Categoría</th>
+              <th>Costo (USD)</th>
+              <th>Precio Venta</th>
+              <th>Ganancia</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+              <th>Fecha Compra</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="lzt-tbody">
+            <tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div></div>
+
+<!-- ── MODAL VENTA LZT ─────────────────────── -->
+<div class="overlay" id="modal-lzt-venta">
+  <div class="mcard" style="max-width:520px">
+    <div class="mhead">
+      <div class="mtitle" style="color:var(--gold)"><i class="fas fa-tag" style="margin-right:8px"></i>Registrar Venta</div>
+      <button class="mclose" onclick="document.getElementById('modal-lzt-venta').classList.remove('open')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <input type="hidden" id="lzt-venta-id">
+      <div style="background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:12px 14px;margin-bottom:18px">
+        <div style="font-size:0.68em;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:4px">Ítem</div>
+        <div id="lzt-venta-titulo" style="font-weight:700;font-size:0.9em"></div>
+        <div style="display:flex;gap:16px;margin-top:8px">
+          <div><span style="font-size:0.68em;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Costo</span><div id="lzt-venta-costo" style="font-family:var(--font-title);font-size:1.1em;color:var(--red);font-style:italic"></div></div>
+          <div><span style="font-size:0.68em;color:var(--text3);text-transform:uppercase;letter-spacing:1px">Ganancia</span><div id="lzt-venta-ganancia-preview" style="font-family:var(--font-title);font-size:1.1em;color:var(--accent);font-style:italic">—</div></div>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">Precio de Venta (USD) *</label>
+          <div class="vm-price-wrap">
+            <span class="vm-price-prefix">$</span>
+            <input class="finput" id="lzt-venta-precio" type="number" step="0.01" min="0" placeholder="0.00" oninput="window.lztVentaPreviewGanancia()">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">ID Pedido (opcional)</label>
+          <input class="finput" id="lzt-venta-pedido" placeholder="SHG-XXXX">
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">Nombre del Cliente</label>
+          <input class="finput" id="lzt-venta-nombre" placeholder="Nombre o alias">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Discord</label>
+          <input class="finput" id="lzt-venta-discord" placeholder="usuario#0000">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Correo del Cliente</label>
+        <input class="finput" id="lzt-venta-email" type="email" placeholder="cliente@correo.com">
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Notas</label>
+        <textarea class="ftarea" id="lzt-venta-notas" placeholder="Observaciones..." style="min-height:56px"></textarea>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-lzt-venta').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-accent" onclick="window.lztGuardarVenta()"><i class="fas fa-save"></i> Guardar Venta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL AGREGAR MANUAL LZT ─────────── -->
+<div class="overlay" id="modal-lzt-add">
+  <div class="mcard" style="max-width:500px">
+    <div class="mhead">
+      <div class="mtitle"><i class="fas fa-plus" style="margin-right:8px"></i>Agregar Ítem Manual</div>
+      <button class="mclose" onclick="document.getElementById('modal-lzt-add').classList.remove('open')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">LZT Item ID *</label>
+          <input class="finput" id="lzt-add-id" placeholder="12345678">
+        </div>
+        <div class="fgroup">
+          <label class="flabel">Categoría</label>
+          <input class="finput" id="lzt-add-cat" placeholder="Fortnite, Steam...">
+        </div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Título / Descripción *</label>
+        <input class="finput" id="lzt-add-titulo" placeholder="Descripción del ítem">
+      </div>
+      <div class="frow">
+        <div class="fgroup">
+          <label class="flabel">Costo en USD *</label>
+          <div class="vm-price-wrap">
+            <span class="vm-price-prefix">$</span>
+            <input class="finput" id="lzt-add-costo" type="number" step="0.01" placeholder="0.00">
+          </div>
+        </div>
+        <div class="fgroup">
+          <label class="flabel">URL LZT (opcional)</label>
+          <input class="finput" id="lzt-add-url" placeholder="https://lzt.market/...">
+        </div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-lzt-add').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-accent" onclick="window.lztGuardarManual()"><i class="fas fa-save"></i> Guardar</button>
+    </div>
+  </div>
+</div>
   <div class="mcard">
     <div class="mhead">
       <div class="mtitle" id="m-title">Nuevo Pedido</div>
@@ -5878,5 +6047,232 @@ window.resetWallpaper = function() {
   </div>
 </div>
 
+<!-- ── MÓDULO INVENTARIO LZT ──────────────────────────────────────── -->
+<script>
+(function() {
+  // ── Estado local ──────────────────────────────────────────────
+  let lztItems = [];
+
+  // ── Cargar desde Supabase ─────────────────────────────────────
+  window.lztLoad = async function() {
+    const tbody = document.getElementById('lzt-tbody');
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>';
+    try {
+      const { data, error } = await supabase
+        .from('inventario_lzt')
+        .select('*')
+        .order('fecha_compra', { ascending: false });
+      if (error) throw error;
+      lztItems = data || [];
+      lztBuildCatFilter();
+      lztRender();
+      lztUpdateStats();
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--red)"><i class="fas fa-exclamation-circle"></i> Error al cargar: ${e.message}</td></tr>`;
+    }
+  };
+
+  // ── Construir filtro de categorías ────────────────────────────
+  function lztBuildCatFilter() {
+    const cats = [...new Set(lztItems.map(i => i.categoria).filter(Boolean))].sort();
+    const sel = document.getElementById('lzt-filt-cat');
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">Todas las categorías</option>' +
+      cats.map(c => `<option value="${c}" ${c===cur?'selected':''}>${c}</option>`).join('');
+  }
+
+  // ── Render tabla ──────────────────────────────────────────────
+  window.lztRender = function() {
+    const q     = (document.getElementById('lzt-search')?.value || '').toLowerCase();
+    const est   = document.getElementById('lzt-filt-estado')?.value || '';
+    const cat   = document.getElementById('lzt-filt-cat')?.value || '';
+    const tbody = document.getElementById('lzt-tbody');
+    if (!tbody) return;
+
+    const filtered = lztItems.filter(i => {
+      const matchQ = !q || [i.lzt_item_id, i.titulo, i.cliente_nombre, i.cliente_discord, i.cliente_email, i.pedido_id]
+        .some(v => v && v.toLowerCase().includes(q));
+      const matchEst = !est || (est === 'vendido' ? i.vendido : !i.vendido);
+      const matchCat = !cat || i.categoria === cat;
+      return matchQ && matchEst && matchCat;
+    });
+
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><i class="fas fa-box-open"></i><p>Sin resultados</p></div></td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(i => {
+      const ganancia = i.precio_venta != null ? (i.precio_venta - i.precio_costo) : null;
+      const gColor   = ganancia == null ? 'var(--text3)' : ganancia >= 0 ? 'var(--accent)' : 'var(--red)';
+      const gText    = ganancia == null ? '—' : `$${ganancia.toFixed(2)}`;
+      const fechaStr = i.fecha_compra ? new Date(i.fecha_compra).toLocaleDateString('es-DO', {day:'numeric',month:'short',year:'numeric'}) : '—';
+      const cliente  = [i.cliente_nombre, i.cliente_discord].filter(Boolean).join(' · ') || '<span style="color:var(--text3)">—</span>';
+      const badge    = i.vendido
+        ? '<span class="badge b-done">Vendido</span>'
+        : '<span class="badge b-pend">Disponible</span>';
+      return `<tr>
+        <td class="td-id">${i.lzt_item_id || '—'}</td>
+        <td class="td-name" style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${(i.titulo||'').replace(/"/g,'&quot;')}">${i.titulo || '—'}</td>
+        <td><span style="font-size:0.72em;color:var(--text2)">${i.categoria || '—'}</span></td>
+        <td class="td-money" style="color:var(--red)">$${(+i.precio_costo).toFixed(2)}</td>
+        <td class="td-money" style="color:var(--accent)">${i.precio_venta != null ? '$'+Number(i.precio_venta).toFixed(2) : '<span style="color:var(--text3)">—</span>'}</td>
+        <td class="td-money" style="color:${gColor}">${gText}</td>
+        <td style="font-size:0.78em;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cliente}</td>
+        <td>${badge}</td>
+        <td class="td-date">${fechaStr}</td>
+        <td>
+          <div class="td-act">
+            ${!i.vendido ? `<button class="ibtn" title="Registrar venta" onclick="window.lztOpenVenta('${i.id}')"><i class="fas fa-tag"></i></button>` : `<button class="ibtn" title="Ver / editar venta" onclick="window.lztOpenVenta('${i.id}')"><i class="fas fa-edit"></i></button>`}
+            ${i.lzt_url ? `<a href="${i.lzt_url}" target="_blank" class="ibtn" title="Ver en LZT"><i class="fas fa-external-link-alt"></i></a>` : ''}
+            <button class="ibtn del" title="Eliminar" onclick="window.lztEliminar('${i.id}')"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  };
+
+  // ── Stats ─────────────────────────────────────────────────────
+  function lztUpdateStats() {
+    const total    = lztItems.length;
+    const vendidos = lztItems.filter(i => i.vendido).length;
+    const disponi  = total - vendidos;
+    const costoSum = lztItems.reduce((a, i) => a + (+i.precio_costo || 0), 0);
+    const ganancia = lztItems
+      .filter(i => i.vendido && i.precio_venta != null)
+      .reduce((a, i) => a + (i.precio_venta - i.precio_costo), 0);
+
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('lzt-s-total-usd',   `$${costoSum.toFixed(2)}`);
+    set('lzt-s-total-cnt',   `${total} ítem${total !== 1 ? 's' : ''}`);
+    set('lzt-s-disponibles', disponi);
+    set('lzt-s-vendidos',    vendidos);
+    set('lzt-s-ganancia',    `$${ganancia.toFixed(2)}`);
+  }
+
+  // ── Abrir modal venta ─────────────────────────────────────────
+  window.lztOpenVenta = function(id) {
+    const item = lztItems.find(i => i.id === id);
+    if (!item) return;
+    document.getElementById('lzt-venta-id').value          = id;
+    document.getElementById('lzt-venta-titulo').textContent = item.titulo || '';
+    document.getElementById('lzt-venta-costo').textContent  = `$${(+item.precio_costo).toFixed(2)}`;
+    document.getElementById('lzt-venta-precio').value       = item.precio_venta ?? '';
+    document.getElementById('lzt-venta-nombre').value       = item.cliente_nombre ?? '';
+    document.getElementById('lzt-venta-discord').value      = item.cliente_discord ?? '';
+    document.getElementById('lzt-venta-email').value        = item.cliente_email ?? '';
+    document.getElementById('lzt-venta-pedido').value       = item.pedido_id ?? '';
+    document.getElementById('lzt-venta-notas').value        = item.notas ?? '';
+    lztVentaPreviewGanancia();
+    document.getElementById('modal-lzt-venta').classList.add('open');
+  };
+
+  window.lztVentaPreviewGanancia = function() {
+    const id     = document.getElementById('lzt-venta-id').value;
+    const item   = lztItems.find(i => i.id === id);
+    const precio = parseFloat(document.getElementById('lzt-venta-precio').value) || 0;
+    const prev   = document.getElementById('lzt-venta-ganancia-preview');
+    if (!prev || !item) return;
+    const g = precio - (+item.precio_costo);
+    prev.textContent = precio ? `$${g.toFixed(2)}` : '—';
+    prev.style.color = g >= 0 ? 'var(--accent)' : 'var(--red)';
+  };
+
+  // ── Guardar venta ─────────────────────────────────────────────
+  window.lztGuardarVenta = async function() {
+    const id      = document.getElementById('lzt-venta-id').value;
+    const precio  = parseFloat(document.getElementById('lzt-venta-precio').value);
+    const nombre  = document.getElementById('lzt-venta-nombre').value.trim();
+    const discord = document.getElementById('lzt-venta-discord').value.trim();
+    const email   = document.getElementById('lzt-venta-email').value.trim();
+    const pedido  = document.getElementById('lzt-venta-pedido').value.trim();
+    const notas   = document.getElementById('lzt-venta-notas').value.trim();
+
+    if (!precio || isNaN(precio)) {
+      window.showToast('Ingresa un precio de venta válido', true);
+      return;
+    }
+
+    const updates = {
+      vendido:         true,
+      precio_venta:    precio,
+      cliente_nombre:  nombre || null,
+      cliente_discord: discord || null,
+      cliente_email:   email || null,
+      pedido_id:       pedido || null,
+      notas:           notas || null,
+      fecha_venta:     new Date().toISOString(),
+    };
+
+    try {
+      const { error } = await supabase.from('inventario_lzt').update(updates).eq('id', id);
+      if (error) throw error;
+      document.getElementById('modal-lzt-venta').classList.remove('open');
+      window.showToast('✅ Venta registrada correctamente');
+      await window.lztLoad();
+    } catch (e) {
+      window.showToast('Error: ' + e.message, true);
+    }
+  };
+
+  // ── Agregar manual ────────────────────────────────────────────
+  window.lztOpenAddManual = function() {
+    ['lzt-add-id','lzt-add-cat','lzt-add-titulo','lzt-add-costo','lzt-add-url'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('modal-lzt-add').classList.add('open');
+  };
+
+  window.lztGuardarManual = async function() {
+    const itemId  = document.getElementById('lzt-add-id').value.trim();
+    const titulo  = document.getElementById('lzt-add-titulo').value.trim();
+    const costo   = parseFloat(document.getElementById('lzt-add-costo').value);
+    const cat     = document.getElementById('lzt-add-cat').value.trim();
+    const url     = document.getElementById('lzt-add-url').value.trim();
+
+    if (!itemId || !titulo || !costo) {
+      window.showToast('Completa los campos obligatorios', true);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.from('inventario_lzt').insert({
+        lzt_item_id:  itemId,
+        titulo,
+        precio_costo: costo,
+        categoria:    cat || 'Manual',
+        lzt_url:      url || null,
+        vendido:      false,
+      });
+      if (error) throw error;
+      document.getElementById('modal-lzt-add').classList.remove('open');
+      window.showToast('✅ Ítem agregado');
+      await window.lztLoad();
+    } catch (e) {
+      window.showToast('Error: ' + e.message, true);
+    }
+  };
+
+  // ── Eliminar ítem ─────────────────────────────────────────────
+  window.lztEliminar = async function(id) {
+    if (!confirm('¿Eliminar este ítem del inventario?')) return;
+    try {
+      const { error } = await supabase.from('inventario_lzt').delete().eq('id', id);
+      if (error) throw error;
+      window.showToast('Ítem eliminado');
+      await window.lztLoad();
+    } catch (e) {
+      window.showToast('Error: ' + e.message, true);
+    }
+  };
+
+  // ── Auto-cargar al abrir la pestaña ───────────────────────────
+  const origSwitch = window.switchTab;
+  window.switchTab = function(tab, btn) {
+    origSwitch && origSwitch(tab, btn);
+    if (tab === 'lzt' && lztItems.length === 0) window.lztLoad();
+  };
+})();
+</script>
 </body>
-</html>
