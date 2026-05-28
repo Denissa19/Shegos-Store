@@ -6084,6 +6084,14 @@ window.resetWallpaper = function() {
 
 <!-- ── MÓDULO INVENTARIO LZT ──────────────────────────────────────── -->
 <script>
+(function waitForSupabase() {
+  if (typeof supabase === 'undefined' || typeof supabase.from !== 'function') {
+    return setTimeout(waitForSupabase, 50);
+  }
+  initLZT();
+})();
+
+function initLZT() {
 (function() {
   // ── Estado local ──────────────────────────────────────────────
   let lztItems = [];
@@ -6468,5 +6476,6 @@ window.resetWallpaper = function() {
     lztStartRealtime();
   }
 })();
+} // end initLZT
 </script>
 </body>
