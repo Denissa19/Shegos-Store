@@ -1972,6 +1972,26 @@
     transition: 0.3s;
 }
 .mis-pedidos-signout:hover { border-color: #ff4d4d; color: #ff4d4d; }
+
+/* AUTH TABS */
+.auth-tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 0;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    margin-bottom: -1px;
+}
+.auth-tab-btn:hover { color: #aaa; }
+.auth-tab-active { color: #28feb6 !important; border-bottom-color: #28feb6 !important; }
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -2051,50 +2071,53 @@
         <div class="auth-modal-card">
             <button class="auth-modal-close" onclick="cerrarModalAuth()">✕</button>
 
-            <!-- PASO 1: EMAIL -->
-            <div id="auth-step-email">
+            <!-- FORMULARIO LOGIN / REGISTRO -->
+            <div id="auth-step-form">
                 <div class="auth-modal-brand">Shegos Store</div>
-                <h2 class="auth-modal-title">Acceder</h2>
-                <p class="auth-modal-subtitle">Ingresa tu correo electrónico</p>
-                <input type="email" id="auth-email-input" class="auth-modal-input"
-                    placeholder="tu@correo.com"
-                    onkeydown="if(event.key==='Enter') authEnviarCodigo()">
-                <div id="auth-email-error" class="auth-modal-error"></div>
-                <button class="auth-modal-btn" onclick="authEnviarCodigo()">
-                    Enviar Código
-                </button>
+                <h2 class="auth-modal-title">Bienvenido</h2>
+
+                <!-- Tabs -->
+                <div style="display:flex; margin-bottom:24px; border-bottom:1px solid #222;">
+                    <button id="tab-login" class="auth-tab-btn auth-tab-active" onclick="authSwitchTab('login')">Iniciar Sesión</button>
+                    <button id="tab-register" class="auth-tab-btn" onclick="authSwitchTab('register')">Registrarse</button>
+                </div>
+
+                <!-- LOGIN -->
+                <div id="auth-form-login">
+                    <input type="email" id="auth-login-email" class="auth-modal-input"
+                        placeholder="Correo electrónico"
+                        onkeydown="if(event.key==='Enter') document.getElementById('auth-login-pass').focus()">
+                    <input type="password" id="auth-login-pass" class="auth-modal-input"
+                        placeholder="Contraseña"
+                        onkeydown="if(event.key==='Enter') authLogin()">
+                    <div id="auth-login-error" class="auth-modal-error"></div>
+                    <button id="auth-btn-login" class="auth-modal-btn" onclick="authLogin()">Iniciar Sesión</button>
+                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                        ¿Sin cuenta? <button class="auth-modal-back" onclick="authSwitchTab('register')">Regístrate gratis</button>
+                    </p>
+                </div>
+
+                <!-- REGISTRO -->
+                <div id="auth-form-register" style="display:none;">
+                    <input type="email" id="auth-reg-email" class="auth-modal-input"
+                        placeholder="Correo electrónico"
+                        onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-pass').focus()">
+                    <input type="password" id="auth-reg-pass" class="auth-modal-input"
+                        placeholder="Contraseña (mín. 6 caracteres)"
+                        onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-confirm').focus()">
+                    <input type="password" id="auth-reg-confirm" class="auth-modal-input"
+                        placeholder="Confirmar contraseña"
+                        onkeydown="if(event.key==='Enter') authRegister()">
+                    <div id="auth-reg-error" class="auth-modal-error"></div>
+                    <button id="auth-btn-register" class="auth-modal-btn" onclick="authRegister()">Crear Cuenta</button>
+                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                        ¿Ya tienes cuenta? <button class="auth-modal-back" onclick="authSwitchTab('login')">Inicia sesión</button>
+                    </p>
+                </div>
             </div>
 
-            <!-- PASO 2: CÓDIGO -->
-            <div id="auth-step-codigo" style="display:none;">
-                <div class="auth-modal-brand">Shegos Store</div>
-                <h2 class="auth-modal-title">Verificar</h2>
-                <p class="auth-modal-subtitle">
-                    Código enviado a<br>
-                    <strong id="auth-email-display" style="color:#28feb6;"></strong>
-                </p>
-                <div class="auth-code-boxes" id="auth-code-boxes">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,0)" onkeydown="authBoxKey(event,0)">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,1)" onkeydown="authBoxKey(event,1)">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,2)" onkeydown="authBoxKey(event,2)">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,3)" onkeydown="authBoxKey(event,3)">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,4)" onkeydown="authBoxKey(event,4)">
-                    <input type="text" maxlength="1" class="auth-code-box" oninput="authBox(this,5)" onkeydown="authBoxKey(event,5)">
-                </div>
-                <div id="auth-code-error" class="auth-modal-error"></div>
-                <button id="auth-btn-verificar" class="auth-modal-btn" onclick="authVerificarCodigo()">
-                    Verificar Código
-                </button>
-                <div style="margin-top:14px; display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
-                    <button class="auth-modal-back" onclick="authVolverEmail()">← Cambiar correo</button>
-                    <button id="auth-reenviar-btn" class="auth-reenviar-btn" onclick="authReenviarCodigo()" disabled>
-                        Reenviar (<span id="auth-reenviar-timer">60</span>s)
-                    </button>
-                </div>
-            </div>
-
-            <!-- PASO 3: BIENVENIDA -->
-            <div id="auth-step-ok" style="display:none; padding: 10px 0;">
+            <!-- ÉXITO -->
+            <div id="auth-step-ok" style="display:none; padding:10px 0; text-align:center;">
                 <div style="font-size:2.5em; margin-bottom:12px;">✅</div>
                 <h2 class="auth-modal-title" style="font-size:1.8em;">¡Listo!</h2>
                 <p style="color:#aaa; font-size:0.9em; margin-bottom:24px;">
@@ -2107,7 +2130,6 @@
             </div>
         </div>
     </div>
-
     <div id="cart-overlay" class="cart-overlay" onclick="cerrarCarritoLateral()"></div>
     <div id="cart-drawer" class="cart-drawer">
         <div class="cart-header">
@@ -4188,46 +4210,44 @@ _He adjuntado mi comprobante de pago arriba._`;
     })();
 
     /* ============================================================
-       SISTEMA AUTH — MODAL ACCEDER
-       ============================================================
-       INTEGRACIÓN CON BASE DE DATOS:
-
-       Opción A — Supabase (recomendada, ya tienes el SDK):
-         Enviar:   supabase.auth.signInWithOtp({ email })
-         Verificar: supabase.auth.verifyOtp({ email, token: codigo, type: 'email' })
-         Pedidos:  supabase.from('pedidos').select('*').eq('email_cliente', email)
-
-       Opción B — Backend propio (Node/PHP):
-         POST /auth/enviar-codigo  { email }   → guarda código 6 dígitos + envía email
-         POST /auth/verificar      { email, codigo } → valida y devuelve JWT
-         GET  /pedidos?email=X     (Authorization: Bearer TOKEN)
-
-       Busca los comentarios "EN PRODUCCIÓN" abajo para los puntos de integración.
+       SISTEMA AUTH — EMAIL + CONTRASEÑA
        ============================================================ */
     (function() {
-        var authEmail = "";
-        var authTimer = null;
-
         function $e(id) { return document.getElementById(id); }
 
         /* ── Sesión persistente al cargar la página ── */
         document.addEventListener("DOMContentLoaded", async function() {
-            // Recuperar sesión activa de Supabase
-            var { data: { session } } = await supabase.auth.getSession();
-            if (session && session.user) {
-                var email = session.user.email;
-                sessionStorage.setItem("shegos_email", email);
-                authActivarSesion(email, false);
-            }
+            try {
+                var { data: { session } } = await supabaseClient.auth.getSession();
+                if (session && session.user) {
+                    sessionStorage.setItem("shegos_email", session.user.email);
+                    authActivarSesion(session.user.email, false);
+                }
+            } catch(e) { console.warn("Sin sesión activa"); }
         });
+
+        /* ── Switch entre tabs ── */
+        window.authSwitchTab = function(tab) {
+            var isLogin = tab === "login";
+            $e("auth-form-login").style.display    = isLogin ? "block" : "none";
+            $e("auth-form-register").style.display = isLogin ? "none"  : "block";
+            $e("tab-login").classList.toggle("auth-tab-active", isLogin);
+            $e("tab-register").classList.toggle("auth-tab-active", !isLogin);
+            // Limpiar errores
+            ["auth-login-error","auth-reg-error"].forEach(function(id){
+                var el = $e(id); if(el){ el.textContent=""; el.style.display="none"; }
+            });
+        };
 
         /* ── Abrir / cerrar modal ── */
         window.abrirModalAuth = function() {
             var email = sessionStorage.getItem("shegos_email");
-            if (email) { abrirPestana('rastreo-pedidos'); return; }
+            if (email) { abrirPestana("rastreo-pedidos"); return; }
+            $e("auth-step-form").style.display = "block";
+            $e("auth-step-ok").style.display   = "none";
+            authSwitchTab("login");
             $e("auth-modal-overlay").classList.add("active");
-            authMostrarPaso("email");
-            setTimeout(function() { var el = $e("auth-email-input"); if(el) el.focus(); }, 100);
+            setTimeout(function(){ var el=$e("auth-login-email"); if(el) el.focus(); }, 100);
         };
         window.cerrarModalAuth = function() {
             $e("auth-modal-overlay").classList.remove("active");
@@ -4236,132 +4256,104 @@ _He adjuntado mi comprobante de pago arriba._`;
             if (e.target === $e("auth-modal-overlay")) cerrarModalAuth();
         };
 
-        function authMostrarPaso(paso) {
-            ["email","codigo","ok"].forEach(function(p) {
-                $e("auth-step-" + p).style.display = p === paso ? "block" : "none";
-            });
+        /* ── Mostrar error en el formulario ── */
+        function mostrarError(elId, msg) {
+            var el = $e(elId);
+            if (!el) return;
+            el.textContent = msg;
+            el.style.display = "block";
         }
 
-        /* ── Paso 1: Enviar código OTP por correo ── */
-        window.authEnviarCodigo = async function() {
-            var input = $e("auth-email-input");
-            var email = input ? input.value.trim() : "";
-            var errEl = $e("auth-email-error");
+        /* ── LOGIN con email + contraseña ── */
+        window.authLogin = async function() {
+            var email    = ($e("auth-login-email") || {}).value.trim();
+            var password = ($e("auth-login-pass")  || {}).value;
+            var errId    = "auth-login-error";
+            var btn      = $e("auth-btn-login");
+
             if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                errEl.textContent = "Ingresa un correo válido.";
-                errEl.style.display = "block"; return;
+                return mostrarError(errId, "Ingresa un correo válido.");
             }
-            errEl.style.display = "none";
-            authEmail = email;
+            if (!password) return mostrarError(errId, "Ingresa tu contraseña.");
 
-            var btnEnviar = $e("auth-btn-enviar");
-            if (btnEnviar) { btnEnviar.disabled = true; btnEnviar.textContent = "Enviando..."; }
+            $e(errId).style.display = "none";
+            btn.disabled = true; btn.textContent = "Iniciando sesión...";
 
             try {
-                // Supabase envía el código de 6 dígitos al correo automáticamente
-                var { error } = await supabaseClient.auth.signInWithOtp({
-                    email: email,
-                    options: { shouldCreateUser: true }
-                });
+                var { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) throw error;
 
-                $e("auth-email-display").textContent = email;
-                authMostrarPaso("codigo");
-                var boxes = document.querySelectorAll(".auth-code-box");
-                if (boxes[0]) boxes[0].focus();
-                authIniciarTimer();
+                var userEmail = data.user.email;
+                sessionStorage.setItem("shegos_email", userEmail);
+                $e("auth-ok-email").textContent = userEmail;
+                $e("auth-step-form").style.display = "none";
+                $e("auth-step-ok").style.display   = "block";
+                authActivarSesion(userEmail, true);
             } catch(err) {
-                errEl.textContent = "Error al enviar el código. Intenta de nuevo.";
-                errEl.style.display = "block";
-                console.error("Error OTP:", err.message);
+                var msg = "Correo o contraseña incorrectos.";
+                if (err.message && err.message.toLowerCase().includes("email not confirmed"))
+                    msg = "Confirma tu correo antes de iniciar sesión.";
+                mostrarError(errId, msg);
+                console.error("Error login:", err.message);
             } finally {
-                if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = "Continuar"; }
+                btn.disabled = false; btn.textContent = "Iniciar Sesión";
             }
         };
 
-        /* ── Inputs de código ── */
-        window.authBox = function(el, idx) {
-            el.value = el.value.replace(/[^0-9]/g, "");
-            if (el.value) {
-                el.classList.add("filled");
-                var boxes = document.querySelectorAll(".auth-code-box");
-                if (idx < 5 && boxes[idx+1]) boxes[idx+1].focus();
-                var cod = Array.from(boxes).map(function(b){return b.value;}).join("");
-                if (cod.length === 6) authVerificarCodigo();
-            } else { el.classList.remove("filled"); }
-        };
-        window.authBoxKey = function(e, idx) {
-            if (e.key === "Backspace") {
-                var boxes = document.querySelectorAll(".auth-code-box");
-                if (!boxes[idx].value && idx > 0) {
-                    boxes[idx-1].value = "";
-                    boxes[idx-1].classList.remove("filled");
-                    boxes[idx-1].focus();
-                }
-            }
-        };
+        /* ── REGISTRO con email + contraseña ── */
+        window.authRegister = async function() {
+            var email    = ($e("auth-reg-email")    || {}).value.trim();
+            var password = ($e("auth-reg-pass")     || {}).value;
+            var confirm  = ($e("auth-reg-confirm")  || {}).value;
+            var errId    = "auth-reg-error";
+            var btn      = $e("auth-btn-register");
 
-        /* ── Paso 2: Verificar código OTP con Supabase ── */
-        window.authVerificarCodigo = async function() {
-            var boxes = document.querySelectorAll(".auth-code-box");
-            var codigo = Array.from(boxes).map(function(b){return b.value;}).join("");
-            var errEl = $e("auth-code-error");
-            if (codigo.length < 6) { errEl.textContent = "Ingresa los 6 dígitos."; errEl.style.display = "block"; return; }
-            errEl.style.display = "none";
-            var btn = $e("auth-btn-verificar");
-            btn.disabled = true;
-            btn.textContent = "Verificando...";
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                return mostrarError(errId, "Ingresa un correo válido.");
+            if (password.length < 6)
+                return mostrarError(errId, "La contraseña debe tener al menos 6 caracteres.");
+            if (password !== confirm)
+                return mostrarError(errId, "Las contraseñas no coinciden.");
+
+            $e(errId).style.display = "none";
+            btn.disabled = true; btn.textContent = "Creando cuenta...";
+
             try {
-                // Verificar el código con Supabase
-                var { data, error } = await supabaseClient.auth.verifyOtp({
-                    email: authEmail,
-                    token: codigo,
-                    type: "email"
-                });
+                var { data, error } = await supabaseClient.auth.signUp({ email, password });
                 if (error) throw error;
 
-                var email = data.user.email;
-                sessionStorage.setItem("shegos_email", email);
-                $e("auth-ok-email").textContent = email;
-                authMostrarPaso("ok");
-                authActivarSesion(email, true);
-            } catch(err) {
-                errEl.textContent = "Código incorrecto o expirado.";
-                errEl.style.display = "block";
-                Array.from(boxes).forEach(function(b){ b.value=""; b.classList.remove("filled"); });
-                if (boxes[0]) boxes[0].focus();
-                console.error("Error verificación:", err.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = "Verificar Código";
-            }
-        };
-
-        /* ── Timer reenvío ── */
-        function authIniciarTimer() {
-            var btn = $e("auth-reenviar-btn");
-            var span = $e("auth-reenviar-timer");
-            var seg = 60;
-            btn.disabled = true;
-            if (authTimer) clearInterval(authTimer);
-            authTimer = setInterval(function() {
-                seg--;
-                if (span) span.textContent = seg;
-                if (seg <= 0) {
-                    clearInterval(authTimer);
-                    btn.disabled = false;
-                    btn.innerHTML = "Reenviar código";
+                // Si el email ya existe, Supabase igual devuelve data.user (sin error)
+                // Intentamos hacer login directo
+                if (data.user && data.session) {
+                    // Registro exitoso Y sesión activa (confirmación desactivada en Supabase)
+                    sessionStorage.setItem("shegos_email", data.user.email);
+                    $e("auth-ok-email").textContent = data.user.email;
+                    $e("auth-step-form").style.display = "none";
+                    $e("auth-step-ok").style.display   = "block";
+                    authActivarSesion(data.user.email, true);
+                } else {
+                    // Supabase requiere confirmación de correo
+                    mostrarError(errId, "");
+                    btn.style.background = "#1a3a30";
+                    btn.textContent = "✉ Revisa tu correo para confirmar";
+                    btn.disabled = true;
+                    $e(errId).style.display = "block";
+                    $e(errId).style.color = "#28feb6";
+                    $e(errId).style.background = "rgba(40,254,182,0.08)";
+                    $e(errId).style.borderColor = "rgba(40,254,182,0.2)";
+                    $e(errId).textContent = "✅ Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.";
                 }
-            }, 1000);
-        }
-        window.authReenviarCodigo = function() {
-            document.querySelectorAll(".auth-code-box").forEach(function(b){ b.value=""; b.classList.remove("filled"); });
-            $e("auth-code-error").style.display = "none";
-            authEnviarCodigo();
-        };
-        window.authVolverEmail = function() {
-            authMostrarPaso("email");
-            if (authTimer) clearInterval(authTimer);
+            } catch(err) {
+                var msg = "Error al crear la cuenta.";
+                if (err.message && err.message.toLowerCase().includes("already registered"))
+                    msg = "Este correo ya está registrado. Inicia sesión.";
+                mostrarError(errId, msg);
+                console.error("Error registro:", err.message);
+            } finally {
+                if (!btn.textContent.includes("Revisa")) {
+                    btn.disabled = false; btn.textContent = "Crear Cuenta";
+                }
+            }
         };
 
         /* ── Activar sesión en UI ── */
@@ -4385,7 +4377,6 @@ _He adjuntado mi comprobante de pago arriba._`;
         window.authCerrarSesion = async function() {
             await supabaseClient.auth.signOut();
             sessionStorage.removeItem("shegos_email");
-            sessionStorage.removeItem("shegos_token");
             var lbl = $e("btn-acceder-label");
             var btn = $e("btn-acceder-header");
             if (lbl) lbl.textContent = "Acceder";
@@ -4400,7 +4391,6 @@ _He adjuntado mi comprobante de pago arriba._`;
         async function authCargarPedidos(email) {
             var lista = $e("mp-pedidos-lista");
             if (!lista) return;
-
             lista.innerHTML = '<div class="auth-empty-state"><i class="fas fa-spinner fa-spin"></i><p>Cargando pedidos...</p></div>';
 
             try {
@@ -4419,16 +4409,18 @@ _He adjuntado mi comprobante de pago arriba._`;
 
                 lista.innerHTML = pedidos.map(function(p) {
                     var productosArr = Array.isArray(p.productos) ? p.productos : [p.productos];
-                    var b = p.estado === "completado"
+                    var badge = p.estado === "completado"
                         ? '<span class="status-badge status-completado">Completado</span>'
                         : p.estado === "en-proceso"
                         ? '<span class="status-badge status-en-proceso">En proceso</span>'
                         : '<span class="status-badge status-pendiente">Pendiente</span>';
-                    var fecha = p.created_at ? new Date(p.created_at).toLocaleDateString("es-DO", { day: "numeric", month: "short", year: "numeric" }) : "";
+                    var fecha = p.created_at
+                        ? new Date(p.created_at).toLocaleDateString("es-DO", { day:"numeric", month:"short", year:"numeric" })
+                        : "";
                     return '<div class="pedido-auth-card">'
                          + '<div class="pedido-auth-header"><span class="pedido-auth-id">' + p.id + '</span><span class="pedido-auth-fecha">' + fecha + '</span></div>'
                          + '<div class="pedido-auth-productos">' + productosArr.join(" · ") + '</div>'
-                         + '<div class="pedido-auth-footer"><span class="pedido-auth-total">' + p.total + '</span>' + b + '</div>'
+                         + '<div class="pedido-auth-footer"><span class="pedido-auth-total">' + (p.total || "") + '</span>' + badge + '</div>'
                          + '</div>';
                 }).join("");
             } catch(err) {
