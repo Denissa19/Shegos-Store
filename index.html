@@ -1910,6 +1910,32 @@
     text-decoration: underline; display: inline-block;
 }
 .auth-modal-back:hover { color: #aaa; }
+
+/* ── Ojito para ver contraseña ── */
+.auth-pass-wrap {
+    position: relative;
+    margin-bottom: 0;
+}
+.auth-pass-wrap .auth-modal-input {
+    margin-bottom: 12px;
+    padding-right: 44px;
+}
+.auth-eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-60%);
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 4px;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.auth-eye-btn:hover { color: #28feb6; }
+
 .auth-reenviar-btn {
     background: none; border: none; color: #555;
     font-size: 0.8em; cursor: pointer;
@@ -2074,7 +2100,7 @@
             <!-- FORMULARIO LOGIN / REGISTRO -->
             <div id="auth-step-form">
                 <div class="auth-modal-brand">Shegos Store</div>
-                <h2 class="auth-modal-title">Bienvenido</h2>
+                <h2 id="auth-modal-title" class="auth-modal-title">Bienvenido</h2>
 
                 <!-- Tabs -->
                 <div style="display:flex; margin-bottom:24px; border-bottom:1px solid #222;">
@@ -2087,12 +2113,20 @@
                     <input type="email" id="auth-login-email" class="auth-modal-input"
                         placeholder="Correo electrónico"
                         onkeydown="if(event.key==='Enter') document.getElementById('auth-login-pass').focus()">
-                    <input type="password" id="auth-login-pass" class="auth-modal-input"
-                        placeholder="Contraseña"
-                        onkeydown="if(event.key==='Enter') authLogin()">
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="auth-login-pass" class="auth-modal-input"
+                            placeholder="Contraseña"
+                            onkeydown="if(event.key==='Enter') authLogin()">
+                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-login-pass', this)" tabindex="-1" aria-label="Ver contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                     <div id="auth-login-error" class="auth-modal-error"></div>
                     <button id="auth-btn-login" class="auth-modal-btn" onclick="authLogin()">Iniciar Sesión</button>
-                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                    <p style="text-align:center; margin-top:10px; font-size:0.8em;">
+                        <button class="auth-modal-back" onclick="authSwitchTab('reset')" style="color:#28feb6;">¿Olvidaste tu contraseña?</button>
+                    </p>
+                    <p style="text-align:center; margin-top:6px; font-size:0.8em; color:#555;">
                         ¿Sin cuenta? <button class="auth-modal-back" onclick="authSwitchTab('register')">Regístrate gratis</button>
                     </p>
                 </div>
@@ -2102,16 +2136,41 @@
                     <input type="email" id="auth-reg-email" class="auth-modal-input"
                         placeholder="Correo electrónico"
                         onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-pass').focus()">
-                    <input type="password" id="auth-reg-pass" class="auth-modal-input"
-                        placeholder="Contraseña (mín. 6 caracteres)"
-                        onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-confirm').focus()">
-                    <input type="password" id="auth-reg-confirm" class="auth-modal-input"
-                        placeholder="Confirmar contraseña"
-                        onkeydown="if(event.key==='Enter') authRegister()">
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="auth-reg-pass" class="auth-modal-input"
+                            placeholder="Contraseña (mín. 6 caracteres)"
+                            onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-confirm').focus()">
+                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-reg-pass', this)" tabindex="-1" aria-label="Ver contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="auth-pass-wrap">
+                        <input type="password" id="auth-reg-confirm" class="auth-modal-input"
+                            placeholder="Confirmar contraseña"
+                            onkeydown="if(event.key==='Enter') authRegister()">
+                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-reg-confirm', this)" tabindex="-1" aria-label="Ver contraseña">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                     <div id="auth-reg-error" class="auth-modal-error"></div>
                     <button id="auth-btn-register" class="auth-modal-btn" onclick="authRegister()">Crear Cuenta</button>
                     <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
                         ¿Ya tienes cuenta? <button class="auth-modal-back" onclick="authSwitchTab('login')">Inicia sesión</button>
+                    </p>
+                </div>
+
+                <!-- RESTABLECER CONTRASEÑA -->
+                <div id="auth-form-reset" style="display:none;">
+                    <p style="color:#aaa; font-size:0.85em; margin-bottom:16px; text-align:center;">
+                        Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+                    </p>
+                    <input type="email" id="auth-reset-email" class="auth-modal-input"
+                        placeholder="Correo electrónico"
+                        onkeydown="if(event.key==='Enter') authResetPassword()">
+                    <div id="auth-reset-error" class="auth-modal-error"></div>
+                    <button id="auth-btn-reset" class="auth-modal-btn" onclick="authResetPassword()">Enviar enlace</button>
+                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                        <button class="auth-modal-back" onclick="authSwitchTab('login')">← Volver al inicio de sesión</button>
                     </p>
                 </div>
             </div>
@@ -4228,15 +4287,28 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         /* ── Switch entre tabs ── */
         window.authSwitchTab = function(tab) {
-            var isLogin = tab === "login";
-            $e("auth-form-login").style.display    = isLogin ? "block" : "none";
-            $e("auth-form-register").style.display = isLogin ? "none"  : "block";
+            var isLogin    = tab === "login";
+            var isRegister = tab === "register";
+            var isReset    = tab === "reset";
+
+            $e("auth-form-login").style.display    = isLogin    ? "block" : "none";
+            $e("auth-form-register").style.display = isRegister ? "block" : "none";
+            $e("auth-form-reset").style.display    = isReset    ? "block" : "none";
+
             $e("tab-login").classList.toggle("auth-tab-active", isLogin);
-            $e("tab-register").classList.toggle("auth-tab-active", !isLogin);
+            $e("tab-register").classList.toggle("auth-tab-active", isRegister);
+
             // Limpiar errores
-            ["auth-login-error","auth-reg-error"].forEach(function(id){
+            ["auth-login-error","auth-reg-error","auth-reset-error"].forEach(function(id){
                 var el = $e(id); if(el){ el.textContent=""; el.style.display="none"; }
             });
+
+            // Cambiar título del modal según vista
+            var title = $e("auth-modal-title");
+            if (title) {
+                if (isReset)    title.textContent = "Restablecer";
+                else            title.textContent = "Bienvenido";
+            }
         };
 
         /* ── Abrir / cerrar modal ── */
@@ -4263,6 +4335,49 @@ _He adjuntado mi comprobante de pago arriba._`;
             el.textContent = msg;
             el.style.display = "block";
         }
+
+        /* ── Toggle ver/ocultar contraseña (ojito) ── */
+        window.authTogglePass = function(inputId, btn) {
+            var input = $e(inputId);
+            if (!input) return;
+            var isPass = input.type === "password";
+            input.type = isPass ? "text" : "password";
+            var icon = btn.querySelector("i");
+            if (icon) {
+                icon.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+            }
+        };
+
+        /* ── Restablecer contraseña ── */
+        window.authResetPassword = async function() {
+            var email = ($e("auth-reset-email") || {}).value.trim();
+            var errId = "auth-reset-error";
+            var btn   = $e("auth-btn-reset");
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                return mostrarError(errId, "Ingresa un correo válido.");
+
+            $e(errId).style.display = "none";
+            btn.disabled = true; btn.textContent = "Enviando...";
+
+            try {
+                var { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + window.location.pathname
+                });
+                if (error) throw error;
+
+                $e(errId).style.display = "block";
+                $e(errId).style.color = "#28feb6";
+                $e(errId).style.background = "rgba(40,254,182,0.08)";
+                $e(errId).style.borderColor = "rgba(40,254,182,0.2)";
+                $e(errId).textContent = "✅ Enlace enviado. Revisa tu correo para restablecer tu contraseña.";
+                btn.textContent = "Enlace enviado ✓";
+            } catch(err) {
+                mostrarError(errId, "No se pudo enviar el enlace. Verifica el correo.");
+                btn.disabled = false; btn.textContent = "Enviar enlace";
+                console.error("Error reset:", err.message);
+            }
+        };
 
         /* ── LOGIN con email + contraseña ── */
         window.authLogin = async function() {
