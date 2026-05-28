@@ -9,18 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // ============================================================
-        // CONFIGURACIÓN SUPABASE
-        // Reemplaza estos dos valores con los de tu proyecto en:
-        // https://supabase.com → Settings → API
-        // ============================================================
-        const SUPABASE_URL  = "https://boifqdoojssmofanhxhj.supabase.co";
-        const SUPABASE_KEY  = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
-        // supabaseClient se inicializa en el body donde el SDK ya está cargado
-    </script>
 
     <style>
         /* =========================================
@@ -2042,7 +2030,10 @@
                 <span id="shop-timer">00:00:00</span>
             </div>
 
-
+            <!-- BOTÓN ACCEDER -->
+            <button id="btn-acceder-header" class="btn-acceder" onclick="abrirModalAuth()">
+                <i class="fas fa-user"></i> <span id="btn-acceder-label">Acceder</span>
+            </button>
         </div>
     </header>
 
@@ -2056,20 +2047,20 @@
     </nav>
 
     <!-- MODAL AUTH -->
-    <div id="auth-modal-overlay" class="auth-modal-overlay">
+    <div id="auth-modal-overlay" class="auth-modal-overlay" onclick="authModalClickFuera(event)">
         <div class="auth-modal-card">
             <button class="auth-modal-close" onclick="cerrarModalAuth()">✕</button>
 
             <!-- PASO 1: EMAIL -->
             <div id="auth-step-email">
                 <div class="auth-modal-brand">Shegos Store</div>
-                <h2 class="auth-modal-title">Registrarse</h2>
+                <h2 class="auth-modal-title">Acceder</h2>
                 <p class="auth-modal-subtitle">Ingresa tu correo electrónico</p>
                 <input type="email" id="auth-email-input" class="auth-modal-input"
                     placeholder="tu@correo.com"
                     onkeydown="if(event.key==='Enter') authEnviarCodigo()">
                 <div id="auth-email-error" class="auth-modal-error"></div>
-                <button id="auth-btn-enviar" class="auth-modal-btn" onclick="authEnviarCodigo()">
+                <button class="auth-modal-btn" onclick="authEnviarCodigo()">
                     Enviar Código
                 </button>
             </div>
@@ -2208,6 +2199,27 @@
             <h2>Tienda de Hoy</h2>
             <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
             <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
+            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" title="Descargar Tienda" style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: transparent;
+                border: 1px solid #333;
+                color: #888;
+                padding: 9px 18px;
+                border-radius: 30px;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                cursor: pointer;
+                transition: all .25s ease;
+                margin-bottom: 20px;
+                width: fit-content;
+            " onmouseover="this.style.borderColor='#fff';this.style.color='#fff'"
+               onmouseout="this.style.borderColor='#333';this.style.color='#888'">
+                <i class="fas fa-download"></i> Descargar Tienda de Hoy
+            </button>
             <div id="contenedor-filtros" class="filtros-container"></div>
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
         </div>
@@ -2570,68 +2582,8 @@
                       </div>
                       <div class="form-section">
                         <h4>4. Adjuntar Comprobante</h4>
-                        <p style="font-size: 0.8em; color: #888; margin-bottom: 12px;">Selecciona la captura de tu pago realizado.</p>
-                        <!-- Drop Zone -->
-                        <div id="drop-zone-comprobante"
-                             onclick="document.getElementById('cliente-comprobante').click()"
-                             ondragover="event.preventDefault(); this.classList.add('dz-hover')"
-                             ondragleave="this.classList.remove('dz-hover')"
-                             ondrop="dzHandleDrop(event)"
-                             style="
-                               border: 2px dashed #333;
-                               border-radius: 12px;
-                               padding: 28px 20px;
-                               text-align: center;
-                               cursor: pointer;
-                               transition: border-color .25s, background .25s;
-                               background: #0d0d0d;
-                               position: relative;
-                             ">
-                          <i class="fas fa-cloud-upload-alt" style="font-size: 2em; color: #444; display: block; margin-bottom: 10px;"></i>
-                          <p style="margin:0; color:#666; font-size:0.85em; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Arrastra tu imagen aquí</p>
-                          <p style="margin:6px 0 0; color:#444; font-size:0.75em;">o haz clic para seleccionar</p>
-                          <!-- Preview -->
-                          <div id="dz-preview" style="display:none; margin-top:16px; position:relative;">
-                            <img id="dz-preview-img" src="" alt="Comprobante" style="max-width:100%; max-height:180px; border-radius:8px; border:1px solid #28feb6; object-fit:contain;">
-                            <button onclick="event.stopPropagation(); dzLimpiar()" style="position:absolute; top:-8px; right:-8px; background:#000; border:1px solid #28feb6; color:#28feb6; border-radius:50%; width:24px; height:24px; font-size:0.75em; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;">✕</button>
-                            <p id="dz-filename" style="margin:8px 0 0; color:#28feb6; font-size:0.75em; font-weight:700;"></p>
-                          </div>
-                        </div>
-                        <input type="file" id="cliente-comprobante" accept="image/*" style="display:none;" onchange="dzHandleFile(this.files[0])">
-                        <style>
-                          #drop-zone-comprobante.dz-hover { border-color: #28feb6; background: rgba(40,254,182,0.04); }
-                          #drop-zone-comprobante.dz-filled { border-color: #28feb6; border-style: solid; }
-                        </style>
-                        <script>
-                          function dzHandleFile(file) {
-                            if (!file) return;
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                              document.getElementById('dz-preview-img').src = e.target.result;
-                              document.getElementById('dz-filename').textContent = file.name;
-                              document.getElementById('dz-preview').style.display = 'block';
-                              document.getElementById('drop-zone-comprobante').classList.add('dz-filled');
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                          function dzHandleDrop(e) {
-                            e.preventDefault();
-                            document.getElementById('drop-zone-comprobante').classList.remove('dz-hover');
-                            var file = e.dataTransfer.files[0];
-                            if (file && file.type.startsWith('image/')) {
-                              var dt = new DataTransfer();
-                              dt.items.add(file);
-                              document.getElementById('cliente-comprobante').files = dt.files;
-                              dzHandleFile(file);
-                            }
-                          }
-                          function dzLimpiar() {
-                            document.getElementById('cliente-comprobante').value = '';
-                            document.getElementById('dz-preview').style.display = 'none';
-                            document.getElementById('dz-preview-img').src = '';
-                            document.getElementById('drop-zone-comprobante').classList.remove('dz-filled');
-                          }
-                        </script>
+                        <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">Selecciona la captura de tu pago realizado.</p>
+                        <input type="file" id="cliente-comprobante" accept="image/*" style="background: #121212; border: 1px solid #333; color: white; padding: 10px; width: 100%; border-radius: 5px;">
                       </div>
                     </div>
                 </div>
@@ -2845,7 +2797,7 @@
         // Inicialización de Supabase para index.html
         const SUPABASE_URL = "https://boifqdoojssmofanhxhj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // ==========================================
         // CONFIGURACIÓN Y VARIABLES GLOBALES
@@ -2889,12 +2841,16 @@
             cont.innerHTML = "<p style='text-align:center; padding:20px; color:#aaa;'><i class='fas fa-spinner fa-spin'></i> Buscando en la base de datos...</p>";
 
             try {
-                const res = await fetch(`pedidos.json?t=${Date.now()}`);
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const pedidos = await res.json();
-                
-                // Comparación normalizada: ignorar espacios/guiones en el JSON también
-                const filtrados = pedidos.filter(p => {
+                // Consulta directa a Supabase
+                const { data: pedidos, error: sbError } = await supabaseClient
+                    .from('pedidos')
+                    .select('*')
+                    .order('fecha', { ascending: false });
+
+                if (sbError) throw sbError;
+
+                // Comparación normalizada
+                const filtrados = (pedidos || []).filter(p => {
                     const telDB = (p.telefono_cliente || '').replace(/[\s\-\(\)]/g, '');
                     return telDB === tel;
                 });
@@ -4257,7 +4213,7 @@ _He adjuntado mi comprobante de pago arriba._`;
         /* ── Sesión persistente al cargar la página ── */
         document.addEventListener("DOMContentLoaded", async function() {
             // Recuperar sesión activa de Supabase
-            var { data: { session } } = await supabaseClient.auth.getSession();
+            var { data: { session } } = await supabase.auth.getSession();
             if (session && session.user) {
                 var email = session.user.email;
                 sessionStorage.setItem("shegos_email", email);
@@ -4265,18 +4221,10 @@ _He adjuntado mi comprobante de pago arriba._`;
             }
         });
 
-        /* ── Acción del botón header (registrarse si no hay sesión, cerrar sesión si sí) ── */
-        window.accionHeaderAuth = function() {
-            var email = sessionStorage.getItem("shegos_email");
-            if (email) {
-                authCerrarSesion();
-            } else {
-                abrirModalAuth();
-            }
-        };
-
         /* ── Abrir / cerrar modal ── */
         window.abrirModalAuth = function() {
+            var email = sessionStorage.getItem("shegos_email");
+            if (email) { abrirPestana('rastreo-pedidos'); return; }
             $e("auth-modal-overlay").classList.add("active");
             authMostrarPaso("email");
             setTimeout(function() { var el = $e("auth-email-input"); if(el) el.focus(); }, 100);
@@ -4284,16 +4232,9 @@ _He adjuntado mi comprobante de pago arriba._`;
         window.cerrarModalAuth = function() {
             $e("auth-modal-overlay").classList.remove("active");
         };
-
-        /* ── ESC cierra el modal (sin click fuera accidental) ── */
-        document.addEventListener("keydown", function(e) {
-            if (e.key === "Escape") {
-                var overlay = $e("auth-modal-overlay");
-                if (overlay && overlay.classList.contains("active")) {
-                    cerrarModalAuth();
-                }
-            }
-        });
+        window.authModalClickFuera = function(e) {
+            if (e.target === $e("auth-modal-overlay")) cerrarModalAuth();
+        };
 
         function authMostrarPaso(paso) {
             ["email","codigo","ok"].forEach(function(p) {
@@ -4334,7 +4275,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                 errEl.style.display = "block";
                 console.error("Error OTP:", err.message);
             } finally {
-                if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = "Enviar Código"; }
+                if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = "Continuar"; }
             }
         };
 
@@ -4425,12 +4366,10 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         /* ── Activar sesión en UI ── */
         function authActivarSesion(email, cargarPedidos) {
-            var lbl  = $e("btn-acceder-label");
-            var icon = $e("btn-acceder-icon");
-            var btn  = $e("btn-acceder-header");
-            if (lbl)  lbl.textContent  = "Cerrar Sesión";
-            if (icon) icon.className   = "fas fa-sign-out-alt";
-            if (btn)  btn.classList.add("logueado");
+            var lbl = $e("btn-acceder-label");
+            var btn = $e("btn-acceder-header");
+            if (lbl) lbl.textContent = email.split("@")[0];
+            if (btn) btn.classList.add("logueado");
 
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
@@ -4447,12 +4386,10 @@ _He adjuntado mi comprobante de pago arriba._`;
             await supabaseClient.auth.signOut();
             sessionStorage.removeItem("shegos_email");
             sessionStorage.removeItem("shegos_token");
-            var lbl  = $e("btn-acceder-label");
-            var icon = $e("btn-acceder-icon");
-            var btn  = $e("btn-acceder-header");
-            if (lbl)  lbl.textContent  = "Registrarse";
-            if (icon) icon.className   = "fas fa-user";
-            if (btn)  btn.classList.remove("logueado");
+            var lbl = $e("btn-acceder-label");
+            var btn = $e("btn-acceder-header");
+            if (lbl) lbl.textContent = "Acceder";
+            if (btn) btn.classList.remove("logueado");
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
             if (guestEl) guestEl.style.display = "block";
@@ -4467,7 +4404,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             lista.innerHTML = '<div class="auth-empty-state"><i class="fas fa-spinner fa-spin"></i><p>Cargando pedidos...</p></div>';
 
             try {
-                var { data: pedidos, error } = await supabase
+                var { data: pedidos, error } = await supabaseClient
                     .from("pedidos")
                     .select("*")
                     .eq("email_cliente", email)
