@@ -1327,11 +1327,29 @@ td{padding:12px 14px;vertical-align:middle}
         </div>
       </div>
 
-      <!-- Toolbar -->
-      <div class="toolbar">
+      <!-- Sync status -->
+      <div id="lzt-sync-bar" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:0.72em;color:var(--text3);font-weight:500">
+        <span id="lzt-sync-dot" style="width:8px;height:8px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s"></span>
+        <span id="lzt-sync-label">Conectando...</span>
+        <span style="margin-left:auto;display:flex;gap:8px">
+          <button class="btn btn-ghost" style="padding:5px 12px;font-size:0.75em" onclick="window.lztLoad()"><i class="fas fa-sync-alt"></i> Forzar recarga</button>
+          <button class="btn btn-outline" onclick="window.lztOpenAddManual()"><i class="fas fa-plus"></i> Agregar manual</button>
+        </span>
+      </div>
+
+      <!-- Toolbar fila 1: búsqueda + estado + categoría -->
+      <div class="toolbar" style="margin-bottom:8px">
         <div class="search-wrap">
           <i class="fas fa-search"></i>
-          <input class="search-input" id="lzt-search" placeholder="LZT ID, título, cliente, Discord..." oninput="window.lztRender()">
+          <input class="search-input" id="lzt-search" placeholder="LZT ID, Discord, cliente..." oninput="window.lztRender()">
+        </div>
+        <div class="search-wrap" style="max-width:220px">
+          <i class="fas fa-heading" style="left:13px"></i>
+          <input class="search-input" id="lzt-filt-titulo" placeholder="Filtrar por título..." oninput="window.lztRender()" style="padding-left:36px">
+        </div>
+        <div class="search-wrap" style="max-width:220px">
+          <i class="fas fa-envelope" style="left:13px"></i>
+          <input class="search-input" id="lzt-filt-email" placeholder="Correo del cliente..." oninput="window.lztRender()" style="padding-left:36px">
         </div>
         <select class="filter-sel" id="lzt-filt-estado" onchange="window.lztRender()">
           <option value="">Todos</option>
@@ -1341,8 +1359,27 @@ td{padding:12px 14px;vertical-align:middle}
         <select class="filter-sel" id="lzt-filt-cat" onchange="window.lztRender()">
           <option value="">Todas las categorías</option>
         </select>
-        <button class="btn btn-accent" onclick="window.lztLoad()"><i class="fas fa-sync-alt"></i> Recargar</button>
-        <button class="btn btn-outline" onclick="window.lztOpenAddManual()"><i class="fas fa-plus"></i> Agregar manual</button>
+      </div>
+
+      <!-- Toolbar fila 2: filtros de fecha -->
+      <div class="toolbar" style="margin-bottom:16px">
+        <span style="font-size:0.72em;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:1px;white-space:nowrap;align-self:center"><i class="fas fa-calendar-alt" style="margin-right:5px;color:var(--accent)"></i>Fecha compra:</span>
+        <div class="date-picker-wrap" style="position:relative">
+          <div class="date-picker-input-row">
+            <input type="text" class="month-input" id="lzt-filt-desde" placeholder="Desde" readonly onclick="window.openCal('lzt-filt-desde','date')" style="min-width:110px">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-lzt-filt-desde"></div>
+        </div>
+        <div class="date-picker-wrap" style="position:relative">
+          <div class="date-picker-input-row">
+            <input type="text" class="month-input" id="lzt-filt-hasta" placeholder="Hasta" readonly onclick="window.openCal('lzt-filt-hasta','date')" style="min-width:110px">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-lzt-filt-hasta"></div>
+        </div>
+        <button class="btn btn-ghost" onclick="window.lztClearFechas()" style="padding:7px 12px"><i class="fas fa-times"></i> Limpiar fechas</button>
+        <button class="btn btn-outline" onclick="window.lztExportCSV()" style="padding:7px 14px;margin-left:auto"><i class="fas fa-download"></i> Exportar CSV</button>
       </div>
 
       <!-- Tabla -->
@@ -5110,11 +5147,7 @@ window.calConfirm = function(inputId) {
     closeOverlayById(top.id);
   });
 
-  // Click on the dark backdrop (not on .mcard or .confirm-card) closes it
-  document.addEventListener('click', function(e) {
-    if (!e.target.classList.contains('overlay')) return;
-    closeOverlayById(e.target.id);
-  });
+  // Click fuera del modal (backdrop) NO cierra — solo ESC para evitar cierres accidentales
 
   function closeOverlayById(id) {
     if (!id) return;
@@ -6054,11 +6087,26 @@ window.resetWallpaper = function() {
 (function() {
   // ── Estado local ──────────────────────────────────────────────
   let lztItems = [];
+  let lztRealtimeChannel = null;
+  let lztAutoRefreshTimer = null;
+
+  // ── UI de estado de sync ──────────────────────────────────────
+  function lztSetSyncStatus(status, msg) {
+    const dot   = document.getElementById('lzt-sync-dot');
+    const label = document.getElementById('lzt-sync-label');
+    if (!dot || !label) return;
+    const colors = { ok: '#28feb6', loading: '#ffd700', error: '#ff4d6d', off: '#444' };
+    dot.style.background = colors[status] || colors.off;
+    label.textContent = msg;
+  }
 
   // ── Cargar desde Supabase ─────────────────────────────────────
-  window.lztLoad = async function() {
-    const tbody = document.getElementById('lzt-tbody');
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>';
+  window.lztLoad = async function(silent = false) {
+    if (!silent) {
+      const tbody = document.getElementById('lzt-tbody');
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>';
+      lztSetSyncStatus('loading', 'Cargando datos...');
+    }
     try {
       const { data, error } = await supabase
         .from('inventario_lzt')
@@ -6069,34 +6117,167 @@ window.resetWallpaper = function() {
       lztBuildCatFilter();
       lztRender();
       lztUpdateStats();
+      const now = new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      lztSetSyncStatus('ok', `Sincronizado · ${now}`);
     } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--red)"><i class="fas fa-exclamation-circle"></i> Error al cargar: ${e.message}</td></tr>`;
+      document.getElementById('lzt-tbody').innerHTML =
+        `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--red)"><i class="fas fa-exclamation-circle"></i> Error al cargar: ${e.message}</td></tr>`;
+      lztSetSyncStatus('error', 'Error de conexión — reintentando...');
     }
   };
+
+  // ── Realtime subscription ─────────────────────────────────────
+  function lztStartRealtime() {
+    // Limpiar suscripción anterior si existe
+    if (lztRealtimeChannel) {
+      supabase.removeChannel(lztRealtimeChannel);
+      lztRealtimeChannel = null;
+    }
+    lztSetSyncStatus('loading', 'Conectando al tiempo real...');
+    try {
+      lztRealtimeChannel = supabase
+        .channel('inventario_lzt_changes')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'inventario_lzt' }, () => {
+          window.lztLoad(true);
+        })
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            lztSetSyncStatus('ok', 'En vivo · sincronización automática activa');
+            // Cargar datos iniciales una vez conectado
+            window.lztLoad(true);
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+            lztSetSyncStatus('error', 'Tiempo real no disponible — usando refresco cada 30s');
+            lztStartFallbackPolling();
+          }
+        });
+    } catch (e) {
+      lztSetSyncStatus('error', 'Error al conectar — usando refresco cada 30s');
+      lztStartFallbackPolling();
+    }
+  }
+
+  // ── Fallback: polling cada 30s si realtime falla ──────────────
+  function lztStartFallbackPolling() {
+    if (lztAutoRefreshTimer) clearInterval(lztAutoRefreshTimer);
+    lztAutoRefreshTimer = setInterval(() => {
+      window.lztLoad(true);
+    }, 30000);
+  }
 
   // ── Construir filtro de categorías ────────────────────────────
   function lztBuildCatFilter() {
     const cats = [...new Set(lztItems.map(i => i.categoria).filter(Boolean))].sort();
     const sel = document.getElementById('lzt-filt-cat');
+    if (!sel) return;
     const cur = sel.value;
     sel.innerHTML = '<option value="">Todas las categorías</option>' +
       cats.map(c => `<option value="${c}" ${c===cur?'selected':''}>${c}</option>`).join('');
   }
 
-  // ── Render tabla ──────────────────────────────────────────────
-  window.lztRender = function() {
-    const q     = (document.getElementById('lzt-search')?.value || '').toLowerCase();
-    const est   = document.getElementById('lzt-filt-estado')?.value || '';
-    const cat   = document.getElementById('lzt-filt-cat')?.value || '';
-    const tbody = document.getElementById('lzt-tbody');
-    if (!tbody) return;
+  // ── Limpiar filtros de fecha ───────────────────────────────────
+  window.lztClearFechas = function() {
+    const d = document.getElementById('lzt-filt-desde');
+    const h = document.getElementById('lzt-filt-hasta');
+    if (d) d.value = '';
+    if (h) h.value = '';
+    window.lztRender();
+  };
+
+  window.lztExportCSV = function() {
+    // Reutiliza los mismos filtros activos del render
+    const q      = (document.getElementById('lzt-search')?.value || '').toLowerCase();
+    const titulo = (document.getElementById('lzt-filt-titulo')?.value || '').toLowerCase();
+    const email  = (document.getElementById('lzt-filt-email')?.value || '').toLowerCase();
+    const est    = document.getElementById('lzt-filt-estado')?.value || '';
+    const cat    = document.getElementById('lzt-filt-cat')?.value || '';
+    const desde  = document.getElementById('lzt-filt-desde')?.value || '';
+    const hasta  = document.getElementById('lzt-filt-hasta')?.value || '';
+
+    const desdeMs = desde ? new Date(desde + 'T00:00:00').getTime() : null;
+    const hastaMs = hasta ? new Date(hasta + 'T23:59:59').getTime() : null;
 
     const filtered = lztItems.filter(i => {
-      const matchQ = !q || [i.lzt_item_id, i.titulo, i.cliente_nombre, i.cliente_discord, i.cliente_email, i.pedido_id]
+      const matchQ     = !q || [i.lzt_item_id, i.titulo, i.cliente_nombre, i.cliente_discord, i.cliente_email, i.pedido_id]
         .some(v => v && v.toLowerCase().includes(q));
-      const matchEst = !est || (est === 'vendido' ? i.vendido : !i.vendido);
-      const matchCat = !cat || i.categoria === cat;
-      return matchQ && matchEst && matchCat;
+      const matchTit   = !titulo || (i.titulo || '').toLowerCase().includes(titulo);
+      const matchEmail = !email  || (i.cliente_email || '').toLowerCase().includes(email);
+      const matchEst   = !est   || (est === 'vendido' ? i.vendido : !i.vendido);
+      const matchCat   = !cat   || i.categoria === cat;
+      let   matchFecha = true;
+      if (desdeMs || hastaMs) {
+        const fMs = i.fecha_compra ? new Date(i.fecha_compra).getTime() : null;
+        if (!fMs) { matchFecha = false; }
+        else {
+          if (desdeMs && fMs < desdeMs) matchFecha = false;
+          if (hastaMs && fMs > hastaMs) matchFecha = false;
+        }
+      }
+      return matchQ && matchTit && matchEmail && matchEst && matchCat && matchFecha;
+    });
+
+    if (!filtered.length) { showToast('No hay ítems para exportar con los filtros actuales', true); return; }
+
+    const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+    let csv = 'LZT ID,Titulo,Categoria,Costo (USD),Precio Venta (USD),Ganancia (USD),Estado,Cliente Nombre,Cliente Discord,Cliente Email,Pedido ID,Fecha Compra,URL,Notas\n';
+    filtered.forEach(i => {
+      const ganancia = i.precio_venta != null ? (i.precio_venta - i.precio_costo).toFixed(2) : '';
+      const estado   = i.vendido ? 'Vendido' : 'Disponible';
+      const fecha    = i.fecha_compra ? new Date(i.fecha_compra).toLocaleDateString('es-DO', {day:'numeric',month:'short',year:'numeric'}) : '';
+      csv += [
+        esc(i.lzt_item_id), esc(i.titulo), esc(i.categoria),
+        esc(i.precio_costo != null ? parseFloat(i.precio_costo).toFixed(2) : ''),
+        esc(i.precio_venta != null ? parseFloat(i.precio_venta).toFixed(2) : ''),
+        esc(ganancia), esc(estado),
+        esc(i.cliente_nombre), esc(i.cliente_discord), esc(i.cliente_email),
+        esc(i.pedido_id), esc(fecha), esc(i.url_lzt), esc(i.notas)
+      ].join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    const label = (desde && hasta) ? `${desde}_al_${hasta}` : (desde ? `desde_${desde}` : (hasta ? `hasta_${hasta}` : 'todos'));
+    a.download = `LZT_Inventario_${label}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast(`CSV exportado — ${filtered.length} ítem${filtered.length !== 1 ? 's' : ''} ✓`);
+  };
+
+  // ── Render tabla ──────────────────────────────────────────────
+  window.lztRender = function() {
+    const q      = (document.getElementById('lzt-search')?.value || '').toLowerCase();
+    const titulo = (document.getElementById('lzt-filt-titulo')?.value || '').toLowerCase();
+    const email  = (document.getElementById('lzt-filt-email')?.value || '').toLowerCase();
+    const est    = document.getElementById('lzt-filt-estado')?.value || '';
+    const cat    = document.getElementById('lzt-filt-cat')?.value || '';
+    const desde  = document.getElementById('lzt-filt-desde')?.value || '';
+    const hasta  = document.getElementById('lzt-filt-hasta')?.value || '';
+    const tbody  = document.getElementById('lzt-tbody');
+    if (!tbody) return;
+
+    // Parsear fechas de filtro (al inicio/final del día)
+    const desdeMs = desde ? new Date(desde + 'T00:00:00').getTime() : null;
+    const hastaMs = hasta ? new Date(hasta + 'T23:59:59').getTime() : null;
+
+    const filtered = lztItems.filter(i => {
+      const matchQ     = !q || [i.lzt_item_id, i.titulo, i.cliente_nombre, i.cliente_discord, i.cliente_email, i.pedido_id]
+        .some(v => v && v.toLowerCase().includes(q));
+      const matchTit   = !titulo || (i.titulo || '').toLowerCase().includes(titulo);
+      const matchEmail = !email  || (i.cliente_email || '').toLowerCase().includes(email);
+      const matchEst   = !est   || (est === 'vendido' ? i.vendido : !i.vendido);
+      const matchCat   = !cat   || i.categoria === cat;
+      let   matchFecha = true;
+      if (desdeMs || hastaMs) {
+        const fMs = i.fecha_compra ? new Date(i.fecha_compra).getTime() : null;
+        if (!fMs) {
+          matchFecha = false;
+        } else {
+          if (desdeMs && fMs < desdeMs) matchFecha = false;
+          if (hastaMs && fMs > hastaMs) matchFecha = false;
+        }
+      }
+      return matchQ && matchTit && matchEmail && matchEst && matchCat && matchFecha;
     });
 
     if (!filtered.length) {
@@ -6211,7 +6392,8 @@ window.resetWallpaper = function() {
       if (error) throw error;
       document.getElementById('modal-lzt-venta').classList.remove('open');
       window.showToast('✅ Venta registrada correctamente');
-      await window.lztLoad();
+      // Realtime actualizará automáticamente, pero por si acaso:
+      await window.lztLoad(true);
     } catch (e) {
       window.showToast('Error: ' + e.message, true);
     }
@@ -6250,7 +6432,7 @@ window.resetWallpaper = function() {
       if (error) throw error;
       document.getElementById('modal-lzt-add').classList.remove('open');
       window.showToast('✅ Ítem agregado');
-      await window.lztLoad();
+      await window.lztLoad(true);
     } catch (e) {
       window.showToast('Error: ' + e.message, true);
     }
@@ -6263,18 +6445,28 @@ window.resetWallpaper = function() {
       const { error } = await supabase.from('inventario_lzt').delete().eq('id', id);
       if (error) throw error;
       window.showToast('Ítem eliminado');
-      await window.lztLoad();
+      await window.lztLoad(true);
     } catch (e) {
       window.showToast('Error: ' + e.message, true);
     }
   };
 
-  // ── Auto-cargar al abrir la pestaña ───────────────────────────
+  // ── Auto-cargar al abrir la pestaña + iniciar realtime ────────
   const origSwitch = window.switchTab;
   window.switchTab = function(tab, btn) {
     origSwitch && origSwitch(tab, btn);
-    if (tab === 'lzt' && lztItems.length === 0) window.lztLoad();
+    if (tab === 'lzt') {
+      // Primera vez: iniciar realtime (que también carga datos)
+      if (!lztRealtimeChannel) {
+        lztStartRealtime();
+      }
+    }
   };
+
+  // Si la pestaña LZT ya está activa al cargar la página, iniciar realtime
+  if (document.getElementById('tab-lzt')?.classList.contains('active')) {
+    lztStartRealtime();
+  }
 })();
 </script>
 </body>
