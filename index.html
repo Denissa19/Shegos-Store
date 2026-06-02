@@ -4240,13 +4240,13 @@ _He adjuntado mi comprobante de pago arriba._`;
         b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Despertando servidor...';
         try{
           // Despertar el servidor primero (Render free tier se duerme tras 15min sin uso)
-          try{ await fetch(API+"/status",{headers:{"X-Api-Key":KEY},signal:AbortSignal.timeout(35000)}); } catch(wake){}
+          try{ await fetch(API+"/status",{headers:{"X-Api-Key":KEY},signal:AbortSignal.timeout(60000)}); } catch(wake){}
           b.innerHTML='<span class="sb-spin">🚀</span> Enviando solicitud...';
-          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:p?p.value:"epic"}),signal:AbortSignal.timeout(35000)});
+          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:p?p.value:"epic"}),signal:AbortSignal.timeout(60000)});
           var d=await r.json();
           if(r.ok){ 
             if(d.already_added>0){ 
-              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
+              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.already_added||0;
               sbShow("already"); 
             } else { var e=Date.now()+172800000; localStorage.setItem("sbEnd",e); localStorage.setItem("sbCount",d.requests_sent||0); sbStartTimer(e,d.requests_sent||0); sbShow("countdown"); if(u) u.value=""; } 
           }
