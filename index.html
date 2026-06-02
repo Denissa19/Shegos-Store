@@ -4237,20 +4237,26 @@ _He adjuntado mi comprobante de pago arriba._`;
         var u=document.getElementById("sb-username"),p=document.getElementById("sb-platform"),b=document.getElementById("sb-btn");
         var username=u?u.value.trim():""; if(!username) return;
         document.getElementById("sb-error").style.display="none";
-        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
+        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Despertando servidor...';
         try{
-          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:p?p.value:"epic"})});
+          // Despertar el servidor primero (Render free tier se duerme tras 15min sin uso)
+          try{ await fetch(API+"/status",{signal:AbortSignal.timeout(35000)}); } catch(wake){}
+          b.innerHTML='<span class="sb-spin">🚀</span> Enviando solicitud...';
+          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:p?p.value:"epic"}),signal:AbortSignal.timeout(35000)});
           var d=await r.json();
-      if(r.ok){ 
-        if(d.already_added>0){ 
-          var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
-          sbShow("already"); 
-        } else { var e=Date.now()+172800000; localStorage.setItem("sbEnd",e); localStorage.setItem("sbCount",d.requests_sent||0); sbStartTimer(e,d.requests_sent||0); sbShow("countdown"); if(u) u.value=""; } 
-      }
+          if(r.ok){ 
+            if(d.already_added>0){ 
+              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
+              sbShow("already"); 
+            } else { var e=Date.now()+172800000; localStorage.setItem("sbEnd",e); localStorage.setItem("sbCount",d.requests_sent||0); sbStartTimer(e,d.requests_sent||0); sbShow("countdown"); if(u) u.value=""; } 
+          }
           else if(r.status===404){ sbErr("Usuario no encontrado. Verifica el nombre exacto."); }
           else if(r.status===503){ sbErr("Bots fuera de línea. Agrega las cuentas manualmente."); }
           else{ sbErr(d.detail||"Ocurrió un error. Inténtalo de nuevo."); }
-        } catch(e){ sbErr("Error de conexión. Verifica tu internet."); }
+        } catch(e){ 
+          if(e.name==="TimeoutError"||e.name==="AbortError"){ sbErr("El servidor tardó demasiado. Espera 1 minuto e intenta de nuevo."); }
+          else{ sbErr("Error de conexión. Verifica tu internet."); }
+        }
         finally{ b.disabled=false; b.innerHTML='🎮 Enviar Solicitud'; }
       };
 
