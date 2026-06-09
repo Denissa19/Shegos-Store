@@ -1379,7 +1379,6 @@ td{padding:12px 14px;vertical-align:middle}
           <div class="cal-popup" id="cal-lzt-filt-hasta"></div>
         </div>
         <button class="btn btn-ghost" onclick="window.lztClearFechas()" style="padding:7px 12px"><i class="fas fa-times"></i> Limpiar fechas</button>
-        <button class="btn btn-outline" onclick="window.lztExportCSV()" style="padding:7px 14px"><i class="fas fa-download"></i> Exportar CSV</button>
       </div>
 
       <!-- Tabla -->
@@ -2504,7 +2503,7 @@ async function updateOrderStatus(id, newStatus) {
   try {
     const { error } = await supabase
       .from('pedidos')
-      .update({ status: newStatus })
+      .update({ estado: newStatus })
       .eq('id', id);
 
     if (error) throw error;
@@ -3375,6 +3374,7 @@ function mostrarPanel(email, role) {
   fetchOrders();
   setupRealtime();
   cargarSugerenciasClientes();
+  syncClientesFromSupabase(); // Sync clientes from Supabase on login
   loadSavedWallpaper();
 }
 
@@ -5237,7 +5237,7 @@ window.loadNotes = loadNotes;
 window.renderNotesList = renderNotesList;
 
 // ═══════════════════════════════════════════════
-// SISTEMA DE CLIENTES (localStorage)
+// SISTEMA DE CLIENTES (localStorage + Supabase)
 // ═══════════════════════════════════════════════
 const CLIENTES_KEY = 'shegos_clientes_v1';
 
@@ -5247,6 +5247,32 @@ function getClientes() {
 
 function saveClientes(arr) {
   localStorage.setItem(CLIENTES_KEY, JSON.stringify(arr));
+}
+
+// Carga clientes de Supabase y los combina con localStorage (sin duplicados por nombre)
+async function syncClientesFromSupabase() {
+  try {
+    const { data, error } = await supabase.from('clientes').select('*').order('updated_at', { ascending: false });
+    if (error) throw error;
+    const local = getClientes();
+    const merged = [...local];
+    (data || []).forEach(remote => {
+      const idx = merged.findIndex(c => c.nombre?.toLowerCase() === remote.nombre?.toLowerCase());
+      if (idx >= 0) {
+        // Preferir el más reciente
+        const localTs = merged[idx].updated || 0;
+        const remoteTs = remote.updated_at ? new Date(remote.updated_at).getTime() : 0;
+        if (remoteTs > localTs) {
+          merged[idx] = { nombre: remote.nombre, wa: remote.wa || '', metodo: remote.metodo || '', updated: remoteTs };
+        }
+      } else {
+        merged.unshift({ nombre: remote.nombre, wa: remote.wa || '', metodo: remote.metodo || '', updated: new Date(remote.updated_at || 0).getTime() });
+      }
+    });
+    saveClientes(merged);
+  } catch(e) {
+    console.warn('syncClientesFromSupabase:', e?.message || e);
+  }
 }
 
 function upsertCliente(nombre, wa, metodo) {
@@ -5261,6 +5287,9 @@ function upsertCliente(nombre, wa, metodo) {
     clientes.unshift({ nombre, wa: wa||'', metodo: metodo||'', updated: Date.now() });
   }
   saveClientes(clientes);
+  // Sincronizar con Supabase (sin bloquear la UI)
+  supabase.from('clientes').upsert([{ nombre, wa: wa||'', metodo: metodo||'', updated_at: new Date().toISOString() }], { onConflict: 'nombre' })
+    .then(({ error }) => { if (error) console.warn('upsertCliente Supabase:', error.message); });
 }
 
 function getClienteSuggestions(query) {
@@ -6084,14 +6113,6 @@ window.resetWallpaper = function() {
 
 <!-- ── MÓDULO INVENTARIO LZT ──────────────────────────────────────── -->
 <script>
-(function waitForSupabase() {
-  if (typeof supabase === 'undefined' || typeof supabase.from !== 'function') {
-    return setTimeout(waitForSupabase, 50);
-  }
-  initLZT();
-})();
-
-function initLZT() {
 (function() {
   // ── Estado local ──────────────────────────────────────────────
   let lztItems = [];
@@ -6189,67 +6210,6 @@ function initLZT() {
     if (d) d.value = '';
     if (h) h.value = '';
     window.lztRender();
-  };
-
-  window.lztExportCSV = function() {
-    // Reutiliza los mismos filtros activos del render
-    const q      = (document.getElementById('lzt-search')?.value || '').toLowerCase();
-    const titulo = (document.getElementById('lzt-filt-titulo')?.value || '').toLowerCase();
-    const email  = (document.getElementById('lzt-filt-email')?.value || '').toLowerCase();
-    const est    = document.getElementById('lzt-filt-estado')?.value || '';
-    const cat    = document.getElementById('lzt-filt-cat')?.value || '';
-    const desde  = document.getElementById('lzt-filt-desde')?.value || '';
-    const hasta  = document.getElementById('lzt-filt-hasta')?.value || '';
-
-    const desdeMs = desde ? new Date(desde + 'T00:00:00').getTime() : null;
-    const hastaMs = hasta ? new Date(hasta + 'T23:59:59').getTime() : null;
-
-    const filtered = lztItems.filter(i => {
-      const matchQ     = !q || [i.lzt_item_id, i.titulo, i.cliente_nombre, i.cliente_discord, i.cliente_email, i.pedido_id]
-        .some(v => v && v.toLowerCase().includes(q));
-      const matchTit   = !titulo || (i.titulo || '').toLowerCase().includes(titulo);
-      const matchEmail = !email  || (i.cliente_email || '').toLowerCase().includes(email);
-      const matchEst   = !est   || (est === 'vendido' ? i.vendido : !i.vendido);
-      const matchCat   = !cat   || i.categoria === cat;
-      let   matchFecha = true;
-      if (desdeMs || hastaMs) {
-        const fMs = i.fecha_compra ? new Date(i.fecha_compra).getTime() : null;
-        if (!fMs) { matchFecha = false; }
-        else {
-          if (desdeMs && fMs < desdeMs) matchFecha = false;
-          if (hastaMs && fMs > hastaMs) matchFecha = false;
-        }
-      }
-      return matchQ && matchTit && matchEmail && matchEst && matchCat && matchFecha;
-    });
-
-    if (!filtered.length) { showToast('No hay ítems para exportar con los filtros actuales', true); return; }
-
-    const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-    let csv = 'LZT ID,Titulo,Categoria,Costo (USD),Precio Venta (USD),Ganancia (USD),Estado,Cliente Nombre,Cliente Discord,Cliente Email,Pedido ID,Fecha Compra,URL,Notas\n';
-    filtered.forEach(i => {
-      const ganancia = i.precio_venta != null ? (i.precio_venta - i.precio_costo).toFixed(2) : '';
-      const estado   = i.vendido ? 'Vendido' : 'Disponible';
-      const fecha    = i.fecha_compra ? new Date(i.fecha_compra).toLocaleDateString('es-DO', {day:'numeric',month:'short',year:'numeric'}) : '';
-      csv += [
-        esc(i.lzt_item_id), esc(i.titulo), esc(i.categoria),
-        esc(i.precio_costo != null ? parseFloat(i.precio_costo).toFixed(2) : ''),
-        esc(i.precio_venta != null ? parseFloat(i.precio_venta).toFixed(2) : ''),
-        esc(ganancia), esc(estado),
-        esc(i.cliente_nombre), esc(i.cliente_discord), esc(i.cliente_email),
-        esc(i.pedido_id), esc(fecha), esc(i.url_lzt), esc(i.notas)
-      ].join(',') + '\n';
-    });
-
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    const label = (desde && hasta) ? `${desde}_al_${hasta}` : (desde ? `desde_${desde}` : (hasta ? `hasta_${hasta}` : 'todos'));
-    a.download = `LZT_Inventario_${label}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast(`CSV exportado — ${filtered.length} ítem${filtered.length !== 1 ? 's' : ''} ✓`);
   };
 
   // ── Render tabla ──────────────────────────────────────────────
@@ -6476,6 +6436,5 @@ function initLZT() {
     lztStartRealtime();
   }
 })();
-} // end initLZT
 </script>
 </body>
