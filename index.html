@@ -75,7 +75,7 @@
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg');
+            background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('https://4kwallpapers.com/images/walls/thumbs_2t/10414.jpg');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -289,110 +289,360 @@
         .tab-btn:hover { color: #ffffff; background-color: #121212; }
         .tab-btn.activo { background-color: #ffffff; color: #000000; }
         
-        /* SISTEMA DE PASOS CHECKOUT */
+        /* ══════════════════════════════════════
+           CHECKOUT — REDISEÑO COMPLETO
+           ══════════════════════════════════════ */
+
+        /* Barra de progreso con labels */
         .checkout-steps-nav {
             display: flex;
+            align-items: flex-start;
             justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
+            gap: 0;
+            margin-bottom: 40px;
             position: relative;
         }
-        .checkout-steps-nav::before {
-            content: "";
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
+        .ck-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        .ck-step-connector {
+            flex: 1;
             height: 2px;
-            background: #222;
-            z-index: 1;
+            background: #1e1e1e;
+            margin-top: 19px;
+            max-width: 80px;
+            transition: background 0.4s;
         }
+        .ck-step-connector.done { background: #28feb6; }
         .step-dot {
-            width: 40px; height: 40px; background: #000; border: 2px solid #333;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            z-index: 2; font-weight: bold; color: #555; transition: 0.3s; font-size: 0.9em;
+            width: 38px; height: 38px;
+            background: #0a0a0a;
+            border: 2px solid #222;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #444;
+            transition: all 0.35s cubic-bezier(.4,0,.2,1);
+            font-size: 0.85em;
         }
-        .step-dot.active { border-color: #28feb6; color: #28feb6; box-shadow: 0 0 15px rgba(40, 254, 182, 0.2); }
+        .step-dot.active {
+            border-color: #28feb6;
+            color: #28feb6;
+            background: rgba(40,254,182,0.06);
+            box-shadow: 0 0 18px rgba(40,254,182,0.18);
+        }
+        .step-dot.done {
+            background: #28feb6;
+            border-color: #28feb6;
+            color: #000;
+        }
+        .ck-step-label {
+            font-size: 0.68em;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 600;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        .ck-step-label.active { color: #28feb6; }
+        .ck-step-label.done { color: #aaa; }
         .step-content { display: none; }
-        .step-content.active { display: block; animation: fadeIn 0.4s ease; }
+        .step-content.active { display: block; animation: fadeIn 0.35s ease; }
 
-        /* ESTILOS CHECKOUT REDISEÑO */
+        /* Layout principal */
         .checkout-layout {
-            display: grid;
-            grid-template-columns: 3fr 2fr; /* Aproximadamente 60% / 40% */
-            gap: 30px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 0;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 860px) {
             .checkout-layout {
                 display: grid;
-                grid-template-columns: 3fr 2fr;
-                gap: 30px;
+                grid-template-columns: 1fr 340px;
+                gap: 28px;
+                align-items: start;
             }
         }
 
+        /* Columna formulario */
+        .checkout-form-column { min-width: 0; }
+
+        /* Tarjeta de sección */
         .form-section {
-            border: 1px solid #333333; /* Gris del logo para datos */
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px; /* Espacio entre secciones del formulario */
+            background: rgba(10,10,10,0.82);
+            border: 1px solid #1c1c1c;
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(6px);
         }
-
+        .form-section:last-child { margin-bottom: 0; }
         .form-section h4 {
-            color: #888888; /* Gris secundario para títulos de datos */
-            margin-top: 0;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 10px;
-            font-size: 1.1em;
+            margin: 0 0 18px 0;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .form-section h4::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #1c1c1c;
         }
 
-        .checkout-summary-column {
-            order: 2; /* En móvil aparece al final después del formulario */
+        /* Resumen de items en paso 1 */
+        .ck-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid #111;
+        }
+        .ck-item:last-child { border-bottom: none; }
+        .ck-item-img {
+            width: 48px; height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #111;
+        }
+        .ck-item-name { flex: 1; font-size: 0.88em; color: #ddd; line-height: 1.3; }
+        .ck-item-price { font-size: 0.95em; font-weight: 700; color: #28feb6; white-space: nowrap; }
+
+        /* Inputs rediseñados */
+        .ck-field { margin-bottom: 16px; }
+        .ck-field label {
+            display: block;
+            font-size: 0.72em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #666;
+            margin-bottom: 7px;
+        }
+        .ck-field input {
             width: 100%;
+            background: #0d0d0d;
+            border: 1px solid #222;
+            border-radius: 8px;
+            color: #fff;
+            padding: 11px 14px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            margin: 0;
         }
-        @media (min-width: 768px) {
+        .ck-field input:focus {
+            outline: none;
+            border-color: #28feb6;
+            box-shadow: 0 0 0 3px rgba(40,254,182,0.08);
+        }
+        .ck-field input::placeholder { color: #333; }
+
+        /* Grid de cuentas */
+        .cuentas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .cuenta-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #0d0d0d;
+            border: 1px solid #1e1e1e;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 0.8em;
+            color: #aaa;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            user-select: none;
+        }
+        .cuenta-option:has(input:checked) {
+            border-color: #28feb6;
+            color: #fff;
+            background: rgba(40,254,182,0.06);
+        }
+        .cuenta-option:hover { border-color: #444; color: #ddd; }
+        .cuenta-option input[type="checkbox"] {
+            width: 15px; height: 15px;
+            margin: 0; accent-color: #28feb6; cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* Métodos de pago */
+        .metodos-pago-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 10px;
+        }
+        .metodo-card { position: relative; }
+        .metodo-card input[type="radio"] {
+            position: absolute; opacity: 0; width: 0; height: 0;
+        }
+        .metodo-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 10px;
+            background: #0d0d0d;
+            border: 1px solid #1e1e1e;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 0.75em;
+            color: #777;
+            font-weight: 600;
+        }
+        .metodo-label img { height: 28px; width: auto; object-fit: contain; filter: grayscale(0.4); transition: filter 0.2s; }
+        .metodo-label:hover { border-color: #333; color: #bbb; }
+        .metodo-card input[type="radio"]:checked + .metodo-label {
+            border-color: #28feb6;
+            background: rgba(40,254,182,0.07);
+            color: #28feb6;
+            box-shadow: 0 0 0 2px rgba(40,254,182,0.15);
+        }
+        .metodo-card input[type="radio"]:checked + .metodo-label img { filter: none; }
+
+        /* Comprobante */
+        .ck-file-upload {
+            position: relative;
+            border: 1px dashed #252525;
+            border-radius: 10px;
+            padding: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.25s, background 0.25s;
+            background: #080808;
+        }
+        .ck-file-upload:hover { border-color: #28feb6; background: rgba(40,254,182,0.03); }
+        .ck-file-upload input[type="file"] {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
+        }
+        .ck-file-upload-icon { font-size: 1.6em; color: #333; margin-bottom: 8px; }
+        .ck-file-upload-text { font-size: 0.8em; color: #555; }
+        .ck-file-upload-text span { color: #28feb6; }
+        #ck-file-name { font-size: 0.75em; color: #28feb6; margin-top: 6px; display: none; }
+
+        /* Columna resumen sticky */
+        .checkout-summary-column {
+            order: -1;
+        }
+        @media (min-width: 860px) {
             .checkout-summary-column {
                 order: unset;
                 position: sticky;
-                top: 100px;
+                top: 90px;
                 align-self: start;
-                height: fit-content;
-                width: 316px;
-            }
-        }
-        @media (min-width: 768px) {
-            .checkout-summary-column {
-                order: unset;
-                position: sticky;
-                top: 100px;
-                align-self: start;
-                height: fit-content;
             }
         }
 
         .order-summary-card {
-            background-color: #121212;
-            border: 1px solid #333333; /* Gris minimalista */
-            border-radius: 10px;
-            padding: 25px;
+            background: rgba(8,8,8,0.9);
+            border: 1px solid #1c1c1c;
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(8px);
+        }
+        .order-summary-card h4 {
+            margin: 0 0 18px 0;
+            font-size: 0.78em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .order-summary-card h4::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #1c1c1c;
         }
 
-        .order-summary-card h4 {
-            color: #888888;
-            margin-top: 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 10px;
-            font-size: 1.2em;
+        /* Líneas totales */
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.88em;
+            color: #888;
+            margin-bottom: 8px;
         }
+        .summary-line.total {
+            font-size: 1.15em;
+            font-weight: 700;
+            color: #fff;
+            border-top: 1px solid #1c1c1c;
+            padding-top: 14px;
+            margin-top: 10px;
+        }
+        .summary-line.total span:last-child { color: #28feb6; }
+
+        /* Botón principal de checkout */
+        #btn-main-checkout {
+            width: 100%;
+            padding: 15px;
+            background: #28feb6;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+        }
+        #btn-main-checkout:hover {
+            background: #1de8a4;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(40,254,182,0.25);
+        }
+        #btn-main-checkout:active { transform: translateY(0); }
+        .btn-pulse { animation: pulseAqua 2s infinite; }
+
+        /* Botón volver */
+        .ck-back-btn {
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 0.8em;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Poppins', sans-serif;
+            transition: color 0.2s;
+        }
+        .ck-back-btn:hover { color: #aaa; }
 
         /* ESTILOS ESPECÍFICOS RASTREO */
         .search-box-rastreo { border: 2px solid #28feb6; background: #000; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 30px; }
+
         .btn-rastreo { background: #28feb6; color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; width: auto; margin-top: 10px; }
         .order-card { background: #111; border-left: 4px solid #28feb6; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; animation: fadeInUp 0.4s ease; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
@@ -916,71 +1166,7 @@
             text-align: left;
         }
 
-        /* REDISEÑO MÉTODOS DE PAGO */
-        .metodos-pago-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            grid-template-columns: 1fr; /* Columna única en móvil para evitar cortes */
-            gap: 10px;
-            margin: 20px 0 40px 0;
-        }
-        @media (min-width: 768px) {
-            .metodos-pago-container {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            }
-        }
-        .metodo-card {
-            width: 100%;
-            cursor: pointer;
-        }
-        .metodo-card input[type="radio"] {
-            display: none;
-        }
-        .metodo-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-            background-color: #000;
-            border: 1px solid #28feb6;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #ccc;
-            height: 100%;
-            box-sizing: border-box;
-            position: relative;
-        }
-        .metodo-card input[type="radio"]:checked + .metodo-label {
-            border-width: 2px;
-            color: #ffffff;
-            background-color: rgba(40, 254, 182, 0.1);
-            box-shadow: 0 0 10px rgba(40, 254, 182, 0.2);
-            transform: scale(1.02);
-        }
-        .metodo-label::before {
-            content: "";
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 14px;
-            height: 14px;
-            border: 2px solid #444;
-            border-radius: 50%;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-        .metodo-card input[type="radio"]:checked + .metodo-label::before {
-            border-color: #28feb6;
-            background: radial-gradient(circle, #28feb6 40%, transparent 50%);
-            box-shadow: 0 0 5px rgba(40, 254, 182, 0.5);
-        }
-        .metodo-label i { font-size: 1.5em; }
-        .metodo-label img { height: 30px; width: auto; object-fit: contain; }
+        /* Métodos de pago — ver estilos en sección checkout */
 
         /* ESTILO BOTÓN PAYPAL REDISEÑADO */
         .btn-pago-paypal {
@@ -2435,7 +2621,7 @@
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Club de Fortnite</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('gamepass')">
@@ -2511,22 +2697,22 @@
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Para cuentas que no tienen problemas de región.</p>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="8.00">$8.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '8.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '8.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="21.00">$21.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '21.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '21.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="35.00">$35.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '35.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '35.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
 
@@ -2537,22 +2723,22 @@
                 </div>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="8.00">$8.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="21.00">$21.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '21.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '21.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
+                        <img src="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="35.00">$35.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '35.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '35.00', 'https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -2611,128 +2797,164 @@
         </div>
 
         <div id="checkout" class="section-box pestana oculto">
-            <h2 style="text-align: center; margin-bottom: 10px;">Finalizar Pedido</h2>
+            <h2 style="text-align: center; margin-bottom: 6px; font-size: 1.5em;">Finalizar Pedido</h2>
+            <p style="text-align:center; color:#555; font-size:0.82em; margin: 0 0 32px 0;">Completa los pasos para generar tu pedido</p>
             
             <div class="checkout-steps-nav">
-                <div class="step-dot active" id="dot-1">1</div>
-                <div class="step-dot" id="dot-2">2</div>
-                <div class="step-dot" id="dot-3">3</div>
+                <div class="ck-step">
+                    <div class="step-dot active" id="dot-1">1</div>
+                    <span class="ck-step-label active" id="lbl-1">Resumen</span>
+                </div>
+                <div class="ck-step-connector" id="conn-1"></div>
+                <div class="ck-step">
+                    <div class="step-dot" id="dot-2">2</div>
+                    <span class="ck-step-label" id="lbl-2">Datos</span>
+                </div>
+                <div class="ck-step-connector" id="conn-2"></div>
+                <div class="ck-step">
+                    <div class="step-dot" id="dot-3">3</div>
+                    <span class="ck-step-label" id="lbl-3">Pago</span>
+                </div>
             </div>
             
             <div class="checkout-layout">
                 <!-- Columna Izquierda: Formulario -->
                 <div class="checkout-form-column">
-                    <!-- PASO 1: DATOS -->
+
+                    <!-- PASO 1: RESUMEN -->
                     <div id="checkout-step-1" class="step-content active">
                         <div class="form-section">
-                            <h4>1. Resumen de tu Pedido</h4>
-                            <div id="checkout-productos-lista-paso">
-                                <!-- Se llena dinámicamente -->
-                            </div>
-                            <div class="order-summary-card" style="background: transparent; border: none; padding: 10px 0;">
+                            <h4>Productos en tu carrito</h4>
+                            <div id="checkout-productos-lista-paso"></div>
+                            <div style="margin-top: 14px;">
                                 <div class="summary-line">
-                                    <span>Subtotal:</span>
-                                    <span id="checkout-subtotal-resumen"></span>
+                                    <span>Subtotal</span>
+                                    <span id="checkout-subtotal-resumen">—</span>
                                 </div>
                                 <div class="summary-line total">
-                                    <span>Total:</span>
-                                    <span id="checkout-total-resumen"></span>
+                                    <span>Total</span>
+                                    <span id="checkout-total-resumen">—</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- PASO 2: DETALLES -->
+                    <!-- PASO 2: DATOS -->
                     <div id="checkout-step-2" class="step-content">
-                        <button class="btn-secundario" style="margin-bottom: 15px; border: none; font-size: 0.85em; opacity: 0.8; justify-content: flex-start; padding: 0;" onclick="cambiarPasoCheckout(1)">← Volver al resumen del pedido</button>
-                        
-                      <div class="form-section">
-                        <h4>2. Detalles de Contacto</h4>
-                        <label>Nombre Completo:</label>
-                        <input type="text" id="cliente-nombre" placeholder="Nombre completo">
-
-                        <label>Número de WhatsApp:</label>
-                        <input type="tel" id="cliente-whatsapp" placeholder="Ej: 521234567890">
-                        <label>ID de Epic Games:</label>
-                        <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
-                        
-                        <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                            <label>¿En qué cuenta nos tienes agregados?</label>
-                            <a href="javascript:void(0)" onclick="abrirPestana('ids-regalos')" style="color: #28feb6; font-size: 0.8em; text-decoration: none; border-bottom: 1px solid #28feb6;">¿No nos tienes?</a>
+                        <button class="ck-back-btn" onclick="cambiarPasoCheckout(1)">
+                            <i class="fas fa-arrow-left"></i> Volver al resumen
+                        </button>
+                        <div class="form-section">
+                            <h4>Información de contacto</h4>
+                            <div class="ck-field">
+                                <label>Nombre completo</label>
+                                <input type="text" id="cliente-nombre" placeholder="Tu nombre">
+                            </div>
+                            <div class="ck-field">
+                                <label>WhatsApp <span style="color:#555;font-size:0.85em;text-transform:none;letter-spacing:0">(con código de país)</span></label>
+                                <input type="tel" id="cliente-whatsapp" placeholder="Ej: 18091234567">
+                            </div>
+                            <div class="ck-field">
+                                <label>ID de Epic Games</label>
+                                <input type="text" id="cliente-epic" placeholder="Ej: JuanPerez123">
+                            </div>
                         </div>
-                        <div class="cuentas-grid" id="cuentas-seleccion">
-                            <label class="cuenta-option" style="grid-column: 1 / -1;"><input type="checkbox" onchange="toggleTodasCuentas(this)"> Todas las cuentas</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么1"> Shegos么1</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么2"> Shegos么2</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="DENISSA_7u7"> DENISSA_7u7</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-OS"> Maidas-OS</label>
-                            <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-S"> Maidas-S</label>
+                        <div class="form-section">
+                            <h4>¿En qué cuenta nos tienes agregados?</h4>
+                            <p style="font-size:0.78em; color:#555; margin: -6px 0 14px 0;">Selecciona las cuentas donde ya nos enviaste solicitud. <a href="javascript:void(0)" onclick="abrirPestana('ids-regalos')" style="color:#28feb6; text-decoration:none;">¿No nos tienes aún?</a></p>
+                            <div class="cuentas-grid" id="cuentas-seleccion">
+                                <label class="cuenta-option" style="grid-column: 1 / -1;">
+                                    <input type="checkbox" onchange="toggleTodasCuentas(this)"> Todas las cuentas
+                                </label>
+                                <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么1"> Shegos么1</label>
+                                <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Shegos么2"> Shegos么2</label>
+                                <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="DENISSA_7u7"> DENISSA_7u7</label>
+                                <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-OS"> Maidas-OS</label>
+                                <label class="cuenta-option"><input type="checkbox" name="cuenta-chk" value="Maidas-S"> Maidas-S</label>
+                            </div>
                         </div>
-                      </div>
                     </div>
 
                     <!-- PASO 3: PAGO -->
                     <div id="checkout-step-3" class="step-content">
-                        <button class="btn-secundario" style="margin-bottom: 15px; border: none; font-size: 0.85em; opacity: 0.8; justify-content: flex-start; padding: 0;" onclick="cambiarPasoCheckout(2)">← Volver a datos de contacto</button>
-
-                      <div class="form-section">
-                        <h4>3. Método de Pago</h4>
-                        <div class="metodos-pago-container">
-                            <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-link" value="link">
-                                <label for="met-link" class="metodo-label">
-                                    <img src="img/Linkdepago.webp" alt="Link de Pago">
-                                    <span>Link de Pago</span>
-                                </label>
-                            </div>
-                            <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-paypal" value="paypal">
-                                <label for="met-paypal" class="metodo-label">
-                                    <img src="img/Paypal.webp" alt="PayPal">
-                                    <span>PayPal</span>
-                                </label>
-                            </div>
-                            <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-popular" value="popular">
-                                <label for="met-popular" class="metodo-label">
-                                    <img src="img/Popular.webp" alt="Banco Popular">
-                                    <span>Banco Popular</span>
-                                </label>
-                            </div>
-                            <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-binance" value="binance">
-                                <label for="met-binance" class="metodo-label">
-                                    <img src="img/Binance.webp" alt="Binance Pay">
-                                    <span>Binance Pay</span>
-                                </label>
-                            </div>
-                            <div class="metodo-card">
-                                <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx">
-                                <label for="met-transfer" class="metodo-label">
-                                    <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
-                                    <span>Transferencia MX</span>
-                                </label>
+                        <button class="ck-back-btn" onclick="cambiarPasoCheckout(2)">
+                            <i class="fas fa-arrow-left"></i> Volver a datos
+                        </button>
+                        <div class="form-section">
+                            <h4>Método de pago</h4>
+                            <div class="metodos-pago-container">
+                                <div class="metodo-card">
+                                    <input type="radio" name="metodo-pago" id="met-link" value="link">
+                                    <label for="met-link" class="metodo-label">
+                                        <img src="img/Linkdepago.webp" alt="Link de Pago">
+                                        <span>Link de Pago</span>
+                                    </label>
+                                </div>
+                                <div class="metodo-card">
+                                    <input type="radio" name="metodo-pago" id="met-paypal" value="paypal">
+                                    <label for="met-paypal" class="metodo-label">
+                                        <img src="img/Paypal.webp" alt="PayPal">
+                                        <span>PayPal</span>
+                                    </label>
+                                </div>
+                                <div class="metodo-card">
+                                    <input type="radio" name="metodo-pago" id="met-popular" value="popular">
+                                    <label for="met-popular" class="metodo-label">
+                                        <img src="img/Popular.webp" alt="Banco Popular">
+                                        <span>Banco Popular</span>
+                                    </label>
+                                </div>
+                                <div class="metodo-card">
+                                    <input type="radio" name="metodo-pago" id="met-binance" value="binance">
+                                    <label for="met-binance" class="metodo-label">
+                                        <img src="img/Binance.webp" alt="Binance Pay">
+                                        <span>Binance Pay</span>
+                                    </label>
+                                </div>
+                                <div class="metodo-card">
+                                    <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx">
+                                    <label for="met-transfer" class="metodo-label">
+                                        <img src="https://imgs.search.brave.com/KGeUOkQCXjNH2yqnjy2eMe_98tC2Qc3v6L2HLrVWQwI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM3LzEvc3BlaS1s/b2dvLXBuZ19zZWVr/bG9nby0zNzA5MzEu/cG5n" alt="SPEI">
+                                        <span>Transferencia MX</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                      </div>
-                      <div class="form-section">
-                        <h4>4. Adjuntar Comprobante</h4>
-                        <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">Selecciona la captura de tu pago realizado.</p>
-                        <input type="file" id="cliente-comprobante" accept="image/*" style="background: #121212; border: 1px solid #333; color: white; padding: 10px; width: 100%; border-radius: 5px;">
-                      </div>
+                        <div class="form-section">
+                            <h4>Comprobante de pago</h4>
+                            <p style="font-size:0.78em; color:#555; margin: -6px 0 14px 0;">Adjunta la captura de tu pago. Puedes enviarlo también por WhatsApp.</p>
+                            <div class="ck-file-upload" id="ck-file-drop">
+                                <input type="file" id="cliente-comprobante" accept="image/*" onchange="ckFileSelected(this)">
+                                <div class="ck-file-upload-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                                <div class="ck-file-upload-text">Arrastra tu imagen aquí o <span>selecciona un archivo</span></div>
+                                <div id="ck-file-name"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Columna Derecha: Resumen del Pedido -->
+                <!-- Columna Derecha: Resumen sticky -->
                 <div class="checkout-summary-column" id="checkout-summary-sticky">
                     <div class="order-summary-card">
-                        <h4 id="resumen-titulo-dinamico">Tu Pedido</h4>
-                        <button id="btn-main-checkout" class="btn-accion btn-whatsapp btn-pulse" style="background-color: #28feb6; color: #000;" onclick="manejarAccionCheckout()">CONTINUAR A DATOS</button>
-                        <p id="txt-instruccion-checkout" style="text-align: center; color: #ccc; font-size: 0.9em; margin-top: 10px; display: none;">Adjunta tu comprobante una vez completes el pago.</p>
+                        <h4 id="resumen-titulo-dinamico">Tu pedido</h4>
+                        <div id="checkout-productos-lista" style="margin-bottom:4px;"></div>
+                        <div class="summary-line" style="margin-top:12px;">
+                            <span>Subtotal</span>
+                            <span id="checkout-subtotal-dinero">—</span>
+                        </div>
+                        <div class="summary-line total">
+                            <span>Total</span>
+                            <span id="checkout-total-dinero">—</span>
+                        </div>
+                        <button id="btn-main-checkout" class="btn-pulse" onclick="manejarAccionCheckout()">
+                            CONTINUAR A DATOS
+                        </button>
+                        <p id="txt-instruccion-checkout" style="text-align:center; color:#555; font-size:0.75em; margin-top:12px; display:none; line-height:1.5;">
+                            <i class="fas fa-shield-check" style="color:#28feb6;"></i> Adjunta tu comprobante antes de generar el pedido.
+                        </p>
                     </div>
                 </div>
             </div>
-
             <div id="pago-transferencia" class="info-pago-box oculto">
                 <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza la transferencia SPEI desde tu app bancaria.</p>
                 <div class="bank-card">
@@ -3854,29 +4076,39 @@ _He adjuntado mi comprobante de pago arriba._`;
         function cambiarPasoCheckout(paso) {
             pasoCheckoutActual = paso;
             
-            // Actualizar visibilidad de contenidos
+            // Pasos y contenidos
             document.querySelectorAll('.step-content').forEach(c => c.classList.remove('active'));
             document.getElementById(`checkout-step-${paso}`).classList.add('active');
             
-            // Actualizar indicadores (dots)
-            document.querySelectorAll('.step-dot').forEach((d, idx) => {
-                if (idx + 1 <= paso) d.classList.add('active');
-                else d.classList.remove('active');
+            // Dots — active = current, done = completed
+            [1,2,3].forEach(i => {
+                const dot = document.getElementById(`dot-${i}`);
+                const lbl = document.getElementById(`lbl-${i}`);
+                dot.classList.remove('active','done');
+                lbl.classList.remove('active','done');
+                if (i < paso)       { dot.classList.add('done');   lbl.classList.add('done'); dot.innerHTML = '<i class="fas fa-check" style="font-size:0.75em"></i>'; }
+                else if (i === paso) { dot.classList.add('active'); lbl.classList.add('active'); dot.innerHTML = i; }
+                else                 { dot.innerHTML = i; }
             });
 
-            // Actualizar Botón Principal
+            // Connectors
+            const c1 = document.getElementById('conn-1');
+            const c2 = document.getElementById('conn-2');
+            if (c1) c1.classList.toggle('done', paso > 1);
+            if (c2) c2.classList.toggle('done', paso > 2);
+
+            // Botón principal
             const btn = document.getElementById('btn-main-checkout');
             const txt = document.getElementById('txt-instruccion-checkout');
-            
             if (paso === 1) {
                 btn.innerText = "CONTINUAR A DATOS";
-                txt.style.display = 'none';
+                if(txt) txt.style.display = 'none';
             } else if (paso === 2) {
                 btn.innerText = "CONTINUAR AL PAGO";
-                txt.style.display = 'none';
+                if(txt) txt.style.display = 'none';
             } else if (paso === 3) {
                 btn.innerText = "GENERAR PEDIDO";
-                txt.style.display = 'block';
+                if(txt) txt.style.display = 'block';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -4111,6 +4343,16 @@ _He adjuntado mi comprobante de pago arriba._`;
             setInterval(actualizarRelojTienda, 1000);
             actualizarCarrito();
         });
+
+        function ckFileSelected(input) {
+            const nameEl = document.getElementById('ck-file-name');
+            if (input.files && input.files[0]) {
+                nameEl.textContent = '✓ ' + input.files[0].name;
+                nameEl.style.display = 'block';
+                document.getElementById('ck-file-drop').style.borderColor = '#28feb6';
+                document.getElementById('ck-file-drop').style.background = 'rgba(40,254,182,0.04)';
+            }
+        }
 
         function toggleTodasCuentas(chkAll) {
             const checkboxes = document.querySelectorAll('input[name="cuenta-chk"]');
