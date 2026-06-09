@@ -4,7 +4,50 @@
     <meta charset="UTF-8">
     <link rel="icon" type="image/png" href="img/logo.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shegos Store | Fortnite</title>
+    <title>Shegos Store | Fortnite — V-Bucks, Skins y Club de Fortnite</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Shegos Store: compra V-Bucks, skins, Club de Fortnite y servicios de recarga. Entrega rápida, precios accesibles y soporte por WhatsApp. Usa el código DENISSA_7U7 en la tienda de Fortnite.">
+    <meta name="keywords" content="fortnite, v-bucks, skins fortnite, club de fortnite, comprar v-bucks, recargas fortnite, fortnite crew, shegos store">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Shegos Store">
+    <link rel="canonical" href="https://shegostore.com/">
+
+    <!-- Open Graph (WhatsApp, Facebook, Discord) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://shegostore.com/">
+    <meta property="og:title" content="Shegos Store | V-Bucks, Skins y Club de Fortnite">
+    <meta property="og:description" content="Compra V-Bucks, skins, Club de Fortnite y servicios de recarga. Entrega rápida y precios accesibles. Código creador: DENISSA_7U7">
+    <meta property="og:image" content="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg">
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:site_name" content="Shegos Store">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Shegos Store | Fortnite">
+    <meta name="twitter:description" content="V-Bucks, skins y Club de Fortnite al mejor precio. Código creador: DENISSA_7U7">
+    <meta name="twitter:image" content="https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg">
+
+    <!-- Structured Data (JSON-LD) para Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Shegos Store",
+      "url": "https://shegostore.com",
+      "logo": "https://shegostore.com/img/logo.png",
+      "image": "https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg",
+      "description": "Tienda de V-Bucks, skins, Club de Fortnite y servicios de recarga. Entrega rápida y soporte por WhatsApp.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "availableLanguage": "Spanish",
+        "url": "https://wa.me/18299847680"
+      },
+      "sameAs": ["https://discord.gg/Z2pfu9zbDn"]
+    }
+    </script>
+
     <!-- FontAwesome SDK -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts: Poppins -->
@@ -32,7 +75,7 @@
 
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://wallpapercave.com/wp/wp3031122.jpg');
+            background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://media.altchar.com/prod/images/gm_featured_image/fc3aaba9498b-fortnite-crew-subscription.jpg');
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -212,8 +255,7 @@
            MEJORAS PARA MÓVIL Y RESPONSIVIDAD
            ========================================= */
         @media (max-width: 768px) {
-            /* Ajustes base de layout móvil */
-            body { background-attachment: scroll !important; }
+            #btn-acceder-header { display: none !important; }
             .hero-container { padding: 20px 10px; flex-direction: column; text-align: center; gap: 20px; }
             .hero-text { display: flex; flex-direction: column; align-items: center; width: 100%; }
             .hero-text p { max-width: 100%; margin-left: auto; margin-right: auto; }
@@ -2053,7 +2095,10 @@
                 <i class="fas fa-chevron-right" style="color: #444; font-size: 0.8em;"></i>
             </div>
         </div>
-        <div class="sidebar-footer">
+        <div class="sidebar-footer" style="display: flex; flex-direction: column; gap: 10px;">
+            <button id="btn-acceder-sidebar" class="btn-acceder" onclick="cerrarSidebarYAuth()" style="width: 100%; justify-content: center;">
+                <i class="fas fa-user"></i> <span id="btn-acceder-sidebar-label">Acceder</span>
+            </button>
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="discord-box" style="width: 100%; box-sizing: border-box; text-align: center;">Discord</a>
         </div>
     </div>
@@ -2390,7 +2435,7 @@
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Club de Fortnite</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('gamepass')">
@@ -2466,22 +2511,22 @@
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Para cuentas que no tienen problemas de región.</p>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="8.00">$8.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '8.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '8.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="21.00">$21.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '21.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '21.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="35.00">$35.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '35.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '35.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
 
@@ -2492,22 +2537,22 @@
                 </div>
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3dw/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="8.00">$8.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="21.00">$21.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '21.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '21.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg" class="club-img-16-9">
+                        <img src="https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="35.00">$35.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '35.00', 'https://cdn2.unrealengine.com/fortnite-crew-1920x1080-281a3d90616b.jpg', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '35.00', 'https://imgs.search.brave.com/dMq8WAGZqSFGNEm_WetV_Y9Sfj7h4dJTVvpEvCLNI4Y/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90ZWNo/d2lzZXIuY29tL3wp/LWNvbnRlbnQvdXBs/b2Fkcy8yMDI2LzA1/L0hvdy10by1HZXQt/Q29yYXNjYW5hLVNr/aW4taW4tRm9ydG5p/dGUtSnVuZS0yMDI2/LUNyZXctUGFjay53/ZWJw', '0', 'club')">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -3346,14 +3391,25 @@
                 });
 
                 if(response.ok) {
-                    statusBox.innerHTML = `<div class="alerta-exito" style="padding: 10px; margin-top: 5px;"><strong>¡Aviso enviado!</strong> Nuestro equipo te aceptará en la cuenta <strong>${cuentaDestino}</strong> en unos minutos.</div>`;
+                    // Verificar si este Epic ID ya había enviado antes (registro local)
+                    const solicitudesEnviadas = JSON.parse(localStorage.getItem('solicitudes_enviadas') || '[]');
+                    const yaEnviada = solicitudesEnviadas.some(s => s.epicId === idInput && s.cuenta === cuentaDestino);
+                    
+                    if (yaEnviada) {
+                        statusBox.innerHTML = `<div class="alerta-exito" style="padding: 10px; margin-top: 5px; border-color: #ffd700; background: rgba(255,215,0,0.05);"><strong style="color:#ffd700;">¡Solicitud duplicada, ya te tenemos agregado!</strong><br><span style="font-size:0.9em; color:#ccc;">Ya enviamos una solicitud a tu cuenta <strong>${cuentaDestino}</strong> anteriormente.</span></div>`;
+                    } else {
+                        // Guardar registro local
+                        solicitudesEnviadas.push({ epicId: idInput, cuenta: cuentaDestino, fecha: new Date().toISOString() });
+                        localStorage.setItem('solicitudes_enviadas', JSON.stringify(solicitudesEnviadas));
+                        statusBox.innerHTML = `<div class="alerta-exito" style="padding: 10px; margin-top: 5px;"><strong>¡Solicitud enviada!</strong> Nuestro equipo te aceptará en la cuenta <strong>${cuentaDestino}</strong> en unos minutos.</div>`;
+                    }
                     document.getElementById('aviso-epic-id').value = ''; 
                     document.getElementById('aviso-cuenta-destino').value = ''; 
                 } else {
-                    statusBox.innerHTML = `<span style="color: #e74c3c;">❌ Error de conexión con el servidor. Intenta nuevamente.</span>`;
+                    statusBox.innerHTML = `<span style="color: #e74c3c;">❌ No pudimos enviar la solicitud. Intenta nuevamente.</span>`;
                 }
             } catch (error) {
-                statusBox.innerHTML = `<span style="color: #e74c3c;">❌ Ocurrió un error al enviar el aviso.</span>`;
+                statusBox.innerHTML = `<span style="color: #e74c3c;">❌ No pudimos enviar la solicitud. Verifica tu conexión e intenta de nuevo.</span>`;
             }
         }
 
@@ -3590,7 +3646,7 @@
                 productos: carrito,
                 total_usd: total,
                 metodo_pago: metodoRaw,
-                estado: 'En Proceso',
+                estado: 'Pendiente',
                 fecha: new Date().toISOString(),
                 comprobante: base64Receipt
             };
@@ -3819,7 +3875,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                 btn.innerText = "CONTINUAR AL PAGO";
                 txt.style.display = 'none';
             } else if (paso === 3) {
-                btn.innerText = "REALIZAR PEDIDO";
+                btn.innerText = "GENERAR PEDIDO";
                 txt.style.display = 'block';
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3849,6 +3905,14 @@ _He adjuntado mi comprobante de pago arriba._`;
             document.getElementById('sidebar').classList.toggle('abierto');
         }
 
+        function cerrarSidebarYAuth() {
+            // Cerrar sidebar antes de abrir modal de auth
+            if (document.getElementById('sidebar').classList.contains('abierto')) {
+                document.getElementById('sidebar-overlay').classList.remove('abierto');
+                document.getElementById('sidebar').classList.remove('abierto');
+            }
+            abrirModalAuth();
+        }
         function mostrarSubServicio(id) {
             const menu = document.getElementById('menu-servicios');
             const subs = document.querySelectorAll('.sub-seccion-servicios');
@@ -3902,6 +3966,17 @@ _He adjuntado mi comprobante de pago arriba._`;
             else document.body.classList.add('en-checkout');
         }
 
+        // Mapa de pestaña → path URL limpio
+        const PESTANA_PATHS = {
+            'inicio-landing': '/',
+            'tienda':         '/shop',
+            'ids-regalos':    '/accounts',
+            'recargas':       '/services',
+            'checkout':       '/checkout',
+            'rastreo-pedidos':'/orders',
+            'resenas':        '/reviews'
+        };
+
         function abrirPestana(id) {
             document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
@@ -3922,6 +3997,10 @@ _He adjuntado mi comprobante de pago arriba._`;
             tabActiva.style.animation = 'none'; tabActiva.offsetHeight; tabActiva.style.animation = null; 
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
+            // Actualizar URL sin recargar la página
+            const path = PESTANA_PATHS[id] || '/';
+            history.pushState({ tab: id }, '', path);
+
             // Asegurar que al entrar a Servicios se vea el menú principal
             if (id === 'recargas') mostrarSubServicio('menu');
 
@@ -3930,7 +4009,36 @@ _He adjuntado mi comprobante de pago arriba._`;
                 renderCheckoutSummary();
                 cambiarPasoCheckout(1);
             }
-        } 
+        }
+
+        // Manejar navegación con botón Atrás/Adelante del navegador
+        const PATH_TO_PESTANA = Object.fromEntries(Object.entries(PESTANA_PATHS).map(([k, v]) => [v, k]));
+        window.addEventListener('popstate', function(e) {
+            const tab = (e.state && e.state.tab) || PATH_TO_PESTANA[location.pathname] || 'inicio-landing';
+            // Activar sin volver a pushState
+            document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
+            const el = document.getElementById(tab);
+            if (el) el.classList.remove('oculto');
+            Array.from(document.querySelectorAll('.tab-btn'))
+                .filter(b => b.getAttribute('onclick')?.includes(tab))
+                .forEach(b => b.classList.add('activo'));
+            toggleFloatingButtons(tab !== 'checkout');
+            if (tab === 'recargas') mostrarSubServicio('menu');
+            if (tab === 'checkout') { renderCheckoutSummary(); cambiarPasoCheckout(1); }
+        });
+
+        // Al cargar la página, detectar la URL y abrir la pestaña correcta
+        (function() {
+            const path = location.pathname.replace(/\/$/, '') || '/';
+            const tab = PATH_TO_PESTANA[path] || PATH_TO_PESTANA['/' + path.split('/').pop()] || 'inicio-landing';
+            if (tab !== 'inicio-landing') {
+                // diferir para que el DOM esté listo
+                setTimeout(() => abrirPestana(tab), 0);
+            } else {
+                history.replaceState({ tab: 'inicio-landing' }, '', location.pathname);
+            }
+        })();
         function abrirCarritoLateral() { 
             if (document.getElementById('sidebar').classList.contains('abierto')) {
                 toggleSidebar();
@@ -4487,6 +4595,12 @@ _He adjuntado mi comprobante de pago arriba._`;
             if (lbl) lbl.textContent = email.split("@")[0];
             if (btn) btn.classList.add("logueado");
 
+            // Sincronizar botón del sidebar
+            var lblSidebar = $e("btn-acceder-sidebar-label");
+            var btnSidebar = $e("btn-acceder-sidebar");
+            if (lblSidebar) lblSidebar.textContent = email.split("@")[0];
+            if (btnSidebar) btnSidebar.classList.add("logueado");
+
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
             var tagEl   = $e("mp-email-tag");
@@ -4505,6 +4619,10 @@ _He adjuntado mi comprobante de pago arriba._`;
             var btn = $e("btn-acceder-header");
             if (lbl) lbl.textContent = "Acceder";
             if (btn) btn.classList.remove("logueado");
+            var lblSidebar = $e("btn-acceder-sidebar-label");
+            var btnSidebar = $e("btn-acceder-sidebar");
+            if (lblSidebar) lblSidebar.textContent = "Acceder";
+            if (btnSidebar) btnSidebar.classList.remove("logueado");
             var guestEl = $e("mp-guest");
             var userEl  = $e("mp-user");
             if (guestEl) guestEl.style.display = "block";
