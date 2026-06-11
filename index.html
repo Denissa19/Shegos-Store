@@ -918,147 +918,137 @@
         
         .grid-productos { 
             display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 16px; 
+            grid-template-columns: repeat(6, 1fr); 
+            gap: 12px; 
             margin-top: 20px;
         }
+        
         @media (max-width: 1200px) {
-            .grid-productos { grid-template-columns: repeat(3, 1fr); }
+            .grid-productos { grid-template-columns: repeat(5, 1fr); }
         }
 
-        /* ══ COSMETIC CARD — REDISEÑO ══ */
+        /* Arquitectura de Tarjeta Independiente */
         .cosmetic-card {
             position: relative;
             overflow: hidden;
-            aspect-ratio: 3 / 4;
-            border-radius: 14px;
+            aspect-ratio: 1 / 1.25;
+            border-radius: 12px;
+            background-color: #0d0d0d;
             display: flex;
             flex-direction: column;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(.4,0,.2,1), box-shadow 0.3s ease;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.5);
-            /* Fondo base, sobreescrito por rareza */
-            background: linear-gradient(160deg, #1a1a1a, #0a0a0a);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-sizing: border-box;
         }
-        /* Gradientes de rareza como fondo */
-        .cosmetic-card.legendary { background: linear-gradient(160deg, #3d2200, #1a0e00); }
-        .cosmetic-card.epic      { background: linear-gradient(160deg, #2a0a4a, #120520); }
-        .cosmetic-card.rare      { background: linear-gradient(160deg, #062440, #020e1a); }
-        .cosmetic-card.uncommon  { background: linear-gradient(160deg, #062410, #020e06); }
+        .cosmetic-card:hover { border-color: #ffffff; box-shadow: 0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2); }
 
-        .cosmetic-card:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-        }
-        .cosmetic-card.legendary:hover { box-shadow: 0 16px 40px rgba(255,128,0,0.25); }
-        .cosmetic-card.epic:hover      { box-shadow: 0 16px 40px rgba(160,0,255,0.25); }
-        .cosmetic-card.rare:hover      { box-shadow: 0 16px 40px rgba(0,120,255,0.25); }
-        .cosmetic-card.uncommon:hover  { box-shadow: 0 16px 40px rgba(21,187,43,0.25); }
-
-        /* Franja de rareza lateral izquierda */
+        /* Línea de Rareza Superior (Diseño de Inventario) */
         .cosmetic-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0;
-            width: 4px; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
             z-index: 20;
-            border-radius: 14px 0 0 14px;
+            border-radius: 12px 12px 0 0;
         }
-        .cosmetic-card.legendary::before { background: linear-gradient(to bottom, #FF8000, #c25a00); }
-        .cosmetic-card.epic::before      { background: linear-gradient(to bottom, #C000FF, #7a00a0); }
-        .cosmetic-card.rare::before      { background: linear-gradient(to bottom, #0078FF, #004db5); }
-        .cosmetic-card.uncommon::before  { background: linear-gradient(to bottom, #15BB2B, #0d7a1c); }
-        .cosmetic-card.common::before    { background: #333; }
 
-        /* Imagen ocupa toda la card */
+        /* Mapeo de Colores por Clase */
+        .cosmetic-card.legendary::before { background-color: #FF8000 !important; }
+        .cosmetic-card.epic::before { background-color: #C000FF !important; }
+        .cosmetic-card.rare::before { background-color: #0078FF !important; }
+        .cosmetic-card.uncommon::before { background-color: #15BB2B !important; }
+
+        /* Capa de Fondo (El Personaje) */
         .card-img {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             object-fit: contain;
-            z-index: 1;
-            padding: 8px 16px 80px;
+            z-index: 1; /* Por debajo de la línea de rareza */
+            transition: transform 0.6s ease;
+            padding: 12px;
             box-sizing: border-box;
-            transition: transform 0.5s cubic-bezier(.4,0,.2,1);
-            filter: drop-shadow(0 8px 24px rgba(0,0,0,0.6));
         }
-        .cosmetic-card:hover .card-img { transform: scale(1.05) translateY(-4px); }
 
-        /* Timer top */
+        /* Capa Superior (Timer y Labels) */
         .card-overlay-top {
             position: absolute;
-            top: 10px; left: 14px; right: 10px;
+            top: 10px; left: 10px; right: 10px;
             display: flex;
             justify-content: space-between;
-            z-index: 10;
+            z-index: 5;
             pointer-events: none;
         }
         .overlay-timer {
-            background: rgba(0,0,0,0.65);
-            color: #aaa;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 0.6em;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.65em;
             font-weight: 600;
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(4px);
         }
         .overlay-se-va-hoy {
             background: #28feb6;
             color: #000;
-            padding: 3px 9px;
-            border-radius: 20px;
-            font-size: 0.58em;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.6em;
             font-weight: 900;
             text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(40,254,182,0.5);
+            box-shadow: 0 0 8px rgba(40, 254, 182, 0.4);
         }
 
-        /* Fondo degradado inferior */
+        /* Capa Inferior (Info y Acción) */
         .card-overlay-bottom {
             position: absolute;
             bottom: 0; left: 0; right: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.85) 50%, transparent 100%);
-            padding: 32px 12px 12px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 55%, transparent 100%);
+            padding: 18px 8px 8px;
             z-index: 10;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 5px;
         }
 
         .card-title {
             font-family: 'BurbankBigCondensed', 'Poppins', sans-serif;
             color: #fff;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 900;
             margin: 0;
             text-transform: uppercase;
+            text-align: center;
             letter-spacing: 0.5px;
             line-height: 1.1;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
         }
 
         .card-action-row {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
         }
         .card-price-block {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 1px;
         }
         .card-price-vbucks {
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: #a8d8ff;
         }
         .card-price-fiat {
             font-size: 0.72rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.55);
             font-weight: 600;
         }
         .card-price {
@@ -1071,49 +1061,51 @@
         }
         .card-price img { width: 14px; height: 14px; }
 
-        /* Botón carrito — aparece en hover */
         .cosmetic-card .btn-add-cart {
-            background: rgba(255,255,255,0.95);
-            color: #000;
+            background: #ffffff;
+            color: #000000;
             border: none;
             border-radius: 8px;
-            padding: 7px 12px;
-            height: auto;
+        padding: 0 10px;
+        height: 28px;
             width: auto;
             flex-shrink: 0;
-            align-self: flex-end;
+            align-self: center;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'BurbankBigCondensed', sans-serif;
-            font-size: 0.78rem;
-            font-weight: 900;
+        font-size: 0.8rem;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0;
-            transform: translateY(6px);
+            opacity: 0; /* Oculto en escritorio por defecto */
+            transform: translateY(5px);
             box-sizing: border-box;
-            white-space: nowrap;
         }
+        
+        /* Hover effect para el botón en escritorio */
         @media (min-width: 769px) {
             .cosmetic-card:hover .btn-add-cart {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+        
+        /* Mostrar siempre en móvil */
         @media (max-width: 768px) {
             .cosmetic-card .btn-add-cart {
                 opacity: 1;
                 transform: translateY(0);
-                padding: 5px 10px;
-                font-size: 0.7rem;
+            /* Ajuste proporcional para móvil */
+            padding: 0 8px;
+            font-size: 0.75rem;
             }
-            .card-overlay-bottom { padding: 22px 10px 10px; gap: 6px; }
-            .card-title { font-size: 0.88rem; }
+            .card-overlay-bottom { padding: 10px 5px 5px; }
         }
-        .cosmetic-card .btn-add-cart:hover { background: #28feb6; color: #000; transform: scale(1.05); }
+        
+        .cosmetic-card .btn-add-cart:hover { background: #e0e0e0; transform: scale(1.05); }
         
         .grid-pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
         .paso { background-color: #000; padding: 25px; border-radius: 8px; border: 1px solid #222; text-align: center; transition: all 0.3s ease; }
@@ -1700,7 +1692,7 @@
 
         /* ── Teléfonos medianos: 481px – 767px ── */
         @media (min-width: 481px) and (max-width: 767px) {
-            .grid-productos { grid-template-columns: repeat(3, 1fr) !important; gap: 10px !important; }
+            .grid-productos { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
             .hero-text h1 { font-size: clamp(2em, 7vw, 3em) !important; }
             .section-box { padding: 18px 14px !important; }
             .auto-request-panel { grid-template-columns: 1fr !important; }
@@ -1709,7 +1701,7 @@
 
         /* ── Teléfonos pequeños: ≤480px ── */
         @media (max-width: 480px) {
-            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 6px !important; }
             .hero-text h1 { font-size: clamp(1.6em, 9vw, 2.4em) !important; }
             .section-box { padding: 12px 8px !important; border-radius: 8px !important; }
             .auto-request-panel { grid-template-columns: 1fr !important; padding: 15px !important; }
@@ -1738,7 +1730,7 @@
 
         /* ── Teléfonos muy pequeños: ≤360px ── */
         @media (max-width: 360px) {
-            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+            .grid-productos { grid-template-columns: repeat(2, 1fr) !important; gap: 4px !important; }
             .hero-text h1 { font-size: 1.5em !important; }
             .section-box { padding: 10px 6px !important; }
             .float-btn { width: 48px !important; height: 48px !important; font-size: 1.2em !important; }
@@ -3553,10 +3545,10 @@
                             return `
                             <div class="cosmetic-card ${p.rarityClass}">
 
-                                <!-- IMAGEN DOMINANTE -->
+                                <!-- IMAGEN FONDO -->
                                 <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
 
-                                <!-- TIMER + BADGE -->
+                                <!-- TIMER TOP IZQUIERDA -->
                                 <div class="card-overlay-top">
                                     <div class="overlay-timer">⏱ ${tiempo}</div>
                                     ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : '<div></div>'}
@@ -3568,7 +3560,7 @@
                                     <div class="card-action-row">
                                         <div class="card-price-block">
                                             <div class="card-price-vbucks">
-                                                <img src="https://fortnite-api.com/images/vbuck.png" style="width:13px;height:13px;">
+                                                <img src="https://fortnite-api.com/images/vbuck.png" style="width:12px;height:12px;">
                                                 <span>${parseInt(p.vbucks).toLocaleString()}</span>
                                             </div>
                                             <div class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</div>
