@@ -2518,29 +2518,17 @@
         <div id="tienda" class="section-box pestana oculto">
             <h2>Tienda de Hoy</h2>
             <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
-            <input type="text" id="buscador-tienda" onkeyup="aplicarFiltros()" placeholder="Buscar en la tienda..." autocomplete="off">
-            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" title="Descargar Tienda" style="
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                background: transparent;
-                border: 1px solid #333;
-                color: #888;
-                padding: 9px 18px;
-                border-radius: 30px;
-                font-size: 11px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                cursor: pointer;
-                transition: all .25s ease;
-                margin-bottom: 20px;
-                width: fit-content;
-            " onmouseover="this.style.borderColor='#fff';this.style.color='#fff'"
-               onmouseout="this.style.borderColor='#333';this.style.color='#888'">
+            <div class="ks-search-wrap">
+                <i class="fas fa-search"></i>
+                <input type="text" id="buscador-tienda" onkeyup="ksRenderTienda()" placeholder="Buscar item..." autocomplete="off">
+            </div>
+            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" 
+                style="display:flex;align-items:center;gap:8px;background:transparent;border:1px solid #1e1e1e;color:#555;padding:9px 18px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .25s ease;margin-bottom:18px;width:fit-content;font-family:'Poppins',sans-serif;"
+                onmouseover="this.style.borderColor='#28feb6';this.style.color='#28feb6'"
+                onmouseout="this.style.borderColor='#1e1e1e';this.style.color='#555'">
                 <i class="fas fa-download"></i> Descargar Tienda de Hoy
             </button>
-            <div id="contenedor-filtros" class="filtros-container"></div>
+            <div id="contenedor-filtros"></div>
             <div id="contenedor-tienda"><p>Conectando con la API de Fortnite...</p></div>
         </div>
 
@@ -3496,109 +3484,6 @@
                     el.innerText = `${simbolo}${nuevoPrecio}`;
                 }
             });
-        }
-
-        // Filtra y renderiza la tienda por SECCIÓN (no por tipo de cosmético)
-        function aplicarFiltros() {
-            const cont = document.getElementById('contenedor-tienda');
-            let busqueda = document.getElementById('buscador-tienda').value.toLowerCase();
-            cont.innerHTML = '';
-
-            const filtrados = tiendaItems.filter(item => {
-                const matchCat = (categoriaActual === 'Todas' || item.sectionName === categoriaActual);
-                const matchSearch = item.nombre.toLowerCase().includes(busqueda);
-                return matchCat && matchSearch;
-            });
-
-            if (filtrados.length === 0) {
-                cont.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #fff; font-size: 1.1em; border: 1px dashed #333; border-radius: 15px; margin: 20px 0;">
-                    <i class="fas fa-search" style="display:block; font-size:2em; margin-bottom:15px; color:#444;"></i>
-                    No se encontraron artículos en esta sección.</div>`;
-                return;
-            }
-
-            const grouped = {};
-            filtrados.forEach(i => {
-                let sName = i.sectionName || "Otros";
-                if (!grouped[sName]) grouped[sName] = [];
-                grouped[sName].push(i);
-            });
-
-            // Ordenar secciones por el rank oficial que devuelve la API (layout.rank)
-            const rankPorSeccion = {};
-            tiendaItems.forEach(i => {
-                if (!(i.sectionName in rankPorSeccion)) {
-                    rankPorSeccion[i.sectionName] = i.sectionRank;
-                }
-            });
-
-            const seccionesOrdenadas = Object.keys(grouped).sort((a, b) => {
-                // Priorizamos las secciones con más artículos para que aparezcan arriba
-                const countA = grouped[a].length;
-                const countB = grouped[b].length;
-
-                if (countA !== countB) {
-                    return countB - countA;
-                }
-                // Si tienen la misma cantidad, respetamos el orden original de la API
-                return (rankPorSeccion[a] ?? 999) - (rankPorSeccion[b] ?? 999);
-            });
-
-            const tiempo = getTiempoTxt();
-            const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
-
-            seccionesOrdenadas.forEach(cat => {
-
-                const sec = document.createElement('div');
-                sec.className = 'shop-section';
-                sec.innerHTML = `
-                    <div class="shop-section-header">
-                        <div class="shop-section-header-left">
-                            <h2 class="section-title">${cat}</h2>
-                            <span class="section-item-count">${grouped[cat].length} ${grouped[cat].length === 1 ? 'artículo' : 'artículos'}</span>
-                        </div>
-                        <div class="shop-section-line"></div>
-                    </div>
-                    <div class="grid-productos">
-                        ${grouped[cat].map(p => {
-                            const precioConvertido = (parseFloat(p.usd) * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            return `
-                            <div class="cosmetic-card ${p.rarityClass}">
-
-                                <!-- IMAGEN DOMINANTE -->
-                                <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
-
-                                <!-- TIMER + BADGE -->
-                                <div class="card-overlay-top">
-                                    <div class="overlay-timer">⏱ ${tiempo}</div>
-                                    ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : '<div></div>'}
-                                </div>
-
-                                <!-- INFO INFERIOR -->
-                                <div class="card-overlay-bottom">
-                                    <h3 class="card-title">${p.nombre}</h3>
-                                    <div class="card-action-row">
-                                        <div class="card-price-block">
-                                            <div class="card-price-vbucks">
-                                                <img src="https://fortnite-api.com/images/vbuck.png" style="width:13px;height:13px;">
-                                                <span>${parseInt(p.vbucks).toLocaleString()}</span>
-                                            </div>
-                                            <div class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</div>
-                                        </div>
-                                        <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
-                                            + CARRITO
-                                        </button>
-                                    </div>
-                                </div>
-
-                            </div>`;
-                        }).join('')}
-                    </div>`;
-                cont.appendChild(sec);
-            });
-
-            actualizarPreciosGlobales();
         }
 
         async function enviarAvisoDiscord() {
