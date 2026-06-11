@@ -2254,6 +2254,97 @@
 }
 .auth-tab-btn:hover { color: #aaa; }
 .auth-tab-active { color: #28feb6 !important; border-bottom-color: #28feb6 !important; }
+
+/* ============================================================
+   TIENDA ESTILO KEVZTORE — Shegos Store
+   ============================================================ */
+.ks-filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+    margin-top: 4px;
+}
+.ks-filtro-btn {
+    background: #0d0d0d;
+    color: #555;
+    border: 1px solid #1e1e1e;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Poppins', sans-serif;
+    white-space: nowrap;
+}
+.ks-filtro-btn:hover { color: #fff; border-color: #333; background: #161616; }
+.ks-filtro-btn.active { background: #28feb6; color: #000; border-color: #28feb6; box-shadow: 0 0 12px rgba(40,254,182,0.3); }
+
+.ks-search-wrap { position: relative; margin-bottom: 18px; }
+.ks-search-wrap i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #444; font-size: 0.85em; pointer-events: none; }
+#buscador-tienda { background: #0d0d0d; border: 1px solid #1e1e1e; border-radius: 8px; color: #fff; padding: 12px 14px 12px 38px; font-size: 0.88em; width: 100%; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: border-color 0.2s; margin: 0; }
+#buscador-tienda:focus { outline: none; border-color: #28feb6; box-shadow: 0 0 0 3px rgba(40,254,182,0.07); }
+#buscador-tienda::placeholder { color: #333; }
+
+.ks-section { margin-bottom: 44px; }
+.ks-section-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid #111; }
+.ks-section-title { font-family: 'BurbankBigCondensed','Poppins',sans-serif; font-size: 2em; font-weight: 900; font-style: italic; text-transform: uppercase; color: #fff; margin: 0; letter-spacing: 1px; line-height: 1; }
+.ks-section-count { font-size: 0.72em; color: #3a3a3a; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; white-space: nowrap; }
+
+.ks-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; }
+@media (max-width:1400px) { .ks-grid { grid-template-columns: repeat(5,1fr); } }
+@media (max-width:1100px) { .ks-grid { grid-template-columns: repeat(4,1fr); } }
+@media (max-width:850px)  { .ks-grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width:560px)  { .ks-grid { grid-template-columns: repeat(2,1fr); gap: 7px; } }
+
+.ks-card { position: relative; border-radius: 10px; overflow: hidden; cursor: pointer; background: #111; border: 1px solid #1a1a1a; display: flex; flex-direction: column; transition: transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s ease, border-color .2s; }
+.ks-card:hover { transform: translateY(-4px); }
+.ks-card.legendary { background: linear-gradient(160deg,#2a1800,#0f0800); border-color: #3d2200; }
+.ks-card.epic      { background: linear-gradient(160deg,#1e0833,#0a0315); border-color: #3d1566; }
+.ks-card.rare      { background: linear-gradient(160deg,#041525,#020a12); border-color: #0a3055; }
+.ks-card.uncommon  { background: linear-gradient(160deg,#041508,#020a04); border-color: #0a3012; }
+.ks-card:hover.legendary { box-shadow: 0 12px 30px rgba(200,100,0,0.2); }
+.ks-card:hover.epic      { box-shadow: 0 12px 30px rgba(140,0,220,0.2); }
+.ks-card:hover.rare      { box-shadow: 0 12px 30px rgba(0,100,220,0.2); }
+.ks-card:hover.uncommon  { box-shadow: 0 12px 30px rgba(0,180,40,0.2); }
+
+.ks-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; z-index:10; }
+.ks-card.legendary::before { background: linear-gradient(90deg,#FF8000,#ffd000); }
+.ks-card.epic::before      { background: linear-gradient(90deg,#C000FF,#8a00e0); }
+.ks-card.rare::before      { background: linear-gradient(90deg,#0078FF,#00d4ff); }
+.ks-card.uncommon::before  { background: linear-gradient(90deg,#15BB2B,#00ff55); }
+.ks-card.common::before    { background: #2a2a2a; }
+
+.ks-img-wrap { position: relative; width: 100%; aspect-ratio: 1/1; overflow: hidden; flex-shrink: 0; }
+.ks-img { width:100%; height:100%; object-fit:contain; object-position:bottom center; padding:10px 10px 0; box-sizing:border-box; transition:transform .4s cubic-bezier(.4,0,.2,1); filter:drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
+.ks-card:hover .ks-img { transform: scale(1.07) translateY(-4px); }
+
+.ks-badge-nuevo { position:absolute; top:7px; left:7px; background:#28feb6; color:#000; font-size:0.55em; font-weight:900; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:1px; z-index:10; }
+.ks-badge-hoy   { position:absolute; top:7px; right:7px; background:#e63946; color:#fff; font-size:0.52em; font-weight:900; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px; z-index:10; }
+
+.ks-info { padding: 8px 10px 11px; display:flex; flex-direction:column; gap:4px; flex:1; }
+.ks-name { font-family:'BurbankBigCondensed','Poppins',sans-serif; font-size:0.92em; font-weight:900; color:#fff; text-transform:uppercase; line-height:1.2; letter-spacing:0.3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin:0; }
+.ks-serie { font-size:0.6em; color:#3a3a3a; text-transform:uppercase; letter-spacing:1.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ks-vbucks-row { display:flex; align-items:center; gap:4px; margin-top:3px; }
+.ks-vbucks-icon { width:13px; height:13px; flex-shrink:0; }
+.ks-vbucks-num { font-size:0.92em; font-weight:800; color:#f5a623; letter-spacing:0.5px; }
+.ks-fiat { font-size:0.68em; color:#3a3a3a; font-weight:600; }
+.ks-btn-add { width:100%; background:#161616; border:1px solid #222; color:#888; padding:8px; border-radius:6px; font-family:'Poppins',sans-serif; font-size:0.7em; font-weight:700; text-transform:uppercase; letter-spacing:1px; cursor:pointer; transition:all 0.2s; margin-top:6px; box-sizing:border-box; }
+.ks-btn-add:hover { background:#28feb6; border-color:#28feb6; color:#000; }
+.ks-btn-add.added { background:rgba(40,254,182,0.1); border-color:#28feb6; color:#28feb6; }
+
+@media (max-width:560px) {
+    .ks-name { font-size:0.8em; }
+    .ks-vbucks-num { font-size:0.82em; }
+    .ks-section-title { font-size:1.5em; }
+    .ks-info { padding:7px 8px 9px; }
+    .ks-btn-add { font-size:0.65em; padding:6px; }
+    .ks-badge-nuevo, .ks-badge-hoy { font-size:0.5em; padding:2px 6px; }
+}
+
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -2522,7 +2613,7 @@
                 <i class="fas fa-search"></i>
                 <input type="text" id="buscador-tienda" onkeyup="ksRenderTienda()" placeholder="Buscar item..." autocomplete="off">
             </div>
-            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()" 
+            <button id="btn-exportar-catalogo" onclick="exportarCatalogo()"
                 style="display:flex;align-items:center;gap:8px;background:transparent;border:1px solid #1e1e1e;color:#555;padding:9px 18px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .25s ease;margin-bottom:18px;width:fit-content;font-family:'Poppins',sans-serif;"
                 onmouseover="this.style.borderColor='#28feb6';this.style.color='#28feb6'"
                 onmouseout="this.style.borderColor='#1e1e1e';this.style.color='#555'">
@@ -3352,58 +3443,60 @@
             });
         }
 
+        // ══════════════════════════════════════════════
+        // RENDER TIENDA — ESTILO KEVZTORE
+        // ══════════════════════════════════════════════
+
+        // Categorías visibles en los filtros pill
+        const KS_CATS = ['Todo','Skins','Bailes','Picos','Mochilas','Envoltorios','Vehículos','Accesorios'];
+        const KS_CAT_MAP = {
+            'outfit':'Skins','emote':'Bailes','pickaxe':'Picos',
+            'backpack':'Mochilas','wrap':'Envoltorios',
+            'body':'Vehículos','wheel':'Vehículos','booster':'Vehículos','engine':'Vehículos',
+        };
+
+        let ksCategoriaActual = 'Todo';
+
         async function cargarTienda() {
             const cont = document.getElementById('contenedor-tienda');
+            cont.innerHTML = '<p style="color:#555; text-align:center; padding:40px 0;">Conectando con la tienda de Fortnite…</p>';
             try {
                 const res = await fetch('https://fortnite-api.com/v2/shop?language=es');
                 const datos = await res.json();
-                console.log("Datos de la tienda recibidos:", datos); // Punto 1: Verificación
-                
                 if (!datos.data || !datos.data.entries) throw new Error("Datos inválidos");
-                const objetos = datos.data.entries;
 
                 tiendaItems = [];
                 let skinsParaHero = [];
 
-                objetos.forEach(item => {
-                    let nombre = item.bundle ? item.bundle.name : (item.brItems && item.brItems[0] ? item.brItems[0].name : (item.cars ? item.cars[0].name : ""));
+                datos.data.entries.forEach(item => {
+                    const brItem = item.brItems && item.brItems[0];
+                    let nombre = item.bundle ? item.bundle.name : (brItem ? brItem.name : (item.cars && item.cars[0] ? item.cars[0].name : ""));
                     let vbucks = item.finalPrice;
-                    let imagen = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] ? item.brItems[0].images.icon : "");
-                    
-                    // Punto 2: Lógica de Categorización Estricta
-                    let tipoVal = (item.brItems && item.brItems[0]) ? item.brItems[0].type.value : 
-                                  (item.cars && item.cars[0]) ? item.cars[0].type.value : "other";
-                    tipoVal = tipoVal.toLowerCase();
+                    let imagen = item.bundle ? item.bundle.image : (brItem ? brItem.images.icon : "");
 
-                    let categoriaFinal = 'ACCESORIOS';
-                    if (tipoVal === 'outfit') categoriaFinal = 'SKINS';
-                    else if (tipoVal === 'emote') categoriaFinal = 'BAILES';
-                    else if (tipoVal === 'pickaxe') categoriaFinal = 'PICOS';
-                    else if (tipoVal === 'backpack') categoriaFinal = 'MOCHILAS';
-                    else if (tipoVal === 'wrap') categoriaFinal = 'ENVOLTORIOS';
-                    else if (['body', 'wheel', 'booster', 'engine'].includes(tipoVal)) categoriaFinal = 'AUTOS';
-                    
-                    // Mapeo de Rarezas según instrucción
-                    let rarityVal = item.brItems && item.brItems[0] ? item.brItems[0].rarity.value : (item.bundle ? "legendary" : "common");
-                    let rarityClass = "common"; // Default
-                    const rLower = rarityVal.toLowerCase();
-                    if (rLower.includes('legendary') || rLower.includes('icon') || rLower.includes('marvel')) rarityClass = "legendary";
-                    else if (rLower.includes('epic')) rarityClass = "epic";
-                    else if (rLower.includes('rare')) rarityClass = "rare";
-                    else if (rLower.includes('uncommon')) rarityClass = "uncommon";
-                    
+                    let tipoVal = brItem ? brItem.type.value.toLowerCase() : (item.cars && item.cars[0] ? item.cars[0].type.value.toLowerCase() : "other");
+                    let cat = KS_CAT_MAP[tipoVal] || 'Accesorios';
+                    if (item.bundle) cat = 'Skins';
+
+                    let rarityVal = brItem ? brItem.rarity.value.toLowerCase() : (item.bundle ? "legendary" : "common");
+                    let rarityClass = "common";
+                    if (rarityVal.includes('legendary') || rarityVal.includes('icon') || rarityVal.includes('marvel')) rarityClass = "legendary";
+                    else if (rarityVal.includes('epic')) rarityClass = "epic";
+                    else if (rarityVal.includes('rare')) rarityClass = "rare";
+                    else if (rarityVal.includes('uncommon')) rarityClass = "uncommon";
+
                     let seVaHoy = item.layout?.displayType === 'expandableList';
-                    // La API de Fortnite usa 'layout', NO 'section' — layout.name tiene el nombre real
-                    let sectionTitle = (item.layout && item.layout.name) ? item.layout.name : 'Botín de Fortnite';
-                    let sectionRank  = (item.layout && item.layout.rank  != null) ? item.layout.rank  : 999;
-                    
-                    // Hero Image Logic (Usamos las skins para el fondo dinámico)
-                    if (categoriaFinal === 'SKINS' || item.bundle) {
-                        let imgLarga = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] && item.brItems[0].images.featured ? item.brItems[0].images.featured : imagen);
+                    let sectionName = (item.layout && item.layout.name) ? item.layout.name : 'Bot\u00edn de Fortnite';
+                    let sectionRank = (item.layout && item.layout.rank != null) ? item.layout.rank : 999;
+
+                    let esNuevo = item.newDisplayAsset || (brItem && brItem.introduction && brItem.introduction.chapter >= "5") || false;
+
+                    if (cat === 'Skins' || item.bundle) {
+                        let imgLarga = item.bundle ? item.bundle.image : (brItem && brItem.images.featured ? brItem.images.featured : imagen);
                         if (imgLarga) skinsParaHero.push(imgLarga);
                     }
-                    
-                    if(nombre && imagen && vbucks) {
+
+                    if (nombre && imagen && vbucks) {
                         tiendaItems.push({
                             nombre,
                             vbucks,
@@ -3411,26 +3504,21 @@
                             imagen,
                             rarityClass,
                             seVaHoy,
-                            categoria: categoriaFinal,
-                            sectionName: sectionTitle,
-                            sectionRank: sectionRank,
+                            esNuevo,
+                            cat,
+                            sectionName,
+                            sectionRank,
+                            serie: brItem && brItem.set ? brItem.set.value : (item.bundle ? 'Lote' : ''),
                             nombreSeguro: nombre.replace(/'/g, "\\'")
                         });
                     }
                 });
 
-            // Sincronizar carrito: eliminar cosméticos que ya no están en la tienda
-            const nombresTiendaActual = tiendaItems.map(i => i.nombre);
-            const totalAntes = carrito.length;
-            carrito = carrito.filter(item => {
-                if (item.tipo !== 'tienda') return true; // Mantener servicios como pavos, club o gamepass
-                return nombresTiendaActual.includes(item.nombre);
-            });
-
-            if (carrito.length !== totalAntes) {
-                localStorage.setItem('carrito', JSON.stringify(carrito));
-                actualizarCarrito();
-            }
+                // Sincronizar carrito
+                const nombresTienda = tiendaItems.map(i => i.nombre);
+                const totalAntes = carrito.length;
+                carrito = carrito.filter(item => item.tipo !== 'tienda' || nombresTienda.includes(item.nombre));
+                if (carrito.length !== totalAntes) { localStorage.setItem('carrito', JSON.stringify(carrito)); actualizarCarrito(); }
 
                 if (skinsParaHero.length > 0) {
                     const heroImg = document.getElementById('hero-dynamic-img');
@@ -3438,53 +3526,125 @@
                     heroImg.style.opacity = '1';
                 }
 
-                renderFiltros();
-                aplicarFiltros();
-            } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
+                ksRenderFiltros();
+                ksRenderTienda();
+
+            } catch(e) {
+                cont.innerHTML = '<p style="color:#555; text-align:center; padding:40px 0;">Error al cargar la tienda. Intenta de nuevo.</p>';
+                console.error(e);
+            }
         }
 
-        // Genera botones de filtro basados en las SECCIONES reales de la tienda
-        function renderFiltros() {
-            const container = document.getElementById('contenedor-filtros');
-
-            // Obtener secciones únicas con su rank oficial de la API
-            const seccionMap = {};
-            tiendaItems.forEach(i => {
-                if (i.sectionName && !(i.sectionName in seccionMap)) {
-                    seccionMap[i.sectionName] = i.sectionRank ?? 999;
-                }
-            });
-
-            // Ordenar por rank oficial (igual que Epic las muestra en la tienda)
-            const seccionesOrdenadas = Object.keys(seccionMap).sort((a, b) => seccionMap[a] - seccionMap[b]);
-            const ORDEN = ['Todas', ...seccionesOrdenadas];
-
-            container.innerHTML = ORDEN.map(cat => `
-                <button class="filtro-btn ${cat === categoriaActual ? 'active' : ''}" data-category="${cat}">${cat}</button>
+        function ksRenderFiltros() {
+            const cont = document.getElementById('contenedor-filtros');
+            cont.className = 'ks-filtros';
+            cont.innerHTML = KS_CATS.map(cat => `
+                <button class="ks-filtro-btn ${cat === ksCategoriaActual ? 'active' : ''}" data-cat="${cat}">${cat}</button>
             `).join('');
-
-            container.querySelectorAll('.filtro-btn').forEach(btn => {
+            cont.querySelectorAll('.ks-filtro-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    categoriaActual = btn.getAttribute('data-category');
-                    container.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                    ksCategoriaActual = btn.dataset.cat;
+                    cont.querySelectorAll('.ks-filtro-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    aplicarFiltros();
+                    ksRenderTienda();
                 });
             });
         }
 
-        function actualizarPreciosGlobales() {
+        function ksRenderTienda() {
+            const cont = document.getElementById('contenedor-tienda');
+            const busqueda = (document.getElementById('buscador-tienda').value || '').toLowerCase();
             const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
+            const simbolo = { USD:'$', EUR:'\u20ac', MXN:'$', ARS:'$', COP:'$', CLP:'$', DOP:'$', USDT:'$', PEN:'S/' }[divisaActual] || '$';
 
-            document.querySelectorAll('.precio-producto').forEach(el => {
-                const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
-                if (!isNaN(precioBase)) {
-                    const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    el.innerText = `${simbolo}${nuevoPrecio}`;
-                }
+            let filtrados = tiendaItems.filter(item => {
+                const matchCat = ksCategoriaActual === 'Todo' || item.cat === ksCategoriaActual;
+                const matchSearch = item.nombre.toLowerCase().includes(busqueda);
+                return matchCat && matchSearch;
             });
+
+            if (filtrados.length === 0) {
+                cont.innerHTML = `<div style="text-align:center; padding:60px 20px; color:#333; border:1px dashed #1a1a1a; border-radius:12px; margin:10px 0;">
+                    <i class="fas fa-search" style="font-size:2em; margin-bottom:14px; display:block; color:#222;"></i>
+                    No hay art\u00edculos que coincidan.</div>`;
+                return;
+            }
+
+            // Agrupar por sección
+            const grouped = {};
+            const rankMap = {};
+            filtrados.forEach(i => {
+                if (!grouped[i.sectionName]) { grouped[i.sectionName] = []; rankMap[i.sectionName] = i.sectionRank; }
+                grouped[i.sectionName].push(i);
+            });
+
+            const secciones = Object.keys(grouped).sort((a,b) => {
+                const cA = grouped[a].length, cB = grouped[b].length;
+                if (cA !== cB) return cB - cA;
+                return (rankMap[a]||999) - (rankMap[b]||999);
+            });
+
+            cont.innerHTML = '';
+            secciones.forEach(sec => {
+                const items = grouped[sec];
+                const secEl = document.createElement('div');
+                secEl.className = 'ks-section';
+
+                const cardsHTML = items.map(p => {
+                    const fiatStr = `${simbolo}${(parseFloat(p.usd)*tasa).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+                    const enCarrito = carrito.some(c => c.nombre === p.nombre);
+                    return `
+                    <div class="ks-card ${p.rarityClass}">
+                        <div class="ks-img-wrap">
+                            <img src="${p.imagen}" class="ks-img" loading="lazy" alt="${p.nombre}">
+                            ${p.esNuevo ? '<span class="ks-badge-nuevo">Nuevo</span>' : ''}
+                            ${p.seVaHoy ? '<span class="ks-badge-hoy">Hoy</span>' : ''}
+                        </div>
+                        <div class="ks-info">
+                            ${p.serie ? `<div class="ks-serie">${p.serie}</div>` : ''}
+                            <div class="ks-name">${p.nombre}</div>
+                            <div class="ks-vbucks-row">
+                                <img src="https://fortnite-api.com/images/vbuck.png" class="ks-vbucks-icon">
+                                <span class="ks-vbucks-num">${parseInt(p.vbucks).toLocaleString()}</span>
+                            </div>
+                            <div class="ks-fiat precio-producto" data-precio-usd="${p.usd}">${fiatStr}</div>
+                            <button class="ks-btn-add ${enCarrito?'added':''}" onclick="ksAgregar('${p.nombreSeguro}','${p.usd}','${p.imagen}','${p.vbucks}',this)">
+                                ${enCarrito ? '\u2713 EN CARRITO' : '+ AGREGAR'}
+                            </button>
+                        </div>
+                    </div>`;
+                }).join('');
+
+                secEl.innerHTML = `
+                    <div class="ks-section-header">
+                        <h2 class="ks-section-title">${sec}</h2>
+                        <span class="ks-section-count">${items.length} ${items.length===1?'art\u00edculo':'art\u00edculos'}</span>
+                    </div>
+                    <div class="ks-grid">${cardsHTML}</div>`;
+                cont.appendChild(secEl);
+            });
+
+            actualizarPreciosGlobales();
         }
+
+        function ksAgregar(nombre, precio, imagen, vbucks, btn) {
+            const existe = carrito.some(i => i.nombre === nombre);
+            if (existe) {
+                btn.textContent = '\u2713 EN CARRITO';
+                btn.classList.add('added');
+                return;
+            }
+            const eraVacio = carrito.length === 0;
+            carrito.push({ nombre, precio, imagen, vbucks, tipo: 'tienda' });
+            btn.textContent = '\u2713 EN CARRITO';
+            btn.classList.add('added');
+            actualizarCarrito();
+            if (eraVacio) abrirCarritoLateral();
+        }
+
+        // Override de la función aplicarFiltros para que use el nuevo sistema
+        function aplicarFiltros() { ksRenderTienda(); }
+        function renderFiltros() { ksRenderFiltros(); }
 
         async function enviarAvisoDiscord() {
             const idInput = document.getElementById('aviso-epic-id').value.trim();
