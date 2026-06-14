@@ -8,7 +8,7 @@
     <!-- FontAwesome SDK -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         /* =========================================
@@ -43,7 +43,7 @@
             position: relative;
         }
 
-        /* Fondo de temporada (rotativo) */
+        /* Fondo de temporada (deslizamiento continuo hacia la izquierda) */
         .hero-bg-rotator {
             position: fixed;
             top: 0; left: 0;
@@ -52,23 +52,30 @@
             pointer-events: none;
             overflow: hidden;
         }
+        .hero-bg-track {
+            display: flex;
+            width: 500%;
+            height: 100%;
+            animation: bgSlideLeft 120s linear infinite;
+        }
         .hero-bg-rotator .bg-slide {
-            position: absolute;
-            top: 0; left: 0;
+            position: relative;
+            flex: 0 0 100%;
             width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
+            opacity: 0.18;
         }
-        .hero-bg-rotator .bg-slide.activo {
-            opacity: 0.13;
-        }
-        .hero-bg-rotator .bg-slide:nth-child(1) { background-image: url('img/fondo1.webp'); }
+        .hero-bg-rotator .bg-slide:nth-child(1),
+        .hero-bg-rotator .bg-slide:nth-child(5) { background-image: url('img/fondo1.webp'); }
         .hero-bg-rotator .bg-slide:nth-child(2) { background-image: url('img/fondo2.webp'); }
         .hero-bg-rotator .bg-slide:nth-child(3) { background-image: url('img/fondo3.webp'); }
         .hero-bg-rotator .bg-slide:nth-child(4) { background-image: url('img/fondo4.webp'); }
+        @keyframes bgSlideLeft {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-80%); }
+        }
         
         /* BANNER CÓDIGO FIJADO */
         .banner-codigo { 
@@ -373,11 +380,11 @@
             color: #fff; margin: 0 0 20px; text-transform: uppercase; letter-spacing: 1px;
         }
         .co-back-btn {
-            background: none; border: none; color: #555; font-size: 0.82em;
-            cursor: pointer; padding: 0; margin-bottom: 22px; display: flex; align-items: center; gap: 6px;
-            font-family: 'Poppins', sans-serif; transition: color 0.2s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); color: #ccc; font-size: 0.82em;
+            cursor: pointer; padding: 8px 14px; margin-bottom: 22px; display: inline-flex; align-items: center; gap: 6px;
+            font-family: 'Poppins', sans-serif; transition: all 0.2s; border-radius: 8px; font-weight: 600;
         }
-        .co-back-btn:hover { color: #fff; }
+        .co-back-btn:hover { color: #28feb6; border-color: #28feb6; background: rgba(40,254,182,0.08); }
 
         .co-field { margin-bottom: 16px; }
         .co-label { display: block; font-size: 0.72em; font-weight: 700; text-transform: uppercase;
@@ -385,10 +392,23 @@
         .co-input {
             width: 100%; background: #0d0d0d; border: 1px solid #222; color: #fff;
             padding: 13px 16px; border-radius: 10px; font-family: 'Poppins', sans-serif;
-            font-size: 0.93em; outline: none; box-sizing: border-box; transition: border-color 0.2s;
+            font-size: 0.93em; outline: none; box-sizing: border-box; transition: border-color 0.2s, background 0.2s;
         }
-        .co-input:focus { border-color: #28feb6; }
-        .co-input::placeholder { color: #444; }
+        .co-input:focus { border-color: #28feb6; background: #111; }
+        .co-input::placeholder { color: #555; }
+
+        .co-upload-box {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 8px; text-align: center;
+            background: #0d0d0d; border: 1.5px dashed #333;
+            border-radius: 12px; padding: 28px 16px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .co-upload-box:hover, .co-upload-box.dragover { border-color: #28feb6; background: #111; }
+        .co-upload-box.co-upload-filled { border-style: solid; border-color: #28feb6; background: rgba(40,254,182,0.05); }
+        .co-upload-icon { font-size: 1.8em; color: #28feb6; }
+        .co-upload-text { font-size: 0.9em; font-weight: 600; color: #fff; }
+        .co-upload-hint { font-size: 0.75em; color: #888; }
 
         .co-friend-notice {
             display: flex; align-items: flex-start; gap: 12px;
@@ -404,19 +424,133 @@
         /* Payment options */
         .co-payment-list { display: flex; flex-direction: column; gap: 10px; }
         .co-pay-option {
-            display: flex; align-items: center; gap: 16px;
-            background: #0d0d0d; border: 1px solid #222; border-radius: 12px;
-            padding: 16px 18px; cursor: pointer; transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .co-pay-option:hover { border-color: #444; }
+        .co-pay-option:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
         .co-pay-option input[type="radio"] { display: none; }
         .co-pay-option:has(input:checked) { border-color: #28feb6; background: rgba(40,254,182,0.05); }
-        .co-pay-logo-wrap { width: 64px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-        .co-pay-logo-wrap img { height: 26px; width: auto; max-width: 64px; object-fit: contain; }
-        .co-pay-logo-text { font-size: 1.5em; }
-        .co-pay-name { flex: 1; font-weight: 600; font-size: 0.95em; }
-        .co-pay-radio { color: #333; font-size: 0.85em; transition: color 0.2s; }
-        .co-pay-option:has(input:checked) .co-pay-radio { color: #28feb6; }
+        .co-pay-logo-wrap {
+            width: 104px; height: 64px;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #fff;
+            border-radius: 8px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+        }
+        .co-pay-logo-wrap img { height: 40px; width: auto; max-width: 88px; object-fit: contain; background: transparent; border-radius: 0; padding: 0; }
+        .co-pay-logo-text { font-size: 1.6em; background: #1a1a2e; color: #fff; }
+        .co-pay-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .co-pay-name { font-weight: 700; font-size: 0.95em; color: #fff; }
+        .co-pay-desc { font-size: 0.76em; color: #888; line-height: 1.3; }
+        .co-pay-radio { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #444; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: border-color 0.2s; }
+        .co-pay-option:has(input:checked) .co-pay-radio { border-color: #28feb6; background: radial-gradient(circle, #28feb6 40%, transparent 40%); }
+
+        /* Step 1: Carrito - tarjetas estilo co-pay-option */
+        .co-cart-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .co-cart-item:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+        .co-cart-img-wrap {
+            width: 56px; height: 56px;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: #111118;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .co-cart-img-wrap img { width: 100%; height: 100%; object-fit: contain; padding: 4px; box-sizing: border-box; }
+        .co-cart-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .co-cart-name { font-weight: 700; font-size: 0.95em; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .co-cart-rarity { font-size: 0.72em; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+        .co-cart-price { color: #28feb6; font-weight: 700; font-size: 0.95em; white-space: nowrap; flex-shrink: 0; }
+
+        /* Step 2: Contacto - tarjetas estilo co-pay-option */
+        .co-field-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .co-field-card:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
+        .co-field-card:has(.co-input:focus) { border-color: #28feb6; background: rgba(40,254,182,0.05); }
+        .co-field-card-icon {
+            width: 48px; height: 48px;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            color: #28feb6;
+            font-size: 1.1em;
+        }
+        .co-field-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+        .co-field-card-body .co-label { margin-bottom: 0; }
+        .co-field-card-body input.co-input,
+        .co-field-card-body input.co-input:not([type]) {
+            background-color: #0d0d0d !important; border: 1px solid #222 !important; color: #fff !important;
+            padding: 10px 14px; border-radius: 8px; font-size: 0.92em;
+            width: 100%; max-width: 100%; box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            -webkit-appearance: none; appearance: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .co-field-card-body input.co-input:focus {
+            background-color: #111 !important; border-color: #28feb6 !important;
+            box-shadow: 0 0 0 3px rgba(40,254,182,0.12);
+            outline: none;
+        }
+        .co-field-card-body input.co-input::placeholder { color: #555; }
+        .co-field-card-body input.co-input:-webkit-autofill,
+        .co-field-card-body input.co-input:-webkit-autofill:hover,
+        .co-field-card-body input.co-input:-webkit-autofill:focus,
+        .co-field-card-body input.co-input:-webkit-autofill:active {
+            -webkit-text-fill-color: #fff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+            box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+            caret-color: #fff !important;
+            transition: background-color 9999s ease-in-out 0s;
+        }
+        .co-field-card-whatsapp { display: flex; gap: 8px; }
+        .co-field-card-whatsapp input.co-input-code {
+            width: 64px; flex-shrink: 0; text-align: center;
+            background-color: #0d0d0d !important; border: 1px solid #222 !important; color: #fff !important;
+            border-radius: 8px; padding: 10px 6px; font-family: 'Poppins', sans-serif; font-size: 0.92em;
+            box-sizing: border-box; -webkit-appearance: none; appearance: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .co-field-card-whatsapp input.co-input-code:focus {
+            background-color: #111 !important; border-color: #28feb6 !important;
+            box-shadow: 0 0 0 3px rgba(40,254,182,0.12);
+            outline: none;
+        }
+        .co-field-card-whatsapp input.co-input-code:-webkit-autofill {
+            -webkit-text-fill-color: #fff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+            box-shadow: 0 0 0px 1000px #0d0d0d inset !important;
+            transition: background-color 9999s ease-in-out 0s;
+        }
+        .co-field-card-whatsapp .co-input { flex: 1; }
 
         /* Totals */
         .co-totals { border-top: 1px solid #1a1a1a; margin-top: 16px; padding-top: 16px; }
@@ -428,17 +562,83 @@
         /* Sidebar */
         .co-sidebar { position: sticky; top: 110px; }
         .co-summary-card {
-            background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 14px;
-            padding: 24px 20px;
+            background: #0a0a0a; 
+            border: 1px solid #1f1f1f; 
+            border-radius: 16px;
+            padding: 24px 22px;
         }
-        .co-summary-title { font-size: 0.8em; text-transform: uppercase; letter-spacing: 2px; color: #555; font-weight: 700; margin: 0 0 16px; }
+        .co-summary-title { font-size: 0.78em; text-transform: uppercase; letter-spacing: 2px; color: #555; font-weight: 700; margin: 0 0 16px; }
         .co-cta-btn {
             width: 100%; padding: 16px; background: #28feb6; color: #000;
-            border: none; border-radius: 10px; font-weight: 900; font-size: 0.95em;
+            border: none; border-radius: 12px; font-weight: 900; font-size: 0.95em;
             text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
             font-family: 'Poppins', sans-serif; transition: all 0.25s;
         }
-        .co-cta-btn:hover { background: #1de8a5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(40,254,182,0.3); }
+
+        /* Aviso y botón "Pagar con PayPal" */
+        .co-paypal-buttons { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; }
+        .co-paypal-notice {
+            background: rgba(255, 196, 57, 0.06);
+            border: 1px solid rgba(255, 196, 57, 0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 0.82em;
+            color: #ccc;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .co-btn-paypal-pay {
+            width: 100%; padding: 16px 20px; 
+            background: linear-gradient(135deg, #ffc439 0%, #f5a623 100%);
+            color: #003087;
+            border: none; border-radius: 14px; font-weight: 900; font-size: 1em;
+            cursor: pointer; font-family: 'Poppins', sans-serif; transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 16px rgba(255, 196, 57, 0.3);
+            letter-spacing: 0.3px;
+        }
+        .co-btn-paypal-pay:hover { 
+            background: linear-gradient(135deg, #ffd166 0%, #ffc439 100%);
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 24px rgba(255, 196, 57, 0.45);
+        }
+        .co-btn-paypal-pay img { height: 26px; filter: brightness(0) saturate(100%) invert(11%) sepia(97%) saturate(3000%) hue-rotate(214deg) brightness(70%); }
+        .co-paypal-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 4px 0;
+        }
+        .co-paypal-divider::before, .co-paypal-divider::after {
+            content: ''; flex: 1; height: 1px; background: #222;
+        }
+        .co-paypal-divider span { font-size: 0.7em; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .co-paypal-powered { text-align: center; font-size: 0.7em; color: #555; margin-top: 4px; letter-spacing: 0.5px; }
+        .co-paypal-powered img { height: 12px; vertical-align: middle; margin-left: 3px; }
+
+        /* Generar Pedido bloqueado */
+        .co-cta-btn.locked {
+            background: #1a1a1a !important;
+            color: #555 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            transform: none !important;
+            border: 1.5px dashed #333;
+            position: relative;
+            overflow: hidden;
+        }
+        .co-cta-btn.locked::before {
+            content: '🔒 ';
+        }
+        .co-cta-btn:not(.locked):hover { background: #1de8a5; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(40,254,182,0.3); }
+        .co-upload-needed-hint {
+            display: none;
+            text-align: center;
+            font-size: 0.75em;
+            color: #f5a623;
+            margin-top: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+        .co-upload-needed-hint.visible { display: block; }
+
             display: flex;
             justify-content: center;
             gap: 40px;
@@ -674,7 +874,7 @@
             display: none;
         }
         
-        .pestana:not(.oculto) { animation: fadeInUp 0.5s ease-out forwards; }
+        .pestana:not(.oculto) { animation: fadeIn 0.35s ease-out forwards; }
         .oculto { display: none !important; }
         
         input, select, button.btn-accion { width: 100%; padding: 12px; margin: 8px 0 20px 0; border-radius: 5px; border: 1px solid #333333; background-color: #121212; color: white; box-sizing: border-box; transition: all 0.3s ease; }
@@ -745,12 +945,12 @@
         .hero-checks span { display: flex; align-items: center; gap: 12px; }
         .hero-checks i { color: #ffffff; font-size: 1.2em; width: 25px; text-align: center; }
 
-        .hero-image { flex: 0 0 520px; display: flex; justify-content: center; align-items: flex-end; position: relative; height: 100%; min-height: 680px; align-self: stretch; overflow: visible; order: 2; margin-left: -180px; z-index: 3; }
+        .hero-image { flex: 0 0 520px; display: flex; justify-content: center; align-items: flex-end; position: relative; height: 100%; min-height: 680px; align-self: stretch; overflow: visible; order: 2; margin-left: -130px; z-index: 3; }
         .hero-image::before { content: ""; position: absolute; width: 420px; height: 420px; background: radial-gradient(circle, rgba(40,254,182,0.06) 0%, rgba(0,0,0,0) 70%); z-index: 0; border-radius: 50%; }
-        .hero-image img { width: 100%; height: 100%; max-width: none; max-height: none; object-fit: contain; margin: 0; padding: 0; filter: drop-shadow(0 10px 40px rgba(0,0,0,0.3)); animation: float 4s ease-in-out infinite; z-index: 1; position: absolute; bottom: 0; left: 0; right: 0; }
+        .hero-image img { width: auto; height: 100%; max-height: 700px; max-width: 520px; object-fit: contain; object-position: bottom center; margin: 0 auto; padding: 0; filter: drop-shadow(0 10px 40px rgba(0,0,0,0.4)); animation: float 4s ease-in-out infinite; z-index: 1; position: absolute; bottom: 0; left: 0; right: 0; display: block; }
         @media (max-width: 768px) {
             .hero-image { flex: 0 0 auto; min-height: 380px; align-self: auto; width: 100%; margin-left: 0; order: 2; }
-            .hero-image img { max-height: 420px; width: auto; position: relative; }
+            .hero-image img { max-height: 380px; max-width: 100%; position: relative; }
         }
 
         /* BOTONES FLOTANTES */
@@ -1070,32 +1270,60 @@
             z-index: 5;
         }
 
+        /* Badge de rareza — removido, ahora es texto inline en card-bottom-row */
+
+
         /* Carrusel "Se Va Hoy" */
+        .carrusel-se-va-hoy-wrap {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
         .carrusel-se-va-hoy {
             display: flex;
             gap: 20px;
-            margin-top: 20px;
-            overflow: hidden;
-            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+            user-select: none;
+            padding-bottom: 8px;
         }
-        .carrusel-se-va-hoy-track {
-            display: flex;
-            gap: 20px;
-            animation: carruselSeVaHoy 550s linear infinite;
-        }
-        .carrusel-se-va-hoy:hover .carrusel-se-va-hoy-track {
-            animation-play-state: paused;
-        }
+        .carrusel-se-va-hoy:active { cursor: grabbing; }
+        /* hide scrollbar visually but keep functional */
+        .carrusel-se-va-hoy::-webkit-scrollbar { height: 4px; }
+        .carrusel-se-va-hoy::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
+        .carrusel-se-va-hoy::-webkit-scrollbar-thumb { background: rgba(40,254,182,0.3); border-radius: 2px; }
         .carrusel-se-va-hoy .cosmetic-card {
             flex: 0 0 160px;
             width: 160px;
-        }
-        @keyframes carruselSeVaHoy {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
+            scroll-snap-align: start;
         }
         @media (max-width: 600px) {
             .carrusel-se-va-hoy .cosmetic-card { flex: 0 0 130px; width: 130px; }
+        }
+        .carrusel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: rgba(13,13,13,0.85);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            z-index: 6;
+            transition: all 0.2s;
+            backdrop-filter: blur(4px);
+        }
+        .carrusel-arrow:hover { background: rgba(40,254,182,0.2); border-color: #28feb6; color: #28feb6; }
+        .carrusel-arrow.izq { left: -6px; }
+        .carrusel-arrow.der { right: -6px; }
+        @media (max-width: 768px) {
+            .carrusel-arrow { display: none; }
         }
 
         /* Parte inferior de la card (info + botón) */
@@ -1130,15 +1358,20 @@
             font-weight: 800;
             color: #a8d8ff;
         }
+        .cosmetic-card.legendary .card-price-vbucks { color: #f5b942; }
+        .cosmetic-card.epic      .card-price-vbucks { color: #c44dff; }
+        .cosmetic-card.rare      .card-price-vbucks { color: #4aa8ff; }
+        .cosmetic-card.uncommon  .card-price-vbucks { color: #3aad4e; }
+        .cosmetic-card.common    .card-price-vbucks { color: #8a8a9e; }
         .card-title {
-            font-family: 'BurbankBigCondensed', 'Poppins', sans-serif;
+            font-family: 'Inter', 'Poppins', sans-serif;
             color: #fff;
-            font-size: 0.95rem;
-            font-weight: 900;
+            font-size: 0.88rem;
+            font-weight: 500;
             margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            line-height: 1.1;
+            text-transform: none;
+            letter-spacing: 0.1px;
+            line-height: 1.25;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1148,19 +1381,22 @@
             align-items: center;
             justify-content: space-between;
             gap: 6px;
+            margin-top: 1px;
         }
         .card-rarity-text {
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-family: 'Inter', 'Poppins', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 300;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            opacity: 0.75;
+            letter-spacing: 0.8px;
+            color: #888;
+            opacity: 1;
         }
-        .cosmetic-card.legendary .card-rarity-text { color: #ffc84a; }
-        .cosmetic-card.epic      .card-rarity-text { color: #c97eff; }
-        .cosmetic-card.rare      .card-rarity-text { color: #70c0ff; }
-        .cosmetic-card.uncommon  .card-rarity-text { color: #70e080; }
-        .cosmetic-card.common    .card-rarity-text { color: #aaaacc; }
+        .cosmetic-card.legendary .card-rarity-text { color: #c9a43a; }
+        .cosmetic-card.epic      .card-rarity-text { color: #9e6cc7; }
+        .cosmetic-card.rare      .card-rarity-text { color: #5a90c7; }
+        .cosmetic-card.uncommon  .card-rarity-text { color: #4a8f5a; }
+        .cosmetic-card.common    .card-rarity-text { color: #777; }
 
         .card-price-fiat {
             font-size: 0.78rem;
@@ -1185,6 +1421,18 @@
             box-sizing: border-box;
         }
         .btn-add-cart:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+        .btn-add-cart:active { transform: scale(0.95); }
+        .btn-add-cart.added {
+            background: rgba(40,254,182,0.25) !important;
+            border-color: #28feb6 !important;
+            color: #28feb6 !important;
+            cursor: not-allowed;
+        }
+        @keyframes addedPulse {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
 
         @media (max-width: 600px) {
             .card-title { font-size: 0.78rem; }
@@ -1238,6 +1486,12 @@
             margin-top: auto;
         }
         .btn-outline-mint:hover { background: #28feb6; color: #000000; }
+        .btn-outline-mint:active { transform: scale(0.96); }
+        .btn-outline-mint.added {
+            background: #28feb6 !important;
+            color: #000000 !important;
+            cursor: not-allowed;
+        }
         
         .alerta-warning { 
             background: rgba(255, 255, 255, 0.05); 
@@ -1371,19 +1625,100 @@
         .summary-row.total { color: #28feb6; font-weight: bold; font-size: 1.3em; border-top: 1px solid rgba(40, 254, 182, 0.3); padding-top: 15px; margin-top: 10px; }
         .cart-item-info { color: #aaa; font-size: 0.85em; margin-top: 3px; }
 
-        .cart-body { flex-grow: 1; overflow-y: auto; padding: 20px; }
-        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(40, 254, 182, 0.2); position: relative; animation: slideInLeft 0.3s ease-out forwards; }
-        .cart-item img { width: 70px; height: 70px; border-radius: 8px; object-fit: cover; background-color: #121212; }
-        .cart-item-details { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; padding-right: 25px; }
-        .btn-eliminar-item { position: absolute; top: 0; right: 0; background: none; border: none; color: #e74c3c; font-size: 1.2em; cursor: pointer; padding: 5px; font-weight: bold; transition: all 0.2s; }
+        .cart-body { flex-grow: 1; overflow-y: auto; padding: 15px; }
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            background: #0d0d0d;
+            border: 1px solid #1f1f1f;
+            position: relative;
+            animation: slideInLeft 0.3s ease-out forwards;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .cart-item:hover { transform: translateX(2px); }
+        .cart-item-img-wrap {
+            flex-shrink: 0;
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #111118;
+        }
+        .cart-item img {
+            width: 64px;
+            height: 64px;
+            border-radius: 8px;
+            object-fit: contain;
+            background-color: #111118;
+            padding: 4px;
+            flex-shrink: 0;
+            display: block;
+        }
+        .cart-item-details { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding-right: 22px; min-width: 0; }
+        .cart-item-title {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            font-weight: 500;
+            color: #fff;
+            font-size: 0.88em;
+            text-transform: none;
+            letter-spacing: 0.1px;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cart-item-rarity {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #888;
+            opacity: 1;
+        }
+        .cart-item-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 2px;
+        }
+        .cart-item-vbucks {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #a8d8ff;
+        }
+        .cart-item-vbucks img { width: 14px; height: 14px; object-fit: contain; padding: 0; background: none; border-radius: 0; }
+        .cart-item-price { color: #28feb6; font-size: 0.9em; font-weight: 700; }
+        .btn-eliminar-item { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #e74c3c; font-size: 1.1em; cursor: pointer; padding: 5px; font-weight: bold; transition: all 0.2s; line-height: 1; }
         .btn-eliminar-item:hover { color: #ff6b6b; transform: scale(1.2) rotate(90deg); }
         
         .cart-footer { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
         .cart-footer .btn-accion { background-color: #28feb6; color: #000; border: none; font-weight: 800; margin: 0; }
         .cart-footer .btn-accion:hover { background-color: #22d89b; transform: translateY(-2px); }
         
-        .btn-vaciar { background-color: transparent !important; color: #28feb6 !important; border: 1px solid #28feb6 !important; margin: 0; text-transform: uppercase; font-size: 0.85em; }
-        .btn-vaciar:hover { background-color: rgba(40, 254, 182, 0.1) !important; transform: none; }
+        .btn-vaciar {
+            background-color: transparent !important;
+            color: #888 !important;
+            border: 1px solid #333 !important;
+            margin: 0 auto !important;
+            text-transform: none;
+            font-size: 0.78em;
+            font-weight: 500;
+            padding: 6px 14px !important;
+            width: auto !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 20px;
+        }
+        .btn-vaciar:hover { background-color: rgba(231,76,60,0.08) !important; border-color: #e74c3c !important; color: #e74c3c !important; transform: none; }
 
         /* Botones de cantidad */
         .btn-qty { border: 1px solid #28feb6; background: none; color: #28feb6; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
@@ -1523,6 +1858,46 @@
         .discord-box { background-color: #5865F2; display: inline-block; padding: 12px 25px; border-radius: 5px; color: white; text-decoration: none; font-weight: bold; margin-top: 15px; transition: all 0.3s ease; animation: pulseGlow 2.5s infinite; }
         .discord-box:hover { background-color: #4752C4; transform: scale(1.05) translateY(-3px); animation: none; box-shadow: 0 8px 25px rgba(88, 101, 242, 0.6); }
         .footer-text { color: #888; font-size: 0.9em; margin-top: 20px; }
+
+        .footer-social-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-top: 10px;
+        }
+        .footer-social-title {
+            color: #fff;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.85em;
+        }
+        .footer-social-icons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 18px;
+        }
+        .footer-social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1.1em;
+            transition: 0.3s;
+        }
+        .footer-social-icon:hover {
+            background: #28feb6;
+            border-color: #28feb6;
+            color: #000;
+            transform: translateY(-3px);
+        }
 
         .footer-payment-section {
             margin: 0 -20px 20px -20px;
@@ -1796,6 +2171,9 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
         }
+        @media (min-width: 769px) {
+            .servicios-home-grid { display: none !important; }
+        }
         .servicio-home-card {
             background: #111111;
             border: 1px solid #222;
@@ -1828,15 +2206,37 @@
             margin: 14px 0 20px;
         }
         .hero-badge {
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
             padding: 10px 18px;
             display: flex;
             align-items: center;
             gap: 8px;
             backdrop-filter: blur(6px);
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
         }
+        .hero-badge::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.16) 50%, transparent 100%);
+            transform: skewX(-20deg);
+            animation: heroBadgeShine 5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes heroBadgeShine {
+            0%   { left: -150%; }
+            45%  { left: 150%; }
+            100% { left: 150%; }
+        }
+        .hero-badge-label, .hero-badge-value { position: relative; z-index: 2; }
         .hero-badge-label {
             font-size: 0.7em;
             text-transform: uppercase;
@@ -1961,8 +2361,27 @@
             .floating-container { bottom: 25px; right: 20px; gap: 12px; z-index: 5000; }
             
             /* Ajuste Banner Código Móvil */
-            .banner-codigo { font-size: 0.72em; padding: 8px 10px; gap: 8px; letter-spacing: 0.5px; }
+            .banner-codigo {
+                font-size: 0.68em;
+                padding: 8px 14px;
+                gap: 6px;
+                letter-spacing: 0.5px;
+                width: 100%;
+                max-width: 100%;
+                left: 0;
+                transform: none;
+                border-radius: 0;
+                box-sizing: border-box;
+                white-space: normal;
+                text-align: center;
+            }
             .codigo-destacado { padding: 4px 14px; font-size: 1.1em; }
+
+            /* Ocultar elementos del hero que no aportan en móvil */
+            .hero-checks { display: none !important; }
+            .hero-image { display: none !important; }
+            .hero-container { min-height: auto !important; padding: 20px 15px !important; }
+            .servicios-home-grid, .tienda-home-section { padding: 0 10px !important; }
 
             .float-btn { width: 40px; height: 40px; font-size: 1.1em; }
             .float-cart i { font-size: 1.1em; }
@@ -2659,10 +3078,13 @@
 </head>
 <body>
     <div class="hero-bg-rotator">
-        <div class="bg-slide activo"></div>
-        <div class="bg-slide"></div>
-        <div class="bg-slide"></div>
-        <div class="bg-slide"></div>
+        <div class="hero-bg-track">
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+            <div class="bg-slide"></div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <div class="banner-codigo">Apóyanos en la tienda de Fortnite: Código <strong class="codigo-banner">DENISSA_7U7</strong></div>
@@ -2672,7 +3094,7 @@
     <div id="sidebar" class="sidebar">
         <div class="sidebar-nav">
             <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
-            <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
+            <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
             <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
             <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
@@ -2716,7 +3138,7 @@
             </a>
             <nav>
                 <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
-                <button class="tab-btn" onclick="abrirPestana('tienda')"><i class="fas fa-store"></i> Tienda</button>
+                <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
                 <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
                 <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
@@ -2866,7 +3288,7 @@
         </div>
         <div class="cart-footer">
             <button class="btn-accion" onclick="irAlCheckout()">Ir a Pagar</button>
-            <button id="btn-vaciar-carrito" class="btn-accion btn-vaciar" onclick="vaciarCarrito()" style="display: none;">Vaciar Carrito</button>
+            <button id="btn-vaciar-carrito" class="btn-accion btn-vaciar" onclick="vaciarCarrito()" style="display: none;"><i class="fas fa-trash-alt"></i> Vaciar Carrito</button>
         </div>
     </div>
 
@@ -2899,10 +3321,30 @@
                     <img id="hero-dynamic-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="opacity: 0; transition: opacity 0.5s ease;" alt="Skin Destacada de Hoy">
                 </div>
             </div>
+
+            <div class="servicios-home-grid" style="margin: 10px 0 0; padding: 0 30px;">
+                <div class="servicio-home-card" onclick="abrirPestana('ids-regalos')">
+                    <div class="servicio-home-icon"><i class="fas fa-gift"></i></div>
+                    <strong>Skins vía regalo</strong>
+                    <span>$8 MXN cada 100V</span>
+                </div>
+                <div class="servicio-home-card" onclick="abrirPestana('recargas'); setTimeout(function(){ mostrarSubServicio('pavos'); }, 0);">
+                    <div class="servicio-home-icon"><i class="fas fa-coins"></i></div>
+                    <strong>Recargas de Pavos</strong>
+                    <span>Desde 800 hasta 12,500V</span>
+                </div>
+                <div class="servicio-home-card" onclick="abrirPestana('recargas'); setTimeout(function(){ mostrarSubServicio('club'); }, 0);">
+                    <div class="servicio-home-icon"><i class="fas fa-shirt"></i></div>
+                    <strong>Club de Fortnite</strong>
+                    <span>Hasta 6 meses de Club</span>
+                </div>
+            </div>
+
+            <div id="tienda-mobile-anchor"></div>
         </div>
 
         <div id="tienda" class="pestana oculto">
-            <div class="tienda-home-section">
+            <div class="tienda-home-section" style="padding: 0 30px;">
                 <h2>Tienda de Hoy</h2>
                 <p style="color: #28feb6; font-weight: 500; font-size: 0.9em; margin-bottom: 20px;">Estos son cosméticos via regalo con pavos Farmeados en Salvar el mundo.</p>
                 <div class="buscador-wrapper">
@@ -3073,18 +3515,6 @@
                 </div>
               </div>
 
-              <!-- CÓMO FUNCIONA -->
-              <div class="sb-section">
-                <div class="sb-inner">
-                  <div class="sb-section-title" style="justify-content:center;margin-bottom:36px;font-size:1.3em">Cómo Funciona</div>
-                  <div class="sb-steps-grid">
-                    <div class="sb-step-card"><div class="sb-step-icon">🎮</div><div class="sb-step-title">Ingresa tu ID</div><p class="sb-step-desc">Escribe tu nombre de usuario exacto de Epic Games, PSN o Xbox y selecciona tu plataforma.</p></div>
-                    <div class="sb-step-card"><div class="sb-step-icon">🚀</div><div class="sb-step-title">Envía la solicitud</div><p class="sb-step-desc">Nuestros bots te enviarán una solicitud de amistad automáticamente en segundos.</p></div>
-                    <div class="sb-step-card"><div class="sb-step-icon">🛡️</div><div class="sb-step-title">Espera 48 horas</div><p class="sb-step-desc">Por políticas de Fortnite, debes ser amigo por 48 horas antes de poder recibir regalos.</p></div>
-                  </div>
-                </div>
-              </div>
-
             </section>
         </div>
 
@@ -3120,7 +3550,7 @@
                         <span class="precio-producto" data-precio-usd="11.04">$11.04 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('2.400', '192')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '11.04', 'img/2400vb.png', '2400', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 2,400 V-Bucks" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '11.04', 'img/2400vb.png', '2400', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" style="width: 120px; margin: 0 auto 10px auto;">
@@ -3129,7 +3559,7 @@
                         <span class="precio-producto" data-precio-usd="20.70">$20.70 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('4.500', '360')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '20.70', 'img/4500vb.png', '4500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 4,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '20.70', 'img/4500vb.png', '4500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #28feb6;">
                         <span style="background: #28feb6; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
@@ -3142,7 +3572,7 @@
                             <span style="text-decoration: line-through;">$1629 MXN PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '57.50', 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', '12500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 12,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '57.50', 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', '12500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="img/cuentapavos.webp" style="width: 120px; margin: 0 auto 10px auto;">
@@ -3151,7 +3581,7 @@
                         <span class="precio-producto" data-precio-usd="60.00">$60.00 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 10px 0;">$8.00 MXN CADA 100V</div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('13.500', '1080')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Cuenta 13,500 V-Bucks', '60.00', 'img/cuentapavos.webp', '13500', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 13,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 13,500 V-Bucks', '60.00', 'img/cuentapavos.webp', '13500', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -3168,19 +3598,19 @@
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="6.94">$6.94 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '6.94', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '6.94', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="20.83">$20.83 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '20.83', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '20.83', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="41.67">$41.67 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '41.67', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '41.67', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -3194,19 +3624,19 @@
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="8.33">$8.33 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.33', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 1 Mes" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '8.33', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="25.00">$25.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '25.00', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 3 Meses" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '25.00', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
                         <img src="https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="50.00">$50.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '50.00', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 6 Meses" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '50.00', 'https://imgs.search.brave.com/qLU9rCpJnpLk8uiFFwcY2tnPQ4mtaiMbS86Z_I-bHdQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jbXMt/YXNzZXRzLnVucmVh/bGVuZ2luZS5jb20v/Y202bDVnZnBtMDVr/cjA3bXkwNGNxZ3ky/eC9vdXRwdXQ9Zm9y/bWF0OndlYnAvY21w/dmtsMzRwOHphNzA2/bjRjczdqdGpoag', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -3222,7 +3652,7 @@
                         <img src="img/gamepassport.png" class="club-img-16-9">
                         <strong>1 Mes GP Ultimate</strong>
                         <span class="precio-producto" data-precio-usd="19.71">$19.71 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Personal - 1 Mes (Código)', '19.71', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Personal - 1 Mes (Código)" onclick="agregarAlCarrito('GP Ultimate Personal - 1 Mes (Código)', '19.71', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -3233,26 +3663,26 @@
                         <img src="img/gamepassport.png" class="club-img-16-9">
                         <strong>4 Meses GP Ultimate</strong>
                         <span class="precio-producto" data-precio-usd="42.35">$42.35 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 4 Meses (Código)', '42.35', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 4 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 4 Meses (Código)', '42.35', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img src="img/gamepassport.png" class="club-img-16-9">
                         <strong>3 Meses GP Ultimate</strong>
                         <span class="precio-producto" data-precio-usd="30.00">$30.00 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 3 Meses (Código)', '30.00', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 3 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 3 Meses (Código)', '30.00', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img src="img/gamepassport.png" class="club-img-16-9">
                         <strong>2 Meses GP Ultimate</strong>
                         <span class="precio-producto" data-precio-usd="17.65">$17.65 USD</span>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Código)', '17.65', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 2 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Código)', '17.65', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #28feb6; width: 100%;">
                         <img src="img/gamepassport.png" class="club-img-16-9">
                         <strong>2 Meses GP Ultimate (Cuenta)</strong>
                         <span class="precio-producto" data-precio-usd="18.82">$18.82 USD</span>
                         <p style="font-size: 0.7em; color: #aaa; margin: -10px 0 10px 0;">Se entrega CORREO Y CONTRASEÑA</p>
-                        <button class="btn-outline-mint" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Cuenta)', '18.82', 'img/gamepassport.png', '0', 'cuenta')">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 2 Meses (Cuenta)" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Cuenta)', '18.82', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -3294,17 +3724,29 @@
                             <button class="co-back-btn" onclick="cambiarPasoCheckout(1)">← Volver al carrito</button>
                             <h3 class="co-section-title">Datos de Contacto</h3>
 
-                            <div class="co-field">
-                                <label class="co-label">Nombre completo</label>
-                                <input type="text" id="cliente-nombre" class="co-input" placeholder="Tu nombre">
+                            <div class="co-field-card">
+                                <div class="co-field-card-icon"><i class="fas fa-user"></i></div>
+                                <div class="co-field-card-body">
+                                    <label class="co-label">Nombre completo</label>
+                                    <input type="text" id="cliente-nombre" class="co-input" placeholder="Tu nombre">
+                                </div>
                             </div>
-                            <div class="co-field">
-                                <label class="co-label">WhatsApp</label>
-                                <input type="tel" id="cliente-whatsapp" class="co-input" placeholder="Ej: 18299999999">
+                            <div class="co-field-card">
+                                <div class="co-field-card-icon"><i class="fab fa-whatsapp"></i></div>
+                                <div class="co-field-card-body">
+                                    <label class="co-label">WhatsApp</label>
+                                    <div class="co-field-card-whatsapp">
+                                        <input type="text" id="cliente-whatsapp-code" class="co-input-code" value="+1" maxlength="5" oninput="this.dataset.touched='1'">
+                                        <input type="tel" id="cliente-whatsapp" class="co-input" placeholder="8299999999">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="co-field">
-                                <label class="co-label">ID de Epic Games</label>
-                                <input type="text" id="cliente-epic" class="co-input" placeholder="Ej: JuanPerez123">
+                            <div class="co-field-card">
+                                <div class="co-field-card-icon"><i class="fas fa-gamepad"></i></div>
+                                <div class="co-field-card-body">
+                                    <label class="co-label">ID de Epic Games</label>
+                                    <input type="text" id="cliente-epic" class="co-input" placeholder="Ej: JuanPerez123">
+                                </div>
                             </div>
 
                             <div class="co-friend-notice" onclick="abrirPestana('ids-regalos')">
@@ -3325,50 +3767,74 @@
 
                             <div class="co-payment-list">
                                 <label class="co-pay-option" for="met-paypal">
-                                    <input type="radio" name="metodo-pago" id="met-paypal" value="paypal">
+                                    <input type="radio" name="metodo-pago" id="met-paypal" value="paypal" onchange="mostrarPopupMetodoPago(this.value)">
                                     <div class="co-pay-logo-wrap">
-                                        <img src="https://cdn.brandfetch.io/id-Wd4a4TS/theme/dark/id31tBizMM.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="PayPal">
+                                        <img src="https://imgs.search.brave.com/UfOpjldjHbocMAlhitRv6714NaICFmOelqjFdXDK33U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9QYXlQYWwv/UGF5UGFsLUxvZ28u/d2luZS5zdmc" alt="PayPal" style="height:32px;">
                                     </div>
-                                    <span class="co-pay-name">PayPal</span>
-                                    <i class="fas fa-circle co-pay-radio"></i>
+                                    <div class="co-pay-info">
+                                        <span class="co-pay-name">PayPal</span>
+                                        <span class="co-pay-desc">Paga de forma segura con tu cuenta PayPal</span>
+                                    </div>
+                                    <div class="co-pay-radio"></div>
                                 </label>
 
                                 <label class="co-pay-option" for="met-binance">
-                                    <input type="radio" name="metodo-pago" id="met-binance" value="binance">
-                                    <div class="co-pay-logo-wrap">
+                                    <input type="radio" name="metodo-pago" id="met-binance" value="binance" onchange="mostrarPopupMetodoPago(this.value)">
+                                    <div class="co-pay-logo-wrap" style="background:#1a1a2e;">
                                         <img src="https://cdn.brandfetch.io/id-pjrLx_q/w/360/h/192/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B" alt="Binance">
                                     </div>
-                                    <span class="co-pay-name">Binance Pay</span>
-                                    <i class="fas fa-circle co-pay-radio"></i>
+                                    <div class="co-pay-info">
+                                        <span class="co-pay-name">Binance Pay</span>
+                                        <span class="co-pay-desc">Paga con criptomonedas vía Binance Pay</span>
+                                    </div>
+                                    <div class="co-pay-radio"></div>
                                 </label>
 
                                 <label class="co-pay-option" for="met-mercadopago">
-                                    <input type="radio" name="metodo-pago" id="met-mercadopago" value="mercadopago">
+                                    <input type="radio" name="metodo-pago" id="met-mercadopago" value="mercadopago" onchange="mostrarPopupMetodoPago(this.value)">
                                     <div class="co-pay-logo-wrap">
-                                        <img src="https://cdn.brandfetch.io/id28dlmMhC/theme/dark/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Mercado Pago">
+                                        <img src="https://imgs.search.brave.com/OCigs4i-8sIvN5RSs04J6waq9xfWaVCAoCxZusQrTW8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMi8w/Ny9tZXJjYWRvX3Bh/Z28tbG9nb19icmFu/ZGxvZ29zLm5ldF90/dnh3Yi01MTJ4NTEy/LnBuZw" alt="Mercado Pago" style="height:40px;">
                                     </div>
-                                    <span class="co-pay-name">Mercado Pago</span>
-                                    <i class="fas fa-circle co-pay-radio"></i>
-                                </label>
-
-                                <label class="co-pay-option" for="met-popular">
-                                    <input type="radio" name="metodo-pago" id="met-popular" value="popular">
-                                    <div class="co-pay-logo-wrap co-pay-logo-text">🏦</div>
-                                    <span class="co-pay-name">Banco Popular RD</span>
-                                    <i class="fas fa-circle co-pay-radio"></i>
+                                    <div class="co-pay-info">
+                                        <span class="co-pay-name">Mercado Pago</span>
+                                        <span class="co-pay-desc">Transferencia SPEI · Solo México 🇲🇽</span>
+                                    </div>
+                                    <div class="co-pay-radio"></div>
                                 </label>
 
                                 <label class="co-pay-option" for="met-transfer">
-                                    <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx">
-                                    <div class="co-pay-logo-wrap co-pay-logo-text">🇲🇽</div>
-                                    <span class="co-pay-name">Transferencia MX (SPEI)</span>
-                                    <i class="fas fa-circle co-pay-radio"></i>
+                                    <input type="radio" name="metodo-pago" id="met-transfer" value="transferencia_mx" onchange="mostrarPopupMetodoPago(this.value)">
+                                    <div class="co-pay-logo-wrap">
+                                        <img src="https://cdn.worldvectorlogo.com/logos/spei-1.svg" alt="SPEI" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/SPEI_logo.svg/320px-SPEI_logo.svg.png'">
+                                    </div>
+                                    <div class="co-pay-info">
+                                        <span class="co-pay-name">Transferencia SPEI</span>
+                                        <span class="co-pay-desc">Transferencia bancaria interbancaria · Solo México 🇲🇽</span>
+                                    </div>
+                                    <div class="co-pay-radio"></div>
+                                </label>
+
+                                <label class="co-pay-option" for="met-oxxo">
+                                    <input type="radio" name="metodo-pago" id="met-oxxo" value="oxxo" onchange="mostrarPopupMetodoPago(this.value)">
+                                    <div class="co-pay-logo-wrap" style="background:#e8132a;">
+                                        <img src="https://imgs.search.brave.com/on1ea1z38JGMrU0XdBQ04up2OCL6WqefqEH4s_5YHYg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/dHlwLnVzL2ZpbGUv/b3h4by5zdmc" alt="Oxxo" style="height:36px;">
+                                    </div>
+                                    <div class="co-pay-info">
+                                        <span class="co-pay-name">Oxxo</span>
+                                        <span class="co-pay-desc">Depósito en efectivo · Solo México 🇲🇽</span>
+                                    </div>
+                                    <div class="co-pay-radio"></div>
                                 </label>
                             </div>
 
                             <div class="co-field" style="margin-top:20px;">
                                 <label class="co-label">Adjuntar comprobante de pago</label>
-                                <input type="file" id="cliente-comprobante" accept="image/*" class="co-input" style="padding:10px;">
+                                <label for="cliente-comprobante" class="co-upload-box" id="co-upload-box">
+                                    <i class="fas fa-cloud-upload-alt co-upload-icon"></i>
+                                    <span class="co-upload-text" id="co-upload-text">Haz clic o arrastra tu comprobante aquí</span>
+                                    <span class="co-upload-hint">PNG, JPG o capturas de pantalla</span>
+                                </label>
+                                <input type="file" id="cliente-comprobante" accept="image/*" style="display:none;" onchange="actualizarComprobanteUI(this)">
                             </div>
                         </div>
 
@@ -3382,7 +3848,16 @@
                             <div class="co-total-row co-total-final" style="margin-bottom:20px;">
                                 <span>Total</span><span id="checkout-total-dinero">—</span>
                             </div>
-                            <button id="btn-main-checkout" class="co-cta-btn" onclick="manejarAccionCheckout()">CONTINUAR</button>
+                            <div id="co-paypal-buttons" class="co-paypal-buttons" style="display:none;">
+                                <div class="co-paypal-notice">Serás redirigido a PayPal para pagar. Una vez completado, adjunta tu comprobante abajo para generar el pedido.</div>
+                                <button class="co-btn-paypal-pay" onclick="window.open('https://www.paypal.com/ncp/payment/4JP4S5EUD4RBS','_blank')">
+                                    Pagar con
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+                                </button>
+                            </div>
+                            <div id="co-paypal-divider" class="co-paypal-divider" style="display:none;"><span>luego</span></div>
+                            <button id="btn-main-checkout" class="co-cta-btn locked" onclick="manejarAccionCheckout()">GENERAR PEDIDO</button>
+                            <p id="co-upload-needed-hint" class="co-upload-needed-hint">Adjunta tu comprobante de pago para continuar</p>
                             <p id="txt-instruccion-checkout" style="text-align:center;color:#888;font-size:0.8em;margin-top:10px;display:none;">Adjunta tu comprobante una vez realices el pago.</p>
                         </div>
                     </div>
@@ -3393,15 +3868,22 @@
                 <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza la transferencia SPEI desde tu app bancaria.</p>
                 <div class="bank-card">
                     <div class="bank-row">
-                        <span class="bank-label">Institución</span>
-                        <span class="bank-value">STP (México)</span>
+                        <span class="bank-label">Banco</span>
+                        <span class="bank-value">STP</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Entidad</span>
+                        <span class="bank-value">STP</span>
                     </div>
                     <div class="bank-row">
                         <span class="bank-label">Beneficiario</span>
-                        <span class="bank-value">Denisa Severino Figueroa</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">Denisa Severino Figueroa</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Denisa Severino Figueroa', this)">Copiar</button>
+                        </div>
                     </div>
                     <div class="bank-row">
-                        <span class="bank-label">CLABE Interbancaria</span>
+                        <span class="bank-label">CLABE</span>
                         <div class="bank-value-group">
                             <span class="bank-value">646180546705661809</span>
                             <button class="btn-copy-mini" onclick="copiarAlPortapapeles('646180546705661809', this)">Copiar</button>
@@ -3409,26 +3891,7 @@
                     </div>
                 </div>
             </div>
-            <div id="pago-popular" class="info-pago-box oculto">
-                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Transfiere directamente a nuestra cuenta del Banco Popular.</p>
-                <div class="bank-card">
-                    <div class="bank-row">
-                        <span class="bank-label">Entidad</span>
-                        <span class="bank-value"><strong>Banco Popular</strong></span>
-                    </div>
-                    <div class="bank-row">
-                        <span class="bank-label">Titular</span>
-                        <span class="bank-value">Denisa Severino Figueroa</span>
-                    </div>
-                    <div class="bank-row">
-                        <span class="bank-label">Número de Cuenta</span>
-                        <div class="bank-value-group">
-                            <span class="bank-value">837508191</span>
-                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('837508191', this)">Copiar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div id="pago-binance-info" class="info-pago-box oculto">
                 <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Envía el pago vía Binance Pay (USDT).</p>
                 <div class="bank-card">
@@ -3445,10 +3908,82 @@
                     </div>
                 </div>
             </div>
+            <div id="pago-paypal-info" class="info-pago-box oculto">
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza el pago a nuestra cuenta de PayPal.</p>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Plataforma</span>
+                        <span class="bank-value">PayPal</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Correo PayPal</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">pagos@shegosstore.com</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('pagos@shegosstore.com', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="alerta-espera" style="text-align: center; font-size: 0.85em; margin-top: 15px;">
+                    Envía el pago como "Bienes y Servicios" y adjunta tu comprobante.
+                </div>
+            </div>
+            <div id="pago-mercadopago" class="info-pago-box oculto">
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza la transferencia SPEI desde tu app bancaria o Mercado Pago.</p>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Banco</span>
+                        <span class="bank-value">STP</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Entidad</span>
+                        <span class="bank-value">STP</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Beneficiario</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">Denisa Severino Figueroa</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Denisa Severino Figueroa', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">CLABE</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">646180546705661809</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('646180546705661809', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="pago-link-info" class="info-pago-box oculto">
                 <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Solicita el link de pago por WhatsApp para pagar con Tarjeta.</p>
                 <div class="alerta-espera" style="text-align: center; font-size: 0.85em;">
                     Al confirmar, se abrirá el chat para generar tu enlace personalizado.
+                </div>
+            </div>
+            <div id="pago-oxxo-info" class="info-pago-box oculto">
+                <p style="text-align: center; color: #aaa; font-size: 0.9em; margin-bottom: 20px;">Realiza un depósito en efectivo en cualquier tienda Oxxo.</p>
+                <div class="bank-card">
+                    <div class="bank-row">
+                        <span class="bank-label">Tienda</span>
+                        <span class="bank-value">Oxxo</span>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Número de Tarjeta</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">4217 4700 4878 0296</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('4217470048780296', this)">Copiar</button>
+                        </div>
+                    </div>
+                    <div class="bank-row">
+                        <span class="bank-label">Beneficiario</span>
+                        <div class="bank-value-group">
+                            <span class="bank-value">Denisa Severino Figueroa</span>
+                            <button class="btn-copy-mini" onclick="copiarAlPortapapeles('Denisa Severino Figueroa', this)">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="alerta-espera" style="text-align: center; font-size: 0.85em; margin-top: 15px;">
+                    Guarda tu comprobante del depósito y adjúntalo para generar tu pedido.
                 </div>
             </div>
         </div>
@@ -3485,8 +4020,14 @@
             <div id="modal-pago-body">
                 <!-- Aquí se inyectan los datos de transferencia -->
             </div>
+
+            <div style="margin-top: 20px; background: rgba(40,254,182,0.06); border: 1px solid rgba(40,254,182,0.2); border-radius: 12px; padding: 14px 16px; text-align: center;">
+                <p style="margin: 0 0 4px; font-size: 0.82em; color: #aaa; line-height: 1.5;">Una vez realizado el pago, cierra este modal y adjunta tu comprobante para desbloquear el botón de pedido.</p>
+            </div>
             
-            <button class="btn-accion btn-whatsapp" style="margin-top: 25px; width: 100%; background: #fff; color: #000; border-radius: 8px;" onclick="confirmarYEnviarWhatsApp()">Confirmar y enviar comprobante</button>
+            <button class="btn-accion" style="margin-top: 18px; width: 100%; background: #28feb6; color: #000; border-radius: 10px; font-weight: 800; font-size: 0.95em; letter-spacing: 1px; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="pagoCompletadoCerrarModal()">
+                <i class="fas fa-check-circle"></i> Pago Completado
+            </button>
         </div>
     </div>
 
@@ -3511,7 +4052,7 @@
         <div class="modal-binance-card">
             <h2>Pagar con Binance Pay</h2>
             <p>Escanea el código QR o envía el pago a nuestro Pay ID</p>
-            <img src="img/Binanceqr.jpeg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
+            <img src="img/Binanceqr.svg" alt="QR Binance" style="width: 150px; border-radius: 8px; margin-bottom: 15px;">
             <div style="background: #1a1c23; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px dashed #FCD535;">
                 <strong style="color: #FCD535; font-size: 1.1em;">Pay ID: 481410806</strong>
             </div>
@@ -3525,7 +4066,7 @@
     </div>
 
     <!-- NUEVO MODAL DE SELECCIÓN DE DIVISA V2 -->
-    <div id="currency-modal-v2" class="main-modal-overlay">
+    <div id="currency-modal-v2" class="main-modal-overlay" onclick="if(event.target === this) cerrarModalDivisa()">
         <div class="modal-gaming-card">
             <h2 class="modal-title">¿En qué moneda quieres ver la página?</h2>
             <div class="currency-grid">
@@ -3579,6 +4120,15 @@
             </div>
         </div>
 
+        <div class="footer-social-section">
+            <span class="footer-social-title">Síguenos</span>
+            <div class="footer-social-icons">
+                <a href="https://discord.gg/W6wmXXUe" target="_blank" class="footer-social-icon" title="Stock Cuentas STW (Discord)"><i class="fab fa-discord"></i></a>
+                <a href="https://chat.whatsapp.com/DJM0mEoYaDrLHDyUBMBcHL" target="_blank" class="footer-social-icon" title="Grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/18299847680" target="_blank" class="footer-social-icon" title="Contacto por WhatsApp"><img src="https://cdn.brandfetch.io/id6Zq084G_/theme/light/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Contacto" style="width:18px; height:18px; object-fit:contain;"></a>
+            </div>
+        </div>
+
         <p class="footer-text">&copy; 2026. Todos los derechos reservados.</p>
     </footer>
 
@@ -3586,8 +4136,6 @@
         <button id="btn-scroll-top" class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Ir arriba">
             <i class="fas fa-chevron-up"></i>
         </button>
-        <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="float-btn float-ds" title="Discord"><i class="fab fa-discord"></i></a>
-        <a href="https://wa.me/18299847680" target="_blank" class="float-btn float-ws" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
     </div>
 
     <script>
@@ -3595,6 +4143,9 @@
         const SUPABASE_URL = "https://boifqdoojssmofanhxhj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Webhook de Discord para notificación de nuevos pedidos
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515418920134115540/_7jmDRsyS_gc_kGKYExwL01QsYPa6AaE__814Sj9zzlTcv3kFRDJmQoZ3c5ndh2YJPiA";
 
         // ==========================================
         // CONFIGURACIÓN Y VARIABLES GLOBALES
@@ -3943,11 +4494,11 @@
                         sectionRank = -1;
                     }
                     
-                    // Hero Image Logic (Usamos las skins más vendidas/destacadas para el carrusel del hero)
+                    // Hero Image Logic — solo usar imágenes "featured" (cuerpo completo), nunca icon
                     if (categoriaFinal === 'SKINS' && item.brItems && item.brItems[0]) {
-                        let imgCuerpoCompleto = item.brItems[0].images.featured || item.brItems[0].images.icon;
-                        if (imgCuerpoCompleto) {
-                            skinsParaHero.push({ img: imgCuerpoCompleto, vbucks: vbucks });
+                        const featuredImg = item.brItems[0].images.featured;
+                        if (featuredImg) {
+                            skinsParaHero.push({ img: featuredImg, vbucks: vbucks, nombre: nombre });
                         }
                     }
                     
@@ -3993,10 +4544,9 @@
             const heroImg = document.getElementById('hero-dynamic-img');
             if (!heroImg || !skins || skins.length === 0) return;
 
-            // Ordenar por precio (proxy de popularidad: las más vendidas suelen ser las más caras/legendarias)
+            // Ordenar por precio descendente (legendarias/épicas primero) y tomar top 12
             const ordenadas = skins.slice().sort((a, b) => b.vbucks - a.vbucks);
-            // Tomar las 8 mejores para rotar
-            const top = ordenadas.slice(0, 8);
+            const top = ordenadas.slice(0, 12);
 
             let idx = 0;
             const mostrar = () => {
@@ -4191,16 +4741,14 @@
                                 <div class="card-info">
                                     <div class="card-price-row">
                                         <img src="https://logodix.com/logo/803916.png" class="card-rarity-label" alt="V-Bucks">
-                                        <div class="card-price-vbucks">
-                                            <span>${parseInt(p.vbucks).toLocaleString()}</span>
-                                        </div>
+                                        <span class="card-price-vbucks">${parseInt(p.vbucks).toLocaleString()}</span>
                                     </div>
                                     <h3 class="card-title" title="${p.nombre}">${p.nombre}</h3>
                                     <div class="card-bottom-row">
                                         <span class="card-rarity-text">${rarityLabel}</span>
                                         <span class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</span>
                                     </div>
-                                    <button class="btn-add-cart" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda')">
+                                    <button class="btn-add-cart" data-item-nombre="${p.nombreSeguro}" onclick="agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda', event, '${p.rarityClass}')">
                                         + AGREGAR
                                     </button>
                                 </div>
@@ -4208,7 +4756,11 @@
                         }).join('');
 
                         if (cat === 'Se Va Hoy') {
-                            return `<div class="carrusel-se-va-hoy"><div class="carrusel-se-va-hoy-track">${cards}${cards}</div></div>`;
+                            return `<div class="carrusel-se-va-hoy-wrap">
+                                <button class="carrusel-arrow izq" onclick="document.getElementById('carrusel-seva-hoy').scrollBy({left:-360,behavior:'smooth'})"><i class="fas fa-chevron-left"></i></button>
+                                <div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}</div>
+                                <button class="carrusel-arrow der" onclick="document.getElementById('carrusel-seva-hoy').scrollBy({left:360,behavior:'smooth'})"><i class="fas fa-chevron-right"></i></button>
+                            </div>`;
                         }
                         return `<div class="grid-productos">${cards}</div>`;
                     })()}`;
@@ -4216,6 +4768,7 @@
             });
 
             actualizarPreciosGlobales();
+            sincronizarBotonesCarrito();
         }
 
         async function enviarAvisoDiscord() {
@@ -4262,7 +4815,7 @@
             }
         }
 
-        function agregarAlCarrito(n, p, i, v, t) { 
+        function agregarAlCarrito(n, p, i, v, t, ev, rareza) { 
             // Punto 2: Evitar duplicados de la tienda (Máximo 1 cantidad)
             const existe = carrito.some(item => item.nombre === n);
             if (existe) {
@@ -4270,7 +4823,7 @@
                 return;
             }
             const eraVacio = carrito.length === 0;
-            carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v, tipo: t }); 
+            carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v, tipo: t, rareza: rareza || '' }); 
             actualizarCarrito(); 
 
             const btn = document.getElementById('btn-carrito-nav');
@@ -4287,6 +4840,28 @@
             if (eraVacio) {
                 abrirCarritoLateral();
             }
+        }
+
+        // Marca como "Agregado" (y deshabilita) los botones de items que ya están en el carrito,
+        // y restaura los que fueron eliminados.
+        function sincronizarBotonesCarrito() {
+            const nombresEnCarrito = new Set(carrito.map(item => item.nombre));
+            document.querySelectorAll('[data-item-nombre]').forEach(btn => {
+                const nombre = btn.getAttribute('data-item-nombre');
+                const esTienda = btn.classList.contains('btn-add-cart');
+                const textoAgregar = esTienda ? '+ AGREGAR' : '+ Carrito';
+                const textoAgregado = '<i class="fas fa-check"></i> Agregado';
+
+                if (nombresEnCarrito.has(nombre)) {
+                    btn.classList.add('added');
+                    btn.disabled = true;
+                    btn.innerHTML = textoAgregado;
+                } else {
+                    btn.classList.remove('added');
+                    btn.disabled = false;
+                    btn.innerHTML = textoAgregar;
+                }
+            });
         }
         function vaciarCarrito() { 
             carrito = []; 
@@ -4314,6 +4889,8 @@
                 itemsCont.innerHTML = "<div style='text-align:center; color:#aaa; margin-top:50px;'>Carrito vacío.</div>";
                 btnVaciar.style.display = 'none';
                 summaryBox.style.display = 'none';
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                sincronizarBotonesCarrito();
                 return;
             }
 
@@ -4323,22 +4900,35 @@
             let totalV = 0;
             let totalD = 0;
 
-            itemsCont.innerHTML = carrito.map((item, index) => `
-                <div class="cart-item">
+            const rarityLabel = { legendary: 'LEGENDARIO', epic: 'ÉPICO', rare: 'RARO', uncommon: 'POCO COMÚN', common: 'COMÚN' };
+
+            itemsCont.innerHTML = carrito.map((item, index) => {
+                const rareza = item.rareza || '';
+                const rarityTxt = rarityLabel[rareza] || '';
+                const vbucksNum = parseInt(item.vbucks || 0);
+                return `
+                <div class="cart-item ${rareza}">
                     <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
-                    <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
+                    <div class="cart-item-img-wrap">
+                        <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
+                    </div>
                     <div class="cart-item-details">
-                            <span style="font-family:'BurbankBigCondensed', sans-serif; font-weight:bold; color:#28feb6; text-transform:uppercase; font-size:1.1em;">${item.nombre}</span>
-                        ${item.tipo === 'club' ? '' : `<div class="cart-item-info">${parseInt(item.vbucks).toLocaleString()} Vbucks</div>`}
-                            <div style="color:#28feb6; font-size:0.9em; margin-top:5px;">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+                        <span class="cart-item-title" title="${item.nombre}">${item.nombre}</span>
+                        ${rarityTxt ? `<span class="cart-item-rarity">${rarityTxt}</span>` : ''}
+                        <div class="cart-item-bottom-row">
+                            ${vbucksNum > 0 ? `<div class="cart-item-vbucks"><img src="https://logodix.com/logo/803916.png" alt="V-Bucks"><span>${vbucksNum.toLocaleString()}</span></div>` : '<span></span>'}
+                            <span class="cart-item-price">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                        </div>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
             document.getElementById('total-dinero').innerText = `${simbolo}${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
             localStorage.setItem('carrito', JSON.stringify(carrito));
+            sincronizarBotonesCarrito();
         }
         function eliminarItem(i) { carrito.splice(i, 1); actualizarCarrito(); }
 
@@ -4433,19 +5023,87 @@
             }
         }
         
+        // Envía una notificación a Discord con los detalles del pedido (para abrir ticket manualmente)
+        async function enviarNotificacionDiscord(orderData) {
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('TU_WEBHOOK_AQUI')) return;
+
+            const productosTxt = orderData.productos.map(p =>
+                `• **${p.nombre}** — $${p.precio}${p.vbucks && p.vbucks !== '0' ? ` (${parseInt(p.vbucks).toLocaleString()} V-Bucks)` : ''}`
+            ).join('\n') || 'Sin productos';
+
+            const embed = {
+                title: `🛒 Nuevo Pedido — ${orderData.id_pedido}`,
+                color: 2868662, // verde menta #2BC6B6 aprox
+                fields: [
+                    { name: '👤 Cliente', value: orderData.nombre_cliente || '—', inline: true },
+                    { name: '📱 WhatsApp', value: orderData.telefono_cliente || '—', inline: true },
+                    { name: '🎮 Epic ID', value: orderData.epic_id_cliente || '—', inline: true },
+                    { name: '🆔 Cuenta(s) agregada(s)', value: (orderData.cuentas_agregadas && orderData.cuentas_agregadas.length) ? orderData.cuentas_agregadas.join(', ') : '—', inline: false },
+                    { name: '🛍️ Productos', value: productosTxt, inline: false },
+                    { name: '💰 Total', value: `$${orderData.total_usd} USD`, inline: true },
+                    { name: '💳 Método de pago', value: orderData.metodo_pago || '—', inline: true },
+                    { name: '📊 Estado', value: orderData.estado || 'En Proceso', inline: true }
+                ],
+                footer: { text: 'Shegos Store · Abrir ticket para dar seguimiento' },
+                timestamp: orderData.fecha
+            };
+
+            try {
+                await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: `📦 **Nuevo pedido recibido** de **${orderData.nombre_cliente}** — Abre un ticket para darle seguimiento.`,
+                        embeds: [embed]
+                    })
+                });
+            } catch (err) {
+                console.error("Error al enviar notificación a Discord:", err);
+            }
+        }
+
+        function actualizarComprobanteUI(input) {
+            const box = document.getElementById('co-upload-box');
+            const txt = document.getElementById('co-upload-text');
+            const btn = document.getElementById('btn-main-checkout');
+            const hint = document.getElementById('co-upload-needed-hint');
+            if (input.files && input.files[0]) {
+                box.classList.add('co-upload-filled');
+                txt.textContent = input.files[0].name;
+                box.querySelector('.co-upload-icon').className = 'fas fa-check-circle co-upload-icon';
+                // Unlock the Generar Pedido button
+                if (pasoCheckoutActual === 3 && btn) {
+                    btn.classList.remove('locked');
+                    if (hint) hint.classList.remove('visible');
+                }
+            } else {
+                box.classList.remove('co-upload-filled');
+                txt.textContent = 'Haz clic o arrastra tu comprobante aquí';
+                box.querySelector('.co-upload-icon').className = 'fas fa-cloud-upload-alt co-upload-icon';
+                // Re-lock button
+                if (pasoCheckoutActual === 3 && btn) {
+                    btn.classList.add('locked');
+                    if (hint) hint.classList.add('visible');
+                }
+            }
+        }
+
+        function obtenerTelefonoCompleto() {
+            const code = (document.getElementById('cliente-whatsapp-code').value || '').trim().replace(/[^0-9+]/g, '');
+            const num = (document.getElementById('cliente-whatsapp').value || '').trim().replace(/\D/g, '');
+            return (code.startsWith('+') ? code : '+' + code) + num;
+        }
+
         async function enviarPedidoFinal() {
-            const btnFinal = document.querySelector('.btn-pulse');
-            if (btnFinal.disabled) return;
+            const btnFinal = document.getElementById('btn-main-checkout');
+            if (!btnFinal || btnFinal.classList.contains('locked')) return;
 
             const nombre = document.getElementById('cliente-nombre').value;
-            const telefono = document.getElementById('cliente-whatsapp').value;
+            let telefono = obtenerTelefonoCompleto();
             const epicId = document.getElementById('cliente-epic').value;
             
-            // 1. Generar ID de pedido único (Requerimiento)
             const orderId = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
-
-            // Validación de número de WhatsApp (10 a 15 dígitos)
-            const telRegex = /^[0-9]{10,15}$/;
+            const telRegex = /^\+[0-9]{10,16}$/;
 
             const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
             const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
@@ -4453,20 +5111,24 @@
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const metodoRaw = seleccionado ? seleccionado.value : "";
 
-            if(!nombre || !telefono || !epicId || !metodoRaw || !cuentaSeleccionada) {
-                return alert("Por favor completa todos tus datos, selecciona al menos una cuenta donde nos agregaste y elige un método de pago.");
+            if(!nombre || !document.getElementById('cliente-whatsapp').value || !epicId || !metodoRaw) {
+                return alert("Por favor completa todos tus datos y elige un método de pago.");
             }
 
-            telefono = telefono.replace(/\s/g, "");
             if(!telRegex.test(telefono)) {
                 document.getElementById('cliente-whatsapp').classList.add('input-error');
                 return alert("Por favor ingresa un número de WhatsApp válido (solo números, entre 10 y 15 dígitos).");
             }
 
-            // Agregar el prefijo +
-            if (!telefono.startsWith('+')) telefono = '+' + telefono;
-
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
+
+            const fileInputCheck = document.getElementById('cliente-comprobante');
+            if (!fileInputCheck || !fileInputCheck.files[0]) {
+                document.getElementById('co-upload-box')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.getElementById('co-upload-box')?.classList.add('co-upload-error');
+                setTimeout(() => document.getElementById('co-upload-box')?.classList.remove('co-upload-error'), 2000);
+                return alert("Por favor adjunta tu comprobante de pago antes de generar el pedido.");
+            }
             
             let totalSum = 0;
             const listaProductos = carrito.map(i => {
@@ -4475,11 +5137,12 @@
             }).join('\n');
             const total = totalSum.toFixed(2);
 
-            // Activar estado de carga en el botón
-            btnFinal.classList.add('btn-loading');
+            // Estado de carga
             btnFinal.disabled = true;
+            const textoOriginal = btnFinal.innerText;
+            btnFinal.innerText = "GENERANDO...";
 
-            // 2. Procesar comprobante si existe para guardarlo en la DB
+            // Procesar comprobante
             const fileInput = document.getElementById('cliente-comprobante');
             let base64Receipt = "";
             if (fileInput && fileInput.files[0]) {
@@ -4490,7 +5153,6 @@
                 });
             }
 
-            // 3. Registro automático en Supabase (Exportación automática al Admin)
             const orderData = {
                 id_pedido: orderId,
                 nombre_cliente: nombre,
@@ -4507,23 +5169,24 @@
 
             try {
                 await supabaseClient.from('pedidos').insert([orderData]);
+                enviarNotificacionDiscord(orderData);
                 
-                // Efecto de sonido de pedido completado
                 const audio = new Audio('https://www.soundjay.com/buttons/sounds/button-37a.mp3');
                 audio.play().catch(e => {});
 
-                // Mostrar pantalla de éxito
-                document.getElementById('modal-pedido-exito').classList.add('active');
-                document.body.style.overflow = 'hidden';
-                
-                // Vaciar carrito para evitar duplicados si el usuario regresa
+                // Abrir WhatsApp directamente con el pedido
+                const metodo = metodoRaw.toUpperCase();
+                const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n📱 *WhatsApp:* ${telefono}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
+                window.open("https://wa.me/18299847680?text=" + encodeURIComponent(mensaje), '_blank');
+
                 vaciarCarrito();
 
             } catch (err) {
                 console.error("Error al exportar pedido a Supabase:", err);
-                btnFinal.classList.remove('btn-loading');
-                btnFinal.disabled = false;
                 alert("Hubo un error al registrar el pedido. Por favor intenta de nuevo.");
+            } finally {
+                btnFinal.disabled = false;
+                btnFinal.innerText = textoOriginal;
             }
         }
 
@@ -4532,7 +5195,7 @@
             const metodoRaw = seleccionado ? seleccionado.value : "";
             
             if (metodoRaw === 'paypal') {
-                window.open("https://www.paypal.com/donate/?hosted_button_id=2E5ZJUHEU55Q2", '_blank');
+                window.open("https://www.paypal.com/ncp/payment/4JP4S5EUD4RBS", '_blank');
             } else if (metodoRaw === 'transferencia_mx' || metodoRaw === 'popular') {
                 // Estas requieren ver instrucciones específicas
                 abrirModalInstrucciones(metodoRaw);
@@ -4545,6 +5208,13 @@
             document.body.style.overflow = 'auto';
         }
 
+        function mostrarPopupMetodoPago(metodo) {
+            if (metodo === 'transferencia_mx' || metodo === 'binance' || metodo === 'mercadopago' || metodo === 'oxxo') {
+                abrirModalInstrucciones(metodo);
+            }
+            actualizarBotonPagoPaypal();
+        }
+
         function abrirModalInstrucciones(metodo) {
             const modal = document.getElementById('modal-instrucciones-pago');
             const titulo = document.getElementById('modal-pago-titulo');
@@ -4554,10 +5224,12 @@
             let titTxt = '';
             
             switch(metodo) {
-                case 'transferencia_mx': idSource = 'pago-transferencia'; titTxt = 'Transferencia SPEI'; break;
-                case 'popular': idSource = 'pago-popular'; titTxt = 'Banco Popular RD'; break;
+                case 'paypal': idSource = 'pago-paypal-info'; titTxt = 'Pago con PayPal'; break;
+                case 'transferencia_mx': idSource = 'pago-transferencia'; titTxt = '🇲🇽 México · Transferencia SPEI'; break;
+                case 'mercadopago': idSource = 'pago-mercadopago'; titTxt = '🇲🇽 México · Mercado Pago / SPEI'; break;
                 case 'binance': idSource = 'pago-binance-info'; titTxt = 'Binance Pay'; break;
                 case 'link': idSource = 'pago-link-info'; titTxt = 'Link de Pago'; break;
+                case 'oxxo': idSource = 'pago-oxxo-info'; titTxt = '🇲🇽 México · Depósito Oxxo'; break;
             }
             
             if(idSource) {
@@ -4575,9 +5247,27 @@
             document.body.style.overflow = 'auto';
         }
 
+        function pagoCompletadoCerrarModal() {
+            cerrarModalInstrucciones();
+            // Scroll suave al área de comprobante
+            setTimeout(() => {
+                const uploadBox = document.getElementById('co-upload-box');
+                if (uploadBox) {
+                    uploadBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Pulso visual para llamar la atención
+                    uploadBox.style.borderColor = '#28feb6';
+                    uploadBox.style.boxShadow = '0 0 0 4px rgba(40,254,182,0.2)';
+                    setTimeout(() => {
+                        uploadBox.style.boxShadow = '';
+                        uploadBox.style.borderColor = '';
+                    }, 2000);
+                }
+            }, 300);
+        }
+
         function confirmarYEnviarWhatsApp() {
             const nombre = document.getElementById('cliente-nombre').value;
-            const telefono = document.getElementById('cliente-whatsapp').value;
+            const telefono = obtenerTelefonoCompleto();
             const epicId = document.getElementById('cliente-epic').value;
             const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
             const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
@@ -4629,6 +5319,11 @@ _He adjuntado mi comprobante de pago arriba._`;
             document.body.style.overflow = 'hidden';
         }
 
+        function cerrarModalDivisa() {
+            document.getElementById('currency-modal-v2').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
         function cambiarDivisa(val) {
             divisaActual = val;
             localStorage.setItem('userCurrency', val);
@@ -4667,16 +5362,23 @@ _He adjuntado mi comprobante de pago arriba._`;
             const tasa    = tasas[divisaActual] || 1;
             const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
 
+            const rarityLabelMap = { legendary: 'LEGENDARIO', epic: 'ÉPICO', rare: 'RARO', uncommon: 'POCO COMÚN', common: 'COMÚN' };
+
             const itemRow = (item) => {
                 const precioItem = parseFloat(item.precio);
                 subtotal += precioItem;
+                const rar = item.rareza || '';
+                const rarTxt = rarityLabelMap[rar] || '';
                 return `
-                    <div class="checkout-item-summary" style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #1a1a1a; gap:10px;">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;">
-                            <span style="font-size:0.9em;">${item.nombre}</span>
+                    <div class="co-cart-item">
+                        <div class="co-cart-img-wrap">
+                            <img src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
                         </div>
-                        <strong style="color:#28feb6; white-space:nowrap;">${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong>
+                        <div class="co-cart-info">
+                            <span class="co-cart-name" title="${item.nombre}">${item.nombre}</span>
+                            ${rarTxt ? `<span class="co-cart-rarity">${rarTxt}</span>` : ''}
+                        </div>
+                        <strong class="co-cart-price">${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong>
                     </div>`;
             };
 
@@ -4705,6 +5407,16 @@ _He adjuntado mi comprobante de pago arriba._`;
             if (totalDinero)     totalDinero.innerText     = totalStr;
         }
 
+        // Mapa de divisa -> código telefónico por defecto
+        const codigosPais = { USD: '+1', EUR: '+34', MXN: '+52', ARS: '+54', COP: '+57', PEN: '+51', DOP: '+1', USDT: '+1', CLP: '+56' };
+        function aplicarCodigoPaisPorDivisa() {
+            const inputCode = document.getElementById('cliente-whatsapp-code');
+            if (!inputCode) return;
+            if (!inputCode.dataset.touched) {
+                inputCode.value = codigosPais[divisaActual] || '+1';
+            }
+        }
+
         function cambiarPasoCheckout(paso) {
             pasoCheckoutActual = paso;
             
@@ -4721,18 +5433,50 @@ _He adjuntado mi comprobante de pago arriba._`;
             // Actualizar Botón Principal
             const btn = document.getElementById('btn-main-checkout');
             const txt = document.getElementById('txt-instruccion-checkout');
+            const hint = document.getElementById('co-upload-needed-hint');
             
             if (paso === 1) {
                 btn.innerText = "CONTINUAR A DATOS";
+                btn.classList.remove('locked');
+                btn.disabled = false;
                 txt.style.display = 'none';
+                if (hint) hint.classList.remove('visible');
             } else if (paso === 2) {
                 btn.innerText = "CONTINUAR AL PAGO";
+                btn.classList.remove('locked');
+                btn.disabled = false;
                 txt.style.display = 'none';
+                if (hint) hint.classList.remove('visible');
+                aplicarCodigoPaisPorDivisa();
             } else if (paso === 3) {
-                btn.innerText = "REALIZAR PEDIDO";
+                // Bloquear hasta que haya comprobante
+                const fileInput = document.getElementById('cliente-comprobante');
+                const tieneComprobante = fileInput && fileInput.files && fileInput.files[0];
+                if (tieneComprobante) {
+                    btn.innerText = "GENERAR PEDIDO";
+                    btn.classList.remove('locked');
+                    btn.disabled = false;
+                    if (hint) hint.classList.remove('visible');
+                } else {
+                    btn.innerText = "GENERAR PEDIDO";
+                    btn.classList.add('locked');
+                    btn.disabled = false; // Allow click so we can show feedback
+                    if (hint) hint.classList.add('visible');
+                }
                 txt.style.display = 'block';
+                actualizarBotonPagoPaypal();
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function actualizarBotonPagoPaypal() {
+            const metodoPago = document.querySelector('input[name="metodo-pago"]:checked');
+            const esPaypal = metodoPago && metodoPago.value === 'paypal';
+            const paypalBtns = document.getElementById('co-paypal-buttons');
+            const divider = document.getElementById('co-paypal-divider');
+            if (pasoCheckoutActual !== 3) return;
+            paypalBtns.style.display = esPaypal ? 'flex' : 'none';
+            if (divider) divider.style.display = esPaypal ? 'flex' : 'none';
         }
 
         function manejarAccionCheckout() {
@@ -4747,6 +5491,19 @@ _He adjuntado mi comprobante de pago arriba._`;
                 }
                 cambiarPasoCheckout(3);
             } else {
+                // Check if comprobante is uploaded
+                const fileInput = document.getElementById('cliente-comprobante');
+                if (!fileInput || !fileInput.files[0]) {
+                    const box = document.getElementById('co-upload-box');
+                    const hint = document.getElementById('co-upload-needed-hint');
+                    if (box) {
+                        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        box.classList.add('co-upload-error');
+                        setTimeout(() => box.classList.remove('co-upload-error'), 2000);
+                    }
+                    if (hint) hint.classList.add('visible');
+                    return;
+                }
                 enviarPedidoFinal();
             }
         }
@@ -4838,6 +5595,38 @@ _He adjuntado mi comprobante de pago arriba._`;
                 cambiarPasoCheckout(1);
             }
         } 
+        function irATienda() {
+            if (window.innerWidth <= 768) {
+                abrirPestana('inicio-landing');
+                setTimeout(function() {
+                    const el = document.querySelector('.tienda-home-section');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 50);
+            } else {
+                abrirPestana('tienda');
+            }
+        }
+
+        // Mueve la sección "Tienda de Hoy" entre Inicio (móvil) y la pestaña Tienda (escritorio)
+        function colocarTiendaHome() {
+            const seccion = document.querySelector('.tienda-home-section');
+            const anchorMobile = document.getElementById('tienda-mobile-anchor');
+            const tabTienda = document.getElementById('tienda');
+            if (!seccion || !anchorMobile || !tabTienda) return;
+
+            if (window.innerWidth <= 768) {
+                if (seccion.parentElement !== anchorMobile.parentElement || seccion.previousElementSibling !== anchorMobile) {
+                    anchorMobile.parentElement.insertBefore(seccion, anchorMobile.nextSibling);
+                }
+            } else {
+                if (seccion.parentElement !== tabTienda) {
+                    tabTienda.appendChild(seccion);
+                }
+            }
+        }
+        window.addEventListener('resize', colocarTiendaHome);
+        document.addEventListener('DOMContentLoaded', colocarTiendaHome);
+        colocarTiendaHome();
         function abrirCarritoLateral() { 
             if (document.getElementById('sidebar').classList.contains('abierto')) {
                 toggleSidebar();
@@ -4911,25 +5700,15 @@ _He adjuntado mi comprobante de pago arriba._`;
             actualizarCarrito();
             mostrarFechaHero();
 
-            // Rotación de fondos de temporada
-            (function() {
-                const slides = document.querySelectorAll('.hero-bg-rotator .bg-slide');
-                if (!slides.length) return;
-                let idx = 0;
-                setInterval(() => {
-                    slides[idx].classList.remove('activo');
-                    idx = (idx + 1) % slides.length;
-                    slides[idx].classList.add('activo');
-                }, 8000);
-            })();
-
-            // Scroll-to-top button visibility (solo en la sección Tienda y tras deslizar)
+            // Scroll-to-top button visibility (tras deslizar lo suficiente)
             var scrollBtn = document.getElementById('btn-scroll-top');
             window.addEventListener('scroll', function() {
                 if (scrollBtn) {
                     const tiendaEl = document.getElementById('tienda');
+                    const inicioEl = document.getElementById('inicio-landing');
                     const enTienda = tiendaEl && !tiendaEl.classList.contains('oculto');
-                    if (enTienda && window.scrollY > 300) scrollBtn.classList.add('visible');
+                    const enInicioMobile = inicioEl && !inicioEl.classList.contains('oculto') && window.innerWidth <= 768;
+                    if ((enTienda || enInicioMobile) && window.scrollY > 300) scrollBtn.classList.add('visible');
                     else scrollBtn.classList.remove('visible');
                 }
             });
@@ -5525,6 +6304,50 @@ _He adjuntado mi comprobante de pago arriba._`;
 
     })();
 
+    </script>
+
+    <script>
+    // Drag-to-scroll para el carrusel "Se Va Hoy"
+    (function() {
+        function initDragScroll(el) {
+            let isDown = false, startX, scrollLeft;
+            const onDown = (e) => {
+                isDown = true;
+                el.classList.add('active');
+                el.style.scrollBehavior = 'auto';
+                startX = (e.pageX || (e.touches && e.touches[0].pageX)) - el.offsetLeft;
+                scrollLeft = el.scrollLeft;
+            };
+            const onUp = () => {
+                isDown = false;
+                el.classList.remove('active');
+                el.style.scrollBehavior = 'smooth';
+            };
+            const onMove = (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = (e.pageX || (e.touches && e.touches[0].pageX)) - el.offsetLeft;
+                el.scrollLeft = scrollLeft - (x - startX) * 1.2;
+            };
+            el.addEventListener('mousedown', onDown);
+            el.addEventListener('touchstart', onDown, { passive: true });
+            el.addEventListener('mouseleave', onUp);
+            el.addEventListener('mouseup', onUp);
+            el.addEventListener('touchend', onUp);
+            el.addEventListener('mousemove', onMove);
+            el.addEventListener('touchmove', onMove, { passive: false });
+        }
+
+        // Observe when carousel appears in DOM (rendered dynamically)
+        const observer = new MutationObserver(() => {
+            const carousel = document.getElementById('carrusel-seva-hoy');
+            if (carousel && !carousel.dataset.dragInit) {
+                carousel.dataset.dragInit = '1';
+                initDragScroll(carousel);
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    })();
     </script>
 </body>
 </html>
