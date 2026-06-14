@@ -43,7 +43,7 @@
             position: relative;
         }
 
-        /* Fondo de temporada (deslizamiento continuo hacia la izquierda) */
+        /* Fondo de temporada - fondo4 estático con deslizamiento lento */
         .hero-bg-rotator {
             position: fixed;
             top: 0; left: 0;
@@ -53,29 +53,22 @@
             overflow: hidden;
         }
         .hero-bg-track {
-            display: flex;
-            width: 500%;
+            width: 100%;
             height: 100%;
-            animation: bgSlideLeft 120s linear infinite;
+            animation: none;
         }
         .hero-bg-rotator .bg-slide {
-            position: relative;
-            flex: 0 0 100%;
+            position: absolute;
+            inset: 0;
             width: 100%; height: 100%;
+            background-image: url('img/fondo4.webp');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             opacity: 0.18;
         }
-        .hero-bg-rotator .bg-slide:nth-child(1),
-        .hero-bg-rotator .bg-slide:nth-child(5) { background-image: url('img/fondo1.webp'); }
-        .hero-bg-rotator .bg-slide:nth-child(2) { background-image: url('img/fondo2.webp'); }
-        .hero-bg-rotator .bg-slide:nth-child(3) { background-image: url('img/fondo3.webp'); }
-        .hero-bg-rotator .bg-slide:nth-child(4) { background-image: url('img/fondo4.webp'); }
-        @keyframes bgSlideLeft {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-80%); }
-        }
+        /* Ocultar slides extras */
+        .hero-bg-rotator .bg-slide:not(:first-child) { display: none; }
         
         /* BANNER CÓDIGO FIJADO */
         .banner-codigo { 
@@ -1273,33 +1266,36 @@
         /* Badge de rareza — removido, ahora es texto inline en card-bottom-row */
 
 
-        /* Carrusel "Se Va Hoy" */
+        /* Carrusel "Se Va Hoy" - bucle infinito */
         .carrusel-se-va-hoy-wrap {
             position: relative;
             width: 100%;
             margin-top: 20px;
+            overflow: hidden;
+            /* fade en los bordes */
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
         }
         .carrusel-se-va-hoy {
             display: flex;
             gap: 20px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
+            width: max-content;
+            animation: seVaHoyScroll 370s linear infinite;
             cursor: grab;
             user-select: none;
             padding-bottom: 8px;
         }
+        .carrusel-se-va-hoy:hover {
+            animation-play-state: paused;
+        }
         .carrusel-se-va-hoy:active { cursor: grabbing; }
-        /* hide scrollbar visually but keep functional */
-        .carrusel-se-va-hoy::-webkit-scrollbar { height: 4px; }
-        .carrusel-se-va-hoy::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 2px; }
-        .carrusel-se-va-hoy::-webkit-scrollbar-thumb { background: rgba(40,254,182,0.3); border-radius: 2px; }
+        @keyframes seVaHoyScroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
         .carrusel-se-va-hoy .cosmetic-card {
             flex: 0 0 160px;
             width: 160px;
-            scroll-snap-align: start;
         }
         @media (max-width: 600px) {
             .carrusel-se-va-hoy .cosmetic-card { flex: 0 0 130px; width: 130px; }
@@ -4757,9 +4753,7 @@
 
                         if (cat === 'Se Va Hoy') {
                             return `<div class="carrusel-se-va-hoy-wrap">
-                                <button class="carrusel-arrow izq" onclick="document.getElementById('carrusel-seva-hoy').scrollBy({left:-360,behavior:'smooth'})"><i class="fas fa-chevron-left"></i></button>
-                                <div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}</div>
-                                <button class="carrusel-arrow der" onclick="document.getElementById('carrusel-seva-hoy').scrollBy({left:360,behavior:'smooth'})"><i class="fas fa-chevron-right"></i></button>
+                                <div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}${cards}</div>
                             </div>`;
                         }
                         return `<div class="grid-productos">${cards}</div>`;
@@ -6307,38 +6301,56 @@ _He adjuntado mi comprobante de pago arriba._`;
     </script>
 
     <script>
-    // Drag-to-scroll para el carrusel "Se Va Hoy"
+    // Drag-to-scroll para el carrusel "Se Va Hoy" (el auto-scroll lo maneja CSS)
     (function() {
         function initDragScroll(el) {
-            let isDown = false, startX, scrollLeft;
-            const onDown = (e) => {
+            let isDown = false, startX, startScrollLeft, animPaused = false;
+
+            el.addEventListener('mousedown', (e) => {
                 isDown = true;
-                el.classList.add('active');
-                el.style.scrollBehavior = 'auto';
-                startX = (e.pageX || (e.touches && e.touches[0].pageX)) - el.offsetLeft;
-                scrollLeft = el.scrollLeft;
-            };
-            const onUp = () => {
+                el.style.animationPlayState = 'paused';
+                el.style.cursor = 'grabbing';
+                startX = e.pageX - el.getBoundingClientRect().left;
+                // Capturamos la posición real actual usando getComputedStyle
+                const matrix = new DOMMatrix(getComputedStyle(el).transform);
+                startScrollLeft = matrix.m41; // translateX actual
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!isDown) return;
                 isDown = false;
-                el.classList.remove('active');
-                el.style.scrollBehavior = 'smooth';
-            };
-            const onMove = (e) => {
+                el.style.cursor = 'grab';
+                // Reanudar animación CSS
+                el.style.animationPlayState = 'running';
+            });
+
+            window.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
                 e.preventDefault();
-                const x = (e.pageX || (e.touches && e.touches[0].pageX)) - el.offsetLeft;
-                el.scrollLeft = scrollLeft - (x - startX) * 1.2;
-            };
-            el.addEventListener('mousedown', onDown);
-            el.addEventListener('touchstart', onDown, { passive: true });
-            el.addEventListener('mouseleave', onUp);
-            el.addEventListener('mouseup', onUp);
-            el.addEventListener('touchend', onUp);
-            el.addEventListener('mousemove', onMove);
-            el.addEventListener('touchmove', onMove, { passive: false });
+                const x = e.pageX - el.getBoundingClientRect().left;
+                const delta = x - startX;
+                el.style.transform = `translateX(${startScrollLeft + delta}px)`;
+            });
+
+            // Touch
+            el.addEventListener('touchstart', (e) => {
+                el.style.animationPlayState = 'paused';
+                startX = e.touches[0].pageX;
+                const matrix = new DOMMatrix(getComputedStyle(el).transform);
+                startScrollLeft = matrix.m41;
+            }, { passive: true });
+
+            el.addEventListener('touchmove', (e) => {
+                const x = e.touches[0].pageX;
+                const delta = x - startX;
+                el.style.transform = `translateX(${startScrollLeft + delta}px)`;
+            }, { passive: true });
+
+            el.addEventListener('touchend', () => {
+                setTimeout(() => { el.style.animationPlayState = 'running'; }, 1000);
+            });
         }
 
-        // Observe when carousel appears in DOM (rendered dynamically)
         const observer = new MutationObserver(() => {
             const carousel = document.getElementById('carrusel-seva-hoy');
             if (carousel && !carousel.dataset.dragInit) {
