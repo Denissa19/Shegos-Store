@@ -2,9 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/png" href="img/logo.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shegos Store | Fortnite</title>
+    <title>Shegos Store - Tu tienda Fortnite de Confianza</title>
+    <meta property="og:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
+    <meta property="og:description" content="Shegos Store | Fortnite">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
     <!-- FontAwesome SDK -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts: Poppins -->
@@ -224,7 +229,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid transparent;
+            border-image: linear-gradient(90deg, transparent, rgba(40,254,182,0.35), transparent) 1;
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
             position: sticky;
@@ -288,14 +294,14 @@
         /* SIDEBAR */
         .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1100; opacity: 0; visibility: hidden; transition: 0.3s; }
         .sidebar-overlay.abierto { opacity: 1; visibility: visible; }
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #000000; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #121212; }
+        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #000000; z-index: 1101; transition: 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); padding: 30px 0; border-right: 1px solid #121212; display: flex; flex-direction: column; overflow-y: auto; box-sizing: border-box; }
         .sidebar.abierto { left: 0; }
         .sidebar-nav { display: flex; flex-direction: column; }
         .sidebar-nav .tab-btn { text-align: left; padding: 15px 30px; border-radius: 0; font-size: 1em; width: 100%; }
         .sidebar-nav .tab-btn:hover { background: #121212; }
         .sidebar-nav .tab-btn.activo { background: #121212; border-left: 4px solid #ffffff; color: #ffffff; }
         
-        .sidebar-footer { position: absolute; bottom: 0; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #121212; }
+        .sidebar-footer { position: relative; bottom: auto; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #121212; margin-top: auto; }
 
         .header-left { display: flex; align-items: center; gap: 25px; }
         nav { display: flex; align-items: center; background-color: rgba(255,255,255,0.03); padding: 6px; gap: 4px; flex-wrap: nowrap; border-radius: 30px; width: fit-content; border: 1px solid #1a1a1a; margin: 0; animation: none; }
@@ -862,6 +868,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
+        #rastreo-pedidos.section-box {
+            background-color: transparent;
+            backdrop-filter: none;
+            box-shadow: none;
+        }
+
         .sub-seccion-servicios {
             animation: fadeIn 0.4s ease-out;
             display: none;
@@ -1320,6 +1332,44 @@
         .carrusel-arrow.der { right: -6px; }
         @media (max-width: 768px) {
             .carrusel-arrow { display: none; }
+        }
+
+        /* Scrollbar deslizador debajo del carrusel Se Va Hoy */
+        .carrusel-scrollbar-wrap {
+            padding: 8px 12px 2px;
+        }
+        .carrusel-scrollbar-track {
+            position: relative;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 999px;
+            cursor: pointer;
+            overflow: visible;
+        }
+        .carrusel-scrollbar-thumb {
+            position: absolute;
+            top: 0; left: 0;
+            height: 5px;
+            min-width: 40px;
+            background: rgba(255,255,255,0.28);
+            border-radius: 999px;
+            cursor: grab;
+            transition: background 0.15s, height 0.15s, top 0.15s;
+            pointer-events: all;
+        }
+        .carrusel-scrollbar-thumb:hover,
+        .carrusel-scrollbar-thumb.dragging {
+            background: #28feb6;
+            height: 7px;
+            top: -1px;
+        }
+        /* Evitar que las imágenes se arrastren */
+        .carrusel-se-va-hoy img,
+        .carrusel-se-va-hoy .cosmetic-card img {
+            -webkit-user-drag: none;
+            user-drag: none;
+            pointer-events: none;
         }
 
         /* Parte inferior de la card (info + botón) */
@@ -2713,7 +2763,7 @@
 .sb-title span { background:linear-gradient(135deg,#28feb6,#5865f2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .sb-subtitle { color:#666; font-size:1em; max-width:520px; margin:0 auto 48px; line-height:1.7; }
 
-.sb-card { background:#111; border:1px solid rgba(40,254,182,0.3); border-radius:15px; padding:30px; max-width:620px; margin:0 auto; box-shadow:0 0 30px rgba(40,254,182,0.08); }
+.sb-card { background:#111; border:1px solid #222; border-radius:15px; padding:30px; max-width:620px; margin:0 auto; }
 .sb-form-grid { display:grid; grid-template-columns:1fr auto; gap:12px; margin-bottom:16px; }
 @media (max-width:500px) { .sb-form-grid { grid-template-columns:1fr; } }
 .sb-form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:16px; }
@@ -2748,7 +2798,7 @@
 
 .sb-warning-bar { background:#110d00; border-top:1px solid #2b2000; border-bottom:1px solid #2b2000; padding:14px 20px; text-align:center; color:#ffd700; font-size:0.82em; font-weight:500; }
 
-.sb-section { padding:60px 20px; background: rgba(10,10,10,0.55); backdrop-filter: blur(10px); border-top:1px solid rgba(255,255,255,0.05); }
+.sb-section { padding:60px 20px; background: transparent; border-top:1px solid rgba(255,255,255,0.05); }
 .sb-inner { max-width:900px; margin:0 auto; }
 .sb-section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
 .sb-section-title { font-size:1.4em; font-weight:800; text-transform:uppercase; letter-spacing:3px; display:flex; align-items:center; gap:10px; }
@@ -2774,6 +2824,10 @@
     color: #28feb6; font-size: 1em; font-weight: 900;
     font-family: 'Poppins', sans-serif;
     text-transform: uppercase;
+    overflow: hidden;
+}
+.sb-bot-icon img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center top;
 }
 .sb-bot-card.offline .sb-bot-icon { background: rgba(255,77,77,0.08); border-color: rgba(255,77,77,0.2); color: #ff4d4d; }
 .sb-bot-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -3185,68 +3239,72 @@
 
                 <!-- LOGIN -->
                 <div id="auth-form-login">
-                    <input type="email" id="auth-login-email" class="auth-modal-input"
-                        placeholder="Correo electrónico"
-                        onkeydown="if(event.key==='Enter') document.getElementById('auth-login-pass').focus()">
-                    <div class="auth-pass-wrap">
-                        <input type="password" id="auth-login-pass" class="auth-modal-input"
-                            placeholder="Contraseña"
-                            onkeydown="if(event.key==='Enter') authLogin()">
-                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-login-pass', this)" tabindex="-1" aria-label="Ver contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    <!-- Paso 1: correo -->
+                    <div id="auth-login-email-step">
+                        <p style="color:#888; font-size:0.82em; margin-bottom:14px; text-align:center; line-height:1.6;">
+                            Ingresa tu correo y te enviaremos un código de 6 dígitos para acceder.
+                        </p>
+                        <input type="email" id="auth-login-email" class="auth-modal-input"
+                            placeholder="Correo electrónico"
+                            onkeydown="if(event.key==='Enter') authEnviarOTP('login')">
+                        <div id="auth-login-error" class="auth-modal-error"></div>
+                        <button id="auth-btn-login" class="auth-modal-btn" onclick="authEnviarOTP('login')">Enviar código</button>
+                        <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                            ¿Sin cuenta? <button class="auth-modal-back" onclick="authSwitchTab('register')">Regístrate gratis</button>
+                        </p>
                     </div>
-                    <div id="auth-login-error" class="auth-modal-error"></div>
-                    <button id="auth-btn-login" class="auth-modal-btn" onclick="authLogin()">Iniciar Sesión</button>
-                    <p style="text-align:center; margin-top:10px; font-size:0.8em;">
-                        <button class="auth-modal-back" onclick="authSwitchTab('reset')" style="color:#28feb6;">¿Olvidaste tu contraseña?</button>
-                    </p>
-                    <p style="text-align:center; margin-top:6px; font-size:0.8em; color:#555;">
-                        ¿Sin cuenta? <button class="auth-modal-back" onclick="authSwitchTab('register')">Regístrate gratis</button>
-                    </p>
+                    <!-- Paso 2: OTP -->
+                    <div id="auth-login-otp-step" style="display:none;">
+                        <p style="color:#aaa; font-size:0.83em; margin-bottom:4px; text-align:center;">Código enviado a</p>
+                        <p id="auth-login-otp-email-label" style="color:#28feb6; font-size:0.88em; text-align:center; font-weight:700; margin-bottom:20px; word-break:break-all;"></p>
+                        <input type="text" id="auth-login-otp" class="auth-modal-input"
+                            placeholder="_ _ _ _ _ _"
+                            maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                            style="text-align:center; letter-spacing:8px; font-size:1.4em; font-weight:800; padding:14px;"
+                            onkeydown="if(event.key==='Enter') authVerificarOTP('login')">
+                        <div id="auth-login-otp-error" class="auth-modal-error"></div>
+                        <button id="auth-btn-otp-login" class="auth-modal-btn" onclick="authVerificarOTP('login')">Verificar código</button>
+                        <p style="text-align:center; margin-top:12px; font-size:0.8em; color:#555;">
+                            <button class="auth-modal-back" onclick="authVolvePasoEmail('login')">← Cambiar correo</button>
+                            &nbsp;·&nbsp;
+                            <button class="auth-modal-back" onclick="authReenviarOTP('login')" style="color:#28feb6;">Reenviar código</button>
+                        </p>
+                    </div>
                 </div>
 
                 <!-- REGISTRO -->
                 <div id="auth-form-register" style="display:none;">
-                    <input type="email" id="auth-reg-email" class="auth-modal-input"
-                        placeholder="Correo electrónico"
-                        onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-pass').focus()">
-                    <div class="auth-pass-wrap">
-                        <input type="password" id="auth-reg-pass" class="auth-modal-input"
-                            placeholder="Contraseña (mín. 6 caracteres)"
-                            onkeydown="if(event.key==='Enter') document.getElementById('auth-reg-confirm').focus()">
-                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-reg-pass', this)" tabindex="-1" aria-label="Ver contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    <!-- Paso 1: correo -->
+                    <div id="auth-reg-email-step">
+                        <p style="color:#888; font-size:0.82em; margin-bottom:14px; text-align:center; line-height:1.6;">
+                            Crea tu cuenta con solo tu correo. Te enviaremos un código para confirmar.
+                        </p>
+                        <input type="email" id="auth-reg-email" class="auth-modal-input"
+                            placeholder="Correo electrónico"
+                            onkeydown="if(event.key==='Enter') authEnviarOTP('register')">
+                        <div id="auth-reg-error" class="auth-modal-error"></div>
+                        <button id="auth-btn-register" class="auth-modal-btn" onclick="authEnviarOTP('register')">Enviar código</button>
+                        <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
+                            ¿Ya tienes cuenta? <button class="auth-modal-back" onclick="authSwitchTab('login')">Inicia sesión</button>
+                        </p>
                     </div>
-                    <div class="auth-pass-wrap">
-                        <input type="password" id="auth-reg-confirm" class="auth-modal-input"
-                            placeholder="Confirmar contraseña"
-                            onkeydown="if(event.key==='Enter') authRegister()">
-                        <button type="button" class="auth-eye-btn" onclick="authTogglePass('auth-reg-confirm', this)" tabindex="-1" aria-label="Ver contraseña">
-                            <i class="fas fa-eye"></i>
-                        </button>
+                    <!-- Paso 2: OTP -->
+                    <div id="auth-reg-otp-step" style="display:none;">
+                        <p style="color:#aaa; font-size:0.83em; margin-bottom:4px; text-align:center;">Código enviado a</p>
+                        <p id="auth-reg-otp-email-label" style="color:#28feb6; font-size:0.88em; text-align:center; font-weight:700; margin-bottom:20px; word-break:break-all;"></p>
+                        <input type="text" id="auth-reg-otp" class="auth-modal-input"
+                            placeholder="_ _ _ _ _ _"
+                            maxlength="6" inputmode="numeric" autocomplete="one-time-code"
+                            style="text-align:center; letter-spacing:8px; font-size:1.4em; font-weight:800; padding:14px;"
+                            onkeydown="if(event.key==='Enter') authVerificarOTP('register')">
+                        <div id="auth-reg-otp-error" class="auth-modal-error"></div>
+                        <button id="auth-btn-otp-register" class="auth-modal-btn" onclick="authVerificarOTP('register')">Verificar código</button>
+                        <p style="text-align:center; margin-top:12px; font-size:0.8em; color:#555;">
+                            <button class="auth-modal-back" onclick="authVolvePasoEmail('register')">← Cambiar correo</button>
+                            &nbsp;·&nbsp;
+                            <button class="auth-modal-back" onclick="authReenviarOTP('register')" style="color:#28feb6;">Reenviar código</button>
+                        </p>
                     </div>
-                    <div id="auth-reg-error" class="auth-modal-error"></div>
-                    <button id="auth-btn-register" class="auth-modal-btn" onclick="authRegister()">Crear Cuenta</button>
-                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
-                        ¿Ya tienes cuenta? <button class="auth-modal-back" onclick="authSwitchTab('login')">Inicia sesión</button>
-                    </p>
-                </div>
-
-                <!-- RESTABLECER CONTRASEÑA -->
-                <div id="auth-form-reset" style="display:none;">
-                    <p style="color:#aaa; font-size:0.85em; margin-bottom:16px; text-align:center;">
-                        Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
-                    </p>
-                    <input type="email" id="auth-reset-email" class="auth-modal-input"
-                        placeholder="Correo electrónico"
-                        onkeydown="if(event.key==='Enter') authResetPassword()">
-                    <div id="auth-reset-error" class="auth-modal-error"></div>
-                    <button id="auth-btn-reset" class="auth-modal-btn" onclick="authResetPassword()">Enviar enlace</button>
-                    <p style="text-align:center; margin-top:14px; font-size:0.8em; color:#555;">
-                        <button class="auth-modal-back" onclick="authSwitchTab('login')">← Volver al inicio de sesión</button>
-                    </p>
                 </div>
             </div>
 
@@ -3425,7 +3483,7 @@
               <div class="sb-hero">
                 <div class="sb-badge">Sistema Automatizado</div>
                 <h2 class="sb-title">Recibe tus cosméticos via regalO</h2> 
-                <p class="sb-subtitle">Agrega a TODAS nuestras cuentas dentro de Fortnite. La solicitud debería aceptarse de inmediato, pasadas 48h luego de agregarnos podras recibir regalos.</p>
+                <p class="sb-subtitle" style="color:#ffffff;">Agrega a TODAS nuestras cuentas dentro de Fortnite. La solicitud debería aceptarse de inmediato, pasadas 48h luego de agregarnos podras recibir regalos.</p>
 
                 <div class="sb-card">
                   <!-- COUNTDOWN -->
@@ -3515,7 +3573,7 @@
                 <p>Elige el tipo de servicio que deseas adquirir:</p>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pavos')">
-                        <img src="https://imgs.search.brave.com/sT2yIPpRyyV2ow7gdnXJgwP8fRENxdA0tKpfcg4tkPA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZS5hcGkucGxheXN0/YXRpb24uY29tL3Z1/bGNhbi9hcC9ybmQv/MjAyNDEwLzMxMjMv/MDMzMjUwMzFmNTQw/Y2Q5OGRkNjBiZDhk/MDA5Nzk2OTk2OWM5/MjU0OTczZjFlOWQy/LmpwZw" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
+                        <img src="https://media.gamestop.com/i/gamestop/EGS_2800VBucks_1920x1080-1920x1080-eb673b1a86e31de680720a1a35446f04adf987ea/fornite%20vbucks.webp" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
@@ -3525,6 +3583,10 @@
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('gamepass')">
                         <img src="https://i.pcmag.com/imagery/reviews/05iBOK9slkTQuHvf1LFRCzz-15.fit_scale.size_1028x578.v1761321520.png" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Xbox Game Pass</strong>
+                    </div>
+                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('paquetes')">
+                        <img src="https://imgs.search.brave.com/ExmJQ3SUENgGuEWdyUR69ENujYkAY0ecJSVqUqZtO5w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nYW1p/bmctY2RuLmNvbS9p/bWFnZXMvcHJvZHVj/dHMvMTIyNjYvNjE2/eDM1My9mb3J0bml0/ZS1wYXF1ZXRlLWRl/LWxleWVuZGFzLXZl/cmFuaWVnYXMteGJv/eC1zZXJpZXMteC1z/LXhib3gtb25lLWp1/ZWdvLW1pY3Jvc29m/dC1zdG9yZS10dXJx/dWlhLWNvdmVyLmpw/Zz92PTE3NDExODc0/MzA" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Paquetes de Fortnite</strong>
                     </div>
                 </div>
             </div>
@@ -3674,6 +3736,32 @@
                         <span class="precio-producto" data-precio-usd="18.82">$18.82 USD</span>
                         <p style="font-size: 0.7em; color: #aaa; margin: -10px 0 10px 0;">Se entrega CORREO Y CONTRASEÑA</p>
                         <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 2 Meses (Cuenta)" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Cuenta)', '18.82', 'img/gamepassport.png', '0', 'cuenta', event)">+ Carrito</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sub-paquetes" class="sub-seccion-servicios">
+                <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
+                <h2 style="margin-bottom: 5px;">Paquetes de Fortnite</h2>
+                <p style="color: #28feb6; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">PACKS OFICIALES · Skins, accesorios y V-Bucks incluidos</p>
+                <div class="servicios-flex-container">
+                    <div class="servicio-card">
+                        <img src="https://imgs.search.brave.com/ExmJQ3SUENgGuEWdyUR69ENujYkAY0ecJSVqUqZtO5w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nYW1p/bmctY2RuLmNvbS9p/bWFnZXMvcHJvZHVj/dHMvMTIyNjYvNjE2/eDM1My9mb3J0bml0/ZS1wYXF1ZXRlLWRl/LWxleWVuZGFzLXZl/cmFuaWVnYXMteGJv/eC1zZXJpZXMteC1z/LXhib3gtb25lLWp1/ZWdvLW1pY3Jvc29m/dC1zdG9yZS10dXJx/dWlhLWNvdmVyLmpw/Zz92PTE3NDExODc0/MzA" style="width: 130px; margin: 0 auto 10px auto;">
+                        <strong>Paquete de Leyendas Veraniegas</strong>
+                        <span class="precio-producto" data-precio-usd="13.99">$13.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Paquete de Leyendas Veraniegas" onclick="agregarAlCarrito('Paquete de Leyendas Veraniegas', '13.99', 'https://imgs.search.brave.com/ExmJQ3SUENgGuEWdyUR69ENujYkAY0ecJSVqUqZtO5w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nYW1p/bmctY2RuLmNvbS9p/bWFnZXMvcHJvZHVj/dHMvMTIyNjYvNjE2/eDM1My9mb3J0bml0/ZS1wYXF1ZXRlLWRl/LWxleWVuZGFzLXZl/cmFuaWVnYXMteGJv/eC1zZXJpZXMteC1z/LXhib3gtb25lLWp1/ZWdvLW1pY3Jvc29m/dC1zdG9yZS10dXJx/dWlhLWNvdmVyLmpw/Zz92PTE3NDExODc0/MzA', '0', 'paquete', event)">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card">
+                        <img src="https://imgs.search.brave.com/6iI4j5SpQN7swASFndwh8bVGyPMgSHCMgFYEEzL5ozI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdG9y/ZS1pbWFnZXMucy1t/aWNyb3NvZnQuY29t/L2ltYWdlL2FwcHMu/Njc4OC42NjY0MzM0/Mjc0NDM2NzMwNy5j/YmVmNWZhYS0yY2Vm/LTQ1NzAtYjcwYS02/YTg5NGJjODA1YTQu/Mjc0NTQ2ZmMtOGM0/OS00ZDdmLWJmZjUt/ZTMwMjA4MWM5OGM4/P3E9OTAmdz00ODAm/aD0yNzA" style="width: 130px; margin: 0 auto 10px auto;">
+                        <strong>Pack de As de Fortnite</strong>
+                        <span class="precio-producto" data-precio-usd="6.99">$6.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Pack de As de Fortnite" onclick="agregarAlCarrito('Pack de As de Fortnite', '6.99', 'https://imgs.search.brave.com/6iI4j5SpQN7swASFndwh8bVGyPMgSHCMgFYEEzL5ozI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdG9y/ZS1pbWFnZXMucy1t/aWNyb3NvZnQuY29t/L2ltYWdlL2FwcHMu/Njc4OC42NjY0MzM0/Mjc0NDM2NzMwNy5j/YmVmNWZhYS0yY2Vm/LTQ1NzAtYjcwYS02/YTg5NGJjODA1YTQu/Mjc0NTQ2ZmMtOGM0/OS00ZDdmLWJmZjUt/ZTMwMjA4MWM5OGM4/P3E9OTAmdz00ODAm/aD0yNzA', '0', 'paquete', event)">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card">
+                        <img src="https://driffle.com/_next/image?url=https%3A%2F%2Fstatic.driffle.com%2Ffit-in%2F720x512%2Fmedia-gallery%2Fprod%2F170478269022771800_Fortnite_Minty_Legends_Pack_1704782696.webp&w=1080&q=75" style="width: 130px; margin: 0 auto 10px auto;">
+                        <strong>Minty Legends Pack + 1000 V-Bucks</strong>
+                        <span class="precio-producto" data-precio-usd="14.99">$14.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Minty Legends Pack + 1000 V-Bucks" onclick="agregarAlCarrito('Minty Legends Pack + 1000 V-Bucks', '14.99', 'https://driffle.com/_next/image?url=https%3A%2F%2Fstatic.driffle.com%2Ffit-in%2F720x512%2Fmedia-gallery%2Fprod%2F170478269022771800_Fortnite_Minty_Legends_Pack_1704782696.webp&w=1080&q=75', '1000', 'paquete', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -4749,6 +4837,11 @@
                         if (cat === 'Se Va Hoy') {
                             return `<div class="carrusel-se-va-hoy-wrap">
                                 <div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}${cards}</div>
+                            </div>
+                            <div class="carrusel-scrollbar-wrap">
+                                <div class="carrusel-scrollbar-track" id="seva-scrollbar-track">
+                                    <div class="carrusel-scrollbar-thumb" id="seva-scrollbar-thumb"></div>
+                                </div>
                             </div>`;
                         }
                         return `<div class="grid-productos">${cards}</div>`;
@@ -5988,7 +6081,32 @@ _He adjuntado mi comprobante de pago arriba._`;
         try{ var r=await fetch(API+"/status",{headers:{"X-Api-Key":KEY}}); if(r.ok){ var d=await r.json(); sbRenderBots(d.online_bots||[],d.offline_bots||[]); var pill=document.getElementById("sb-count-pill"); if(pill){ pill.textContent=(d.online_count||0)+"/"+(d.total_bots||0)+" ONLINE"; pill.style.display="inline-block"; } return; } } catch(e){}
         sbRenderBots(BOTS,[]);
       }
-      function sbRenderBots(on,off){ var g=document.getElementById("sb-bots-grid"); if(!g) return; var h=""; on.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); h+='<div class="sb-bot-card"><div class="sb-bot-icon">'+ini+'</div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic</span></div><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; }); off.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); h+='<div class="sb-bot-card offline"><div class="sb-bot-icon">'+ini+'</div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic</span></div><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; }); g.innerHTML=h; }
+      var SB_AVATAR_MAP = {
+        'denissa_7u7': 'https://image.fnbr.co/outfit/60d1c144de073f4914af137d/icon.png',
+        'maidas-s': 'https://image.fnbr.co/outfit/5ae89ec5f3d31b2467c5b7fe/icon.png',
+        'maidas-os': 'https://image.fnbr.co/outfit/68c143214ed974745dee0627/icon.png',
+        'shegos么1': 'https://image.fnbr.co/outfit/6a05ce97774055558edead8f/icon.png',
+        'shegos么2': 'https://image.fnbr.co/outfit/67daf3c99f9a1958c127b6f7/icon.png'
+      };
+      var SB_AVATARS_FALLBACK = [
+        'https://image.fnbr.co/outfit/5d8b2a91c9f11962a25197a7/icon.png',
+        'https://image.fnbr.co/outfit/60d1c144de073f4914af137d/icon.png',
+        'https://image.fnbr.co/outfit/5ae89ec5f3d31b2467c5b7fe/icon.png',
+        'https://image.fnbr.co/outfit/68c143214ed974745dee0627/icon.png',
+        'https://image.fnbr.co/outfit/6a05ce97774055558edead8f/icon.png',
+        'https://image.fnbr.co/outfit/67daf3c99f9a1958c127b6f7/icon.png'
+      ];
+      function sbAvatarFor(n){
+        var key = n.trim().toLowerCase();
+        if (SB_AVATAR_MAP[key]) return SB_AVATAR_MAP[key];
+        if (/shegos.*1$/.test(key)) return SB_AVATAR_MAP['shegos么1'];
+        if (/shegos.*2$/.test(key)) return SB_AVATAR_MAP['shegos么2'];
+        if (/^maidas[-_]?s$/.test(key)) return SB_AVATAR_MAP['maidas-s'];
+        if (/^maidas[-_]?os$/.test(key)) return SB_AVATAR_MAP['maidas-os'];
+        var hash=0; for(var i=0;i<n.length;i++){ hash=(hash*31+n.charCodeAt(i))>>>0; }
+        return SB_AVATARS_FALLBACK[hash % SB_AVATARS_FALLBACK.length];
+      }
+      function sbRenderBots(on,off){ var g=document.getElementById("sb-bots-grid"); if(!g) return; var h=""; on.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card"><div class="sb-bot-icon"><img src="'+av+'" alt="" onerror="this.parentElement.textContent=\''+ini+'\';this.parentElement.removeAttribute(\'style\')"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic</span></div><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; }); off.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card offline"><div class="sb-bot-icon"><img src="'+av+'" alt="" onerror="this.parentElement.textContent=\''+ini+'\';this.parentElement.removeAttribute(\'style\')"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic</span></div><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; }); g.innerHTML=h; }
       function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     })();
 
@@ -6013,26 +6131,22 @@ _He adjuntado mi comprobante de pago arriba._`;
         window.authSwitchTab = function(tab) {
             var isLogin    = tab === "login";
             var isRegister = tab === "register";
-            var isReset    = tab === "reset";
-
             $e("auth-form-login").style.display    = isLogin    ? "block" : "none";
             $e("auth-form-register").style.display = isRegister ? "block" : "none";
-            $e("auth-form-reset").style.display    = isReset    ? "block" : "none";
-
+            if (isLogin) {
+                $e("auth-login-email-step").style.display = "block";
+                $e("auth-login-otp-step").style.display   = "none";
+            }
+            if (isRegister) {
+                $e("auth-reg-email-step").style.display = "block";
+                $e("auth-reg-otp-step").style.display   = "none";
+            }
             $e("tab-login").classList.toggle("auth-tab-active", isLogin);
             $e("tab-register").classList.toggle("auth-tab-active", isRegister);
-
-            // Limpiar errores
-            ["auth-login-error","auth-reg-error","auth-reset-error"].forEach(function(id){
-                var el = $e(id); if(el){ el.textContent=""; el.style.display="none"; }
+            ["auth-login-error","auth-reg-error","auth-login-otp-error","auth-reg-otp-error"].forEach(function(id){
+                var el=$e(id); if(el){el.textContent="";el.style.display="none";}
             });
-
-            // Cambiar título del modal según vista
-            var title = $e("auth-modal-title");
-            if (title) {
-                if (isReset)    title.textContent = "Restablecer";
-                else            title.textContent = "Bienvenido";
-            }
+            var title=$e("auth-modal-title"); if(title) title.textContent="Bienvenido";
         };
 
         /* ── Abrir / cerrar modal ── */
@@ -6063,139 +6177,127 @@ _He adjuntado mi comprobante de pago arriba._`;
             el.style.display = "block";
         }
 
-        /* ── Toggle ver/ocultar contraseña (ojito) ── */
-        window.authTogglePass = function(inputId, btn) {
-            var input = $e(inputId);
-            if (!input) return;
-            var isPass = input.type === "password";
-            input.type = isPass ? "text" : "password";
-            var icon = btn.querySelector("i");
-            if (icon) {
-                icon.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+        /* ── Toggle ver/ocultar contraseña — legacy stub ── */
+        window.authTogglePass = function() {};
+
+        /* ── authSwitchTab ── */
+        window.authSwitchTab = function(tab) {
+            var isLogin    = tab === "login";
+            var isRegister = tab === "register";
+            $e("auth-form-login").style.display    = isLogin    ? "block" : "none";
+            $e("auth-form-register").style.display = isRegister ? "block" : "none";
+            if (isLogin) {
+                $e("auth-login-email-step").style.display = "block";
+                $e("auth-login-otp-step").style.display   = "none";
             }
+            if (isRegister) {
+                $e("auth-reg-email-step").style.display = "block";
+                $e("auth-reg-otp-step").style.display   = "none";
+            }
+            $e("tab-login").classList.toggle("auth-tab-active", isLogin);
+            $e("tab-register").classList.toggle("auth-tab-active", isRegister);
+            ["auth-login-error","auth-reg-error","auth-login-otp-error","auth-reg-otp-error"].forEach(function(id){
+                var el=$e(id); if(el){el.textContent="";el.style.display="none";}
+            });
+            var t=$e("auth-modal-title"); if(t) t.textContent="Bienvenido";
         };
 
-        /* ── Restablecer contraseña ── */
-        window.authResetPassword = async function() {
-            var email = ($e("auth-reset-email") || {}).value.trim();
-            var errId = "auth-reset-error";
-            var btn   = $e("auth-btn-reset");
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-                return mostrarError(errId, "Ingresa un correo válido.");
-
-            $e(errId).style.display = "none";
-            btn.disabled = true; btn.textContent = "Enviando...";
-
+        /* ── Enviar OTP ── */
+        window.authEnviarOTP = async function(tipo) {
+            var emailId = tipo==='login' ? 'auth-login-email'  : 'auth-reg-email';
+            var errId   = tipo==='login' ? 'auth-login-error'  : 'auth-reg-error';
+            var btnId   = tipo==='login' ? 'auth-btn-login'    : 'auth-btn-register';
+            var email   = ($e(emailId)||{}).value.trim();
+            var btn     = $e(btnId);
+            if (!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+                return mostrarError(errId,"Ingresa un correo electrónico válido.");
+            $e(errId).style.display="none";
+            btn.disabled=true; btn.textContent="Enviando...";
             try {
-                var { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin + window.location.pathname
+                var {error} = await supabaseClient.auth.signInWithOtp({
+                    email: email,
+                    options: { shouldCreateUser: true }
                 });
                 if (error) throw error;
-
-                $e(errId).style.display = "block";
-                $e(errId).style.color = "#28feb6";
-                $e(errId).style.background = "rgba(40,254,182,0.08)";
-                $e(errId).style.borderColor = "rgba(40,254,182,0.2)";
-                $e(errId).textContent = "✅ Enlace enviado. Revisa tu correo para restablecer tu contraseña.";
-                btn.textContent = "Enlace enviado ✓";
+                // Mostrar paso OTP
+                var emailStep = $e(tipo==='login' ? 'auth-login-email-step' : 'auth-reg-email-step');
+                var otpStep   = $e(tipo==='login' ? 'auth-login-otp-step'   : 'auth-reg-otp-step');
+                var lbl       = $e(tipo==='login' ? 'auth-login-otp-email-label' : 'auth-reg-otp-email-label');
+                if(lbl) lbl.textContent=email;
+                if(emailStep) emailStep.style.display="none";
+                if(otpStep)   otpStep.style.display="block";
+                setTimeout(function(){
+                    var inp=$e(tipo==='login'?'auth-login-otp':'auth-reg-otp'); if(inp) inp.focus();
+                },80);
             } catch(err) {
-                mostrarError(errId, "No se pudo enviar el enlace. Verifica el correo.");
-                btn.disabled = false; btn.textContent = "Enviar enlace";
-                console.error("Error reset:", err.message);
+                var msg="No se pudo enviar el código. Intenta de nuevo.";
+                if(err.message&&err.message.includes("rate limit")) msg="Demasiados intentos. Espera un momento.";
+                if(err.message&&err.message.includes("email")) msg="Correo inválido o bloqueado. Prueba con otro.";
+                mostrarError(errId,msg);
+                console.error("OTP send error:",err.message);
+            } finally {
+                btn.disabled=false; btn.textContent="Enviar código";
             }
         };
 
-        /* ── LOGIN con email + contraseña ── */
-        window.authLogin = async function() {
-            var email    = ($e("auth-login-email") || {}).value.trim();
-            var password = ($e("auth-login-pass")  || {}).value;
-            var errId    = "auth-login-error";
-            var btn      = $e("auth-btn-login");
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                return mostrarError(errId, "Ingresa un correo válido.");
-            }
-            if (!password) return mostrarError(errId, "Ingresa tu contraseña.");
-
-            $e(errId).style.display = "none";
-            btn.disabled = true; btn.textContent = "Iniciando sesión...";
-
+        /* ── Reenviar OTP ── */
+        window.authReenviarOTP = async function(tipo) {
+            var emailId = tipo==='login' ? 'auth-login-email' : 'auth-reg-email';
+            var errId   = tipo==='login' ? 'auth-login-otp-error' : 'auth-reg-otp-error';
+            var email   = ($e(emailId)||{}).value.trim();
+            if(!email) return;
+            $e(errId).style.display="none";
             try {
-                var { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-                if (error) throw error;
+                var {error} = await supabaseClient.auth.signInWithOtp({email:email,options:{shouldCreateUser:true}});
+                if(error) throw error;
+                var el=$e(errId);
+                el.textContent="✅ Código reenviado. Revisa tu correo.";
+                el.style.color="#28feb6"; el.style.background="rgba(40,254,182,0.08)";
+                el.style.borderColor="rgba(40,254,182,0.2)"; el.style.display="block";
+                setTimeout(function(){el.style.display="none";},4000);
+            } catch(err){ mostrarError(errId,"No se pudo reenviar. Espera un momento."); }
+        };
 
-                var userEmail = data.user.email;
-                sessionStorage.setItem("shegos_email", userEmail);
-                $e("auth-ok-email").textContent = userEmail;
-                $e("auth-step-form").style.display = "none";
-                $e("auth-step-ok").style.display   = "block";
-                authActivarSesion(userEmail, true);
-            } catch(err) {
-                var msg = "Correo o contraseña incorrectos.";
-                if (err.message && err.message.toLowerCase().includes("email not confirmed"))
-                    msg = "Confirma tu correo antes de iniciar sesión.";
-                mostrarError(errId, msg);
-                console.error("Error login:", err.message);
+        /* ── Verificar OTP ── */
+        window.authVerificarOTP = async function(tipo) {
+            var emailId = tipo==='login' ? 'auth-login-email'    : 'auth-reg-email';
+            var otpId   = tipo==='login' ? 'auth-login-otp'      : 'auth-reg-otp';
+            var errId   = tipo==='login' ? 'auth-login-otp-error': 'auth-reg-otp-error';
+            var btnId   = tipo==='login' ? 'auth-btn-otp-login'  : 'auth-btn-otp-register';
+            var email   = ($e(emailId)||{}).value.trim();
+            var token   = ($e(otpId)||{}).value.trim().replace(/\s/g,'');
+            var btn     = $e(btnId);
+            if(!token||token.length<6) return mostrarError(errId,"Ingresa el código de 6 dígitos.");
+            $e(errId).style.display="none";
+            btn.disabled=true; btn.textContent="Verificando...";
+            try {
+                var {data,error} = await supabaseClient.auth.verifyOtp({email:email,token:token,type:'email'});
+                if(error) throw error;
+                var userEmail=data.user.email;
+                sessionStorage.setItem("shegos_email",userEmail);
+                $e("auth-ok-email").textContent=userEmail;
+                $e("auth-step-form").style.display="none";
+                $e("auth-step-ok").style.display="block";
+                authActivarSesion(userEmail,true);
+            } catch(err){
+                var msg="Código incorrecto o expirado. Solicita uno nuevo.";
+                if(err.message&&err.message.includes("expired")) msg="El código expiró. Haz clic en 'Reenviar código'.";
+                mostrarError(errId,msg);
+                console.error("OTP verify error:",err.message);
             } finally {
-                btn.disabled = false; btn.textContent = "Iniciar Sesión";
+                btn.disabled=false; btn.textContent="Verificar código";
             }
         };
 
-        /* ── REGISTRO con email + contraseña ── */
-        window.authRegister = async function() {
-            var email    = ($e("auth-reg-email")    || {}).value.trim();
-            var password = ($e("auth-reg-pass")     || {}).value;
-            var confirm  = ($e("auth-reg-confirm")  || {}).value;
-            var errId    = "auth-reg-error";
-            var btn      = $e("auth-btn-register");
-
-            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-                return mostrarError(errId, "Ingresa un correo válido.");
-            if (password.length < 6)
-                return mostrarError(errId, "La contraseña debe tener al menos 6 caracteres.");
-            if (password !== confirm)
-                return mostrarError(errId, "Las contraseñas no coinciden.");
-
-            $e(errId).style.display = "none";
-            btn.disabled = true; btn.textContent = "Creando cuenta...";
-
-            try {
-                var { data, error } = await supabaseClient.auth.signUp({ email, password });
-                if (error) throw error;
-
-                // Si el email ya existe, Supabase igual devuelve data.user (sin error)
-                // Intentamos hacer login directo
-                if (data.user && data.session) {
-                    // Registro exitoso Y sesión activa (confirmación desactivada en Supabase)
-                    sessionStorage.setItem("shegos_email", data.user.email);
-                    $e("auth-ok-email").textContent = data.user.email;
-                    $e("auth-step-form").style.display = "none";
-                    $e("auth-step-ok").style.display   = "block";
-                    authActivarSesion(data.user.email, true);
-                } else {
-                    // Supabase requiere confirmación de correo
-                    mostrarError(errId, "");
-                    btn.style.background = "#1a3a30";
-                    btn.textContent = "✉ Revisa tu correo para confirmar";
-                    btn.disabled = true;
-                    $e(errId).style.display = "block";
-                    $e(errId).style.color = "#28feb6";
-                    $e(errId).style.background = "rgba(40,254,182,0.08)";
-                    $e(errId).style.borderColor = "rgba(40,254,182,0.2)";
-                    $e(errId).textContent = "✅ Cuenta creada. Revisa tu correo para confirmar y luego inicia sesión.";
-                }
-            } catch(err) {
-                var msg = "Error al crear la cuenta.";
-                if (err.message && err.message.toLowerCase().includes("already registered"))
-                    msg = "Este correo ya está registrado. Inicia sesión.";
-                mostrarError(errId, msg);
-                console.error("Error registro:", err.message);
-            } finally {
-                if (!btn.textContent.includes("Revisa")) {
-                    btn.disabled = false; btn.textContent = "Crear Cuenta";
-                }
-            }
+        /* ── Volver al paso de correo ── */
+        window.authVolvePasoEmail = function(tipo) {
+            var emailStep=$e(tipo==='login'?'auth-login-email-step':'auth-reg-email-step');
+            var otpStep=$e(tipo==='login'?'auth-login-otp-step':'auth-reg-otp-step');
+            var errOtp=$e(tipo==='login'?'auth-login-otp-error':'auth-reg-otp-error');
+            if(emailStep) emailStep.style.display="block";
+            if(otpStep)   otpStep.style.display="none";
+            if(errOtp){errOtp.textContent="";errOtp.style.display="none";}
+            var otpInp=$e(tipo==='login'?'auth-login-otp':'auth-reg-otp'); if(otpInp) otpInp.value="";
         };
 
         /* ── Activar sesión en UI ── */
@@ -6299,51 +6401,151 @@ _He adjuntado mi comprobante de pago arriba._`;
     // Drag-to-scroll para el carrusel "Se Va Hoy" (el auto-scroll lo maneja CSS)
     (function() {
         function initDragScroll(el) {
-            let isDown = false, startX, startScrollLeft, animPaused = false;
+            // El carrusel usa animación CSS (translateX). Para mover manualmente
+            // capturamos la posición real del transform y la mantenemos con style,
+            // pausando la animación solo mientras el usuario interactúa.
+            let isDown = false, startX, startTX = 0, currentTX = 0;
+            const HALF = () => el.scrollWidth / 2; // mitad = 1 copia de cards
 
-            el.addEventListener('mousedown', (e) => {
-                isDown = true;
+            function getComputedTX() {
+                const m = new DOMMatrix(getComputedStyle(el).transform);
+                return m.m41;
+            }
+
+            function applyTX(x) {
+                // Clampar para no salir del rango de la animación
+                const half = HALF();
+                if (x > 0) x = 0;
+                if (x < -half) x = x % -half; // loop suave
+                currentTX = x;
+                el.style.transform = `translateX(${x}px)`;
+                updateThumb();
+            }
+
+            function pauseAndCapture() {
+                currentTX = getComputedTX();
                 el.style.animationPlayState = 'paused';
+                el.style.transform = `translateX(${currentTX}px)`;
+            }
+
+            function resume() {
+                // Quitar el transform inline para que retome la animación CSS
+                el.style.transform = '';
+                el.style.animationPlayState = 'running';
+            }
+
+            // ── Mouse drag ──
+            el.addEventListener('mousedown', (e) => {
+                // Ignorar clicks en botones
+                if (e.target.closest('button')) return;
+                e.preventDefault();
+                isDown = true;
+                pauseAndCapture();
+                startX = e.pageX;
+                startTX = currentTX;
                 el.style.cursor = 'grabbing';
-                startX = e.pageX - el.getBoundingClientRect().left;
-                // Capturamos la posición real actual usando getComputedStyle
-                const matrix = new DOMMatrix(getComputedStyle(el).transform);
-                startScrollLeft = matrix.m41; // translateX actual
             });
 
             window.addEventListener('mouseup', () => {
                 if (!isDown) return;
                 isDown = false;
                 el.style.cursor = 'grab';
-                // Reanudar animación CSS
-                el.style.animationPlayState = 'running';
+                resume();
             });
 
             window.addEventListener('mousemove', (e) => {
                 if (!isDown) return;
-                e.preventDefault();
-                const x = e.pageX - el.getBoundingClientRect().left;
-                const delta = x - startX;
-                el.style.transform = `translateX(${startScrollLeft + delta}px)`;
+                const delta = e.pageX - startX;
+                applyTX(startTX + delta);
             });
 
-            // Touch
+            // ── Rueda del mouse ──
+            el.parentElement && el.parentElement.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                pauseAndCapture();
+                applyTX(currentTX - e.deltaY * 1.2 - e.deltaX * 1.2);
+                clearTimeout(el._wheelTimer);
+                el._wheelTimer = setTimeout(resume, 1200);
+            }, { passive: false });
+
+            // ── Touch ──
+            let touchStartX = 0, touchStartTX = 0;
             el.addEventListener('touchstart', (e) => {
-                el.style.animationPlayState = 'paused';
-                startX = e.touches[0].pageX;
-                const matrix = new DOMMatrix(getComputedStyle(el).transform);
-                startScrollLeft = matrix.m41;
+                pauseAndCapture();
+                touchStartX = e.touches[0].pageX;
+                touchStartTX = currentTX;
             }, { passive: true });
 
             el.addEventListener('touchmove', (e) => {
-                const x = e.touches[0].pageX;
-                const delta = x - startX;
-                el.style.transform = `translateX(${startScrollLeft + delta}px)`;
+                const delta = e.touches[0].pageX - touchStartX;
+                applyTX(touchStartTX + delta);
             }, { passive: true });
 
             el.addEventListener('touchend', () => {
-                setTimeout(() => { el.style.animationPlayState = 'running'; }, 1000);
+                setTimeout(resume, 800);
             });
+
+            // ── Scrollbar thumb ──
+            const track = document.getElementById('seva-scrollbar-track');
+            const thumb = document.getElementById('seva-scrollbar-thumb');
+            let thumbDown = false, thumbStartX, thumbStartTX;
+
+            function updateThumb() {
+                if (!track || !thumb) return;
+                const half = HALF();
+                if (half <= 0) return;
+                const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
+                const trackW = track.clientWidth;
+                const ratio = Math.min(1, wrapW / half);
+                const thumbW = Math.max(44, trackW * ratio);
+                thumb.style.width = thumbW + 'px';
+                // posición: cuánto hemos desplazado del total desplazable
+                const scrollable = half - wrapW;
+                const frac = scrollable > 0 ? Math.abs(currentTX) / scrollable : 0;
+                thumb.style.left = (frac * (trackW - thumbW)) + 'px';
+            }
+
+            if (thumb && track) {
+                thumb.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    thumbDown = true;
+                    thumbStartX = e.clientX;
+                    thumbStartTX = currentTX;
+                    pauseAndCapture();
+                    thumb.classList.add('dragging');
+                });
+                track.addEventListener('click', (e) => {
+                    if (thumbDown) return;
+                    const rect = track.getBoundingClientRect();
+                    const frac = (e.clientX - rect.left) / track.clientWidth;
+                    const half = HALF();
+                    const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
+                    pauseAndCapture();
+                    applyTX(-(frac * (half - wrapW)));
+                    clearTimeout(el._wheelTimer);
+                    el._wheelTimer = setTimeout(resume, 1200);
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (!thumbDown) return;
+                    const dx = e.clientX - thumbStartX;
+                    const trackW = track.clientWidth;
+                    const thumbW = thumb.clientWidth;
+                    const half = HALF();
+                    const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
+                    const newTX = thumbStartTX - (dx / (trackW - thumbW)) * (half - wrapW);
+                    applyTX(newTX);
+                });
+                window.addEventListener('mouseup', () => {
+                    if (!thumbDown) return;
+                    thumbDown = false;
+                    thumb.classList.remove('dragging');
+                    clearTimeout(el._wheelTimer);
+                    el._wheelTimer = setTimeout(resume, 1200);
+                });
+            }
+
+            setTimeout(updateThumb, 500);
+            window.addEventListener('resize', updateThumb);
         }
 
         const observer = new MutationObserver(() => {
