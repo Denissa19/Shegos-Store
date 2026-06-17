@@ -2763,8 +2763,8 @@
 .sb-title span { background:linear-gradient(135deg,#28feb6,#5865f2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .sb-subtitle { color:#666; font-size:1em; max-width:520px; margin:0 auto 48px; line-height:1.7; }
 
-.sb-card { background:#111; border:1px solid #222; border-radius:15px; padding:24px 28px; max-width:480px; margin:0 auto; }
-.sb-form-grid { display:grid; grid-template-columns:1fr auto; gap:12px; margin-bottom:16px; }
+.sb-card { background:#111; border:1px solid #222; border-radius:20px; padding:32px 28px 28px; max-width:400px; margin:0 auto; }
+.sb-form-grid { display:grid; grid-template-columns:1fr; gap:14px; margin-bottom:16px; }
 @media (max-width:500px) { .sb-form-grid { grid-template-columns:1fr; } }
 .sb-form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:16px; }
 .sb-label { display:block; font-size:0.68em; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:#555; margin-bottom:8px; }
@@ -2772,14 +2772,14 @@
 .sb-input:focus { border-color:#28feb6; }
 .sb-select { background:#0a0a0a; border:1px solid #222; border-radius:10px; padding:14px 16px; color:#fff; font-size:0.88em; font-family:inherit; outline:none; cursor:pointer; width:100%; height:52px; }
 
-.sb-platform-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.sb-platform-grid { display:flex; flex-direction:row; gap:8px; flex-wrap:nowrap; }
 .sb-platform-btn {
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
-    background:#0a0a0a; border:1px solid #222; border-radius:10px; padding:10px 6px;
-    cursor:pointer; transition:all 0.2s; font-family:inherit;
+    display:flex; flex-direction:row; align-items:center; justify-content:center; gap:6px;
+    background:#0a0a0a; border:1px solid #222; border-radius:50px; padding:9px 16px;
+    cursor:pointer; transition:all 0.2s; font-family:inherit; flex:1;
 }
-.sb-platform-btn img { height:22px; width:auto; max-width:60px; object-fit:contain; filter:grayscale(100%) brightness(0.9); transition:filter 0.2s; }
-.sb-platform-btn span { color:#888; font-size:0.72em; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
+.sb-platform-btn img { height:18px; width:auto; max-width:40px; object-fit:contain; filter:grayscale(100%) brightness(0.9); transition:filter 0.2s; }
+.sb-platform-btn span { color:#888; font-size:0.75em; font-weight:700; text-transform:uppercase; letter-spacing:1px; }
 .sb-platform-btn:hover { border-color:#444; }
 .sb-platform-btn.active { border-color:#28feb6; background:rgba(40,254,182,0.06); box-shadow:0 0 12px rgba(40,254,182,0.15); }
 .sb-platform-btn.active img { filter:none; }
@@ -3505,28 +3505,29 @@
 
                   <!-- FORMULARIO -->
                   <div id="sb-state-form">
-                    <p style="color:#aaa;font-size:0.88em;text-align:center;margin:0 0 20px;line-height:1.6;">Selecciona la plataforma donde juegas y escribe tu usuario para recibir la solicitud de amistad.</p>
+                    <p style="font-size:1.3em;font-weight:800;text-align:center;color:#fff;margin:0 0 6px;">Agregar amigo</p>
+                    <p style="color:#aaa;font-size:0.85em;text-align:center;margin:0 0 20px;line-height:1.5;">Selecciona la plataforma donde juegas y escribe tu usuario para recibir la solicitud de amistad.</p>
                     <div class="sb-form-grid">
-                      <div>
-                        <label class="sb-label" for="sb-username">ID de Usuario</label>
-                        <input id="sb-username" class="sb-input" type="text" placeholder="Tu Epic ID, PSN o Xbox..." autocomplete="off" />
-                      </div>
                       <div>
                         <label class="sb-label">Plataforma</label>
                         <div class="sb-platform-grid" id="sb-platform-grid">
                           <button type="button" class="sb-platform-btn active" data-platform="epic" onclick="sbSeleccionarPlataforma('epic', this)">
                             <img src="https://imgs.search.brave.com/5V5xxYibiTcHwiscexYKfRWspDX1Qs6Jxwlfr9Thzf4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5na2V5LmNvbS9w/bmcvZnVsbC8yNDMt/MjQzNTAzNF9lcGlj/LWdhbWVzLWVwaWMt/Z2FtZXMtbG9nby1w/bmcucG5n" alt="Epic Games">
-                            <span>Epic Games</span>
+                            <span>Epic</span>
                           </button>
                           <button type="button" class="sb-platform-btn" data-platform="psn" onclick="sbSeleccionarPlataforma('psn', this)">
                             <img src="https://imgs.search.brave.com/xGroOsF4I5s3N0zT8mMAsXST20C2pS1mmTk9-L9teww/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzEzL1Bs/YXlzdGF0aW9uLUxv/Z28tUE5HLUhELVF1/YWxpdHkucG5n" alt="PlayStation">
-                            <span>PlayStation</span>
+                            <span>PSN</span>
                           </button>
                           <button type="button" class="sb-platform-btn" data-platform="xbl" onclick="sbSeleccionarPlataforma('xbl', this)">
                             <img src="https://imgs.search.brave.com/crnX-kAIOrzDRjVOADN8OrVkAl4WjdlPW3zQ4WOZZvY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5nYWxsLmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvMTMvWGJv/eC1Mb2dvLVBORy1G/aWxlLnBuZw" alt="Xbox">
                             <span>Xbox</span>
                           </button>
                         </div>
+                      </div>
+                      <div>
+                        <label class="sb-label" for="sb-username">Tu username</label>
+                        <input id="sb-username" class="sb-input" type="text" placeholder="Escribe tu usuario aquí..." autocomplete="off" />
                       </div>
                     </div>
                     <div id="sb-error" class="sb-error" style="display:none">⚠️ <span id="sb-error-text"></span></div>
