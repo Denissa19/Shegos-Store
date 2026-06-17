@@ -3499,12 +3499,13 @@
                   <div id="sb-state-already" class="sb-success-box" style="display:none">
                     <div style="font-size:3em;margin-bottom:12px">✅</div>
         <h3 style="font-size:1.3em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Solicitud Enviada!</h3>
-        <p style="color:#ffd700;font-weight:700;font-size:1.05em;margin-bottom:20px">Se enviaron solicitudes de amistad desde <strong id="sb-already-count" style="color:#28feb6">0</strong> cuenta(s).</p>
+        <p style="color:#ffffff;font-weight:700;font-size:1.05em;margin-bottom:20px">Se enviaron solicitudes de amistad desde <strong id="sb-already-count" style="color:#28feb6">0</strong> cuenta(s).</p>
                     <button class="sb-btn-outline" onclick="sbReset()">Añadir otra cuenta</button>
                   </div>
 
                   <!-- FORMULARIO -->
                   <div id="sb-state-form">
+                    <p style="color:#aaa;font-size:0.88em;text-align:center;margin:0 0 20px;line-height:1.6;">Selecciona la plataforma donde juegas y escribe tu usuario para recibir la solicitud de amistad.</p>
                     <div class="sb-form-grid">
                       <div>
                         <label class="sb-label" for="sb-username">ID de Usuario</label>
@@ -6062,7 +6063,7 @@ _He adjuntado mi comprobante de pago arriba._`;
               if(u) u.value="";
             }
           }
-          else if(r.status===404){ sbErr("❌ ID no encontrado. Verifica el nombre exacto en Fortnite."); }
+          else if(r.status===404){ var plat=plataformaSeleccionada==="epic"?"EPIC":plataformaSeleccionada==="psn"?"PlayStation":"Xbox"; sbErr("❌ Usuario '"+username+"' no encontrado en "+plat+". Verifica que escribiste bien tu username y seleccionaste la plataforma correcta."); }
           else if(r.status===409){
             /* Solicitud duplicada = ya fue enviada antes → mostrar como éxito */
             var ac2=document.getElementById("sb-already-count"); if(ac2) ac2.textContent=d.requests_sent||d.sent||"nuestras";
@@ -6103,7 +6104,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                     if(u) u.value="";
                   }
                 } else if(r2.status===404){
-                  sbErr("❌ ID no encontrado. Verifica el nombre exacto en Fortnite.");
+                  var plat2=plataformaSeleccionada==="epic"?"EPIC":plataformaSeleccionada==="psn"?"PlayStation":"Xbox"; sbErr("❌ Usuario '"+username+"' no encontrado en "+plat2+". Verifica que escribiste bien tu username y seleccionaste la plataforma correcta.");
                 } else if(r2.status===409){
                   var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
                   sbShow("already");
