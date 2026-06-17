@@ -1292,7 +1292,7 @@
             display: flex;
             gap: 20px;
             width: max-content;
-            animation: seVaHoyScroll 270s linear infinite;
+            animation: seVaHoyScroll 600s linear infinite;
             cursor: grab;
             user-select: none;
             padding-bottom: 8px;
@@ -5636,11 +5636,27 @@ _He adjuntado mi comprobante de pago arriba._`;
             else document.body.classList.add('en-checkout');
         }
 
+        /* Mapa de hash amigable → id interno de pestaña */
+        var HASH_MAP = {
+            'inicio':   'inicio-landing',
+            'tienda':   'tienda',
+            'cuentas':  'ids-regalos',
+            'pedidos':  'rastreo-pedidos',
+            'servicios':'recargas'
+        };
+        /* Inverso: id interno → hash amigable */
+        var ID_TO_HASH = {};
+        Object.keys(HASH_MAP).forEach(function(h){ ID_TO_HASH[HASH_MAP[h]] = h; });
+
         function abrirPestana(id) {
             document.querySelectorAll('.pestana').forEach(p => p.classList.add('oculto'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
             document.getElementById(id).classList.remove('oculto');
             
+            // Actualizar el hash de la URL sin hacer scroll
+            var hash = ID_TO_HASH[id] || id;
+            history.replaceState(null, '', '#' + hash);
+
             // Cerrar sidebar si está abierto (en móvil)
             if (document.getElementById('sidebar').classList.contains('abierto') && window.innerWidth <= 768) {
                 toggleSidebar();
@@ -5664,7 +5680,15 @@ _He adjuntado mi comprobante de pago arriba._`;
                 renderCheckoutSummary();
                 cambiarPasoCheckout(1);
             }
-        } 
+        }
+
+        /* Al cargar la página, leer el hash y abrir la sección correcta */
+        window.addEventListener('load', function() {
+            var hash = window.location.hash.replace('#', '').toLowerCase();
+            if (hash && HASH_MAP[hash]) {
+                abrirPestana(HASH_MAP[hash]);
+            }
+        }); 
         function irATienda() {
             if (window.innerWidth <= 768) {
                 abrirPestana('inicio-landing');
@@ -6031,11 +6055,35 @@ _He adjuntado mi comprobante de pago arriba._`;
         var u=document.getElementById("sb-username"),b=document.getElementById("sb-btn");
         var username=u?u.value.trim():""; if(!username) return;
         document.getElementById("sb-error").style.display="none";
-        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Enviando solicitud...';
-        /* Después de 8 s sin respuesta, avisar que puede tardar un poco más */
+        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Verificando usuario...';
         var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando... espera un momento'; },8000);
 
-        /* Timeout largo (55 s) para aguantar el cold-start de Render */
+        /* ── 1. Consultar Supabase: ¿ya fue agregado este usuario? ── */
+        try {
+          var { data: existing, error: dbErr } = await supabaseClient
+            .from('friend_requests')
+            .select('accounts_count')
+            .eq('username', username.toLowerCase())
+            .eq('platform', plataformaSeleccionada)
+            .maybeSingle();
+
+          if (!dbErr && existing) {
+            /* Ya está en la BD → mostrar "ya eres amigo" sin llamar al bot */
+            var ac=document.getElementById("sb-already-count");
+            if(ac) ac.textContent = existing.accounts_count || "nuestras";
+            clearTimeout(slowTimer);
+            b.disabled=false; b.innerHTML='🎮 Solicitar agregarme';
+            sbShow("already");
+            return;
+          }
+        } catch(dbCheckErr) {
+          console.warn("No se pudo verificar BD:", dbCheckErr);
+          /* Si falla la consulta, continuar igualmente y llamar al bot */
+        }
+
+        b.innerHTML='<span class="sb-spin">⏳</span> Enviando solicitud...';
+
+        /* ── 2. Timeout largo (55 s) para el cold-start de Render ── */
         var controller=new AbortController();
         var timeoutId=setTimeout(function(){ controller.abort(); },55000);
 
@@ -6051,6 +6099,15 @@ _He adjuntado mi comprobante de pago arriba._`;
 
           if(r.ok){
             var count=d.requests_sent||d.sent||0;
+            /* ── Guardar en Supabase para futuras consultas ── */
+            try {
+              await supabaseClient.from('friend_requests').upsert({
+                username: username.toLowerCase(),
+                platform: plataformaSeleccionada,
+                accounts_count: count
+              }, { onConflict: 'username,platform' });
+            } catch(saveErr){ console.warn("No se pudo guardar en BD:", saveErr); }
+
             if(d.already_friends){
               var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=count;
               sbShow("already");
@@ -6065,8 +6122,16 @@ _He adjuntado mi comprobante de pago arriba._`;
           }
           else if(r.status===404){ var plat=plataformaSeleccionada==="epic"?"EPIC":plataformaSeleccionada==="psn"?"PlayStation":"Xbox"; sbErr("❌ Usuario '"+username+"' no encontrado en "+plat+". Verifica que escribiste bien tu username y seleccionaste la plataforma correcta."); }
           else if(r.status===409){
-            /* Solicitud duplicada = ya fue enviada antes → mostrar como éxito */
-            var ac2=document.getElementById("sb-already-count"); if(ac2) ac2.textContent=d.requests_sent||d.sent||"nuestras";
+            /* Solicitud duplicada = ya fue enviada antes → guardar y mostrar como éxito */
+            var cnt409=d.requests_sent||d.sent||0;
+            try {
+              await supabaseClient.from('friend_requests').upsert({
+                username: username.toLowerCase(),
+                platform: plataformaSeleccionada,
+                accounts_count: cnt409
+              }, { onConflict: 'username,platform' });
+            } catch(e409){ console.warn("No se pudo guardar en BD:", e409); }
+            var ac2=document.getElementById("sb-already-count"); if(ac2) ac2.textContent=cnt409||"nuestras";
             sbShow("already");
           }
           else if(r.status===503){ sbErr("🔴 Bots fuera de línea. Agrega las cuentas manualmente."); }
@@ -6109,14 +6174,10 @@ _He adjuntado mi comprobante de pago arriba._`;
                   var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
                   sbShow("already");
                 } else {
-                  /* Mostrar éxito genérico si no hay respuesta clara */
-                  var ac6=document.getElementById("sb-already-count"); if(ac6) ac6.textContent="nuestras";
-                  sbShow("already");
+                  sbErr("⚠️ "+(d2.detail||d2.message||d2.error||"Ocurrió un error. Inténtalo de nuevo."));
                 }
               } catch(err2){
-                /* El reintento también falló: asumir éxito porque Discord confirma que llegan */
-                var ac7=document.getElementById("sb-already-count"); if(ac7) ac7.textContent="nuestras";
-                sbShow("already");
+                sbErr("❌ Error de conexión. El servidor tardó demasiado. Inténtalo de nuevo en unos segundos.");
               }
             })();
           } else {
@@ -6620,6 +6681,29 @@ _He adjuntado mi comprobante de pago arriba._`;
             }
         });
         observer.observe(document.body, { childList: true, subtree: true });
+    })();
+    </script>
+
+    <script>
+    /* ── Mantener Render despierto: ping cada 10 minutos ── */
+    (function keepRenderAwake(){
+        var PING_URL = "https://shegos-bots-2.onrender.com";
+        var INTERVAL  = 10 * 60 * 1000; /* 10 minutos */
+
+        function ping(){
+            fetch(PING_URL, { method:"GET", mode:"no-cors" })
+              .catch(function(){}); /* silenciar errores de red */
+        }
+
+        /* Primer ping al cargar la página */
+        ping();
+        /* Ping cada 10 minutos mientras la página esté abierta */
+        setInterval(ping, INTERVAL);
+
+        /* Si el usuario vuelve a la pestaña después de tenerla en background, ping inmediato */
+        document.addEventListener("visibilitychange", function(){
+            if(document.visibilityState === "visible") ping();
+        });
     })();
     </script>
 </body>
