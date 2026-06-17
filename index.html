@@ -2763,7 +2763,7 @@
 .sb-title span { background:linear-gradient(135deg,#28feb6,#5865f2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
 .sb-subtitle { color:#666; font-size:1em; max-width:520px; margin:0 auto 48px; line-height:1.7; }
 
-.sb-card { background:#111; border:1px solid #222; border-radius:15px; padding:30px; max-width:620px; margin:0 auto; }
+.sb-card { background:#111; border:1px solid #222; border-radius:15px; padding:24px 28px; max-width:480px; margin:0 auto; }
 .sb-form-grid { display:grid; grid-template-columns:1fr auto; gap:12px; margin-bottom:16px; }
 @media (max-width:500px) { .sb-form-grid { grid-template-columns:1fr; } }
 .sb-form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:16px; }
@@ -3530,7 +3530,7 @@
                       </div>
                     </div>
                     <div id="sb-error" class="sb-error" style="display:none">⚠️ <span id="sb-error-text"></span></div>
-                    <button id="sb-btn" class="sb-btn" onclick="sbEnviar()"> Solicitar agregarme</button>
+                    <button id="sb-btn" class="sb-btn" onclick="sbEnviar()">Enviar solicitud</button>
                   </div>
                 </div>
               </div>
@@ -6056,7 +6056,7 @@ _He adjuntado mi comprobante de pago arriba._`;
         var username=u?u.value.trim():""; if(!username) return;
         document.getElementById("sb-error").style.display="none";
         b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Verificando usuario...';
-        var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando... espera un momento'; },8000);
+        var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando...'; },4000);
 
         /* ── 1. Consultar Supabase: ¿ya fue agregado este usuario? ── */
         try {
@@ -6072,7 +6072,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             var ac=document.getElementById("sb-already-count");
             if(ac) ac.textContent = existing.accounts_count || "nuestras";
             clearTimeout(slowTimer);
-            b.disabled=false; b.innerHTML='🎮 Solicitar agregarme';
+            b.disabled=false; b.innerHTML='Enviar solicitud';
             sbShow("already");
             return;
           }
@@ -6085,7 +6085,7 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         /* ── 2. Timeout largo (55 s) para el cold-start de Render ── */
         var controller=new AbortController();
-        var timeoutId=setTimeout(function(){ controller.abort(); },55000);
+        var timeoutId=setTimeout(function(){ controller.abort(); },15000);
 
         try{
           var r=await fetch(API+"/friend-request",{
@@ -6184,7 +6184,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             sbErr("❌ Error de conexión. Verifica tu internet e intenta de nuevo.");
           }
         }
-        finally{ clearTimeout(slowTimer); b.disabled=false; b.innerHTML='🎮 Solicitar agregarme'; }
+        finally{ clearTimeout(slowTimer); b.disabled=false; b.innerHTML='Enviar solicitud'; }
       };
 
       window.sbReset=function(){ sbShow("form"); };
