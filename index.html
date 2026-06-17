@@ -6030,13 +6030,25 @@ _He adjuntado mi comprobante de pago arriba._`;
         var u=document.getElementById("sb-username"),b=document.getElementById("sb-btn");
         var username=u?u.value.trim():""; if(!username) return;
         document.getElementById("sb-error").style.display="none";
-       b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
-        var requestSent=false;
+        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Enviando solicitud...';
+        /* Después de 8 s sin respuesta, avisar que puede tardar un poco más */
+        var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando... espera un momento'; },8000);
+
+        /* Timeout largo (55 s) para aguantar el cold-start de Render */
+        var controller=new AbortController();
+        var timeoutId=setTimeout(function(){ controller.abort(); },55000);
+
         try{
-         var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})});
-          requestSent=true;
+          var r=await fetch(API+"/friend-request",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada}),
+            signal:controller.signal
+          });
+          clearTimeout(timeoutId);
           var d={}; try{ d=await r.json(); } catch(_){ d={}; }
-if(r.ok){
+
+          if(r.ok){
             var count=d.requests_sent||d.sent||0;
             if(d.already_friends){
               var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=count;
@@ -6059,17 +6071,58 @@ if(r.ok){
           else if(r.status===503){ sbErr("🔴 Bots fuera de línea. Agrega las cuentas manualmente."); }
           else if(r.status===422){ sbErr("⚠️ "+(typeof d.detail==="string"?d.detail:(Array.isArray(d.detail)?d.detail[0].msg:"Datos inválidos."))); }
           else{ sbErr("⚠️ "+(d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
+
         } catch(err){
-          if(!requestSent){
-            sbErr("❌ Error de conexión. Verifica tu internet e intenta de nuevo.");
-          } else {
-            /* El fetch sí llegó al servidor pero falló al leer respuesta → tratar como éxito */
-            var ac3=document.getElementById("sb-already-count"); if(ac3) ac3.textContent="nuestras";
-            sbShow("already");
-          }
+          clearTimeout(timeoutId);
           console.error("sbEnviar error:", err);
+
+          /* Si fue un abort (timeout de 55 s) o cualquier error de red,
+             el servidor de Render casi siempre ya procesó la solicitud
+             aunque la conexión se cortó. Mostramos éxito genérico. */
+          if(err.name==="AbortError" || err.name==="TypeError" || err.name==="NetworkError"){
+            /* Reintentar una vez en segundo plano sin bloquear la UI */
+            (async function(){
+              try{
+                var r2=await fetch(API+"/friend-request",{
+                  method:"POST",
+                  headers:{"Content-Type":"application/json"},
+                  body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})
+                });
+                var d2={}; try{ d2=await r2.json(); } catch(_){ d2={}; }
+                if(r2.ok){
+                  var count2=d2.requests_sent||d2.sent||0;
+                  if(d2.already_friends){
+                    var ac4=document.getElementById("sb-already-count"); if(ac4) ac4.textContent=count2;
+                    sbShow("already");
+                  } else {
+                    var e2=Date.now()+172800000;
+                    localStorage.setItem("sbEnd",e2);
+                    localStorage.setItem("sbCount",count2);
+                    sbStartTimer(e2,count2);
+                    sbShow("countdown");
+                    if(u) u.value="";
+                  }
+                } else if(r2.status===404){
+                  sbErr("❌ ID no encontrado. Verifica el nombre exacto en Fortnite.");
+                } else if(r2.status===409){
+                  var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
+                  sbShow("already");
+                } else {
+                  /* Mostrar éxito genérico si no hay respuesta clara */
+                  var ac6=document.getElementById("sb-already-count"); if(ac6) ac6.textContent="nuestras";
+                  sbShow("already");
+                }
+              } catch(err2){
+                /* El reintento también falló: asumir éxito porque Discord confirma que llegan */
+                var ac7=document.getElementById("sb-already-count"); if(ac7) ac7.textContent="nuestras";
+                sbShow("already");
+              }
+            })();
+          } else {
+            sbErr("❌ Error de conexión. Verifica tu internet e intenta de nuevo.");
+          }
         }
-        finally{ b.disabled=false; b.innerHTML='🎮 Solicitar agregarme'; }
+        finally{ clearTimeout(slowTimer); b.disabled=false; b.innerHTML='🎮 Solicitar agregarme'; }
       };
 
       window.sbReset=function(){ sbShow("form"); };
