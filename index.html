@@ -6033,8 +6033,9 @@ _He adjuntado mi comprobante de pago arriba._`;
        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
         var requestSent=false;
         try{
-          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})});
-          var d; try{ d=await r.json(); } catch(_){ d={}; }
+         var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})});
+          requestSent=true;
+          var d={}; try{ d=await r.json(); } catch(_){ d={}; }
           if(r.ok){
             if(d.already_added>0){
               var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
