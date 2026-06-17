@@ -6036,19 +6036,40 @@ _He adjuntado mi comprobante de pago arriba._`;
          var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})});
           requestSent=true;
           var d={}; try{ d=await r.json(); } catch(_){ d={}; }
-          if(r.ok){
-            if(d.already_added>0){
-              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=d.requests_sent||0;
+if(r.ok){
+            var count=d.requests_sent||d.sent||0;
+            if(d.already_friends){
+              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=count;
               sbShow("already");
-            } else { var e=Date.now()+172800000; localStorage.setItem("sbEnd",e); localStorage.setItem("sbCount",d.requests_sent||0); sbStartTimer(e,d.requests_sent||0); sbShow("countdown"); if(u) u.value=""; }
+            } else {
+              var e=Date.now()+172800000;
+              localStorage.setItem("sbEnd",e);
+              localStorage.setItem("sbCount",count);
+              sbStartTimer(e,count);
+              sbShow("countdown");
+              if(u) u.value="";
+            }
           }
-          else if(r.status===404){ sbErr("❌ Usuario no encontrado. Verifica el nombre exacto."); }
-          else if(r.status===409){ sbErr("⚠️ Solicitud duplicada. Ya se envió una solicitud a este usuario."); }
+          else if(r.status===404){ sbErr("❌ ID no encontrado. Verifica el nombre exacto en Fortnite."); }
+          else if(r.status===409){
+            /* Solicitud duplicada = ya fue enviada antes → mostrar como éxito */
+            var ac2=document.getElementById("sb-already-count"); if(ac2) ac2.textContent=d.requests_sent||d.sent||"nuestras";
+            sbShow("already");
+          }
           else if(r.status===503){ sbErr("🔴 Bots fuera de línea. Agrega las cuentas manualmente."); }
-          else if(r.status===422){ sbErr("⚠️ " + (d.detail||(Array.isArray(d.detail)?d.detail[0].msg:"Datos inválidos. Revisa el ID ingresado."))); }
-          else{ sbErr("⚠️ " + (d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
-        } catch(e){ sbErr("❌ Error de red. Verifica tu conexión a internet."); console.error("sbEnviar error:", e); }
-        finally{ b.disabled=false; b.innerHTML='🎮 Enviar Solicitud'; }
+          else if(r.status===422){ sbErr("⚠️ "+(typeof d.detail==="string"?d.detail:(Array.isArray(d.detail)?d.detail[0].msg:"Datos inválidos."))); }
+          else{ sbErr("⚠️ "+(d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
+        } catch(err){
+          if(!requestSent){
+            sbErr("❌ Error de conexión. Verifica tu internet e intenta de nuevo.");
+          } else {
+            /* El fetch sí llegó al servidor pero falló al leer respuesta → tratar como éxito */
+            var ac3=document.getElementById("sb-already-count"); if(ac3) ac3.textContent="nuestras";
+            sbShow("already");
+          }
+          console.error("sbEnviar error:", err);
+        }
+        finally{ b.disabled=false; b.innerHTML='🎮 Solicitar agregarme'; }
       };
 
       window.sbReset=function(){ sbShow("form"); };
