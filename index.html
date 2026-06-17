@@ -6030,7 +6030,8 @@ _He adjuntado mi comprobante de pago arriba._`;
         var u=document.getElementById("sb-username"),b=document.getElementById("sb-btn");
         var username=u?u.value.trim():""; if(!username) return;
         document.getElementById("sb-error").style.display="none";
-        b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
+       b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Conectando...';
+        var requestSent=false;
         try{
           var r=await fetch(API+"/friend-request",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})});
           var d; try{ d=await r.json(); } catch(_){ d={}; }
