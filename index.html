@@ -3498,8 +3498,8 @@
                   <!-- YA AMIGO -->
                   <div id="sb-state-already" class="sb-success-box" style="display:none">
                     <div style="font-size:3em;margin-bottom:12px">✅</div>
-        <h3 style="font-size:1.3em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Solicitud Enviada!</h3>
-        <p style="color:#ffffff;font-weight:700;font-size:1.05em;margin-bottom:20px">Se enviaron solicitudes de amistad desde <strong id="sb-already-count" style="color:#28feb6">0</strong> cuenta(s).</p>
+        <h3 style="font-size:1.3em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Ya te tenemos agregado!</h3>
+        <p style="color:#ffffff;font-weight:700;font-size:1.05em;margin-bottom:20px">Ya te enviamos solicitud en <strong id="sb-already-count" style="color:#28feb6">0</strong> cuenta(s). Procura aceptar la solicitud en todas para poder recibir tus regalos.</p>
                     <button class="sb-btn-outline" onclick="sbReset()">Añadir otra cuenta</button>
                   </div>
 
@@ -6100,7 +6100,9 @@ _He adjuntado mi comprobante de pago arriba._`;
           console.log("[sbEnviar] respuesta backend:", r.status, d);
 
           if(r.ok){
-            var count=d.requests_sent||d.sent||0;
+            var alreadyCount=d.already_added||0;
+            var sentCount=d.requests_sent||0;
+            var count=alreadyCount>0?alreadyCount:sentCount;
             /* ── Guardar en Supabase para futuras consultas ── */
             try {
               await supabaseClient.from('friend_requests').upsert({
@@ -6110,19 +6112,19 @@ _He adjuntado mi comprobante de pago arriba._`;
               }, { onConflict: 'username,platform' });
             } catch(saveErr){ console.warn("No se pudo guardar en BD:", saveErr); }
 
-            if(d.already_friends){
-              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=count;
+            if(alreadyCount>0){
+              var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=alreadyCount;
               sbShow("already");
             } else {
               var e=Date.now()+172800000;
               localStorage.setItem("sbEnd",e);
-              localStorage.setItem("sbCount",count);
-              sbStartTimer(e,count);
+              localStorage.setItem("sbCount",sentCount);
+              sbStartTimer(e,sentCount);
               sbShow("countdown");
               if(u) u.value="";
             }
           }
-          else if(r.status===404){ var plat=plataformaSeleccionada==="epic"?"EPIC":plataformaSeleccionada==="psn"?"PlayStation":"Xbox"; sbErr("❌ Usuario '"+username+"' no encontrado en "+plat+". Verifica que escribiste bien tu username y seleccionaste la plataforma correcta."); }
+          else if(r.status===404){ sbErr("❌ No hemos podido encontrar este ID, fíjate que esté escrito correctamente y hayas seleccionado la plataforma a la que pertenece."); }
           else if(r.status===409){
             /* Solicitud duplicada = ya fue enviada antes → guardar y mostrar como éxito */
             var cnt409=d.requests_sent||d.sent||0;
@@ -6162,20 +6164,21 @@ _He adjuntado mi comprobante de pago arriba._`;
                 var d2={}; try{ d2=await r2.json(); } catch(_){ d2={}; }
                 console.log("[sbEnviar] respuesta backend (reintento):", r2.status, d2);
                 if(r2.ok){
-                  var count2=d2.requests_sent||d2.sent||0;
-                  if(d2.already_friends){
-                    var ac4=document.getElementById("sb-already-count"); if(ac4) ac4.textContent=count2;
+                  var alreadyCount2=d2.already_added||0;
+                  var sentCount2=d2.requests_sent||0;
+                  if(alreadyCount2>0){
+                    var ac4=document.getElementById("sb-already-count"); if(ac4) ac4.textContent=alreadyCount2;
                     sbShow("already");
                   } else {
                     var e2=Date.now()+172800000;
                     localStorage.setItem("sbEnd",e2);
-                    localStorage.setItem("sbCount",count2);
-                    sbStartTimer(e2,count2);
+                    localStorage.setItem("sbCount",sentCount2);
+                    sbStartTimer(e2,sentCount2);
                     sbShow("countdown");
                     if(u) u.value="";
                   }
                 } else if(r2.status===404){
-                  var plat2=plataformaSeleccionada==="epic"?"EPIC":plataformaSeleccionada==="psn"?"PlayStation":"Xbox"; sbErr("❌ Usuario '"+username+"' no encontrado en "+plat2+". Verifica que escribiste bien tu username y seleccionaste la plataforma correcta.");
+                  sbErr("❌ No hemos podido encontrar este ID, fíjate que esté escrito correctamente y hayas seleccionado la plataforma a la que pertenece.");
                 } else if(r2.status===409){
                   var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
                   sbShow("already");
