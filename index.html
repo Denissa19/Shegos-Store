@@ -6084,19 +6084,20 @@ _He adjuntado mi comprobante de pago arriba._`;
 
         b.innerHTML='<span class="sb-spin">⏳</span> Enviando solicitud...';
 
-        /* ── 2. Timeout largo (55 s) para el cold-start de Render ── */
+        /* ── 2. Timeout largo (45 s) para el cold-start de Render ── */
         var controller=new AbortController();
-        var timeoutId=setTimeout(function(){ controller.abort(); },15000);
+        var timeoutId=setTimeout(function(){ controller.abort(); },45000);
 
         try{
           var r=await fetch(API+"/friend-request",{
             method:"POST",
-            headers:{"Content-Type":"application/json"},
+            headers:{"Content-Type":"application/json","X-Api-Key":KEY},
             body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada}),
             signal:controller.signal
           });
           clearTimeout(timeoutId);
           var d={}; try{ d=await r.json(); } catch(_){ d={}; }
+          console.log("[sbEnviar] respuesta backend:", r.status, d);
 
           if(r.ok){
             var count=d.requests_sent||d.sent||0;
@@ -6136,26 +6137,30 @@ _He adjuntado mi comprobante de pago arriba._`;
             sbShow("already");
           }
           else if(r.status===503){ sbErr("🔴 Bots fuera de línea. Agrega las cuentas manualmente."); }
+          else if(r.status===401 || r.status===403){ sbErr("🔒 El servidor rechazó la solicitud (código "+r.status+"). Es un problema de configuración del backend (API key), no de tu conexión."); }
           else if(r.status===422){ sbErr("⚠️ "+(typeof d.detail==="string"?d.detail:(Array.isArray(d.detail)?d.detail[0].msg:"Datos inválidos."))); }
-          else{ sbErr("⚠️ "+(d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
+          else{ sbErr("⚠️ Código "+r.status+": "+(d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
 
         } catch(err){
           clearTimeout(timeoutId);
-          console.error("sbEnviar error:", err);
+          console.error("sbEnviar error (primer intento):", err);
 
-          /* Si fue un abort (timeout de 55 s) o cualquier error de red,
-             el servidor de Render casi siempre ya procesó la solicitud
-             aunque la conexión se cortó. Mostramos éxito genérico. */
+          /* Si fue un abort (timeout) o cualquier error de red,
+             reintentamos una vez en segundo plano sin bloquear la UI. */
           if(err.name==="AbortError" || err.name==="TypeError" || err.name==="NetworkError"){
-            /* Reintentar una vez en segundo plano sin bloquear la UI */
             (async function(){
+              var controller2=new AbortController();
+              var timeoutId2=setTimeout(function(){ controller2.abort(); },30000);
               try{
                 var r2=await fetch(API+"/friend-request",{
                   method:"POST",
-                  headers:{"Content-Type":"application/json"},
-                  body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada})
+                  headers:{"Content-Type":"application/json","X-Api-Key":KEY},
+                  body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada}),
+                  signal:controller2.signal
                 });
+                clearTimeout(timeoutId2);
                 var d2={}; try{ d2=await r2.json(); } catch(_){ d2={}; }
+                console.log("[sbEnviar] respuesta backend (reintento):", r2.status, d2);
                 if(r2.ok){
                   var count2=d2.requests_sent||d2.sent||0;
                   if(d2.already_friends){
@@ -6174,15 +6179,23 @@ _He adjuntado mi comprobante de pago arriba._`;
                 } else if(r2.status===409){
                   var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
                   sbShow("already");
+                } else if(r2.status===401 || r2.status===403){
+                  sbErr("🔒 El servidor rechazó la solicitud (código "+r2.status+"). Es un problema de configuración del backend (API key), no de tu conexión.");
                 } else {
-                  sbErr("⚠️ "+(d2.detail||d2.message||d2.error||"Ocurrió un error. Inténtalo de nuevo."));
+                  sbErr("⚠️ Código "+r2.status+": "+(d2.detail||d2.message||d2.error||"Ocurrió un error. Inténtalo de nuevo."));
                 }
               } catch(err2){
-                sbErr("❌ Error de conexión. El servidor tardó demasiado. Inténtalo de nuevo en unos segundos.");
+                clearTimeout(timeoutId2);
+                console.error("sbEnviar error (reintento):", err2);
+                if(err2.name==="AbortError"){
+                  sbErr("❌ El servidor (Render) tardó demasiado en responder. Probablemente está en cold-start o saturado. Inténtalo de nuevo en unos segundos.");
+                } else {
+                  sbErr("❌ No se pudo contactar al servidor ("+(err2.message||err2.name)+"). Revisa que el backend esté en línea y acepte peticiones desde este dominio (CORS).");
+                }
               }
             })();
           } else {
-            sbErr("❌ Error de conexión. Verifica tu internet e intenta de nuevo.");
+            sbErr("❌ Error inesperado: "+(err.message||err.name||"desconocido")+". Revisa la consola para más detalle.");
           }
         }
         finally{ clearTimeout(slowTimer); b.disabled=false; b.innerHTML='Enviar solicitud'; }
