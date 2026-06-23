@@ -1509,6 +1509,35 @@
         .servicio-card:hover { transform: translateY(-5px); }
         .servicio-card strong { margin: 15px 0 12px 0; font-size: 1.1em; color: #fff; display: block; }
         .servicio-card .precio-producto { margin-bottom: 25px; display: block; }
+
+        /* TARJETAS PUNTOS COD / WARZONE (estilo comparativo) */
+        .codpoints-grid { display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 18px; max-width: 820px; }
+        .codpoints-card {
+            background: #111214;
+            border: 1px solid #2a2a2a;
+            border-radius: 14px;
+            padding: 22px 24px;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+        .codpoints-card:hover { transform: translateY(-3px); }
+        .codpoints-card.featured { border-color: #28feb6; box-shadow: 0 0 0 1px rgba(40,254,182,0.25), 0 8px 24px rgba(40,254,182,0.08); }
+        .codpoints-badge { display: inline-block; font-size: 0.72em; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 14px; width: fit-content; letter-spacing: 0.3px; }
+        .badge-blue { background: #1d4ed8; color: #dbeafe; }
+        .badge-mint { background: #28feb6; color: #00130d; }
+        .badge-gray { background: #3f3f46; color: #e5e5e5; }
+        .badge-gold { background: #d97706; color: #fff7e6; }
+        .codpoints-title { font-size: 1.3em; color: #fff; display: block; margin-bottom: 3px; font-weight: 700; }
+        .codpoints-subtitle { font-size: 0.8em; color: #888; display: block; margin-bottom: 16px; }
+        .codpoints-divider { height: 1px; background: rgba(255,255,255,0.08); margin-bottom: 14px; }
+        .codpoints-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; gap: 10px; }
+        .codpoints-label { font-size: 0.85em; color: #999; }
+        .codpoints-precio-tachado { font-size: 0.85em; color: #777; text-decoration: line-through; }
+        .codpoints-precio-final { font-size: 1.25em; font-weight: 700; color: #fff; }
+        .codpoints-ahorra { display: inline-block; background: rgba(34,197,94,0.12); color: #4ade80; font-size: 0.75em; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 4px; width: fit-content; }
+        .codpoints-card .btn-outline-mint { margin-top: 18px; width: 100%; }
         .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 5px; }
         
         /* Estilo para imágenes de servicios con contorno blanco */
@@ -2382,6 +2411,9 @@
             .servicio-card .precio-producto { margin-bottom: 15px !important; font-size: 0.9em !important; }
             .servicio-card img { width: 80px !important; }
             .servicio-card .club-img-16-9 { width: 100% !important; }
+
+            .codpoints-grid { grid-template-columns: 1fr !important; }
+            .codpoints-card { padding: 18px !important; }
 
             /* Sección Cómo Funciona Compacta */
             .grid-pasos { gap: 10px !important; margin-top: 10px !important; }
@@ -3387,6 +3419,11 @@
                     <strong>Club de Fortnite</strong>
                     <span>Hasta 6 meses de Club</span>
                 </div>
+                <div class="servicio-home-card" onclick="abrirPestana('recargas'); setTimeout(function(){ mostrarSubServicio('codpoints'); }, 0);">
+                    <div class="servicio-home-icon"><i class="fas fa-crosshairs"></i></div>
+                    <strong>Puntos Warzone / COD</strong>
+                    <span>Black Ops 7 desde $10 USD</span>
+                </div>
             </div>
 
             <div id="tienda-mobile-anchor"></div>
@@ -3590,6 +3627,10 @@
                         <img src="https://imgs.search.brave.com/ExmJQ3SUENgGuEWdyUR69ENujYkAY0ecJSVqUqZtO5w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nYW1p/bmctY2RuLmNvbS9p/bWFnZXMvcHJvZHVj/dHMvMTIyNjYvNjE2/eDM1My9mb3J0bml0/ZS1wYXF1ZXRlLWRl/LWxleWVuZGFzLXZl/cmFuaWVnYXMteGJv/eC1zZXJpZXMteC1z/LXhib3gtb25lLWp1/ZWdvLW1pY3Jvc29m/dC1zdG9yZS10dXJx/dWlhLWNvdmVyLmpw/Zz92PTE3NDExODc0/MzA" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Paquetes de Fortnite</strong>
                     </div>
+                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('codpoints')">
+                        <img src="https://gaming-cdn.com/images/products/7780/616x353/call-of-duty-black-ops-cold-war-xbox-one-juego-microsoft-store-europe-cover.jpg?v=1738686644" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Call of Duty Cod-Points</strong>
+                    </div>
                 </div>
             </div>
 
@@ -3597,45 +3638,63 @@
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
                 <h2 style="margin-bottom: 5px;">Recargas de Pavos</h2>
                 <p style="color: #00ff88; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">V-BUCKS PARA FORTNITE · Se entrega una cuenta con los pavos recargados</p>
+                <!-- ── SECCIÓN 1: RECARGAS DE PAVOS ── -->
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="20.99">$20.99 USD</span>
-
+                        <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
+                            <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="22.99">$22.99 USD PRECIO REGULAR</span>
+                        </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('2.400', '192')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" data-item-nombre="Cuenta 2,400 V-Bucks" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '20.99', 'img/2400vb.png', '2400', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" style="width: 120px; margin: 0 auto 10px auto;">
+                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="29.99">$29.99 USD</span>
-
+                        <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
+                            <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="36.99">$36.99 USD PRECIO REGULAR</span>
+                        </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('4.500', '360')">MÁS INFORMACIÓN</button>
                         <button class="btn-outline-mint" data-item-nombre="Cuenta 4,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '29.99', 'img/4500vb.png', '4500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #28feb6;">
-                        <span style="background: #28feb6; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 5px; display: inline-block;">MÁS VENDIDO✦✦</span>
-                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" style="width: 130px; margin: 0 auto 10px auto;">
+                        <span style="background: #28feb6; color: #000; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">MÁS VENDIDO✦✦</span>
+                        <img src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-producto" data-precio-usd="54.99">$54.99 USD</span>
-                        <div style="font-size: 0.75em; color: #888; margin: 10px 0;">
-                            <span style="text-decoration: line-through;">$1629 MXN PRECIO REGULAR</span>
+                        <span class="precio-producto" data-precio-usd="65.00">$65.00 USD</span>
+                        <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
+                            <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="89.99">$89.99 USD PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta 12,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '54.99', 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', '12500', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 12,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '65.00', 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', '12500', 'cuenta', event)">+ Carrito</button>
+                    </div>
+                </div>
+
+                <!-- ── SECCIÓN 2: CUENTAS CON PAVOS ── -->
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px;">Cuentas con Pavos</h4>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Se entrega la cuenta con los pavos ya disponibles.</p>
+
+                <div class="servicios-flex-container">
+                    <div class="servicio-card">
+                        <img src="img/cuentapavos.webp" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">13.500</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Pavos · Cuenta con pavos</span>
+                        <span class="precio-producto" data-precio-usd="69.00">$69.00 USD</span>
+                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('13.500', '1080', 'cuenta-con-pavos')">MÁS INFORMACIÓN</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 13500 Pavos" onclick="agregarAlCarrito('Cuenta Con 13500 Pavos', '69.00', 'img/cuentapavos.webp', '13500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img src="img/cuentapavos.webp" style="width: 120px; margin: 0 auto 10px auto;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">13.500</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
-                        <span class="precio-producto" data-precio-usd="59.99">$59.99 USD</span>
-
-                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('13.500', '1080')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta 13,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 13,500 V-Bucks', '59.99', 'img/cuentapavos.webp', '13500', 'cuenta', event)">+ Carrito</button>
+                        <img src="img/cuentapavos.webp" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">25.000</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Pavos · Cuenta con pavos</span>
+                        <span class="precio-producto" data-precio-usd="110.00">$110.00 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 25000 Pavos" onclick="agregarAlCarrito('Cuenta Con 25000 Pavos', '110.00', 'img/cuentapavos.webp', '25000', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -3766,6 +3825,110 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ── CALL OF DUTY POINTS (dentro de Servicios) ── -->
+            <div id="sub-codpoints" class="sub-seccion-servicios">
+                <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
+                <h2 style="margin-bottom: 5px;">Call of Duty Points</h2>
+                <p style="color: #00ff88; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">CALL OF DUTY®: BLACK OPS COLD WAR · Código digital para activar en tu cuenta Xbox</p>
+
+                <!-- ── SECCIÓN 1: VÍA CÓDIGO XBOX ── -->
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px;">Codpoints vía Código Xbox</h4>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Recibes un código digital para canjear directamente en tu cuenta Xbox. · Black Ops Cold War</p>
+
+                <div class="servicios-flex-container">
+
+                    <!-- 1,100 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8318/616x353/call-of-duty-black-ops-cold-war-1-100-points-1100-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283839" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">1,100 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Código Xbox · Black Ops Cold War</span>
+                        <span class="precio-producto" data-precio-usd="11.99" style="font-size: 1.2em; font-weight: 700;">$11.99 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="1,100 Puntos COD (Código Xbox)" onclick="agregarAlCarrito('1,100 Puntos COD (Código Xbox)', '11.99', '', '1100', 'cod-xbox', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 2,400 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8319/616x353/call-of-duty-black-ops-cold-war-2-400-points-2400-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283863" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">2,400 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Código Xbox · Black Ops Cold War</span>
+                        <span class="precio-producto" data-precio-usd="23.99" style="font-size: 1.2em; font-weight: 700;">$23.99 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="2,400 Puntos COD (Código Xbox)" onclick="agregarAlCarrito('2,400 Puntos COD (Código Xbox)', '23.99', '', '2400', 'cod-xbox', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 5,000 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8321/616x353/call-of-duty-black-ops-cold-war-5-000-points-5000-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283912" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">5,000 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Código Xbox · Black Ops Cold War</span>
+                        <span class="precio-producto" data-precio-usd="49.99" style="font-size: 1.2em; font-weight: 700;">$49.99 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="5,000 Puntos COD (Código Xbox)" onclick="agregarAlCarrito('5,000 Puntos COD (Código Xbox)', '49.99', '', '5000', 'cod-xbox', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 9,500 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8320/orig-fallback-v1/call-of-duty-black-ops-cold-war-9-500-points-9500-points-xbox-one-xbox-series-x-s-game-microsoft-store-cover.jpg?v=1742283891" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">9,500 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Código Xbox · Black Ops Cold War</span>
+                        <span class="precio-producto" data-precio-usd="66.99" style="font-size: 1.2em; font-weight: 700;">$66.99 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="9,500 Puntos COD (Código Xbox)" onclick="agregarAlCarrito('9,500 Puntos COD (Código Xbox)', '66.99', '', '9500', 'cod-xbox', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 13,000 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8322/616x353/call-of-duty-black-ops-cold-war-13-000-points-13000-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283957" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">13,000 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Código Xbox · Black Ops Cold War</span>
+                        <span class="precio-producto" data-precio-usd="95.99" style="font-size: 1.2em; font-weight: 700;">$95.99 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="13,000 Puntos COD (Código Xbox)" onclick="agregarAlCarrito('13,000 Puntos COD (Código Xbox)', '95.99', '', '13000', 'cod-xbox', event)">+ Carrito</button>
+                    </div>
+
+                </div>
+
+                <!-- ── SECCIÓN 2: VÍA RECARGA A TU CUENTA ── -->
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px;">Puntos Black Ops 7 / Warzone™ · Vía Recarga (Cuenta Personal)</h4>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Los puntos se recargan directamente en tu cuenta personal de Call of Duty.</p>
+
+                <div class="servicios-flex-container">
+
+                    <!-- 1,100 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8318/616x353/call-of-duty-black-ops-cold-war-1-100-points-1100-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283839" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">1,100 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Black Ops 7 · Warzone™</span>
+                        <span class="precio-producto" data-precio-usd="10.00" style="font-size: 1.2em; font-weight: 700;">$10.00 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="1,100 Puntos COD / Warzone" onclick="agregarAlCarrito('1,100 Puntos COD / Warzone', '10.00', '', '1100', 'warzone', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 2,400 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8319/616x353/call-of-duty-black-ops-cold-war-2-400-points-2400-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283863" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">2,400 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Black Ops 7 · Warzone™</span>
+                        <span class="precio-producto" data-precio-usd="20.00" style="font-size: 1.2em; font-weight: 700;">$20.00 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="2,400 Puntos COD / Warzone" onclick="agregarAlCarrito('2,400 Puntos COD / Warzone', '20.00', '', '2400', 'warzone', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 5,000 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8321/616x353/call-of-duty-black-ops-cold-war-5-000-points-5000-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283912" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">5,000 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Black Ops 7 · Warzone™</span>
+                        <span class="precio-producto" data-precio-usd="41.00" style="font-size: 1.2em; font-weight: 700;">$41.00 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="5,000 Puntos COD / Warzone" onclick="agregarAlCarrito('5,000 Puntos COD / Warzone', '41.00', '', '5000', 'warzone', event)">+ Carrito</button>
+                    </div>
+
+                    <!-- 13,000 pts -->
+                    <div class="servicio-card">
+                        <img src="https://gaming-cdn.com/images/products/8322/616x353/call-of-duty-black-ops-cold-war-13-000-points-13000-points-xbox-one-xbox-series-x-s-juego-microsoft-store-cover.jpg?v=1742283957" style="width: 100%; aspect-ratio: 616/353; object-fit: cover; margin: 0 auto 10px auto; border-radius: 8px; display: block;">
+                        <strong style="font-size: 1.3em; display: block; margin: 5px 0;">13,000 Puntos</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Black Ops 7 · Warzone™</span>
+                        <span class="precio-producto" data-precio-usd="62.00" style="font-size: 1.2em; font-weight: 700;">$62.00 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="13,000 Puntos COD / Warzone" onclick="agregarAlCarrito('13,000 Puntos COD / Warzone', '62.00', '', '13000', 'warzone', event)">+ Carrito</button>
+                    </div>
+
+                </div>
+            </div>
         </div>
 
         <div id="resenas" class="section-box pestana oculto">
@@ -3809,13 +3972,6 @@
                                 <div class="co-field-card-body">
                                     <label class="co-label">Nombre completo</label>
                                     <input type="text" id="cliente-nombre" class="co-input" placeholder="Tu nombre">
-                                </div>
-                            </div>
-                            <div class="co-field-card">
-                                <div class="co-field-card-icon"><i class="fab fa-whatsapp"></i></div>
-                                <div class="co-field-card-body">
-                                    <label class="co-label">WhatsApp</label>
-                                    <input type="tel" id="cliente-whatsapp" class="co-input" placeholder="Ej: +52 8299999999">
                                 </div>
                             </div>
                             <div class="co-field-card">
@@ -3926,8 +4082,8 @@
                                 <span>Total</span><span id="checkout-total-dinero">—</span>
                             </div>
                             <div id="co-paypal-buttons" class="co-paypal-buttons" style="display:none;">
-                                <div class="co-paypal-notice">Serás redirigido a PayPal para pagar. Una vez completado, adjunta tu comprobante abajo para generar el pedido.</div>
-                                <button class="co-btn-paypal-pay" onclick="window.open('https://www.paypal.com/ncp/payment/4JP4S5EUD4RBS','_blank')">
+                                <div class="co-paypal-notice">Serás redirigido a PayPal para pagar <strong id="co-paypal-monto-preview" style="color:#ffc439;"></strong>. Una vez completado, adjunta tu comprobante abajo para generar el pedido.</div>
+                                <button class="co-btn-paypal-pay" id="btn-paypal-dinamico" onclick="pagarConPaypalDinamico(this)">
                                     Pagar con
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
                                 </button>
@@ -4074,11 +4230,9 @@
             <h2 id="info-pavos-titulo" style="color: #28feb6; margin: 0 0 5px 0; font-size: 1.8em;"></h2>
             <h3 id="info-pavos-precio" style="margin: 0 0 25px 0; font-size: 1.4em; color: #fff;"></h3>
             
-            <h4 style="color: #c; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9em; border-bottom: 1px solid #333; padding-bottom: 10px;">¿CÓMO FUNCIONA?</h4>
+            <h4 style="color: #28feb6; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9em; border-bottom: 1px solid #333; padding-bottom: 10px;">¿CÓMO FUNCIONA?</h4>
             
-            <div class="info-paso"><strong>01</strong><p>Se te entrega una cuenta de epic ya con los pavos recargados. Las compras se hacen en la página oficial del juego.</p></div>
-            <div class="info-paso"><strong>02</strong><p>Cambias los datos de la cuenta a los tuyos. Agrega la cuenta donde te gustaria recibir los regalos.</p></div>
-            <div class="info-paso"><strong>03</strong><p>¡Solo entra al juego y disfruta! Te envias regalos luego de las 48h agregado.</p></div>
+            <div id="info-pavos-pasos"></div>
             
             <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #333;">
                 <p style="font-size: 0.8em; color: #888; font-style: italic;">
@@ -4236,6 +4390,10 @@
         let categoriaActual = 'Todas';
         let tipoActual = 'TODO';
         let pasoCheckoutActual = 1;
+
+        // Precio por cada 100 V-Bucks de los cosméticos de la tienda, según método de pago
+        const TASA_VBUCKS_NORMAL = 0.52; // Cualquier método excepto PayPal
+        const TASA_VBUCKS_PAYPAL = 0.62; // PayPal
 
         // Orden oficial de secciones de la tienda de Fortnite (global)
         const ordenSeccionesOficiales = [
@@ -4465,7 +4623,7 @@
 
 
         // Tasas actualizadas
-        const tasas = { USD: 1, EUR: 0.92, MXN: 17.40, ARS: 850, COP: 3900, PEN: 3.75, DOP: 58, USDT: 1, CLP: 950 };
+        const tasas = { USD: 1, EUR: 0.87, MXN: 17.38, ARS: 1452, COP: 3447, PEN: 3.38, DOP: 58.29, USDT: 1, CLP: 906.65 };
         
         // Usamos 'userCurrency' como clave principal
         let divisaActual = localStorage.getItem('userCurrency') || 'USD';
@@ -4583,7 +4741,7 @@
                         tiendaItems.push({
                             nombre,
                             vbucks,
-                            usd: Math.ceil((vbucks / 100) * 0.51),
+                            usd: Math.ceil((vbucks / 100) * TASA_VBUCKS_NORMAL),
                             imagen,
                             rarityClass,
                             seVaHoy,
@@ -4726,6 +4884,14 @@
                 if (!isNaN(precioBase)) {
                     const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     el.innerText = `${simbolo}${nuevoPrecio}`;
+                }
+            });
+
+            document.querySelectorAll('.precio-regular-producto').forEach(el => {
+                const precioBase = parseFloat(el.getAttribute('data-precio-regular-usd'));
+                if (!isNaN(precioBase)) {
+                    const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    el.innerText = `${simbolo}${nuevoPrecio} ${divisaActual} PRECIO REGULAR`;
                 }
             });
         }
@@ -5012,6 +5178,21 @@
         }
         function eliminarItem(i) { carrito.splice(i, 1); actualizarCarrito(); }
 
+        // Recalcula el precio de los cosméticos de la tienda (tipo 'tienda') dentro del carrito
+        // según el método de pago elegido: 0.57$ por cada 100 pavos (cualquier método) o 0.60$ con PayPal.
+        function recalcularPrecioTienda(metodoPago) {
+            const tasaVbucks = (metodoPago === 'paypal') ? TASA_VBUCKS_PAYPAL : TASA_VBUCKS_NORMAL;
+            let cambio = false;
+            carrito.forEach(item => {
+                if (item.tipo === 'tienda') {
+                    const nuevoPrecio = Math.ceil((parseInt(item.vbucks || 0) / 100) * tasaVbucks);
+                    if (nuevoPrecio !== parseFloat(item.precio)) cambio = true;
+                    item.precio = nuevoPrecio;
+                }
+            });
+            if (cambio) actualizarCarrito();
+        }
+
         // CONTADOR DE LA TIENDA
         function actualizarRelojTienda() {
             const ahora = new Date(); 
@@ -5116,7 +5297,6 @@
                 color: 2868662, // verde menta #2BC6B6 aprox
                 fields: [
                     { name: '👤 Cliente', value: orderData.nombre_cliente || '—', inline: true },
-                    { name: '📱 WhatsApp', value: orderData.telefono_cliente || '—', inline: true },
                     { name: '🎮 Epic ID', value: orderData.epic_id_cliente || '—', inline: true },
                     { name: '🆔 Cuenta(s) agregada(s)', value: (orderData.cuentas_agregadas && orderData.cuentas_agregadas.length) ? orderData.cuentas_agregadas.join(', ') : '—', inline: false },
                     { name: '🛍️ Productos', value: productosTxt, inline: false },
@@ -5168,24 +5348,14 @@
             }
         }
 
-        function obtenerTelefonoCompleto() {
-            let raw = (document.getElementById('cliente-whatsapp').value || '').trim();
-            // Conservar el '+' inicial si existe, limpiar el resto de caracteres no numéricos
-            const tienePlus = raw.startsWith('+');
-            raw = raw.replace(/[^0-9]/g, '');
-            return (tienePlus ? '+' : '+') + raw;
-        }
-
         async function enviarPedidoFinal() {
             const btnFinal = document.getElementById('btn-main-checkout');
             if (!btnFinal || btnFinal.classList.contains('locked')) return;
 
             const nombre = document.getElementById('cliente-nombre').value;
-            let telefono = obtenerTelefonoCompleto();
             const epicId = document.getElementById('cliente-epic').value;
             
             const orderId = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
-            const telRegex = /^\+[0-9]{10,16}$/;
 
             const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
             const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
@@ -5193,13 +5363,8 @@
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const metodoRaw = seleccionado ? seleccionado.value : "";
 
-            if(!nombre || !document.getElementById('cliente-whatsapp').value || !epicId || !metodoRaw) {
+            if(!nombre || !epicId || !metodoRaw) {
                 return alert("Por favor completa todos tus datos y elige un método de pago.");
-            }
-
-            if(!telRegex.test(telefono)) {
-                document.getElementById('cliente-whatsapp').classList.add('input-error');
-                return alert("Por favor ingresa un número de WhatsApp válido (solo números, entre 10 y 15 dígitos).");
             }
 
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
@@ -5238,7 +5403,6 @@
             const orderData = {
                 id_pedido: orderId,
                 nombre_cliente: nombre,
-                telefono_cliente: telefono,
                 epic_id_cliente: epicId,
                 cuentas_agregadas: Array.from(cuentasCheckboxes).map(cb => cb.value),
                 productos: carrito,
@@ -5258,7 +5422,7 @@
 
                 // Abrir WhatsApp directamente con el pedido
                 const metodo = metodoRaw.toUpperCase();
-                const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n📱 *WhatsApp:* ${telefono}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
+                const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
                 window.open("https://wa.me/18299847680?text=" + encodeURIComponent(mensaje), '_blank');
 
                 vaciarCarrito();
@@ -5277,7 +5441,7 @@
             const metodoRaw = seleccionado ? seleccionado.value : "";
             
             if (metodoRaw === 'paypal') {
-                window.open("https://www.paypal.com/ncp/payment/4JP4S5EUD4RBS", '_blank');
+                pagarConPaypalDinamico(null);
             } else if (metodoRaw === 'transferencia_mx' || metodoRaw === 'popular') {
                 // Estas requieren ver instrucciones específicas
                 abrirModalInstrucciones(metodoRaw);
@@ -5291,6 +5455,7 @@
         }
 
         function mostrarPopupMetodoPago(metodo) {
+            recalcularPrecioTienda(metodo);
             if (metodo === 'transferencia_mx' || metodo === 'binance' || metodo === 'mercadopago' || metodo === 'oxxo') {
                 abrirModalInstrucciones(metodo);
             }
@@ -5349,7 +5514,6 @@
 
         function confirmarYEnviarWhatsApp() {
             const nombre = document.getElementById('cliente-nombre').value;
-            const telefono = obtenerTelefonoCompleto();
             const epicId = document.getElementById('cliente-epic').value;
             const cuentasCheckboxes = document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked');
             const cuentaSeleccionada = Array.from(cuentasCheckboxes).map(cb => cb.value).join(', ');
@@ -5368,8 +5532,6 @@
 ---------------------------------------
 
 👤 *Nombre:* ${nombre}
-
-📱 *WhatsApp:* ${telefono}
 
 🎮 *Epic ID:* ${epicId}
 
@@ -5548,6 +5710,90 @@ _He adjuntado mi comprobante de pago arriba._`;
             if (pasoCheckoutActual !== 3) return;
             paypalBtns.style.display = esPaypal ? 'flex' : 'none';
             if (divider) divider.style.display = esPaypal ? 'flex' : 'none';
+
+            // Actualizar preview del monto en el aviso de PayPal
+            if (esPaypal) {
+                const montoPreview = document.getElementById('co-paypal-monto-preview');
+                if (montoPreview) {
+                    const totalUSD = carrito.reduce((s, item) => s + parseFloat(item.precio), 0);
+                    montoPreview.textContent = totalUSD > 0 ? `($${totalUSD.toFixed(2)} USD)` : '';
+                }
+            }
+        }
+
+        // Crea una orden dinámica en PayPal con el monto exacto del carrito
+        async function pagarConPaypalDinamico(btnEl) {
+            const PAYPAL_CLIENT_ID = 'AW6b5seXvL3aSSklvNt_GYMonoNh9gTJKn63rW2RQe6-zv546vf4un77sKEJ8QbL1_k6sHCl0eqhEys_';
+            const PAYPAL_API_BASE = 'https://api-m.sandbox.paypal.com'; // sandbox (pruebas)
+
+            // Calcular total en USD (los precios del carrito están en USD)
+            const totalUSD = carrito.reduce((s, item) => s + parseFloat(item.precio), 0);
+            if (totalUSD <= 0) {
+                alert('Tu carrito está vacío.');
+                return;
+            }
+
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creando pago...';
+            }
+
+            try {
+                // 1. Obtener token de acceso
+                const tokenRes = await fetch(`${PAYPAL_API_BASE}/v1/oauth2/token`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(PAYPAL_CLIENT_ID + ':'),
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'grant_type=client_credentials'
+                });
+                const tokenData = await tokenRes.json();
+                if (!tokenData.access_token) throw new Error('No se pudo autenticar con PayPal.');
+
+                // 2. Crear orden
+                const orderRes = await fetch(`${PAYPAL_API_BASE}/v2/checkout/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${tokenData.access_token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        intent: 'CAPTURE',
+                        purchase_units: [{
+                            amount: {
+                                currency_code: 'USD',
+                                value: totalUSD.toFixed(2)
+                            },
+                            description: 'Shegos Store - Fortnite Items'
+                        }],
+                        application_context: {
+                            brand_name: 'Shegos Store',
+                            user_action: 'PAY_NOW',
+                            return_url: window.location.href,
+                            cancel_url: window.location.href
+                        }
+                    })
+                });
+                const orderData = await orderRes.json();
+
+                // 3. Redirigir al link de aprobación de PayPal
+                const approveLink = (orderData.links || []).find(l => l.rel === 'approve' || l.rel === 'payer-action');
+                if (!approveLink) throw new Error('No se pudo obtener el link de pago de PayPal.');
+
+                window.open(approveLink.href, '_blank');
+
+            } catch (err) {
+                console.error('PayPal error:', err);
+                alert('Error al conectar con PayPal: ' + err.message + '\n\nSi el problema persiste, usa el enlace manual.');
+                // Fallback al link estático
+                window.open('https://www.paypal.com/ncp/payment/4JP4S5EUD4RBS', '_blank');
+            } finally {
+                if (btnEl) {
+                    btnEl.disabled = false;
+                    btnEl.innerHTML = 'Pagar con <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">';
+                }
+            }
         }
 
         function manejarAccionCheckout() {
@@ -5555,10 +5801,9 @@ _He adjuntado mi comprobante de pago arriba._`;
                 cambiarPasoCheckout(2);
             } else if (pasoCheckoutActual === 2) {
                 const nombre = document.getElementById('cliente-nombre').value.trim();
-                const telefono = document.getElementById('cliente-whatsapp').value.trim();
                 const epicId = document.getElementById('cliente-epic').value.trim();
-                if (!nombre || !telefono || !epicId) {
-                    return alert("Por favor completa tu nombre, WhatsApp e ID de Epic Games.");
+                if (!nombre || !epicId) {
+                    return alert("Por favor completa tu nombre e ID de Epic Games.");
                 }
                 cambiarPasoCheckout(3);
             } else {
@@ -5618,9 +5863,19 @@ _He adjuntado mi comprobante de pago arriba._`;
             cerrarPagoBinance();
         }
 
-        function abrirInfoPavos(cantidad, precioMXN) {
+        function abrirInfoPavos(cantidad, precioMXN, tipo) {
             document.getElementById('info-pavos-titulo').innerText = cantidad + ' V-Bucks';
             document.getElementById('info-pavos-precio').innerText = '$' + precioMXN + ' MXN';
+
+            var paso1 = (tipo === 'cuenta-con-pavos')
+                ? 'Se te entrega una cuenta de Epic ya con los pavos recargados. Las compras se hacen en la página oficial del juego.'
+                : 'En caso de que tu cuenta ya esté vinculada a Xbox y no se pueda cambiar a una creada por nosotros para hacer tus recargas futuras, se te entrega una cuenta de Epic ya con los pavos recargados. Las compras se hacen en la página oficial del juego.';
+
+            document.getElementById('info-pavos-pasos').innerHTML =
+                '<div class="info-paso"><strong>01</strong><p>' + paso1 + '</p></div>' +
+                '<div class="info-paso"><strong>02</strong><p>Cambias los datos de la cuenta a los tuyos. Agrega la cuenta donde te gustaría recibir los regalos.</p></div>' +
+                '<div class="info-paso"><strong>03</strong><p>¡Solo entra al juego y disfruta! Te enviamos los regalos luego de las 48h de agregado.</p></div>';
+
             document.getElementById('modal-info-pavos').style.display = 'flex';
             document.body.style.overflow = 'hidden'; 
         }
