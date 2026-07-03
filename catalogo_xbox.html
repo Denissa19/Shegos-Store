@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo Xbox – Shegos Store</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0e0e14;
+    color: #e8e8f0;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #107c10 0%, #0a4f0a 100%);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 2px solid #1db31d44;
+  }
+
+  header svg { flex-shrink: 0; }
+
+  header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  header p { font-size: 0.85rem; color: #9ddd9d; margin-top: 2px; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 24px;
+    background: #16161f;
+    border-bottom: 1px solid #2a2a3a;
+  }
+
+  .toolbar input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    background: #1e1e2e;
+    border: 1px solid #333;
+    color: #e8e8f0;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .toolbar input[type="text"]:focus { border-color: #107c10; }
+
+  .margin-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1e1e2e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.9rem;
+  }
+
+  .margin-box label { color: #9ddd9d; font-size: 0.82rem; white-space: nowrap; }
+
+  .margin-box input[type="number"] {
+    width: 60px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: right;
+    outline: none;
+  }
+
+  .margin-box span { color: #9ddd9d; }
+
+  .stats {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 12px 24px;
+    background: #13131c;
+    border-bottom: 1px solid #2a2a3a;
+  }
+
+  .stat-chip {
+    background: #1e1e2e;
+    border: 1px solid #2a2a3a;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    color: #aaa;
+  }
+
+  .stat-chip strong { color: #1db31d; font-size: 1rem; }
+
+  .table-wrap {
+    overflow-x: auto;
+    padding: 0 0 40px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  thead th {
+    background: #1a1a28;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    border-bottom: 2px solid #107c10;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  thead th:hover { color: #ccc; }
+  thead th.asc::after { content: ' ↑'; color: #1db31d; }
+  thead th.desc::after { content: ' ↓'; color: #1db31d; }
+
+  tbody tr {
+    border-bottom: 1px solid #1e1e2e;
+    transition: background .15s;
+  }
+
+  tbody tr:hover { background: #1a1a28; }
+
+  td { padding: 10px 16px; vertical-align: middle; }
+
+  td.name { font-weight: 500; max-width: 360px; line-height: 1.4; }
+
+  td.cost { color: #aaa; font-variant-numeric: tabular-nums; }
+
+  td.price-final {
+    color: #1db31d;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td.margin-cell {
+    color: #9ddd9d;
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #107c1022;
+    border: 1px solid #107c1055;
+    color: #1db31d;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 2px;
+  }
+
+  .edit-btn {
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .edit-btn:hover { border-color: #107c10; color: #1db31d; }
+
+  .inline-edit {
+    background: #1e1e2e;
+    border: 1px solid #107c10;
+    color: #fff;
+    border-radius: 6px;
+    padding: 4px 8px;
+    width: 80px;
+    font-size: 0.88rem;
+    outline: none;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 60px;
+    color: #555;
+    font-size: 1rem;
+  }
+
+  .export-btn {
+    background: #107c10;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background .2s;
+  }
+
+  .export-btn:hover { background: #1db31d; }
+
+  @media (max-width: 600px) {
+    header { padding: 16px; }
+    .toolbar, .stats { padding: 12px 16px; }
+    td, th { padding: 8px 10px; }
+    td.name { max-width: 200px; font-size: 0.82rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <!-- Xbox logo -->
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="20" r="20" fill="#107c10"/>
+    <path d="M8 14c3 4 6 6 12 12 6-6 9-8 12-12C28 9 24 7 20 7s-8 2-12 7z" fill="#fff" opacity=".15"/>
+    <path d="M10.5 27C13 31 16.5 33 20 33s7-2 9.5-6C26 24 23 21 20 18c-3 3-6 6-9.5 9z" fill="#fff" opacity=".15"/>
+    <ellipse cx="20" cy="20" rx="9" ry="9" fill="none" stroke="#fff" stroke-width="1.5" opacity=".3"/>
+    <text x="20" y="24.5" text-anchor="middle" fill="white" font-size="10" font-family="Segoe UI" font-weight="700">X</text>
+  </svg>
+  <div>
+    <h1>Catálogo Xbox Keys</h1>
+    <p>Shegos Store — Gestión de precios e inventario</p>
+  </div>
+</header>
+
+<div class="toolbar">
+  <input type="text" id="search" placeholder="🔍  Buscar juego...">
+  <div class="margin-box">
+    <label>Margen</label>
+    <input type="number" id="marginInput" value="0" min="0" max="200" step="1">
+    <span>%</span>
+  </div>
+  <button class="export-btn" onclick="exportCSV()">⬇ Exportar CSV</button>
+</div>
+
+<div class="stats">
+  <div class="stat-chip">Productos: <strong id="countStat">0</strong></div>
+  <div class="stat-chip">Costo promedio: <strong id="avgCostStat">$0</strong></div>
+  <div class="stat-chip">Precio promedio venta: <strong id="avgPriceStat">$0</strong></div>
+  <div class="stat-chip">Ganancia total estimada: <strong id="totalProfitStat">$0</strong></div>
+</div>
+
+<div class="table-wrap">
+  <table id="catalog">
+    <thead>
+      <tr>
+        <th onclick="sortBy('name')">#  Producto</th>
+        <th onclick="sortBy('cost')">Costo (USD)</th>
+        <th onclick="sortBy('price')">Precio Venta (USD)</th>
+        <th onclick="sortBy('profit')">Ganancia (USD)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="no-results" id="noResults" style="display:none">Sin resultados para esa búsqueda.</div>
+</div>
+
+<script>
+const RAW = [
+  // ── Desde el documento principal ──
+  { name: "Battlefield 2042: Standard Edition – Xbox Key", cost: 23.50 },
+  { name: "Battlefield V – Xbox Key", cost: 9.34 },
+  { name: "Call of Duty: Modern Warfare II Cross-Gen Bundle – Xbox Key", cost: 36.91 },
+  { name: "Call of Duty: Modern Warfare 2 Campaign Remastered 1P – Xbox Key", cost: 5.70 },
+  { name: "Dark Souls: Remastered – Xbox Key", cost: 4.03 },
+  { name: "Dragon Ball FighterZ – FighterZ Pass 3 – Xbox Key", cost: 2.99 },
+  { name: "Dragon Ball Z: Kakarot Standard Edition – Xbox Key", cost: 10.04 },
+  { name: "Dragon Ball Z: Kakarot Season Pass – Xbox Key", cost: 4.33 },
+  { name: "Dragon Ball Xenoverse 2 Season Pass – Xbox Key", cost: 1.99 },
+  { name: "Dragon Ball Xenoverse 2 – Xbox Key", cost: 6.04 },
+  { name: "Forza Horizon 5: Standard Edition – Xbox Key", cost: 27.26 },
+  { name: "Forza Horizon 5: Premium Edition – Xbox Key", cost: 43.63 },
+  { name: "Forza Horizon 5: Deluxe Edition – Xbox Key", cost: 35.45 },
+  { name: "Destiny 2: Beyond Light – Xbox Key", cost: 15.79 },
+  { name: "Destiny 2: The Witch Queen – Xbox Key", cost: 23.72 },
+  { name: "Destiny 2 Final Shape PL – Xbox Key", cost: 23.72 },
+  { name: "Dead Island 2 Gold Edition – Xbox Key", cost: 30.19 },
+  { name: "Dead Island 2 Deluxe Edition – Xbox Key", cost: 25.16 },
+  { name: "Dead Island 2 – Xbox Key", cost: 23.47 },
+  { name: "EA Sports FC 26: Standard Edition – Xbox Key", cost: 88.90 },
+  { name: "Gears Triple Bundle – Xbox Key", cost: 14.60 },
+  { name: "Grand Theft Auto: The Trilogy – The Definitive Edition – Xbox Key", cost: 17.76 },
+  { name: "Halo Infinite – Xbox Key", cost: 13.57 },
+  { name: "Hogwarts Legacy XS – Xbox Key", cost: 30.19 },
+  { name: "Hogwarts Legacy X1 – Xbox Key", cost: 26.82 },
+  { name: "Hogwarts Legacy Digital Deluxe Edition – Xbox Key", cost: 36.91 },
+  { name: "Mafia: Trilogy – Xbox Key", cost: 12.56 },
+  { name: "Marvel's Midnight Suns X1 – Xbox Key", cost: 26.49 },
+  { name: "Metro Redux Bundle – Xbox Key", cost: 2.56 },
+  { name: "Metro Saga Bundle – Xbox Key", cost: 7.56 },
+  { name: "Minecraft Dungeons Xbox One – Xbox Key", cost: 9.58 },
+  { name: "Minecraft Dungeons: Ultimate Edition – Xbox Key", cost: 8.51 },
+  { name: "Minecraft Dungeons: Standard Edition (Windows) – Xbox Key", cost: 9.58 },
+  { name: "Minecraft Dungeons: Ultimate Edition (Windows) – Xbox Key", cost: 8.51 },
+  { name: "Minecraft Dungeons: Ultimate DLC Bundle – Xbox Key", cost: 4.08 },
+  { name: "Minecraft Dungeons: Ultimate DLC Bundle (Windows) – Xbox Key", cost: 4.08 },
+  { name: "Mortal Kombat 1 – Xbox Key", cost: 46.97 },
+  { name: "Mortal Kombat 11 – Xbox Key", cost: 11.72 },
+  { name: "Mortal Kombat 11: Ultimate – Xbox Key", cost: 13.41 },
+  { name: "NBA 2K26: Standard Edition – Xbox Key", cost: 88.90 },
+  { name: "NBA 2K26: Superstar Edition – Xbox Key", cost: 110.35 },
+  { name: "Overwatch 2 Coins – 1,000 1P – Xbox Key", cost: 8.73 },
+  { name: "Overwatch 2 Coins – 10,000 1P – Xbox Key", cost: 87.31 },
+  { name: "Overwatch 2 Coins – 2,000 1P – Xbox Key", cost: 17.50 },
+  { name: "Overwatch 2 Coins – 5,000 1P – Xbox Key", cost: 43.65 },
+  { name: "Red Dead Redemption 2: Ultimate Edition – Xbox Key", cost: 113.65 },
+  { name: "Red Dead Redemption 2: Red Dead Online – Xbox Key", cost: 22.71 },
+  { name: "Red Dead Redemption 2: 55 Gold Bars – Xbox Key", cost: 22.71 },
+  { name: "Resident Evil 4 – Xbox Key", cost: 25.16 },
+  { name: "Sea of Thieves – Xbox Key", cost: 17.66 },
+  { name: "Sea of Thieves Deluxe Edition – Xbox Key", cost: 23.17 },
+  { name: "Sea of Thieves Deluxe Upgrade – Xbox Key", cost: 5.17 },
+  { name: "South of Midnight: Standard Edition – Xbox Key", cost: 40.51 },
+  { name: "WWE 2K25: The Bloodline Edition – Xbox Key", cost: 157.15 },
+  { name: "WWE 2K25: Standard Edition – Xbox Key", cost: 87.27 },
+  { name: "WWE 2K25: Deadman Edition – Xbox Key", cost: 120.89 },
+  { name: "Resident Evil 3 – Xbox Key", cost: 8.65 },
+  { name: "Mega Man Zero/ZX Legacy Collection – Xbox Key", cost: 4.70 },
+  { name: "Jumanji Wild Adventures – Xbox Key", cost: 24.18 },
+  { name: "Ghostwire Tokyo Deluxe Upgrade – Xbox Key", cost: 6.34 },
+  { name: "Ghostwire Tokyo – Xbox Key", cost: 20.15 },
+  { name: "Ghostwire Tokyo Deluxe – Xbox Key", cost: 26.02 },
+  { name: "Fortnite: Darkfire & Ice Bundle – Xbox Key", cost: 38.02 },
+  { name: "Fortnite: The Minty Legends Pack – Xbox Key", cost: 8.78 },
+  { name: "Dead Space Standard Edition – Xbox Key", cost: 97.38 },
+  { name: "Dead Space DLX Edition Upgrade – Xbox Key", cost: 12.09 },
+  { name: "Dead Island Definitive Collection – Xbox Key", cost: 6.69 },
+  { name: "Dead Island Definitive Edition – Xbox Key", cost: 1.93 },
+  { name: "Borderlands 3: Next Level Edition – Xbox Key", cost: 16.76 },
+  { name: "Borderlands 3: Ultimate Edition – Xbox Key", cost: 23.80 },
+  // ── Ingresados manualmente ──
+  { name: "Call of Duty: Black Ops 4 Digital Deluxe Edition – Xbox Key", cost: 11.75 },
+  { name: "Fallout 4: Anniversary Edition – Xbox Key", cost: 54.00 },
+  { name: "Hollow Knight: Silksong – Xbox Key", cost: 8.81 },
+  { name: "Minecraft: Deluxe Collection – Xbox Key", cost: 19.10 },
+  { name: "Minecraft: Java & Bedrock Deluxe Collection – Xbox Key", cost: 25.44 },
+  { name: "Minecraft: Java & Bedrock Edition – Xbox Key", cost: 19.10 },
+  { name: "Shadow of the Tomb Raider: Definitive Edition – Xbox Key", cost: 8.73 },
+  { name: "Sid Meier's Civilization VI – Xbox Key", cost: 8.70 },
+  { name: "Call of Duty: Black Ops 4 Digital Edition – Xbox Key", cost: 7.70 },
+  { name: "Call of Duty: Black Ops 6 – Cross-Gen Bundle – Xbox Key", cost: 67.16 },
+  { name: "Call of Duty: Black Ops Cold War Cross-Gen Bundle – Xbox Key", cost: 19.10 },
+  { name: "Call of Duty: Modern Warfare III Cross-Gen Bundle – Xbox Key", cost: 67.16 },
+  { name: "Call of Duty: Modern Warfare 2,400 Points – Xbox Key", cost: 4.69 },
+  { name: "Call of Duty: Black Ops Cold War Standard Edition – Xbox Key", cost: 16.76 },
+];
+
+// Deduplicate by name
+const seen = new Set();
+const catalog = RAW.filter(item => {
+  if (seen.has(item.name)) return false;
+  seen.add(item.name);
+  return true;
+}).map((item, i) => ({ ...item, id: i, customCost: null }));
+
+let margin = 0;
+let sortKey = 'name';
+let sortDir = 1;
+let query = '';
+
+function getPrice(item) {
+  const cost = item.customCost !== null ? item.customCost : item.cost;
+  return cost * (1 + margin / 100);
+}
+
+function getProfit(item) {
+  const cost = item.customCost !== null ? item.customCost : item.cost;
+  return getPrice(item) - cost;
+}
+
+function fmt(n) { return '$' + n.toFixed(2); }
+
+function render() {
+  const q = query.toLowerCase();
+  let rows = catalog.filter(r => r.name.toLowerCase().includes(q));
+
+  rows.sort((a, b) => {
+    let va, vb;
+    if (sortKey === 'name') { va = a.name; vb = b.name; return sortDir * va.localeCompare(vb); }
+    if (sortKey === 'cost') { va = a.customCost ?? a.cost; vb = b.customCost ?? b.cost; }
+    if (sortKey === 'price') { va = getPrice(a); vb = getPrice(b); }
+    if (sortKey === 'profit') { va = getProfit(a); vb = getProfit(b); }
+    return sortDir * (va - vb);
+  });
+
+  const tbody = document.getElementById('tbody');
+  const noRes = document.getElementById('noResults');
+
+  if (!rows.length) {
+    tbody.innerHTML = '';
+    noRes.style.display = 'block';
+  } else {
+    noRes.style.display = 'none';
+    tbody.innerHTML = rows.map((item, idx) => {
+      const cost = item.customCost !== null ? item.customCost : item.cost;
+      const price = getPrice(item);
+      const profit = getProfit(item);
+      return `<tr>
+        <td class="name">${idx + 1}. ${item.name}</td>
+        <td class="cost" id="cost-cell-${item.id}">${fmt(cost)}</td>
+        <td class="price-final">${fmt(price)}</td>
+        <td class="margin-cell">${margin > 0 ? '+' + fmt(profit) : '—'}</td>
+        <td><button class="edit-btn" onclick="editCost(${item.id})">✏ Editar costo</button></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Stats
+  const visible = rows;
+  document.getElementById('countStat').textContent = visible.length;
+  if (visible.length) {
+    const avgCost = visible.reduce((s, r) => s + (r.customCost ?? r.cost), 0) / visible.length;
+    const avgPrice = visible.reduce((s, r) => s + getPrice(r), 0) / visible.length;
+    const totalProfit = visible.reduce((s, r) => s + getProfit(r), 0);
+    document.getElementById('avgCostStat').textContent = fmt(avgCost);
+    document.getElementById('avgPriceStat').textContent = fmt(avgPrice);
+    document.getElementById('totalProfitStat').textContent = fmt(totalProfit);
+  }
+
+  // Sort arrows
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('asc','desc'));
+  const idx = ['name','cost','price','profit'].indexOf(sortKey);
+  if (idx >= 0) document.querySelectorAll('thead th')[idx].classList.add(sortDir === 1 ? 'asc' : 'desc');
+}
+
+function editCost(id) {
+  const item = catalog.find(r => r.id === id);
+  const cell = document.getElementById('cost-cell-' + id);
+  if (!cell) return;
+  const current = item.customCost !== null ? item.customCost : item.cost;
+  cell.innerHTML = `<input class="inline-edit" type="number" step="0.01" value="${current}" 
+    onblur="saveCost(${id}, this.value)" 
+    onkeydown="if(event.key==='Enter') this.blur(); if(event.key==='Escape') cancelEdit(${id})">`;
+  cell.querySelector('input').focus();
+}
+
+function saveCost(id, val) {
+  const item = catalog.find(r => r.id === id);
+  const num = parseFloat(val);
+  if (!isNaN(num) && num >= 0) item.customCost = num;
+  render();
+}
+
+function cancelEdit(id) {
+  render();
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1;
+  else { sortKey = key; sortDir = 1; }
+  render();
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  query = e.target.value;
+  render();
+});
+
+document.getElementById('marginInput').addEventListener('input', e => {
+  margin = parseFloat(e.target.value) || 0;
+  render();
+});
+
+function exportCSV() {
+  const q = query.toLowerCase();
+  const rows = catalog.filter(r => r.name.toLowerCase().includes(q));
+  const lines = ['Producto,Costo (USD),Precio Venta (USD),Ganancia (USD)'];
+  rows.forEach(r => {
+    const cost = r.customCost !== null ? r.customCost : r.cost;
+    lines.push(`"${r.name}",${cost.toFixed(2)},${getPrice(r).toFixed(2)},${getProfit(r).toFixed(2)}`);
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'catalogo_xbox_shegos.csv'; a.click();
+}
+
+render();
+</script>
+</body>
+</html>

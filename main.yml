@@ -1,0 +1,33 @@
+name: Actualizar Historial de Pedidos
+
+on:
+  repository_dispatch:
+    types: [update-order]
+
+jobs:
+  update_json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Actualizar Estado del Pedido
+        run: |
+          # Usamos jq para buscar el ID y cambiar el estado
+          # El payload esperado es: {"id": "SHG-8842", "status": "Completado"}
+          ID="${{ github.event.client_payload.id }}"
+          STATUS="${{ github.event.client_payload.status }}"
+          
+          jq --arg id "$ID" --arg status "$STATUS" \
+          'map(if .id_pedido == $id then .estado = $status else . end)' \
+          pedidos.json > temp.json && mv temp.json pedidos.json
+
+      - name: Commit and Push
+        run: |
+          ID="${{ github.event.client_payload.id }}"
+          STATUS="${{ github.event.client_payload.status }}"
+          git config --global user.name "Shegos Bot"
+          git config --global user.email "bot@shegos.store"
+          git add pedidos.json
+          git commit -m "Actualización automática: Pedido $ID a $STATUS"
+          git push
