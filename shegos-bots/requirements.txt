@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+aiohttp
+slowapi
+pytz
+playwright
+python-telegram-bot==20.7
