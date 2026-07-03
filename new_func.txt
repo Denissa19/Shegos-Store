@@ -1,0 +1,403 @@
+        // ── Genera UNA imagen "Tienda del Día" agrupada por SECCIÓN OFICIAL (Marvel, Icon Series, etc.) ──
+        async function generarImagenTiendaDelDia() {
+            const btn = document.getElementById('btn-generar-imagen-tienda');
+            const textoOriginal = btn ? btn.innerHTML : '';
+
+            if (!tiendaItems || tiendaItems.length === 0) {
+                alert('Aún no se ha cargado la tienda de hoy. Espera un momento e inténtalo de nuevo.');
+                return;
+            }
+
+            // Detecta si es un dispositivo móvil: en iOS/Android muchos navegadores
+            // ignoran el atributo "download" de un <a>, sobre todo si el enlace
+            // se genera después de una espera asíncrona (como al cargar imágenes).
+            // Por eso en móvil abrimos una pestaña nueva con la imagen para que el
+            // usuario la guarde manualmente (mantener presionada -> guardar imagen).
+            const esMobile = /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent) ||
+                (window.matchMedia && window.matchMedia('(max-width: 900px)').matches);
+
+            // Abrimos la ventana/pestaña de inmediato (de forma síncrona, dentro del
+            // mismo gesto del usuario) para evitar que el navegador bloquee el popup
+            // por considerarlo "no solicitado por el usuario" una vez pasa el await.
+            let ventanaMovil = null;
+            if (esMobile) {
+                ventanaMovil = window.open('', '_blank');
+                if (ventanaMovil && ventanaMovil.document) {
+                    ventanaMovil.document.write(
+                        '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+                        '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+                        '<title>Generando imagen…</title></head>' +
+                        '<body style="margin:0;background:#12081a;color:#fff;font-family:sans-serif;' +
+                        'display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px;box-sizing:border-box;">' +
+                        '<p>Generando la imagen de la tienda, un momento…</p></body></html>'
+                    );
+                }
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            }
+
+            try {
+                const cargarImagen = (src) => new Promise((resolve) => {
+                    if (!src) { resolve(null); return; }
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => resolve(img);
+                    img.onerror = () => resolve(null);
+                    img.src = src;
+                });
+
+                function roundRectPath(ctx, x, y, w, h, r) {
+                    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); return; }
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.arcTo(x + w, y, x + w, y + h, r);
+                    ctx.arcTo(x + w, y + h, x, y + h, r);
+                    ctx.arcTo(x, y + h, x, y, r);
+                    ctx.arcTo(x, y, x + w, y, r);
+                    ctx.closePath();
+                }
+
+                const rarezaColor = {
+                    legendary: '#a5691e',
+                    epic: '#5a1e8a',
+                    rare: '#1e5a8a',
+                    uncommon: '#1e6b3a',
+                    common: '#3a3a4a'
+                };
+
+                // ── Agrupar por SECCIÓN OFICIAL de la API (item.sectionName viene de layout.name:
+                // "Marvel Series", "Icon Series", "Destacados", etc.) — el mismo criterio que ya
+                // usa la tienda en pantalla, para que la imagen descargada refleje exactamente
+                // las mismas secciones que ve el cliente al comprar. ──
+                const gruposMap = new Map();
+                tiendaItems.forEach(item => {
+                    const sName = item.sectionName || 'Otros';
+                    if (!gruposMap.has(sName)) gruposMap.set(sName, []);
+                    gruposMap.get(sName).push(item);
+                });
+
+                const rankPorSeccion = {};
+                tiendaItems.forEach(i => {
+                    if (!(i.sectionName in rankPorSeccion)) rankPorSeccion[i.sectionName] = i.sectionRank;
+                });
+
+                // Mismo orden que la tienda en pantalla: "Se Va Hoy" primero, autos al final,
+                // pistas penúltima, y el resto por cantidad de artículos / rank oficial.
+                const seccionesOrdenadas = Array.from(gruposMap.keys()).sort((a, b) => {
+                    const esSeVaHoyA = a === 'Se Va Hoy';
+                    const esSeVaHoyB = b === 'Se Va Hoy';
+                    if (esSeVaHoyA && !esSeVaHoyB) return -1;
+                    if (esSeVaHoyB && !esSeVaHoyA) return 1;
+
+                    const esAutosA = a.toLowerCase().includes('auto') || a.toLowerCase().includes('vehícul') || a.toLowerCase().includes('vehicul');
+                    const esAutosB = b.toLowerCase().includes('auto') || b.toLowerCase().includes('vehícul') || b.toLowerCase().includes('vehicul');
+                    const esPistasA = a.toLowerCase().includes('jam') || a.toLowerCase().includes('pistas de improvisaci');
+                    const esPistasB = b.toLowerCase().includes('jam') || b.toLowerCase().includes('pistas de improvisaci');
+
+                    if (esAutosA && !esAutosB) return 1;
+                    if (esAutosB && !esAutosA) return -1;
+                    if (esPistasA && !esPistasB && !esAutosB) return 1;
+                    if (esPistasB && !esPistasA && !esAutosA) return -1;
+
+                    const countA = gruposMap.get(a).length;
+                    const countB = gruposMap.get(b).length;
+                    if (countA !== countB) return countB - countA;
+                    return (rankPorSeccion[a] ?? 999) - (rankPorSeccion[b] ?? 999);
+                });
+
+                if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+
+                // ── Layout: tarjetas GRANDES (pocas columnas) y un título de sección
+                // limpio y grande antes de cada grupo de cosméticos. ──
+                const cols = 5;
+                const cardW = 260, cardH = 340, gapX = 22, gapY = 22;
+                const margin = 50;
+                const W = margin * 2 + cols * cardW + (cols - 1) * gapX;
+
+                const headerH = 190;
+                const footerH = 84;
+                const sectionTitleH = 76;   // espacio reservado para el título + línea de cada sección
+                const sectionGapBottom = 44; // separación extra después de cada sección
+
+                // Calculamos de antemano la altura total (para dibujar sobre un canvas del tamaño exacto)
+                const filasPorSeccion = {};
+                let totalH = headerH;
+                seccionesOrdenadas.forEach(sec => {
+                    const n = gruposMap.get(sec).length;
+                    const filas = Math.ceil(n / cols);
+                    filasPorSeccion[sec] = filas;
+                    totalH += sectionTitleH + filas * cardH + Math.max(0, filas - 1) * gapY + sectionGapBottom;
+                });
+                totalH += footerH;
+
+                const canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = Math.round(totalH);
+                const ctx = canvas.getContext('2d');
+
+                // ── Fondo sólido oscuro, estilo tienda del juego ──
+                const bgGrad = ctx.createLinearGradient(0, 0, W, canvas.height);
+                bgGrad.addColorStop(0, '#1958d1');
+                bgGrad.addColorStop(0.5, '#0e3aa8');
+                bgGrad.addColorStop(1, '#081f5c');
+                ctx.fillStyle = bgGrad;
+                ctx.fillRect(0, 0, W, canvas.height);
+
+                // ── Marca de agua: se dibuja UNA sola vez, muy sutil, como fondo antes de
+                // pintar cualquier tarjeta o texto — así nunca queda encima ni interfiere
+                // con los nombres/precios de los cosméticos. ──
+                ctx.save();
+                ctx.globalAlpha = 0.05;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = "bold 28px 'Poppins', Arial";
+                ctx.textAlign = 'center';
+                ctx.translate(W / 2, canvas.height / 2);
+                ctx.rotate(-Math.PI / 10);
+                ctx.translate(-W / 2, -canvas.height / 2);
+                const stepX = 360, stepY = 220;
+                for (let yy = -canvas.height * 0.2; yy < canvas.height * 1.2; yy += stepY) {
+                    for (let xx = -W * 0.3; xx < W * 1.3; xx += stepX) {
+                        ctx.fillText('SHEGOS STORE', xx, yy);
+                    }
+                }
+                ctx.restore();
+                ctx.textAlign = 'left';
+
+                // ── Encabezado ──
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#ffffff';
+                ctx.font = "bold 50px 'Poppins', Arial";
+                ctx.fillText('TIENDA DEL DÍA', W / 2, 74);
+                ctx.font = "600 18px 'Poppins', Arial";
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.fillText('S H E G O S   S T O R E   —   F O R T N I T E', W / 2, 104);
+
+                const fechaHeaderTxt = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+                ctx.font = "500 15px 'Poppins', Arial";
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fillText(fechaHeaderTxt, W / 2, 130);
+
+                ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, 156);
+                ctx.lineTo(W - margin, 156);
+                ctx.stroke();
+
+                // ── Precarga de TODAS las imágenes (una sola vez, en el mismo orden que se dibujan) ──
+                const itemsPlanos = [];
+                seccionesOrdenadas.forEach(sec => gruposMap.get(sec).forEach(it => itemsPlanos.push(it)));
+                const imgsCargadas = await Promise.all(itemsPlanos.map(it => cargarImagen(it.imagen)));
+                const imgPorItem = new Map();
+                itemsPlanos.forEach((it, idx) => imgPorItem.set(it, imgsCargadas[idx]));
+
+                // ── Dibujar cada sección: título grande y limpio + su propia cuadrícula ──
+                let y = headerH;
+                seccionesOrdenadas.forEach(sec => {
+                    const items = gruposMap.get(sec);
+
+                    // Título de sección
+                    ctx.textAlign = 'left';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = "800 32px 'Poppins', Arial";
+                    ctx.fillText(sec.toUpperCase(), margin, y + 34);
+
+                    ctx.font = "600 15px 'Poppins', Arial";
+                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    const contadorTxt = `${items.length} ${items.length === 1 ? 'artículo' : 'artículos'}`;
+                    ctx.fillText(contadorTxt, margin, y + 56);
+
+                    ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(margin, y + 66);
+                    ctx.lineTo(W - margin, y + 66);
+                    ctx.stroke();
+
+                    const gridY = y + sectionTitleH;
+
+                    items.forEach((item, idx) => {
+                        const col = idx % cols;
+                        const row = Math.floor(idx / cols);
+                        const x = margin + col * (cardW + gapX);
+                        const cy = gridY + row * (cardH + gapY);
+                        const img = imgPorItem.get(item);
+                        const bottomH = 84;
+                        const imgAreaH = cardH - bottomH;
+
+                        // Fondo de tarjeta según rareza
+                        ctx.save();
+                        roundRectPath(ctx, x, cy, cardW, cardH, 16);
+                        ctx.clip();
+                        const color = rarezaColor[item.rarityClass] || rarezaColor.common;
+                        const cardGrad = ctx.createLinearGradient(x, cy, x, cy + cardH);
+                        cardGrad.addColorStop(0, color);
+                        cardGrad.addColorStop(1, 'rgba(6,10,26,0.94)');
+                        ctx.fillStyle = cardGrad;
+                        ctx.fillRect(x, cy, cardW, cardH);
+                        ctx.restore();
+
+                        // Borde vívido sutil
+                        ctx.save();
+                        roundRectPath(ctx, x + 0.5, cy + 0.5, cardW - 1, cardH - 1, 16);
+                        ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        ctx.restore();
+
+                        if (img) {
+                            const maxW = cardW - 28;
+                            const maxH = imgAreaH - 20;
+                            const ratio = Math.min(maxW / img.width, maxH / img.height);
+                            const w = img.width * ratio;
+                            const h = img.height * ratio;
+                            ctx.drawImage(img, x + (cardW - w) / 2, cy + 12 + (imgAreaH - h) / 2, w, h);
+                        }
+
+                        if (item.seVaHoy) {
+                            ctx.save();
+                            ctx.font = 'bold 11px Arial';
+                            const txt = 'SE VA HOY';
+                            const txtW = ctx.measureText(txt).width;
+                            roundRectPath(ctx, x + cardW - txtW - 26, cy + 10, txtW + 16, 22, 6);
+                            ctx.fillStyle = '#e63946';
+                            ctx.fill();
+                            ctx.fillStyle = '#ffffff';
+                            ctx.textAlign = 'left';
+                            ctx.fillText(txt, x + cardW - txtW - 18, cy + 25);
+                            ctx.restore();
+                        }
+
+                        if (item.esLote) {
+                            ctx.save();
+                            roundRectPath(ctx, x + 10, cy + 10, 52, 22, 6);
+                            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                            ctx.fill();
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'bold 11px Arial';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('LOTE', x + 36, cy + 25);
+                            ctx.textAlign = 'left';
+                            ctx.restore();
+                        }
+
+                        // Panel inferior con nombre + precio
+                        const baseY = cy + cardH - bottomH;
+                        ctx.fillStyle = 'rgba(3,10,30,0.9)';
+                        ctx.fillRect(x, baseY, cardW, bottomH);
+
+                        ctx.textAlign = 'left';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 18px Arial';
+                        let nombre = (item.nombre || '').toUpperCase();
+                        if (nombre.length > 26) nombre = nombre.slice(0, 24) + '…';
+                        ctx.fillText(nombre, x + 14, baseY + 26);
+
+                        const rarityLabel = { legendary: 'LEGENDARIO', epic: 'ÉPICO', rare: 'RARO', uncommon: 'POCO COMÚN', common: 'COMÚN' }[item.rarityClass] || (item.rarityClass || '').toUpperCase();
+                        ctx.font = '600 11px Arial';
+                        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                        ctx.fillText(rarityLabel, x + 14, baseY + 42);
+
+                        // Precio en pavos: pill azul vívido con ícono
+                        const precioTxt = (item.vbucks || 0).toLocaleString();
+                        ctx.font = 'bold 18px Arial';
+                        const precioW = ctx.measureText(precioTxt).width;
+                        const pillW = precioW + 42;
+                        const pillH = 28;
+                        const pillX = x + 14;
+                        const pillY = baseY + 48;
+
+                        ctx.save();
+                        roundRectPath(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+                        const pillGrad = ctx.createLinearGradient(pillX, pillY, pillX + pillW, pillY);
+                        pillGrad.addColorStop(0, '#2f7bff');
+                        pillGrad.addColorStop(1, '#1a4fd6');
+                        ctx.fillStyle = pillGrad;
+                        ctx.fill();
+                        ctx.restore();
+
+                        ctx.beginPath();
+                        ctx.arc(pillX + pillH / 2, pillY + pillH / 2, pillH / 2 - 3, 0, Math.PI * 2);
+                        ctx.fillStyle = '#eaf4ff';
+                        ctx.fill();
+                        ctx.fillStyle = '#1a4fd6';
+                        ctx.font = 'bold 13px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('V', pillX + pillH / 2, pillY + pillH / 2 + 5);
+
+                        ctx.textAlign = 'left';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 18px Arial';
+                        ctx.fillText(precioTxt, pillX + pillH + 6, pillY + pillH / 2 + 6);
+                    });
+
+                    y = gridY + filasPorSeccion[sec] * cardH + Math.max(0, filasPorSeccion[sec] - 1) * gapY + sectionGapBottom;
+                });
+
+                // ── Pie de imagen (texto limpio, sin superponerse a nada) ──
+                ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(margin, canvas.height - footerH + 12);
+                ctx.lineTo(W - margin, canvas.height - footerH + 12);
+                ctx.stroke();
+
+                ctx.textAlign = 'left';
+                ctx.font = '15px Arial';
+                ctx.fillStyle = 'rgba(255,255,255,0.55)';
+                ctx.fillText(fechaHeaderTxt, margin, canvas.height - 30);
+                ctx.textAlign = 'right';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillStyle = '#4fc3ff';
+                ctx.fillText('shegostore.com', W - margin, canvas.height - 30);
+
+                // ── Entregar la imagen ──
+                const dataUrl = canvas.toDataURL('image/png');
+                const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.png`;
+
+                if (esMobile) {
+                    // En móvil: mostramos la imagen en la pestaña ya abierta, con
+                    // instrucciones para guardarla (mantener presionada -> guardar).
+                    if (ventanaMovil && !ventanaMovil.closed) {
+                        ventanaMovil.document.open();
+                        ventanaMovil.document.write(
+                            '<!DOCTYPE html><html><head><meta charset="utf-8">' +
+                            '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+                            '<title>' + nombreArchivo + '</title></head>' +
+                            '<body style="margin:0;background:#12081a;display:flex;flex-direction:column;align-items:center;">' +
+                            '<p style="color:#fff;font-family:sans-serif;font-size:0.9em;text-align:center;padding:14px 20px;margin:0;">' +
+                            'Mantén presionada la imagen y elige <strong>"Guardar imagen"</strong> (o usa el botón de compartir/descargar de tu navegador) para guardarla.' +
+                            '</p>' +
+                            '<img src="' + dataUrl + '" alt="' + nombreArchivo + '" style="max-width:100%;height:auto;display:block;">' +
+                            '</body></html>'
+                        );
+                        ventanaMovil.document.close();
+                    } else {
+                        // El navegador bloqueó el popup: navegamos la pestaña actual como respaldo.
+                        window.location.href = dataUrl;
+                    }
+                } else {
+                    // En escritorio, el atributo "download" funciona sin problema.
+                    const a = document.createElement('a');
+                    a.href = dataUrl;
+                    a.download = nombreArchivo;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+
+            } catch (e) {
+                console.error('Error generando imagen de la tienda:', e);
+                if (ventanaMovil && !ventanaMovil.closed) ventanaMovil.close();
+                alert('No se pudo generar la imagen. Algunas imágenes de la tienda podrían estar bloqueando su uso en canvas. Intenta de nuevo.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = textoOriginal;
+                }
+            }
+        }
+
