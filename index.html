@@ -81,8 +81,8 @@
             inset: 0;
             z-index: 1;
             background:
-                linear-gradient(180deg, rgba(10, 8, 14, 0.45) 0%, rgba(10, 8, 14, 0.3) 35%, rgba(10, 8, 14, 0.4) 100%),
-                radial-gradient(ellipse at center, rgba(10, 8, 14, 0.2) 0%, rgba(10, 8, 14, 0.4) 100%);
+                linear-gradient(180deg, rgba(10, 8, 14, 0.3) 0%, rgba(10, 8, 14, 0.2) 35%, rgba(10, 8, 14, 0.3) 100%),
+                radial-gradient(ellipse at center, rgba(10, 8, 14, 0.1) 0%, rgba(10, 8, 14, 0.25) 100%);
             pointer-events: none;
         }
         .hero-bg-track {
@@ -104,7 +104,7 @@
         }
         /* Opacidad del fondo (punto medio: visible pero sin competir con el texto) */
         .hero-bg-rotator .bg-slide.bg-slide-active {
-            opacity: 0.15;
+            opacity: 0.35;
         }
         
         /* BANNER CÓDIGO FIJADO */
@@ -6842,6 +6842,7 @@
                     ctx.closePath();
                 }
 
+                // Fondo de tarjeta (versión oscura/saturada) según rareza
                 const rarezaColor = {
                     legendary: '#a5691e',
                     epic: '#5a1e8a',
@@ -6850,11 +6851,19 @@
                     common: '#3a3a4a'
                 };
 
+                // Color vívido + etiqueta de cada rareza, usado para el borde, el brillo y el
+                // texto de rareza de cada tarjeta (así se distingue de un vistazo, como en el juego).
+                const rarezaInfo = {
+                    legendary: { color: '#f5b942', label: 'LEGENDARIO' },
+                    epic:      { color: '#c44dff', label: 'ÉPICO' },
+                    rare:      { color: '#4aa8ff', label: 'RARO' },
+                    uncommon:  { color: '#3aad4e', label: 'POCO COMÚN' },
+                    common:    { color: '#9a9aae', label: 'COMÚN' }
+                };
+
                 // Orden preferido por tipo de cosmético. Las canciones ("MUSICA") van siempre al final.
-                // OJO: ya NO se dibujan títulos de sección ni bloques separados por categoría — todos los
-                // items se colocan en UNA sola cuadrícula plana y compacta (estilo "Daily Item Shop"),
-                // para evitar la imagen larga tipo "chorizo". El orden solo se usa para que los items
-                // queden agrupados visualmente por tipo dentro de la misma grilla.
+                // Ahora SÍ se dibuja un encabezado por sección (como la tienda real de Fortnite),
+                // agrupando visualmente cada tipo de cosmético en su propio bloque.
                 const ordenCategorias = ['SKINS', 'BAILES', 'MOCHILAS', 'PICOS', 'ENVOLTORIOS', 'PLANEADORES', 'ZAPATILLAS', 'VEHICULOS', 'ACCESORIOS', 'MUSICA'];
                 const etiquetaCategoria = {
                     SKINS: 'SKIN',
@@ -6867,6 +6876,19 @@
                     VEHICULOS: 'VEHÍCULO',
                     ACCESORIOS: 'ACCESORIO',
                     MUSICA: 'CANCIÓN'
+                };
+                // Título de cada sección (encabezado grande, en plural, como en la tienda del juego)
+                const tituloSeccion = {
+                    SKINS: 'SKINS',
+                    BAILES: 'EMOTES',
+                    MOCHILAS: 'MOCHILAS',
+                    PICOS: 'PICOS',
+                    ENVOLTORIOS: 'ENVOLTORIOS',
+                    PLANEADORES: 'PLANEADORES',
+                    ZAPATILLAS: 'ZAPATILLAS',
+                    VEHICULOS: 'VEHÍCULOS',
+                    ACCESORIOS: 'ACCESORIOS',
+                    MUSICA: 'MÚSICA'
                 };
 
                 // Agrupar los items por su categoría real de cosmético (SKINS, BAILES, MOCHILAS, etc.)
@@ -6888,30 +6910,33 @@
                     }
                 });
 
-                // Lista PLANA final de items (sin agrupar en bloques visuales) para la cuadrícula única.
-                const itemsPlanos = [];
-                ordenFinal.forEach(cat => {
-                    (gruposMap.get(cat) || []).forEach(item => {
-                        itemsPlanos.push(Object.assign({}, item, { _cat: cat }));
-                    });
-                });
+                // Secciones con al menos un item, cada una con su lista de items propia.
+                const secciones = ordenFinal
+                    .map(cat => ({ cat, items: (gruposMap.get(cat) || []).map(it => Object.assign({}, it, { _cat: cat })) }))
+                    .filter(s => s.items.length > 0);
 
                 if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
 
-                // ── Layout de la imagen única ──
-                // Cuadrícula fija y compacta (estilo "Daily Item Shop"): pocas columnas (9), tarjetas
-                // grandes y legibles, sin secciones largas hacia abajo. Esto da un resultado mucho más
-                // cuadrado/ancho y con textos e imágenes bien definidos, ideal para redes sociales.
-                const cols = 20;
-                const cardW = 190, cardH = 250, gapX = 14, gapY = 14;
-                const margin = 40;
+                // ── Layout de la imagen: agrupada por SECCIONES, con tarjetas grandes ──
+                // Menos columnas y tarjetas más grandes para que los íconos de las skins se
+                // vean bien visibles (en vez de la cuadrícula compacta de 20 columnas de antes).
+                const cols = 25;
+                const cardW = 240, cardH = 330, gapX = 22, gapY = 30;
+                const margin = 50;
                 const W = margin * 2 + cols * cardW + (cols - 1) * gapX;
 
-                const headerH = 150;
+                const headerH = 160;
                 const footerH = 70;
+                const seccionHeaderH = 62;   // alto del encabezado de cada sección
+                const seccionGapDespues = 36; // espacio extra después de cada sección
 
-                const filasTotales = Math.ceil(itemsPlanos.length / cols);
-                const totalH = headerH + filasTotales * cardH + Math.max(0, filasTotales - 1) * gapY + footerH;
+                // Calcular la altura total sumando cada sección (encabezado + sus filas de tarjetas)
+                let totalH = headerH;
+                secciones.forEach(s => {
+                    const filas = Math.ceil(s.items.length / cols);
+                    totalH += seccionHeaderH + filas * cardH + Math.max(0, filas - 1) * gapY + seccionGapDespues;
+                });
+                totalH += footerH;
 
                 const canvas = document.createElement('canvas');
                 canvas.width = W;
@@ -6963,120 +6988,157 @@
                 ctx.lineTo(W - margin, 120);
                 ctx.stroke();
 
-                // ── Dibujar la cuadrícula ÚNICA y compacta con TODAS las tarjetas ──
-                // (sin títulos de sección: cada tarjeta lleva su propio badge de categoría arriba
-                // a la izquierda, así se conserva la info de tipo sin gastar espacio vertical extra)
-                const y = headerH;
-                const imgs = await Promise.all(itemsPlanos.map(it => cargarImagen(it.imagen)));
+                // ── Dibujar SECCIÓN POR SECCIÓN, con encabezado propio y tarjetas grandes ──
+                // Se precargan todas las imágenes de una sola vez (en el mismo orden en que
+                // se van a dibujar) para no repetir llamadas de red por sección.
+                const itemsParaImgs = [];
+                secciones.forEach(s => s.items.forEach(it => itemsParaImgs.push(it)));
+                const imgs = await Promise.all(itemsParaImgs.map(it => cargarImagen(it.imagen)));
+                let imgCursor = 0;
 
-                itemsPlanos.forEach((item, idx) => {
-                    const col = idx % cols;
-                    const row = Math.floor(idx / cols);
-                    const x = margin + col * (cardW + gapX);
-                    const cy = y + row * (cardH + gapY);
-                    const img = imgs[idx];
-                    const bottomH = 64;
-                    const imgAreaH = cardH - bottomH;
+                let yCursor = headerH;
 
-                    // Fondo de tarjeta según rareza, más saturado/vívido
+                secciones.forEach(seccion => {
+                    // ── Encabezado de sección (ej. "SKINS", "EMOTES", "MOCHILAS"...) ──
+                    const tituloTxt = tituloSeccion[seccion.cat] || seccion.cat;
                     ctx.save();
-                    roundRectPath(ctx, x, cy, cardW, cardH, 14);
-                    ctx.clip();
-                    const color = rarezaColor[item.rarityClass] || rarezaColor.common;
-                    const cardGrad = ctx.createLinearGradient(x, cy, x, cy + cardH);
-                    cardGrad.addColorStop(0, color);
-                    cardGrad.addColorStop(1, 'rgba(6,10,26,0.94)');
-                    ctx.fillStyle = cardGrad;
-                    ctx.fillRect(x, cy, cardW, cardH);
-                    ctx.restore();
-
-                    // Borde vívido sutil
-                    ctx.save();
-                    roundRectPath(ctx, x + 0.5, cy + 0.5, cardW - 1, cardH - 1, 14);
-                    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-                    ctx.lineWidth = 1;
+                    ctx.textAlign = 'left';
+                    ctx.font = "bold 30px 'Poppins', Arial";
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(tituloTxt, margin, yCursor + 34);
+                    const tituloW = ctx.measureText(tituloTxt).width;
+                    // Línea de acento junto al título + línea divisoria hasta el borde derecho
+                    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(margin + tituloW + 18, yCursor + 26);
+                    ctx.lineTo(W - margin, yCursor + 26);
                     ctx.stroke();
                     ctx.restore();
+                    yCursor += seccionHeaderH;
 
-                    if (img) {
-                        const maxW = cardW - 20;
-                        const maxH = imgAreaH - 14;
-                        const ratio = Math.min(maxW / img.width, maxH / img.height);
-                        const w = img.width * ratio;
-                        const h = img.height * ratio;
-                        ctx.drawImage(img, x + (cardW - w) / 2, cy + 8 + (imgAreaH - h) / 2, w, h);
-                    }
+                    // ── Tarjetas de esta sección ──
+                    seccion.items.forEach((item, idx) => {
+                        const col = idx % cols;
+                        const row = Math.floor(idx / cols);
+                        const x = margin + col * (cardW + gapX);
+                        const cy = yCursor + row * (cardH + gapY);
+                        const img = imgs[imgCursor++];
+                        const info = rarezaInfo[item.rarityClass] || rarezaInfo.common;
+                        const bottomH = 96;
+                        const imgAreaH = cardH - bottomH;
 
-                    // ── Badge de categoría (arriba a la izquierda) ──
-                    const catTxt = etiquetaCategoria[item._cat] || item._cat || '';
-                    if (catTxt) {
-                        ctx.font = 'bold 10px Arial';
-                        const catW = ctx.measureText(catTxt.toUpperCase()).width;
+                        // Brillo exterior de la tarjeta según rareza (glow), más notorio en legendarios/épicos
                         ctx.save();
-                        roundRectPath(ctx, x + 8, cy + 8, catW + 14, 19, 5);
-                        ctx.fillStyle = 'rgba(0,0,0,0.55)';
+                        ctx.shadowColor = info.color;
+                        ctx.shadowBlur = (item.rarityClass === 'legendary' || item.rarityClass === 'epic') ? 22 : 12;
+                        roundRectPath(ctx, x, cy, cardW, cardH, 16);
+                        ctx.fillStyle = 'rgba(0,0,0,0.001)';
                         ctx.fill();
                         ctx.restore();
+
+                        // Fondo de tarjeta según rareza, más saturado/vívido
+                        ctx.save();
+                        roundRectPath(ctx, x, cy, cardW, cardH, 16);
+                        ctx.clip();
+                        const color = rarezaColor[item.rarityClass] || rarezaColor.common;
+                        const cardGrad = ctx.createLinearGradient(x, cy, x, cy + cardH);
+                        cardGrad.addColorStop(0, color);
+                        cardGrad.addColorStop(1, 'rgba(6,10,26,0.94)');
+                        ctx.fillStyle = cardGrad;
+                        ctx.fillRect(x, cy, cardW, cardH);
+                        ctx.restore();
+
+                        // Borde de color según rareza (bien visible, marca la rareza de un vistazo)
+                        ctx.save();
+                        roundRectPath(ctx, x + 1.5, cy + 1.5, cardW - 3, cardH - 3, 16);
+                        ctx.strokeStyle = info.color;
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                        ctx.restore();
+
+                        if (img) {
+                            const maxW = cardW - 30;
+                            const maxH = imgAreaH - 16;
+                            const ratio = Math.min(maxW / img.width, maxH / img.height);
+                            const w = img.width * ratio;
+                            const h = img.height * ratio;
+                            ctx.drawImage(img, x + (cardW - w) / 2, cy + 10 + (imgAreaH - h) / 2, w, h);
+                        }
+
+                        if (item.esLote) {
+                            ctx.save();
+                            ctx.font = 'bold 11px Arial';
+                            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                            roundRectPath(ctx, x + cardW - 56, cy + 10, 46, 21, 6);
+                            ctx.fill();
+                            ctx.fillStyle = '#ffffff';
+                            ctx.textAlign = 'center';
+                            ctx.fillText('LOTE', x + cardW - 33, cy + 24);
+                            ctx.restore();
+                        }
+
+                        // Panel inferior con rareza + nombre + precio
+                        const baseY = cy + cardH - bottomH;
+                        ctx.fillStyle = 'rgba(3,10,30,0.90)';
+                        ctx.fillRect(x, baseY, cardW, bottomH);
+                        // Línea de color de rareza justo encima del panel, como separador
+                        ctx.fillStyle = info.color;
+                        ctx.fillRect(x, baseY, cardW, 3);
+
+                        // ── Etiqueta de rareza, bien destacada (punto + texto en color) ──
                         ctx.textAlign = 'left';
-                        ctx.fillStyle = 'rgba(255,255,255,0.85)';
-                        ctx.fillText(catTxt.toUpperCase(), x + 15, cy + 21);
-                    }
-
-                    // Panel inferior con nombre
-                    const baseY = cy + cardH - bottomH;
-                    ctx.fillStyle = 'rgba(3,10,30,0.88)';
-                    ctx.fillRect(x, baseY, cardW, bottomH);
-
-                    ctx.textAlign = 'left';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 15px Arial';
-                    let nombre = (item.nombre || '').toUpperCase();
-                    if (nombre.length > 24) nombre = nombre.slice(0, 22) + '…';
-                    ctx.fillText(nombre, x + 10, baseY + 22);
-
-                    // ── Badge de precio en pavos: pill azul vívido con ícono ──
-                    const precioTxt = (item.vbucks || 0).toLocaleString();
-                    ctx.font = 'bold 17px Arial';
-                    const precioW = ctx.measureText(precioTxt).width;
-                    const pillW = precioW + 38;
-                    const pillH = 26;
-                    const pillX = x + 10;
-                    const pillY = baseY + 30;
-
-                    ctx.save();
-                    roundRectPath(ctx, pillX, pillY, pillW, pillH, pillH / 2);
-                    const pillGrad = ctx.createLinearGradient(pillX, pillY, pillX + pillW, pillY);
-                    pillGrad.addColorStop(0, '#2f7bff');
-                    pillGrad.addColorStop(1, '#1a4fd6');
-                    ctx.fillStyle = pillGrad;
-                    ctx.fill();
-                    ctx.restore();
-
-                    // Icono circular V-Bucks
-                    ctx.beginPath();
-                    ctx.arc(pillX + pillH / 2, pillY + pillH / 2, pillH / 2 - 3, 0, Math.PI * 2);
-                    ctx.fillStyle = '#eaf4ff';
-                    ctx.fill();
-                    ctx.fillStyle = '#1a4fd6';
-                    ctx.font = 'bold 13px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('V', pillX + pillH / 2, pillY + pillH / 2 + 5);
-
-                    ctx.textAlign = 'left';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 17px Arial';
-                    ctx.fillText(precioTxt, pillX + pillH + 4, pillY + pillH / 2 + 6);
-
-                    if (item.esLote) {
-                        ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                        roundRectPath(ctx, x + cardW - 52, cy + 8, 44, 19, 5);
+                        ctx.beginPath();
+                        ctx.arc(x + 15, baseY + 19, 5, 0, Math.PI * 2);
+                        ctx.fillStyle = info.color;
                         ctx.fill();
+                        ctx.font = 'bold 12px Arial';
+                        ctx.fillStyle = info.color;
+                        ctx.fillText(info.label, x + 26, baseY + 23);
+
+                        // Nombre del cosmético
                         ctx.fillStyle = '#ffffff';
-                        ctx.font = 'bold 10px Arial';
+                        ctx.font = 'bold 16px Arial';
+                        let nombre = (item.nombre || '').toUpperCase();
+                        if (nombre.length > 26) nombre = nombre.slice(0, 24) + '…';
+                        ctx.fillText(nombre, x + 12, baseY + 46);
+
+                        // ── Badge de precio en pavos: pill azul vívido con ícono ──
+                        const precioTxt = (item.vbucks || 0).toLocaleString();
+                        ctx.font = 'bold 17px Arial';
+                        const precioW = ctx.measureText(precioTxt).width;
+                        const pillW = precioW + 38;
+                        const pillH = 27;
+                        const pillX = x + 12;
+                        const pillY = baseY + 58;
+
+                        ctx.save();
+                        roundRectPath(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+                        const pillGrad = ctx.createLinearGradient(pillX, pillY, pillX + pillW, pillY);
+                        pillGrad.addColorStop(0, '#2f7bff');
+                        pillGrad.addColorStop(1, '#1a4fd6');
+                        ctx.fillStyle = pillGrad;
+                        ctx.fill();
+                        ctx.restore();
+
+                        // Icono circular V-Bucks
+                        ctx.beginPath();
+                        ctx.arc(pillX + pillH / 2, pillY + pillH / 2, pillH / 2 - 3, 0, Math.PI * 2);
+                        ctx.fillStyle = '#eaf4ff';
+                        ctx.fill();
+                        ctx.fillStyle = '#1a4fd6';
+                        ctx.font = 'bold 13px Arial';
                         ctx.textAlign = 'center';
-                        ctx.fillText('LOTE', x + cardW - 30, cy + 21);
+                        ctx.fillText('V', pillX + pillH / 2, pillY + pillH / 2 + 5);
+
                         ctx.textAlign = 'left';
-                    }
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = 'bold 17px Arial';
+                        ctx.fillText(precioTxt, pillX + pillH + 4, pillY + pillH / 2 + 6);
+                    });
+
+                    const filas = Math.ceil(seccion.items.length / cols);
+                    yCursor += filas * cardH + Math.max(0, filas - 1) * gapY + seccionGapDespues;
                 });
 
                 // Segunda pasada de marca de agua, más sutil, encima de las tarjetas
@@ -7098,9 +7160,36 @@
                 const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.png`;
 
                 if (esMobile) {
-                    // En móvil: mostramos la imagen en la pestaña ya abierta, con
-                    // instrucciones para guardarla (mantener presionada -> guardar).
-                    if (ventanaMovil && !ventanaMovil.closed) {
+                    // Método principal en móvil: la API nativa de "Compartir" de
+                    // iOS/Android. Abre el selector nativo del sistema, que ya
+                    // incluye la opción "Guardar imagen" directo a la galería.
+                    // Es mucho más confiable que depender de una pestaña nueva,
+                    // que muchos navegadores móviles (Safari, WebViews de apps
+                    // como Instagram/Facebook) bloquean o no manejan bien.
+                    let compartido = false;
+                    try {
+                        const blobRespuesta = await fetch(dataUrl);
+                        const blob = await blobRespuesta.blob();
+                        const file = new File([blob], nombreArchivo, { type: 'image/png' });
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Tienda Shegos Store',
+                                text: 'Tienda de Fortnite de hoy - shegostore.com'
+                            });
+                            compartido = true;
+                        }
+                    } catch (errShare) {
+                        // Si el usuario cancela el menú de compartir, no es un error
+                        // real: simplemente seguimos con el método de respaldo.
+                        console.warn('No se pudo usar el share nativo:', errShare);
+                    }
+
+                    if (compartido) {
+                        if (ventanaMovil && !ventanaMovil.closed) ventanaMovil.close();
+                    } else if (ventanaMovil && !ventanaMovil.closed) {
+                        // Respaldo: mostramos la imagen en la pestaña ya abierta, con
+                        // instrucciones para guardarla (mantener presionada -> guardar).
                         ventanaMovil.document.open();
                         ventanaMovil.document.write(
                             '<!DOCTYPE html><html><head><meta charset="utf-8">' +
