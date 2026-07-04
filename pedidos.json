@@ -1,0 +1,55 @@
+[
+  {
+    "id_pedido": "SHG-8842",
+    "estado": "Completado",
+    "nombre_cliente": "Andrés Mendoza",
+    "telefono_cliente": "+5215588776622",
+    "epic_id_cliente": "Andrux_FN",
+    "metodo_pago": "paypal",
+    "cuentas_agregadas": ["Shegos么1", "Maidas-S"],
+    "productos": [
+      { "nombre": "13,500 Pavos (Regalo)", "qty": 1, "precio_usd": 45.00, "imagen": "https://fortnite-api.com/images/vbuck.png" }
+    ],
+    "total_usd": 45.00,
+    "fecha": "2024-03-15T18:30:00Z",
+    "notes": "Pago verificado. Entrega realizada con éxito."
+  },
+  {
+    "id_pedido": "SHG-2190",
+    "estado": "En Proceso",
+    "nombre_cliente": "Laura Sofía",
+    "telefono_cliente": "+573102233445",
+    "epic_id_cliente": "Lau_Fortnite",
+    "metodo_pago": "popular",
+    "cuentas_agregadas": ["DENISSA_7u7"],
+    "productos": [
+      { "nombre": "Club de Fortnite (3 Meses)", "qty": 1, "precio_usd": 20.83, "imagen": "https://fortnite-api.com/images/vbuck.png" }
+    ],
+    "total_usd": 20.83,
+    "fecha": "2024-03-22T10:15:00Z",
+    "notes": "Esperando el periodo de 48h de amistad."
+  },
+  {
+    "id_pedido": "SHG-4431",
+    "estado": "Pendiente",
+    "nombre_cliente": "Kevin Rojas",
+    "telefono_cliente": "+50688997766",
+    "epic_id_cliente": "Kev_R",
+    "metodo_pago": "binance",
+    "cuentas_agregadas": ["Maidas-OS"],
+    "productos": [
+      { "nombre": "Lote Midas Rex", "qty": 1, "precio_usd": 12.50, "imagen": "https://fortnite-api.com/images/vbuck.png" }
+    ],
+    "total_usd": 12.50,
+    "fecha": "2024-03-23T09:00:00Z",
+    "notes": "Validando TxID en Binance Pay."
+  },
+  {
+    "id_pedido": "SHG-7712",
+    "estado": "Cancelado",
+    "nombre_cliente": "Mateo Duarte",
+    "telefono_cliente": "+541122334455",
+    "fecha": "2024-03-23T14:20:00Z",
+    "notes": "El cliente no completó el pago del link."
+  }
+]
