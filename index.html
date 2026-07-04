@@ -3619,28 +3619,65 @@
     --stw-plankerton: #d98a3d;
     --stw-canny: #d9b64a;
     --stw-twine: #9b5fd6;
+    --stw-accent: #4dc4ff;
 }
-.stw-section { padding: 30px 20px 60px; max-width: 1200px; margin: 0 auto; }
+.stw-section { padding: 30px 20px 60px; max-width: 1100px; margin: 0 auto; }
 .stw-header { text-align: center; margin-bottom: 24px; }
 .stw-header h2 { font-size: 1.8em; margin-bottom: 6px; color: #fff; }
 .stw-header p.stw-sub { color: #999; font-size: 0.9em; }
 .stw-updated { color: #666; font-size: 0.78em; margin-top: 6px; }
 .stw-updated i { margin-right: 4px; }
 
-.stw-region-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 20px 0 28px; }
-.stw-region-tab {
-    display: flex; align-items: center; gap: 8px;
-    background: #1c0e22; border: 2px solid transparent; color: #ccc;
-    padding: 10px 20px; border-radius: 25px; cursor: pointer;
-    font-weight: 700; text-transform: uppercase; font-size: 0.8em;
-    transition: all 0.25s ease;
+/* Tarjetas de resumen */
+.stw-stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    background: #12141c; border: 1px solid #232636; border-radius: 16px;
+    padding: 20px; margin: 20px 0 26px;
 }
-.stw-region-tab i { font-size: 1em; }
-.stw-region-tab:hover { border-color: rgba(255,255,255,0.2); }
-.stw-region-tab.activo[data-region="stonewood"]  { background: var(--stw-stonewood);  color: #0c1a0f; border-color: var(--stw-stonewood); }
-.stw-region-tab.activo[data-region="plankerton"] { background: var(--stw-plankerton); color: #1a0f04; border-color: var(--stw-plankerton); }
-.stw-region-tab.activo[data-region="canny_valley"]{ background: var(--stw-canny);     color: #1a1504; border-color: var(--stw-canny); }
-.stw-region-tab.activo[data-region="twine_peaks"] { background: var(--stw-twine);     color: #150a1c; border-color: var(--stw-twine); }
+.stw-stat-card {
+    background: #191c28; border-radius: 12px; padding: 16px 10px;
+    text-align: center; display: flex; flex-direction: column; gap: 4px;
+}
+.stw-stat-card .stw-stat-num { font-size: 1.6em; font-weight: 800; color: #fff; }
+.stw-stat-card .stw-stat-num.stw-vbucks-num { color: #f5b942; }
+.stw-stat-card .stw-stat-num.stw-updated-num { font-size: 1.05em; color: var(--stw-accent); }
+.stw-stat-card .stw-stat-label { font-size: 0.72em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Pestañas de categoría */
+.stw-cat-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 0 0 22px; }
+.stw-cat-tab {
+    display: flex; align-items: center; gap: 8px;
+    background: #191c28; border: 2px solid transparent; color: #ccc;
+    padding: 9px 16px; border-radius: 25px; cursor: pointer;
+    font-weight: 700; font-size: 0.82em;
+    transition: all 0.2s ease;
+}
+.stw-cat-tab .stw-cat-icon { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
+.stw-cat-tab .stw-cat-count {
+    background: rgba(255,255,255,0.15); border-radius: 10px; padding: 1px 8px; font-size: 0.85em;
+}
+.stw-cat-tab:hover { border-color: rgba(255,255,255,0.2); }
+.stw-cat-tab.activo { background: var(--stw-accent); color: #06131c; border-color: var(--stw-accent); }
+.stw-cat-tab.activo .stw-cat-count { background: rgba(0,0,0,0.2); }
+
+.stw-download-wrap { text-align: center; margin-bottom: 26px; }
+.stw-btn-descarga {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--stw-accent); color: #06131c; border: none;
+    padding: 10px 22px; border-radius: 25px; font-weight: 800; cursor: pointer;
+    font-size: 0.85em;
+}
+.stw-btn-descarga:hover { filter: brightness(1.08); }
+
+/* Tarjeta tipo "story" de la categoría activa */
+.stw-story-card {
+    background: #12141c; border: 1px solid #232636; border-radius: 16px;
+    padding: 34px 20px; text-align: center;
+}
+.stw-story-icon { width: 60px; height: 60px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 2em; }
+.stw-story-title { color: #fff; font-weight: 800; font-size: 1.3em; letter-spacing: 0.5px; }
+.stw-story-title .stw-story-date { color: var(--stw-accent); font-weight: 700; }
+.stw-story-cat { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; font-weight: 800; color: #f5b942; }
 
 .stw-region-panel { display: none; }
 .stw-region-panel.activo { display: block; animation: fadeIn 0.35s ease; }
@@ -3659,7 +3696,7 @@
 .stw-mission-list { display: flex; flex-direction: column; gap: 10px; }
 .stw-mission-row {
     display: grid;
-    grid-template-columns: 60px 1fr 110px 130px 130px;
+    grid-template-columns: 60px 1fr 200px;
     align-items: center; gap: 14px;
     background: #170a1c; border: 1px solid #2a1430; border-left: 4px solid #555;
     border-radius: 10px; padding: 12px 16px;
@@ -3710,12 +3747,35 @@
 .stw-error button { margin-top: 12px; }
 
 @media (max-width: 768px) {
-    .stw-mission-row {
-        grid-template-columns: 1fr; grid-template-areas:
-            "pl info" "mods mods" "alert normal";
-        display: grid; grid-template-columns: 50px 1fr;
+    .stw-section { padding: 20px 12px 40px; }
+    .stw-header h2 { font-size: 1.4em; }
+
+    .stw-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 14px; }
+    .stw-stat-card { padding: 12px 6px; }
+    .stw-stat-card .stw-stat-num { font-size: 1.25em; }
+    .stw-stat-card .stw-stat-num.stw-updated-num { font-size: 0.85em; }
+
+    .stw-cat-tabs {
+        flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+        -webkit-overflow-scrolling: touch; padding-bottom: 6px;
+        margin-left: -12px; margin-right: -12px; padding-left: 12px; padding-right: 12px;
     }
-    .stw-region-tab { font-size: 0.72em; padding: 8px 14px; }
+    .stw-cat-tabs::-webkit-scrollbar { height: 4px; }
+    .stw-cat-tab { flex: 0 0 auto; font-size: 0.72em; padding: 8px 12px; white-space: nowrap; }
+
+    .stw-btn-descarga { width: 100%; justify-content: center; }
+
+    .stw-story-card { padding: 24px 14px; }
+    .stw-story-title { font-size: 1.05em; }
+
+    .stw-mission-row {
+        grid-template-columns: 50px 1fr !important;
+        grid-template-areas: "pl info" "alert alert";
+        display: grid; gap: 8px; padding: 12px;
+    }
+    .stw-mission-row .stw-pl { grid-area: pl; justify-self: start; }
+    .stw-mission-row .stw-mission-info { grid-area: info; }
+    .stw-mission-row .stw-alert-reward { grid-area: alert; justify-self: start; }
     .stw-mission-name { white-space: normal; }
 }
 </style>
@@ -5866,18 +5926,31 @@
         </div>
 
         <div id="stw-alertas" class="pestana oculto">
-            <div class="stw-section">
+            <div class="stw-section" id="stw-capture-area">
                 <div class="stw-header">
-                    <h2><i class="fas fa-map"></i> Alertas de Misión — Salvar el Mundo</h2>
-                    <p class="stw-sub">Misiones con recompensa extra por región. Datos actualizados automáticamente cada día.</p>
-                    <div class="stw-updated" id="stw-updated-text"><i class="far fa-clock"></i> Cargando...</div>
+                    <h2><i class="fas fa-map"></i> Alertas STW</h2>
+                    <p class="stw-sub">Misiones diarias de Salva el Mundo. Consulta V-Bucks, supervivientes, héroes, materiales EVO y más. Se actualizan cada día a las 2:00 (hora de España).</p>
                 </div>
 
-                <div class="stw-region-tabs" id="stw-region-tabs">
-                    <button class="stw-region-tab activo" data-region="stonewood" onclick="cambiarRegionSTW('stonewood')"><i class="fas fa-tree"></i> Stonewood</button>
-                    <button class="stw-region-tab" data-region="plankerton" onclick="cambiarRegionSTW('plankerton')"><i class="fas fa-leaf"></i> Plankerton</button>
-                    <button class="stw-region-tab" data-region="canny_valley" onclick="cambiarRegionSTW('canny_valley')"><i class="fas fa-sun"></i> Canny Valley</button>
-                    <button class="stw-region-tab" data-region="twine_peaks" onclick="cambiarRegionSTW('twine_peaks')"><i class="fas fa-skull"></i> Twine Peaks</button>
+                <div class="stw-stats-grid" id="stw-stats-grid">
+                    <div class="stw-stat-card"><div class="stw-stat-num" id="stw-stat-total">—</div><div class="stw-stat-label">Misiones</div></div>
+                    <div class="stw-stat-card"><div class="stw-stat-num" id="stw-stat-alertas">—</div><div class="stw-stat-label">Con alertas</div></div>
+                    <div class="stw-stat-card"><div class="stw-stat-num stw-vbucks-num" id="stw-stat-vbucks">—</div><div class="stw-stat-label">V-Bucks</div></div>
+                    <div class="stw-stat-card"><div class="stw-stat-num stw-updated-num" id="stw-stat-updated">—</div><div class="stw-stat-label">Actualizado</div></div>
+                </div>
+
+                <div class="stw-cat-tabs" id="stw-cat-tabs">
+                    <button class="stw-cat-tab activo" data-cat="vbucks" onclick="cambiarCategoriaSTW('vbucks')"><span class="stw-cat-icon"><i class="fas fa-circle-dollar-to-slot" style="color:#4dc4ff;"></i></span> V-Bucks / X-Ray <span class="stw-cat-count" id="cnt-vbucks">0</span></button>
+                    <button class="stw-cat-tab" data-cat="survivors" onclick="cambiarCategoriaSTW('survivors')"><span class="stw-cat-icon"><i class="fas fa-user" style="color:#f5b942;"></i></span> Supervivientes legendarios <span class="stw-cat-count" id="cnt-survivors">0</span></button>
+                    <button class="stw-cat-tab" data-cat="pl160" onclick="cambiarCategoriaSTW('pl160')"><span class="stw-cat-icon"><i class="fas fa-shield-halved" style="color:#ff6b6b;"></i></span> Misiones PL 160 <span class="stw-cat-count" id="cnt-pl160">0</span></button>
+                    <button class="stw-cat-tab" data-cat="heroes" onclick="cambiarCategoriaSTW('heroes')"><span class="stw-cat-icon"><i class="fas fa-people-group" style="color:#f5b942;"></i></span> Héroes legendarios <span class="stw-cat-count" id="cnt-heroes">0</span></button>
+                    <button class="stw-cat-tab" data-cat="defenders" onclick="cambiarCategoriaSTW('defenders')"><span class="stw-cat-icon"><i class="fas fa-shield" style="color:#f5b942;"></i></span> Defensores legendarios <span class="stw-cat-count" id="cnt-defenders">0</span></button>
+                    <button class="stw-cat-tab" data-cat="schematics" onclick="cambiarCategoriaSTW('schematics')"><span class="stw-cat-icon"><i class="fas fa-scroll" style="color:#f5b942;"></i></span> Esquemas legendarios <span class="stw-cat-count" id="cnt-schematics">0</span></button>
+                    <button class="stw-cat-tab" data-cat="evo" onclick="cambiarCategoriaSTW('evo')"><span class="stw-cat-icon"><i class="fas fa-atom" style="color:#c44dff;"></i></span> Materiales EVO <span class="stw-cat-count" id="cnt-evo">0</span></button>
+                </div>
+
+                <div class="stw-download-wrap">
+                    <button class="stw-btn-descarga" onclick="descargarCapturaSTW()"><i class="fas fa-camera"></i> Descargar captura</button>
                 </div>
 
                 <div id="stw-content">
@@ -9839,14 +9912,33 @@ _He adjuntado mi comprobante de pago arriba._`;
             stonewood: 'fa-tree', plankerton: 'fa-leaf',
             canny_valley: 'fa-sun', twine_peaks: 'fa-skull'
         };
-        const MOD_ICONS = {
-            fire: 'fa-fire', water: 'fa-tint', nature: 'fa-leaf',
-            mini_boss: 'fa-skull-crossbones', mega: 'fa-crown', storm: 'fa-bolt'
+
+        // ── Definición de categorías ──────────────────────────────────────
+        // "match" decide si una misión pertenece a esta categoría, mirando
+        // el texto de m.alertReward.name (o el powerLevel para PL 160).
+        // AJUSTA estas palabras clave si tu scraper usa otros nombres.
+        const CATEGORIES = {
+            vbucks:     { label: 'V-Bucks / X-Ray',            icon: 'fa-circle-dollar-to-slot', match: (m) => nombreReward(m).includes('v-bucks') || nombreReward(m).includes('vbucks') || nombreReward(m).includes('x-ray') },
+            survivors:  { label: 'Supervivientes legendarios', icon: 'fa-user',                  match: (m) => esLegendaria(m) && (nombreReward(m).includes('superviviente') || nombreReward(m).includes('survivor')) },
+            pl160:      { label: 'Misiones PL 160',            icon: 'fa-shield-halved',         match: (m) => Number(m.powerLevel) === 160 },
+            heroes:     { label: 'Héroes legendarios',         icon: 'fa-people-group',          match: (m) => esLegendaria(m) && (nombreReward(m).includes('héroe') || nombreReward(m).includes('heroe')) },
+            defenders:  { label: 'Defensores legendarios',     icon: 'fa-shield',                match: (m) => esLegendaria(m) && nombreReward(m).includes('defensor') },
+            schematics: { label: 'Esquemas legendarios',       icon: 'fa-scroll',                match: (m) => esLegendaria(m) && (nombreReward(m).includes('esquema') || nombreReward(m).includes('plano')) },
+            evo:        { label: 'Materiales EVO',             icon: 'fa-atom',                  match: (m) => nombreReward(m).includes('material') && nombreReward(m).includes('evo') },
         };
 
+        function nombreReward(m) {
+            return ((m.alertReward && m.alertReward.name) || '').toLowerCase();
+        }
+        function esLegendaria(m) {
+            const r = (m.alertReward && m.alertReward.rarity || '').toLowerCase();
+            return r === 'legendary' || r === 'legendario' || r === 'mythic' || r === 'mitico' || r === 'mítico';
+        }
+
         let stwData = null;
-        let stwRegionActual = 'stonewood';
+        let stwCatActual = 'vbucks';
         let stwCargado = false;
+        let stwTodasMisiones = []; // array plano: { ...mision, region }
 
         window.cargarAlertasSTW = async function (forzar) {
             if (stwCargado && !forzar) return;
@@ -9856,8 +9948,17 @@ _He adjuntado mi comprobante de pago arriba._`;
                 if (!res.ok) throw new Error('Respuesta no OK: ' + res.status);
                 stwData = await res.json();
                 stwCargado = true;
-                actualizarTextoFecha(stwData.updated_at);
-                renderRegionSTW(stwRegionActual);
+
+                stwTodasMisiones = [];
+                Object.keys(stwData.regions || {}).forEach(function (region) {
+                    (stwData.regions[region] || []).forEach(function (m) {
+                        stwTodasMisiones.push(Object.assign({}, m, { region: region }));
+                    });
+                });
+
+                actualizarStats(stwData.updated_at);
+                actualizarContadoresCategorias();
+                renderCategoriaSTW(stwCatActual);
             } catch (err) {
                 console.error('[stw-alertas] Error al cargar:', err);
                 cont.innerHTML = `
@@ -9869,71 +9970,94 @@ _He adjuntado mi comprobante de pago arriba._`;
             }
         };
 
-        window.cambiarRegionSTW = function (region) {
-            stwRegionActual = region;
-            document.querySelectorAll('.stw-region-tab').forEach(function (btn) {
-                btn.classList.toggle('activo', btn.getAttribute('data-region') === region);
+        window.cambiarCategoriaSTW = function (cat) {
+            stwCatActual = cat;
+            document.querySelectorAll('.stw-cat-tab').forEach(function (btn) {
+                btn.classList.toggle('activo', btn.getAttribute('data-cat') === cat);
             });
-            if (stwData) renderRegionSTW(region);
+            if (stwData) renderCategoriaSTW(cat);
         };
 
-        function actualizarTextoFecha(iso) {
-            const el = document.getElementById('stw-updated-text');
-            if (!el) return;
-            if (!iso) { el.innerHTML = '<i class="far fa-clock"></i> Sin datos aún'; return; }
+        function actualizarStats(iso) {
+            const total = stwTodasMisiones.length;
+            const conAlerta = stwTodasMisiones.filter(function (m) { return !!m.alertReward; }).length;
+            const vbucks = stwTodasMisiones.filter(CATEGORIES.vbucks.match).length;
+
+            document.getElementById('stw-stat-total').textContent = total;
+            document.getElementById('stw-stat-alertas').textContent = conAlerta;
+            document.getElementById('stw-stat-vbucks').textContent = vbucks;
+
+            const elUpd = document.getElementById('stw-stat-updated');
+            if (!iso) { elUpd.textContent = 'Sin datos'; return; }
             const fecha = new Date(iso);
-            const texto = fecha.toLocaleString('es-DO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-            el.innerHTML = `<i class="far fa-clock"></i> Actualizado: ${texto}`;
+            elUpd.textContent = fecha.toLocaleDateString('es-DO', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
-        function renderRegionSTW(region) {
+        function actualizarContadoresCategorias() {
+            Object.keys(CATEGORIES).forEach(function (key) {
+                const n = stwTodasMisiones.filter(CATEGORIES[key].match).length;
+                const el = document.getElementById('cnt-' + key);
+                if (el) el.textContent = n;
+            });
+        }
+
+        function renderCategoriaSTW(cat) {
             const cont = document.getElementById('stw-content');
-            const misiones = (stwData && stwData.regions && stwData.regions[region]) || [];
+            const info = CATEGORIES[cat];
+            const misiones = stwTodasMisiones.filter(info.match);
+            const fechaTexto = stwData && stwData.updated_at
+                ? new Date(stwData.updated_at).toLocaleDateString('es-DO', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                : '—';
 
             if (!misiones.length) {
                 cont.innerHTML = `
-                    <div class="stw-empty">
-                        <i class="fas fa-inbox" style="font-size:1.8em; display:block; margin-bottom:10px;"></i>
-                        No hay alertas activas registradas en ${REGION_LABELS[region]} por ahora.
+                    <div class="stw-story-card">
+                        <div class="stw-story-icon"><i class="fas ${info.icon}"></i></div>
+                        <div class="stw-story-title">ALERTAS DE MISIONES | <span class="stw-story-date">${fechaTexto}</span></div>
+                        <div class="stw-story-cat"><i class="fas ${info.icon}"></i> ${escapeHtml(info.label)}</div>
+                        <div class="stw-empty">No hay misiones de ${escapeHtml(info.label)} disponibles hoy.</div>
                     </div>`;
                 return;
             }
 
-            const filas = misiones.map(function (m) { return renderFilaMision(m, region); }).join('');
+            const filas = misiones.map(renderFilaMision).join('');
 
             cont.innerHTML = `
-                <div class="stw-region-banner ${region}">
-                    <i class="fas ${REGION_ICONS[region]}"></i> ${REGION_LABELS[region]} — ${misiones.length} misiones con alerta
+                <div class="stw-story-card">
+                    <div class="stw-story-icon"><i class="fas ${info.icon}"></i></div>
+                    <div class="stw-story-title">ALERTAS DE MISIONES | <span class="stw-story-date">${fechaTexto}</span></div>
+                    <div class="stw-story-cat"><i class="fas ${info.icon}"></i> ${escapeHtml(info.label)} — ${misiones.length}</div>
                 </div>
-                <div class="stw-mission-list">${filas}</div>`;
+                <div class="stw-mission-list" style="margin-top:16px;">${filas}</div>`;
         }
 
-        function renderFilaMision(m, region) {
-            const modifiers = (m.modifiers || []).map(function (mod) {
-                const icon = MOD_ICONS[mod.type] || 'fa-star';
-                return `<span class="stw-mod-icon ${mod.type || ''}" title="${escapeHtml(mod.label || mod.type || '')}"><i class="fas ${icon}"></i></span>`;
-            }).join('');
-
+        function renderFilaMision(m) {
+            const region = m.region;
             const alertReward = m.alertReward
                 ? `<div class="stw-alert-reward ${m.alertReward.rarity || ''}"><i class="fas fa-gift"></i> ${escapeHtml(m.alertReward.name || '')}${m.alertReward.qty ? ' x' + m.alertReward.qty : ''}</div>`
                 : `<div class="stw-alert-reward none">— Sin alerta —</div>`;
-
-            const normalRewards = (m.rewards || []).slice(0, 3).map(function (r) {
-                return `<span>${escapeHtml(r.name || '')}${r.qty ? ' x' + r.qty : ''}</span>`;
-            }).join('');
 
             return `
                 <div class="stw-mission-row ${region}">
                     <div class="stw-pl"><span class="num">${m.powerLevel != null ? m.powerLevel : '—'}</span><span class="label">PL</span></div>
                     <div class="stw-mission-info">
                         <div class="stw-mission-name">${escapeHtml(m.missionType || 'Misión')}</div>
-                        <div class="stw-mission-zone"><i class="fas ${REGION_ICONS[region]}"></i> ${escapeHtml(m.zone || '')}</div>
+                        <div class="stw-mission-zone"><i class="fas ${REGION_ICONS[region] || 'fa-map'}"></i> ${escapeHtml(REGION_LABELS[region] || '')} · ${escapeHtml(m.zone || '')}</div>
                     </div>
-                    <div class="stw-modifiers">${modifiers}</div>
                     ${alertReward}
-                    <div class="stw-normal-rewards">${normalRewards}</div>
                 </div>`;
         }
+
+        window.descargarCapturaSTW = function () {
+            const area = document.getElementById('stw-capture-area');
+            if (!area || typeof html2canvas === 'undefined') return;
+            html2canvas(area, { backgroundColor: '#0a0a0a', scale: 2 }).then(function (canvas) {
+                const link = document.createElement('a');
+                link.download = 'alertas-stw-' + (new Date().toISOString().slice(0, 10)) + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        };
 
         function escapeHtml(str) {
             return String(str).replace(/[&<>"']/g, function (c) {
