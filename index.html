@@ -1434,25 +1434,21 @@
         }
         
         /* ── GRID DE PRODUCTOS ── */
-        .grid-productos { 
-            display: grid; 
-            grid-template-columns: repeat(8, 1fr); 
-            gap: 12px; 
+        .grid-productos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
             margin-top: 20px;
         }
-        @media (max-width: 1600px) { .grid-productos { grid-template-columns: repeat(7, 1fr); } }
-        @media (max-width: 1400px) { .grid-productos { grid-template-columns: repeat(6, 1fr); } }
-        @media (max-width: 1200px) { .grid-productos { grid-template-columns: repeat(5, 1fr); } }
-        @media (max-width: 900px)  { .grid-productos { grid-template-columns: repeat(4, 1fr); } }
-        @media (max-width: 600px)  { .grid-productos { grid-template-columns: repeat(3, 1fr); gap: 7px; } }
 
         /* ── CARD ESTILO FORTNITE ── */
         .cosmetic-card {
             position: relative;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            height: 100%;
             background: #170a1c;
             border: 1px solid #1f1f1f;
             border-top: 4px solid transparent;
@@ -1476,12 +1472,11 @@
         .card-img {
             width: 100%;
             aspect-ratio: 1 / 1;
-            object-fit: contain;
+            object-fit: cover;
             display: block;
-            padding: 10px;
             box-sizing: border-box;
             transition: transform 0.3s ease;
-            background: #111118;
+            background: rgba(17, 17, 24, 0.85);
         }
         .cosmetic-card:hover .card-img { transform: scale(1.06); }
 
@@ -1598,10 +1593,12 @@
 
         /* Parte inferior de la card (info + botón) */
         .card-info {
+            flex: 1;
             padding: 8px 10px 10px;
             background: #170a1c;
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
             gap: 4px;
         }
         .card-price-row {
@@ -1627,20 +1624,51 @@
             flex-shrink: 0;
         }
 
-        /* Contador de tiempo restante (items que se van en menos de 24h) */
-        .card-time-left {
+        /* V-Bucks como badge flotante sobre la imagen (esquina inferior izquierda) */
+        .card-vbucks-overlay {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            z-index: 5;
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(230,57,70,0.14);
+            background: rgba(0,0,0,0.75);
+            padding: 3px 7px;
+            border-radius: 6px;
+            backdrop-filter: blur(2px);
+        }
+        .card-vbucks-overlay img {
+            width: 14px;
+            height: 14px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+        .card-vbucks-overlay span {
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+        }
+
+        /* Contador de tiempo restante — también flotante sobre la imagen */
+        .card-time-left {
+            position: absolute;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0,0,0,0.75);
             color: #ff6b6b;
             font-size: 0.58rem;
             font-weight: 800;
             padding: 3px 6px;
             border-radius: 6px;
             white-space: nowrap;
-            flex-shrink: 0;
+            backdrop-filter: blur(2px);
         }
+        .card-time-left.time-top { top: 6px; right: 6px; }
+        .card-time-left.time-bottom { bottom: 6px; right: 6px; }
         .card-time-left i { font-size: 0.85em; }
 
         .card-price-vbucks {
@@ -1651,16 +1679,11 @@
             font-weight: 800;
             color: #a8d8ff;
         }
-        .cosmetic-card.legendary .card-price-vbucks { color: #f5b942; }
-        .cosmetic-card.epic      .card-price-vbucks { color: #c44dff; }
-        .cosmetic-card.rare      .card-price-vbucks { color: #4aa8ff; }
-        .cosmetic-card.uncommon  .card-price-vbucks { color: #3aad4e; }
-        .cosmetic-card.common    .card-price-vbucks { color: #8a8a9e; }
         .card-title {
             font-family: 'Inter', 'Poppins', sans-serif;
             color: #fff;
-            font-size: 0.88rem;
-            font-weight: 500;
+            font-size: 0.85rem;
+            font-weight: 600;
             margin: 0;
             text-transform: none;
             letter-spacing: 0.1px;
@@ -1674,7 +1697,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 6px;
-            margin-top: 1px;
+            margin-top: auto;
         }
         .card-rarity-text {
             font-family: 'Inter', 'Poppins', sans-serif;
@@ -1682,14 +1705,12 @@
             font-weight: 300;
             text-transform: uppercase;
             letter-spacing: 0.8px;
-            color: #888;
+            color: #999;
             opacity: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .cosmetic-card.legendary .card-rarity-text { color: #c9a43a; }
-        .cosmetic-card.epic      .card-rarity-text { color: #9e6cc7; }
-        .cosmetic-card.rare      .card-rarity-text { color: #5a90c7; }
-        .cosmetic-card.uncommon  .card-rarity-text { color: #4a8f5a; }
-        .cosmetic-card.common    .card-rarity-text { color: #777; }
 
         .card-price-fiat {
             font-size: 0.78rem;
@@ -1733,6 +1754,7 @@
         }
 
         @media (max-width: 600px) {
+            .grid-productos { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
             .card-title { font-size: 0.78rem; }
             .card-price-vbucks { font-size: 0.72rem; }
             .card-price-fiat { font-size: 0.65rem; }
@@ -1827,8 +1849,8 @@
 
         /* Botón pequeño (solo ícono) para descargar la imagen de la tienda del día */
         .btn-generar-imagen-icon {
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             flex-shrink: 0;
             display: flex;
             align-items: center;
@@ -1836,7 +1858,7 @@
             background: rgba(0,166,118,0.12);
             border: 1.5px solid #00A676;
             color: #00A676;
-            border-radius: 50%;
+            border-radius: 10px;
             font-size: 1em;
             cursor: pointer;
             padding: 0;
@@ -4110,7 +4132,7 @@
 
         <div id="tienda" class="pestana oculto">
             <div class="tienda-home-section" style="padding: 0 30px;">
-                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; width:100%;">
                     <h2 style="margin:0;">Tienda de Hoy</h2>
                     <button type="button" id="btn-generar-imagen-tienda" class="btn-generar-imagen-icon" title="Descargar imagen de la tienda de hoy" aria-label="Descargar imagen de la tienda de hoy" onclick="generarImagenTiendaDelDia()">
                         <i class="fas fa-download"></i>
@@ -7064,12 +7086,12 @@
                     .map(cat => ({ cat, items: (gruposMap.get(cat) || []).map(it => Object.assign({}, it, { _cat: cat })) }))
                     .filter(s => s.items.length > 0);
 
-                if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+                if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
                 // ── Layout de la imagen: agrupada por SECCIONES, con tarjetas grandes ──
-                // Menos columnas y tarjetas más grandes para que los íconos de las skins se
-                // vean bien visibles (en vez de la cuadrícula compacta de 20 columnas de antes).
-                const cols = 25;
+                // 10 columnas para que cada cosmético se vea bien grande y visible
+                // (la imagen sale más larga que ancha, con más filas).
+                const cols = 10;
                 const cardW = 240, cardH = 330, gapX = 22, gapY = 30;
                 const margin = 50;
                 const W = margin * 2 + cols * cardW + (cols - 1) * gapX;
@@ -7676,19 +7698,17 @@
                                 ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : ''}
                                 <div style="position:relative;">
                                     <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
+                                    <div class="card-vbucks-overlay">
+                                        <img src="https://logodix.com/logo/803916.png" alt="V-Bucks">
+                                        <span>${parseInt(p.vbucks).toLocaleString()}</span>
+                                    </div>
+                                    ${p.seVaHoy && p.outDateTs ? `<div class="card-time-left ${p.seVaHoy ? 'time-bottom' : 'time-top'}"><i class="fas fa-clock"></i><span class="card-time-left-value" data-out-date="${p.outDateTs}">00:00:00</span></div>` : ''}
                                     ${esBaile ? '<div style="position:absolute; top:8px; right:8px; width:28px; height:28px; background:rgba(0,0,0,0.65); border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter: blur(2px);"><i class="fas fa-play" style="color:#fff; font-size:0.7em; margin-left:2px;"></i></div>' : ''}
                                 </div>
                                 <div class="card-info">
-                                    <div class="card-price-row">
-                                        <div class="card-vbucks-group">
-                                            <img src="https://logodix.com/logo/803916.png" class="card-rarity-label" alt="V-Bucks">
-                                            <span class="card-price-vbucks">${parseInt(p.vbucks).toLocaleString()}</span>
-                                        </div>
-                                        ${p.seVaHoy && p.outDateTs ? `<div class="card-time-left"><i class="fas fa-clock"></i><span class="card-time-left-value" data-out-date="${p.outDateTs}">00:00:00</span></div>` : ''}
-                                    </div>
                                     <h3 class="card-title" title="${p.nombre}">${p.nombre}</h3>
                                     <div class="card-bottom-row">
-                                        <span class="card-rarity-text">${rarityLabel}</span>
+                                        <span class="card-rarity-text">${p.categoria || cat}</span>
                                         <span class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</span>
                                     </div>
                                     <button class="btn-add-cart" data-item-nombre="${p.nombreSeguro}" onclick="event.stopPropagation(); agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda', event, '${p.rarityClass}')">
@@ -9033,13 +9053,13 @@ _He adjuntado mi comprobante de pago arriba._`;
                     `;
                     clonedTienda.appendChild(label);
 
-                    // Grid de 9 columnas
+                    // Grid de 6 columnas (tarjetas más grandes)
                     const grid = clonedDoc.createElement('div');
                     grid.style.cssText = `
                         display: grid;
-                        grid-template-columns: repeat(9, 1fr);
-                        gap: 7px;
-                        margin-bottom: 6px;
+                        grid-template-columns: repeat(6, 1fr);
+                        gap: 10px;
+                        margin-bottom: 8px;
                     `;
 
                     cards.forEach(card => {
@@ -9066,7 +9086,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                         const img = card.querySelector('.card-img');
                         if (img) {
                             img.style.filter = "brightness(1.15) contrast(1.05)";
-                            img.style.padding = "6px";
+                            img.style.padding = "10px";
                         }
 
                         // Mejorar overlay inferior
@@ -9074,15 +9094,15 @@ _He adjuntado mi comprobante de pago arriba._`;
                         if (bottom) {
                             bottom.style.backdropFilter = "none";
                             bottom.style.background = "rgba(0,0,0,0.92)";
-                            bottom.style.padding = "6px 8px";
+                            bottom.style.padding = "8px 10px";
                         }
 
-                        // Título más pequeño en grid compacto
+                        // Título más grande ahora que la card es más ancha
                         const title = card.querySelector('.card-title');
                         if (title) {
-                            title.style.fontSize = "10px";
+                            title.style.fontSize = "15px";
                             title.style.color = "#ffffff";
-                            title.style.lineHeight = "1.2";
+                            title.style.lineHeight = "1.25";
                             title.style.whiteSpace = "nowrap";
                             title.style.overflow = "hidden";
                             title.style.textOverflow = "ellipsis";
@@ -9091,7 +9111,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                         // Precio en vbucks
                         const vbucksEl = card.querySelector('.card-price-vbucks');
                         if (vbucksEl) {
-                            vbucksEl.style.fontSize = "10px";
+                            vbucksEl.style.fontSize = "14px";
                         }
 
                         grid.appendChild(card);
@@ -9125,13 +9145,27 @@ _He adjuntado mi comprobante de pago arriba._`;
         canvas.toBlob((blob) => {
             if (!blob) throw new Error("Error generando el archivo");
             const url = URL.createObjectURL(blob);
+            const nombreArchivo = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.jpg`;
+            const esMovil = esDispositivoMovilShegos();
+
+            // Intentamos SIEMPRE la descarga automática (funciona en PC y en
+            // la mayoría de Android/Chrome/Firefox móviles).
             const link = document.createElement('a');
             link.href = url;
-            link.download = `Tienda_ShegosStore_${new Date().toISOString().split('T')[0]}.jpg`;
+            link.download = nombreArchivo;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+
+            if (esMovil) {
+                // En celulares algunos navegadores (sobre todo iOS Safari)
+                // ignoran la descarga automática, así que además mostramos
+                // la imagen en un modal para que el usuario la guarde con
+                // "mantener presionada" como respaldo garantizado.
+                mostrarModalCapturaMovil(url);
+            } else {
+                URL.revokeObjectURL(url);
+            }
         }, 'image/jpeg', 0.92);
 
     } catch (err) {
@@ -9142,6 +9176,54 @@ _He adjuntado mi comprobante de pago arriba._`;
         btn.style.opacity = '1';
         btn.disabled = false;
     }
+}
+
+// Detecta si el usuario está en un celular/tablet (donde la descarga directa se bloquea)
+function esDispositivoMovilShegos() {
+    const uaMovil = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent);
+    const pantallaAngosta = Math.min(window.innerWidth, window.innerHeight) <= 820;
+    const tieneTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    return uaMovil || (pantallaAngosta && tieneTouch);
+}
+
+// Modal flotante para mostrar la captura en móvil (no se puede forzar la descarga)
+function mostrarModalCapturaMovil(url) {
+    const existente = document.getElementById('modal-captura-movil');
+    if (existente) existente.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'modal-captura-movil';
+    overlay.style.cssText = `
+        position: fixed; inset: 0; z-index: 99999;
+        background: rgba(10, 5, 15, 0.92);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 20px; box-sizing: border-box;
+        animation: fadeIn 0.2s ease;
+    `;
+
+    overlay.innerHTML = `
+        <div style="width: 100%; max-width: 480px; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+                <span style="color:#00A676; font-family:'Poppins',sans-serif; font-weight:800; font-size:0.95em; text-transform:uppercase; letter-spacing:1px;">
+                    <i class="fas fa-camera"></i> Tu captura está lista
+                </span>
+                <button id="btn-cerrar-modal-captura" style="background:none; border:none; color:#fff; font-size:1.4em; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <img src="${url}" alt="Captura Tienda Diaria" style="width:100%; border-radius:10px; border:1px solid #2a1430; box-shadow:0 8px 30px rgba(0,0,0,0.6);">
+            <div style="background:rgba(0,166,118,0.12); border:1px solid rgba(0,166,118,0.4); color:#00A676; font-family:'Poppins',sans-serif; font-size:0.85em; font-weight:600; padding:10px 16px; border-radius:8px; text-align:center;">
+                <i class="fas fa-hand-pointer"></i> Si la descarga no inició sola, mantén presionada la imagen para guardarla
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const limpiar = () => {
+        overlay.remove();
+        URL.revokeObjectURL(url);
+    };
+    document.getElementById('btn-cerrar-modal-captura').onclick = limpiar;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) limpiar(); });
 }
 
     (function(){
@@ -9993,7 +10075,7 @@ _He adjuntado mi comprobante de pago arriba._`;
         // "match" decide si una misión pertenece a esta categoría, mirando
         // el texto de m.alertReward.name (o el powerLevel para PL 160).
         // AJUSTA estas palabras clave si tu scraper usa otros nombres.
-        const CATEGORIES = {
+        const CATEGORIES = { 
             vbucks:     { label: 'V-Bucks / X-Ray',            icon: 'fa-circle-dollar-to-slot', match: (m) => nombreReward(m).includes('v-bucks') || nombreReward(m).includes('vbucks') || nombreReward(m).includes('x-ray') },
             survivors:  { label: 'Supervivientes legendarios', icon: 'fa-user',                  match: (m) => esLegendaria(m) && (nombreReward(m).includes('superviviente') || nombreReward(m).includes('survivor')) },
             pl160:      { label: 'Misiones PL 160',            icon: 'fa-shield-halved',         match: (m) => Number(m.powerLevel) === 160 },
