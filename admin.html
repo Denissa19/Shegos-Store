@@ -2327,6 +2327,229 @@ const TIENDA_HOY_LABELS = {
 };
 const TASA_VBUCKS_ADMIN = 0.52; // Misma tasa base que usa el frontend (método normal, no PayPal)
 
+// Categorías y catálogo estático de la sección "Servicios" del sitio público (index.html).
+// Estos productos están escritos a mano en index.html (no vienen de Supabase ni de una API),
+// así que se listan aquí igual para poder buscarlos rápido al armar un pedido.
+const SERVICIOS_LABELS = {
+  'pavos': 'Recargas de Pavos',
+  'club': 'Fortnite Crew',
+  'pases': 'Pases vía Regalo',
+  'gamepass': 'Xbox Game Pass',
+  'codpoints': 'Call of Duty Cod-Points',
+  'xbox-codigos': 'Códigos de Xbox — Fortnite',
+  'overwatch': 'Overwatch Coins',
+  'roblox': 'Roblox Robux',
+  'streaming': 'Plataformas de Streaming',
+  'paquetes': 'Paquetes de Fortnite',
+  'xbox-juegos': 'Juegos de Xbox — Vía Código',
+};
+const SERVICIOS_ORDEN = ['pavos', 'club', 'pases', 'gamepass', 'codpoints', 'xbox-codigos', 'overwatch', 'roblox', 'streaming', 'paquetes', 'xbox-juegos'];
+const SERVICIOS_ITEMS = [
+  { id: 'srv-0', categoria: 'pavos', nombre: 'Cuenta 2,400 V-Bucks', precio_usd: 20.99, imagen: 'img/2400vb.png' },
+  { id: 'srv-1', categoria: 'pavos', nombre: 'Cuenta 4,500 V-Bucks', precio_usd: 29.99, imagen: 'img/4500vb.png' },
+  { id: 'srv-2', categoria: 'pavos', nombre: 'Cuenta 12,500 V-Bucks', precio_usd: 65.0, imagen: 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg' },
+  { id: 'srv-3', categoria: 'pavos', nombre: 'Cuenta Con 13500 Pavos', precio_usd: 69.0, imagen: 'img/cuentapavos.webp' },
+  { id: 'srv-4', categoria: 'pavos', nombre: 'Cuenta Con 25000 Pavos', precio_usd: 110.0, imagen: 'img/cuentapavos.webp' },
+  { id: 'srv-5', categoria: 'club', nombre: 'Club (Sin Error) - 1 Mes', precio_usd: 6.74, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-6', categoria: 'club', nombre: 'Club (Sin Error) - 2 Meses', precio_usd: 12.36, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-7', categoria: 'club', nombre: 'Club (Sin Error) - 3 Meses', precio_usd: 17.42, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-8', categoria: 'club', nombre: 'Club (Sin Error) - 4 Meses', precio_usd: 23.03, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-9', categoria: 'club', nombre: 'Club (Sin Error) - 5 Meses', precio_usd: 27.53, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-10', categoria: 'club', nombre: 'Club (Sin Error) - 6 Meses', precio_usd: 32.02, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-11', categoria: 'club', nombre: 'Club (Con Error) - 1 Mes', precio_usd: 8.33, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-12', categoria: 'club', nombre: 'Club (Con Error) - 2 Meses', precio_usd: 16.67, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-13', categoria: 'club', nombre: 'Club (Con Error) - 3 Meses', precio_usd: 25.0, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-14', categoria: 'club', nombre: 'Club (Con Error) - 4 Meses', precio_usd: 33.33, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-15', categoria: 'club', nombre: 'Club (Con Error) - 5 Meses', precio_usd: 41.67, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-16', categoria: 'club', nombre: 'Club (Con Error) - 6 Meses', precio_usd: 50.0, imagen: 'fortnite-crew-cover.png' },
+  { id: 'srv-17', categoria: 'pases', nombre: 'Pase de Batalla', precio_usd: 7.5, imagen: 'https://imgs.search.brave.com/7JVEdtrRSngQi5iok2g59DWWixZMiRyHzzKDYrPRosM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nbWVk/aWEucGxheXN0YXRp/b24uY29tL2lzL2lt/YWdlL1NJRVBEQy9G/b3J0bml0ZS1DSDct/UzMta2V5YXJ0LTAx/LTAzanVuMjYkZXMt/ZXM_JG5hdGl2ZSQ' },
+  { id: 'srv-18', categoria: 'pases', nombre: 'Pase de Orígenes', precio_usd: 7.5, imagen: 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapt0yu443dt07od36wqpjwm' },
+  { id: 'srv-19', categoria: 'pases', nombre: 'Pase de Lego', precio_usd: 7.5, imagen: 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw49cz4skd07mtk5zabfnx' },
+  { id: 'srv-20', categoria: 'pases', nombre: 'Pase Musical', precio_usd: 7.5, imagen: 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw59f74unv07odbxkdjz89' },
+  { id: 'srv-21', categoria: 'gamepass', nombre: 'GP Ultimate - 1 Mes', precio_usd: 20.28, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-22', categoria: 'gamepass', nombre: 'GP Ultimate - 3 Meses', precio_usd: 59.15, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-23', categoria: 'gamepass', nombre: 'GP Ultimate - 6 Meses', precio_usd: 115.77, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-24', categoria: 'gamepass', nombre: 'GP Ultimate - 12 Meses', precio_usd: 228.15, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-25', categoria: 'gamepass', nombre: 'GP Premium - 1 Mes', precio_usd: 16.51, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-26', categoria: 'gamepass', nombre: 'GP Premium - 3 Meses', precio_usd: 48.17, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-27', categoria: 'gamepass', nombre: 'GP Essential - 3 Meses', precio_usd: 33.8, imagen: 'https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3' },
+  { id: 'srv-28', categoria: 'gamepass', nombre: 'GP Essential - 12 Meses', precio_usd: 76.05, imagen: 'https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3' },
+  { id: 'srv-29', categoria: 'gamepass', nombre: 'GP Ultimate Nueva - 4 Meses (Código)', precio_usd: 55.06, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-30', categoria: 'gamepass', nombre: 'GP Ultimate Nueva - 3 Meses (Código)', precio_usd: 39.0, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-31', categoria: 'gamepass', nombre: 'GP Ultimate Nueva - 2 Meses (Código)', precio_usd: 22.95, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-32', categoria: 'gamepass', nombre: 'GP Ultimate Nueva - 2 Meses (Cuenta)', precio_usd: 24.47, imagen: 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg' },
+  { id: 'srv-33', categoria: 'codpoints', nombre: '1,100 Puntos COD (Código Xbox)', precio_usd: 11.99, imagen: '' },
+  { id: 'srv-34', categoria: 'codpoints', nombre: '2,400 Puntos COD (Código Xbox)', precio_usd: 23.99, imagen: '' },
+  { id: 'srv-35', categoria: 'codpoints', nombre: '5,000 Puntos COD (Código Xbox)', precio_usd: 49.99, imagen: '' },
+  { id: 'srv-36', categoria: 'codpoints', nombre: '9,500 Puntos COD (Código Xbox)', precio_usd: 66.99, imagen: '' },
+  { id: 'srv-37', categoria: 'codpoints', nombre: '13,000 Puntos COD (Código Xbox)', precio_usd: 95.99, imagen: '' },
+  { id: 'srv-38', categoria: 'codpoints', nombre: '2,400 Puntos COD / Warzone', precio_usd: 20.0, imagen: '' },
+  { id: 'srv-39', categoria: 'codpoints', nombre: '5,000 Puntos COD / Warzone', precio_usd: 41.0, imagen: '' },
+  { id: 'srv-40', categoria: 'codpoints', nombre: '13,000 Puntos COD / Warzone', precio_usd: 62.0, imagen: '' },
+  { id: 'srv-41', categoria: 'codpoints', nombre: '2,400 CP Warzone (Solo Xbox)', precio_usd: 17.53, imagen: '' },
+  { id: 'srv-42', categoria: 'codpoints', nombre: '4,800 CP Warzone (Solo Xbox)', precio_usd: 32.87, imagen: '' },
+  { id: 'srv-43', categoria: 'codpoints', nombre: '7,200 CP Warzone (Solo Xbox)', precio_usd: 47.47, imagen: '' },
+  { id: 'srv-44', categoria: 'codpoints', nombre: '9,600 CP Warzone (Solo Xbox)', precio_usd: 62.08, imagen: '' },
+  { id: 'srv-45', categoria: 'codpoints', nombre: '12,000 CP Warzone (Solo Xbox)', precio_usd: 76.69, imagen: '' },
+  { id: 'srv-46', categoria: 'xbox-codigos', nombre: 'Código Xbox – Darkest Grumblings Pack', precio_usd: 8.45, imagen: '' },
+  { id: 'srv-47', categoria: 'xbox-codigos', nombre: 'Código Xbox – The Wavebreaker Pack', precio_usd: 9.1, imagen: '' },
+  { id: 'srv-48', categoria: 'xbox-codigos', nombre: 'Código Xbox – Perfect Execution Pack', precio_usd: 9.1, imagen: '' },
+  { id: 'srv-49', categoria: 'xbox-codigos', nombre: 'Código Xbox – Shaka Surfin Pack', precio_usd: 9.1, imagen: '' },
+  { id: 'srv-50', categoria: 'xbox-codigos', nombre: 'Código Xbox – Crimson Warden Pack', precio_usd: 9.75, imagen: '' },
+  { id: 'srv-51', categoria: 'xbox-codigos', nombre: 'Código Xbox – Bee Positive Pack', precio_usd: 9.75, imagen: '' },
+  { id: 'srv-52', categoria: 'xbox-codigos', nombre: 'Código Xbox – Graffiti Revolution Pack', precio_usd: 9.75, imagen: '' },
+  { id: 'srv-53', categoria: 'xbox-codigos', nombre: 'Código Xbox – The Diamond Diva Pack', precio_usd: 10.4, imagen: '' },
+  { id: 'srv-54', categoria: 'xbox-codigos', nombre: 'Código Xbox – Heartbreak Royale Pack', precio_usd: 11.7, imagen: '' },
+  { id: 'srv-55', categoria: 'xbox-codigos', nombre: 'Código Xbox – Rogue Alias Pack', precio_usd: 12.35, imagen: '' },
+  { id: 'srv-56', categoria: 'xbox-codigos', nombre: 'Código Xbox – Intrepid Engines Pack', precio_usd: 20.0, imagen: '' },
+  { id: 'srv-57', categoria: 'xbox-codigos', nombre: 'Código Xbox – Extinction Code Pack', precio_usd: 20.0, imagen: '' },
+  { id: 'srv-58', categoria: 'xbox-codigos', nombre: 'Código Xbox – Agency Renegades Pack', precio_usd: 22.0, imagen: '' },
+  { id: 'srv-59', categoria: 'xbox-codigos', nombre: 'Código Xbox – Full Clip Pack', precio_usd: 23.0, imagen: '' },
+  { id: 'srv-60', categoria: 'xbox-codigos', nombre: 'Código Xbox – Polar Legends Pack', precio_usd: 23.0, imagen: '' },
+  { id: 'srv-61', categoria: 'xbox-codigos', nombre: 'Código Xbox – Bioluminescence Quest Pack', precio_usd: 25.0, imagen: '' },
+  { id: 'srv-62', categoria: 'xbox-codigos', nombre: 'Código Xbox – Witching Wing Quest Pack', precio_usd: 25.0, imagen: '' },
+  { id: 'srv-63', categoria: 'xbox-codigos', nombre: 'Código Xbox – Magma Masters Pack', precio_usd: 25.0, imagen: '' },
+  { id: 'srv-64', categoria: 'xbox-codigos', nombre: 'Código Xbox – Batman Caped Crusader Pack', precio_usd: 25.0, imagen: '' },
+  { id: 'srv-65', categoria: 'xbox-codigos', nombre: 'Código Xbox – Guardians Of The Galaxy Pack', precio_usd: 26.0, imagen: '' },
+  { id: 'srv-66', categoria: 'xbox-codigos', nombre: 'Código Xbox – Shadows Rising Pack', precio_usd: 26.0, imagen: '' },
+  { id: 'srv-67', categoria: 'xbox-codigos', nombre: 'Código Xbox – Inferno\\\'s Quest Pack', precio_usd: 27.0, imagen: '' },
+  { id: 'srv-68', categoria: 'xbox-codigos', nombre: 'Código PS5 – Anime Legends Pack DLC', precio_usd: 27.0, imagen: '' },
+  { id: 'srv-69', categoria: 'xbox-codigos', nombre: 'Código Multiplataforma – Dark Reflections Pack', precio_usd: 29.0, imagen: '' },
+  { id: 'srv-70', categoria: 'xbox-codigos', nombre: 'Código Xbox – LEGO Operation Brite Starter Pack', precio_usd: 4.9, imagen: '' },
+  { id: 'srv-71', categoria: 'xbox-codigos', nombre: 'Código Xbox – Perfected Nature Quest Pack', precio_usd: 9.1, imagen: '' },
+  { id: 'srv-72', categoria: 'xbox-codigos', nombre: 'Código Xbox – Rogue Scout Pack', precio_usd: 9.75, imagen: '' },
+  { id: 'srv-73', categoria: 'xbox-codigos', nombre: 'Código Xbox – Hid Kingdom Pack', precio_usd: 10.4, imagen: '' },
+  { id: 'srv-74', categoria: 'xbox-codigos', nombre: 'Código Xbox – Leyendas de Menta', precio_usd: 11.7, imagen: '' },
+  { id: 'srv-75', categoria: 'xbox-codigos', nombre: 'Código Xbox – Paquete As', precio_usd: 8.15, imagen: '' },
+  { id: 'srv-76', categoria: 'xbox-codigos', nombre: 'Código Xbox – Pack de Escuadrón Calavera', precio_usd: 11.4, imagen: '' },
+  { id: 'srv-77', categoria: 'xbox-codigos', nombre: 'Código Xbox – Gilded Elites Pack', precio_usd: 5.85, imagen: '' },
+  { id: 'srv-78', categoria: 'xbox-codigos', nombre: 'Código Xbox – Paquete Leyendas de Verano', precio_usd: 16.9, imagen: 'https://gamescenter.pe/wp-content/uploads/2024/12/Fortnite-Paquete-L3yendas-de-Verano-600x833.webp' },
+  { id: 'srv-79', categoria: 'xbox-codigos', nombre: 'Código Xbox – Lote de Fuego Oscuro', precio_usd: 18.85, imagen: '' },
+  { id: 'srv-80', categoria: 'xbox-codigos', nombre: 'Código Xbox – Voidlands Exile Quest Pack', precio_usd: 6.0, imagen: '' },
+  { id: 'srv-81', categoria: 'xbox-codigos', nombre: 'Código Xbox – Pack de Misiones de Siluro a Sueldo', precio_usd: 12.5, imagen: '' },
+  { id: 'srv-82', categoria: 'xbox-codigos', nombre: 'Código Xbox – Sun and Scales Pack', precio_usd: 12.5, imagen: '' },
+  { id: 'srv-83', categoria: 'xbox-codigos', nombre: 'Código Xbox – Wish Set Match Quest Pack', precio_usd: 32.0, imagen: 'https://imgs.search.brave.com/pfBErLSRbM7ab9437hOWK9IdxdkcEZj8zJZfnczajOQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMuZHJpZmZsZS5j/b20vZml0LWluLzcy/MHg1MTIvbWVkaWEt/Z2FsbGVyeS9wcm9k/LzE2OTU0Mzk2Njkw/NzY1MzEwMF9XaXNo/X1NldF9NYXRjaF8x/Njk1NDM5Njc3Lndl/YnA' },
+  { id: 'srv-84', categoria: 'xbox-codigos', nombre: 'Código Xbox – The Diamond Diva Pack (XBOX/PC KEY)', precio_usd: 14.0, imagen: 'https://imgs.search.brave.com/W3195hXrzCC6fzjXGqa1_EZBR2Z7IS2W0Ngxwnulqb8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9kaWdp/c2VsbGVyLm15Y2Ru/Lmluay9pbWd3ZWJw/LmFzaHg_aWRwPTk1/ODM3NzcmZGM9ODE3/Njk1OTAxJnc9NDAw' },
+  { id: 'srv-85', categoria: 'xbox-codigos', nombre: 'Código Xbox – Fortnite Cross Comms Pack', precio_usd: 53.0, imagen: 'https://imgs.search.brave.com/SuWg94Gy-nsHOpq8eSLxeNR3TI-1MTXVaFNpNdoGTRk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9UOV9VT2N5/dXF0dzJJTV9iamox/em1qeDVMSmdOdVVW/eXBaS2V6TUk0MEdB/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5aS9TR0pR/T1ZSVGRHcFVRalZx/L2JrcExkRk5rVWsx/MFdtYzAvV2tsVVpW/ODVPVFk1YzNKWi9W/bTQwYmxoVkxtcHda/dw' },
+  { id: 'srv-86', categoria: 'xbox-codigos', nombre: 'Código Xbox – Golden Touch Challenge Pack', precio_usd: 28.0, imagen: 'https://imgs.search.brave.com/1vvTr1SxF4pKAYGLSU9EKk_o53qJNsMY4bo-O5TPPCA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9MRTZwU1Vl/Z1kyaXl6ZDVMTlBB/dV9PNmNCYklhMWdY/QVJzYjc0UmZvZWFF/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Qi9RVmgw/UWpSbVYxbzNNV3Ro/L1IyaHVkMUpZVW1a/Q1MwaHovUkU1MWFV/NVpNRlJ2Y1hkeC9V/MUExUjFSdkxtcHda/V2M' },
+  { id: 'srv-87', categoria: 'xbox-codigos', nombre: 'Código Xbox – Saint Academy Quest Pack', precio_usd: 19.0, imagen: 'https://imgs.search.brave.com/PI3SFZiBK8BK-j8Q1Qv7AeB4ExcwDYrcS5MoBOnEonc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9EMDNPWXNx/NmZBdjU5d0NtQWlz/WUZOTU1mVVRZTUZE/MXF6VGZ0YmM2YW00/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5dS9XSE5D/YmxGbWFFeHFWRnBC/L05WVmhjbWREYTNa/d1prZEkvVVdreE1E/SnZNbWhxZVVaNS9V/MTlEU0dnNExtcHda/dw' },
+  { id: 'srv-88', categoria: 'xbox-codigos', nombre: 'Código Xbox – Sinister Courier Pack', precio_usd: 25.0, imagen: 'https://imgs.search.brave.com/khG4z-TDgqY_39dxd2F0pF-PuBPOzJEfx2wkcbzYQKM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9JT2pOTl9o/ZzgtMl9pcE4yQ2J1/SkdrZDJLa1IxY0ly/NXVKeDZnOExLRWFj/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5TS9VamhX/YWpoVVExcFJXWEZa/L1JWUldUMm8wZGxn/MmFsRksvTjI4MGRr/UlRZV1ZDU0d4eC9j/bXRxTFZvNExtcHda/dw' },
+  { id: 'srv-89', categoria: 'xbox-codigos', nombre: 'Código Xbox – Shadows Rising Pack', precio_usd: 24.0, imagen: 'https://imgs.search.brave.com/sIqPhYBEtNcOvyrtFWj-ZE42rEKubGET3m02PE9u1dg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9aOEl6S29W/bDFzb2tmOFFSemNz/V2lCcWR2bllIaFYw/SGhobTVuMWRlZ0ww/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Zi9TVk5P/U0ZkQlFqWXhlR0kx/L2EzSlpPVE5ZWTJO/T1JrMHcvYTFKTVVt/TXRSblJWUm5aMy9a/VFJZWlVJd0xtcHda/V2M' },
+  { id: 'srv-90', categoria: 'xbox-codigos', nombre: 'Código Xbox – Koi Kingdom Pack', precio_usd: 15.0, imagen: 'https://imgs.search.brave.com/3c5jjI8WyDnULaL8ew6hCASdN-0sDwXo928YFbEnP7k/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy8tbTJPREZJ/WGxhYTdNZFEwS2lu/Y3FkTkowQlM4VmVS/T292eTZPNHZweFpN/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Ni9VV1ZT/ZEZBNFYySkVVRTVM/L1kyVXRWVk0wVW1w/a1VqTnovYTFOSWNV/VmFSV0pLY21kai9k/emRsTVhaM0xuQnVa/dw' },
+  { id: 'srv-91', categoria: 'xbox-codigos', nombre: 'Código Xbox – Skull Squad Pack', precio_usd: 17.0, imagen: 'https://imgs.search.brave.com/vHemN_GOOE75Ksz2zj9HJ-hcFMqE3c6f2qdPk-Ofjbw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy9BR3R3dnhq/VDdmbl9oaGItYm0y/bUdzMzIwTFJwNF8y/LXRpSnVWekpqVDZN/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5WS9WMTlL/TTJsdFFXazNVRXRx/L1NtNW1ZalZTV2w5/R2RGUlIvUTBOQloy/VjFYMmxqU25GSC9N/RXd0YkU5ckxtcHda/V2M' },
+  { id: 'srv-92', categoria: 'xbox-codigos', nombre: 'Código Xbox – Frozen Legends Pack', precio_usd: 17.0, imagen: 'https://imgs.search.brave.com/d4Qhv8-rQCOsGCbFhSk6UxG2pV5q6e0LHhB_AexGkiQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy91RzdkVFAy/YUQ2QmtXcVJnQ29X/Zmp0NVkyX1lseGxD/NzBYSE1KVTFldVVz/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5aS9UMFJG/ZFRkTGRqWkdXWFZ1/L2VrbFBkak51U25a/R1MwTjQvTWxac2Jt/Y3ljMFp2ZUdwUC9j/bU50U0RSSkxtcHda/dw' },
+  { id: 'srv-93', categoria: 'overwatch', nombre: 'Código Xbox – Overwatch 1,000 Coins', precio_usd: 10.0, imagen: '' },
+  { id: 'srv-94', categoria: 'overwatch', nombre: 'Código Xbox – Overwatch 2,200 Coins', precio_usd: 19.25, imagen: '' },
+  { id: 'srv-95', categoria: 'overwatch', nombre: 'Código Xbox – Overwatch 5,700 Coins', precio_usd: 47.5, imagen: '' },
+  { id: 'srv-96', categoria: 'overwatch', nombre: 'Código Xbox – Overwatch 11,600 Coins', precio_usd: 89.0, imagen: '' },
+  { id: 'srv-97', categoria: 'roblox', nombre: 'Código Global – Roblox 800 Robux', precio_usd: 10.75, imagen: '' },
+  { id: 'srv-98', categoria: 'roblox', nombre: 'Código Global – Roblox 1000 Robux', precio_usd: 13.25, imagen: '' },
+  { id: 'srv-99', categoria: 'roblox', nombre: 'Código Global – Roblox 1500 Robux', precio_usd: 19.75, imagen: '' },
+  { id: 'srv-100', categoria: 'roblox', nombre: 'Código Global – Roblox 2000 Robux', precio_usd: 25.0, imagen: '' },
+  { id: 'srv-101', categoria: 'streaming', nombre: 'ViX - Perfil 1 Mes', precio_usd: 1.45, imagen: '' },
+  { id: 'srv-102', categoria: 'streaming', nombre: 'Paramount+ - Perfil 1 Mes', precio_usd: 1.75, imagen: '' },
+  { id: 'srv-103', categoria: 'streaming', nombre: 'Prime Video - Perfil 1 Mes', precio_usd: 2.3, imagen: '' },
+  { id: 'srv-104', categoria: 'streaming', nombre: 'HBO Max - Perfil 1 Mes', precio_usd: 2.3, imagen: '' },
+  { id: 'srv-105', categoria: 'streaming', nombre: 'Crunchyroll - Perfil 1 Mes', precio_usd: 2.3, imagen: '' },
+  { id: 'srv-106', categoria: 'streaming', nombre: 'Disney+ Premium - Perfil 1 Mes', precio_usd: 2.6, imagen: '' },
+  { id: 'srv-107', categoria: 'streaming', nombre: 'Viki - Perfil 1 Mes', precio_usd: 2.6, imagen: '' },
+  { id: 'srv-108', categoria: 'streaming', nombre: 'Spotify - Invitación 1 Mes', precio_usd: 2.9, imagen: '' },
+  { id: 'srv-109', categoria: 'streaming', nombre: 'Claro Video - Perfil 1 Mes', precio_usd: 3.15, imagen: '' },
+  { id: 'srv-110', categoria: 'streaming', nombre: 'Netflix - Perfil 1 Mes', precio_usd: 4.9, imagen: '' },
+  { id: 'srv-111', categoria: 'streaming', nombre: 'ViX - Cuenta Completa 1 Mes', precio_usd: 2.9, imagen: '' },
+  { id: 'srv-112', categoria: 'streaming', nombre: 'Crunchyroll - Cuenta Completa 1 Mes', precio_usd: 4.6, imagen: '' },
+  { id: 'srv-113', categoria: 'streaming', nombre: 'Paramount+ - Cuenta Completa 1 Mes', precio_usd: 5.2, imagen: '' },
+  { id: 'srv-114', categoria: 'streaming', nombre: 'Prime Video - Cuenta Completa 1 Mes', precio_usd: 5.75, imagen: '' },
+  { id: 'srv-115', categoria: 'streaming', nombre: 'Max Platino - Cuenta Completa 1 Mes', precio_usd: 6.9, imagen: '' },
+  { id: 'srv-116', categoria: 'streaming', nombre: 'Universal+ - Cuenta Completa 1 Mes', precio_usd: 6.9, imagen: '' },
+  { id: 'srv-117', categoria: 'streaming', nombre: 'Disney+ - Cuenta Completa 1 Mes', precio_usd: 7.5, imagen: '' },
+  { id: 'srv-118', categoria: 'streaming', nombre: 'Netflix - Cuenta Completa 1 Mes', precio_usd: 19.55, imagen: '' },
+  { id: 'srv-119', categoria: 'streaming', nombre: 'ViX - Cuenta Completa 1 Año', precio_usd: 8.65, imagen: '' },
+  { id: 'srv-120', categoria: 'streaming', nombre: 'Crunchyroll - Cuenta Completa 1 Año', precio_usd: 28.75, imagen: '' },
+  { id: 'srv-121', categoria: 'paquetes', nombre: 'Paquete de Leyendas Veraniegas', precio_usd: 13.99, imagen: 'https://imgs.search.brave.com/ExmJQ3SUENgGuEWdyUR69ENujYkAY0ecJSVqUqZtO5w/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nYW1p/bmctY2RuLmNvbS9p/bWFnZXMvcHJvZHVj/dHMvMTIyNjYvNjE2/eDM1My9mb3J0bml0/ZS1wYXF1ZXRlLWRl/LWxleWVuZGFzLXZl/cmFuaWVnYXMteGJv/eC1zZXJpZXMteC1z/LXhib3gtb25lLWp1/ZWdvLW1pY3Jvc29m/dC1zdG9yZS10dXJx/dWlhLWNvdmVyLmpw/Zz92PTE3NDExODc0/MzA' },
+  { id: 'srv-122', categoria: 'paquetes', nombre: 'Pack de As de Fortnite', precio_usd: 6.99, imagen: 'https://imgs.search.brave.com/6iI4j5SpQN7swASFndwh8bVGyPMgSHCMgFYEEzL5ozI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdG9y/ZS1pbWFnZXMucy1t/aWNyb3NvZnQuY29t/L2ltYWdlL2FwcHMu/Njc4OC42NjY0MzM0/Mjc0NDM2NzMwNy5j/YmVmNWZhYS0yY2Vm/LTQ1NzAtYjcwYS02/YTg5NGJjODA1YTQu/Mjc0NTQ2ZmMtOGM0/OS00ZDdmLWJmZjUt/ZTMwMjA4MWM5OGM4/P3E9OTAmdz00ODAm/aD0yNzA' },
+  { id: 'srv-123', categoria: 'xbox-juegos', nombre: 'Dark Souls: Remastered – Xbox Key', precio_usd: 5.24, imagen: '' },
+  { id: 'srv-124', categoria: 'xbox-juegos', nombre: 'Ghostwire Tokyo – Xbox Key', precio_usd: 26.2, imagen: '' },
+  { id: 'srv-125', categoria: 'xbox-juegos', nombre: 'Ghostwire Tokyo Deluxe – Xbox Key', precio_usd: 33.83, imagen: '' },
+  { id: 'srv-126', categoria: 'xbox-juegos', nombre: 'Ghostwire Tokyo Deluxe Upgrade – Xbox Key', precio_usd: 8.24, imagen: '' },
+  { id: 'srv-127', categoria: 'xbox-juegos', nombre: 'Hogwarts Legacy XS – Xbox Key', precio_usd: 39.25, imagen: '' },
+  { id: 'srv-128', categoria: 'xbox-juegos', nombre: 'Hogwarts Legacy X1 – Xbox Key', precio_usd: 34.87, imagen: '' },
+  { id: 'srv-129', categoria: 'xbox-juegos', nombre: 'Hogwarts Legacy Digital Deluxe – Xbox Key', precio_usd: 47.98, imagen: '' },
+  { id: 'srv-130', categoria: 'xbox-juegos', nombre: 'Resident Evil 4 – Xbox Key', precio_usd: 32.71, imagen: '' },
+  { id: 'srv-131', categoria: 'xbox-juegos', nombre: 'Resident Evil 3 – Xbox Key', precio_usd: 11.25, imagen: '' },
+  { id: 'srv-132', categoria: 'xbox-juegos', nombre: 'Shadow of the Tomb Raider: Definitive Edition – Xbox Key', precio_usd: 11.35, imagen: '' },
+  { id: 'srv-133', categoria: 'xbox-juegos', nombre: 'Mafia: Trilogy – Xbox Key', precio_usd: 16.33, imagen: '' },
+  { id: 'srv-134', categoria: 'xbox-juegos', nombre: 'Grand Theft Auto: The Trilogy – Definitive Edition – Xbox Key', precio_usd: 23.09, imagen: '' },
+  { id: 'srv-135', categoria: 'xbox-juegos', nombre: 'Red Dead Redemption 2: Ultimate Edition – Xbox Key', precio_usd: 147.75, imagen: '' },
+  { id: 'srv-136', categoria: 'xbox-juegos', nombre: 'Red Dead Redemption 2: Red Dead Online – Xbox Key', precio_usd: 29.52, imagen: '' },
+  { id: 'srv-137', categoria: 'xbox-juegos', nombre: 'Red Dead Redemption 2: 55 Gold Bars – Xbox Key', precio_usd: 29.52, imagen: '' },
+  { id: 'srv-138', categoria: 'xbox-juegos', nombre: 'South of Midnight – Xbox Key', precio_usd: 52.66, imagen: '' },
+  { id: 'srv-139', categoria: 'xbox-juegos', nombre: 'Jumanji Wild Adventures – Xbox Key', precio_usd: 31.43, imagen: '' },
+  { id: 'srv-140', categoria: 'xbox-juegos', nombre: 'Marvel\\\'s Midnight Suns X1 – Xbox Key', precio_usd: 34.44, imagen: '' },
+  { id: 'srv-141', categoria: 'xbox-juegos', nombre: 'Hollow Knight: Silksong – Xbox Key', precio_usd: 11.45, imagen: '' },
+  { id: 'srv-142', categoria: 'xbox-juegos', nombre: 'Battlefield 2042: Standard Edition – Xbox Key', precio_usd: 30.55, imagen: '' },
+  { id: 'srv-143', categoria: 'xbox-juegos', nombre: 'Battlefield V – Xbox Key', precio_usd: 12.14, imagen: '' },
+  { id: 'srv-144', categoria: 'xbox-juegos', nombre: 'Call of Duty: Modern Warfare II Cross-Gen Bundle – Xbox Key', precio_usd: 47.98, imagen: '' },
+  { id: 'srv-145', categoria: 'xbox-juegos', nombre: 'Call of Duty: Modern Warfare 2 Campaign Remastered – Xbox Key', precio_usd: 7.41, imagen: '' },
+  { id: 'srv-146', categoria: 'xbox-juegos', nombre: 'Call of Duty: Modern Warfare III Cross-Gen Bundle – Xbox Key', precio_usd: 87.31, imagen: '' },
+  { id: 'srv-147', categoria: 'xbox-juegos', nombre: 'Call of Duty: Black Ops 4 Digital Edition – Xbox Key', precio_usd: 10.01, imagen: '' },
+  { id: 'srv-148', categoria: 'xbox-juegos', nombre: 'Call of Duty: Black Ops 4 Digital Deluxe Edition – Xbox Key', precio_usd: 15.28, imagen: '' },
+  { id: 'srv-149', categoria: 'xbox-juegos', nombre: 'Call of Duty: Black Ops 6 – Cross-Gen Bundle – Xbox Key', precio_usd: 87.31, imagen: '' },
+  { id: 'srv-150', categoria: 'xbox-juegos', nombre: 'Call of Duty: Black Ops Cold War Cross-Gen Bundle – Xbox Key', precio_usd: 24.83, imagen: '' },
+  { id: 'srv-151', categoria: 'xbox-juegos', nombre: 'Call of Duty: Black Ops Cold War Standard Edition – Xbox Key', precio_usd: 21.79, imagen: '' },
+  { id: 'srv-152', categoria: 'xbox-juegos', nombre: 'Call of Duty: Modern Warfare 2,400 Points – Xbox Key', precio_usd: 6.1, imagen: '' },
+  { id: 'srv-153', categoria: 'xbox-juegos', nombre: 'Halo Infinite – Xbox Key', precio_usd: 17.64, imagen: '' },
+  { id: 'srv-154', categoria: 'xbox-juegos', nombre: 'Destiny 2: Beyond Light – Xbox Key', precio_usd: 20.53, imagen: '' },
+  { id: 'srv-155', categoria: 'xbox-juegos', nombre: 'Destiny 2: The Witch Queen – Xbox Key', precio_usd: 30.84, imagen: '' },
+  { id: 'srv-156', categoria: 'xbox-juegos', nombre: 'Destiny 2: Final Shape – Xbox Key', precio_usd: 30.84, imagen: '' },
+  { id: 'srv-157', categoria: 'xbox-juegos', nombre: 'Sea of Thieves – Xbox Key', precio_usd: 22.96, imagen: '' },
+  { id: 'srv-158', categoria: 'xbox-juegos', nombre: 'Sea of Thieves Deluxe Edition – Xbox Key', precio_usd: 30.12, imagen: '' },
+  { id: 'srv-159', categoria: 'xbox-juegos', nombre: 'Sea of Thieves Deluxe Upgrade – Xbox Key', precio_usd: 6.72, imagen: '' },
+  { id: 'srv-160', categoria: 'xbox-juegos', nombre: 'Mortal Kombat 1 – Xbox Key', precio_usd: 61.06, imagen: '' },
+  { id: 'srv-161', categoria: 'xbox-juegos', nombre: 'Mortal Kombat 11 – Xbox Key', precio_usd: 15.24, imagen: '' },
+  { id: 'srv-162', categoria: 'xbox-juegos', nombre: 'Mortal Kombat 11: Ultimate – Xbox Key', precio_usd: 17.43, imagen: '' },
+  { id: 'srv-163', categoria: 'xbox-juegos', nombre: 'Dragon Ball FighterZ – FighterZ Pass 3 – Xbox Key', precio_usd: 3.89, imagen: '' },
+  { id: 'srv-164', categoria: 'xbox-juegos', nombre: 'Dragon Ball Z: Kakarot Standard Edition – Xbox Key', precio_usd: 13.05, imagen: '' },
+  { id: 'srv-165', categoria: 'xbox-juegos', nombre: 'Dragon Ball Z: Kakarot Season Pass – Xbox Key', precio_usd: 5.63, imagen: '' },
+  { id: 'srv-166', categoria: 'xbox-juegos', nombre: 'Dragon Ball Xenoverse 2 – Xbox Key', precio_usd: 7.85, imagen: '' },
+  { id: 'srv-167', categoria: 'xbox-juegos', nombre: 'Dragon Ball Xenoverse 2 Season Pass – Xbox Key', precio_usd: 2.59, imagen: '' },
+  { id: 'srv-168', categoria: 'xbox-juegos', nombre: 'NBA 2K26: Standard Edition – Xbox Key', precio_usd: 115.57, imagen: '' },
+  { id: 'srv-169', categoria: 'xbox-juegos', nombre: 'NBA 2K26: Superstar Edition – Xbox Key', precio_usd: 143.45, imagen: '' },
+  { id: 'srv-170', categoria: 'xbox-juegos', nombre: 'WWE 2K25: Standard Edition – Xbox Key', precio_usd: 113.45, imagen: '' },
+  { id: 'srv-171', categoria: 'xbox-juegos', nombre: 'WWE 2K25: Deadman Edition – Xbox Key', precio_usd: 157.16, imagen: '' },
+  { id: 'srv-172', categoria: 'xbox-juegos', nombre: 'WWE 2K25: The Bloodline Edition – Xbox Key', precio_usd: 204.3, imagen: '' },
+  { id: 'srv-173', categoria: 'xbox-juegos', nombre: 'EA Sports FC 26: Standard Edition – Xbox Key', precio_usd: 115.57, imagen: '' },
+  { id: 'srv-174', categoria: 'xbox-juegos', nombre: 'Forza Horizon 5: Standard Edition – Xbox Key', precio_usd: 35.44, imagen: '' },
+  { id: 'srv-175', categoria: 'xbox-juegos', nombre: 'Forza Horizon 5: Deluxe Edition – Xbox Key', precio_usd: 46.09, imagen: '' },
+  { id: 'srv-176', categoria: 'xbox-juegos', nombre: 'Forza Horizon 5: Premium Edition – Xbox Key', precio_usd: 56.72, imagen: '' },
+  { id: 'srv-177', categoria: 'xbox-juegos', nombre: 'Fallout 4: Anniversary Edition – Xbox Key', precio_usd: 70.2, imagen: '' },
+  { id: 'srv-178', categoria: 'xbox-juegos', nombre: 'Sid Meier\\\'s Civilization VI – Xbox Key', precio_usd: 11.31, imagen: '' },
+  { id: 'srv-179', categoria: 'xbox-juegos', nombre: 'Dead Space Standard Edition – Xbox Key', precio_usd: 126.59, imagen: '' },
+  { id: 'srv-180', categoria: 'xbox-juegos', nombre: 'Dead Space DLX Edition Upgrade – Xbox Key', precio_usd: 15.72, imagen: '' },
+  { id: 'srv-181', categoria: 'xbox-juegos', nombre: 'Dead Island 2 – Xbox Key', precio_usd: 30.51, imagen: '' },
+  { id: 'srv-182', categoria: 'xbox-juegos', nombre: 'Dead Island 2 Deluxe Edition – Xbox Key', precio_usd: 32.71, imagen: '' },
+  { id: 'srv-183', categoria: 'xbox-juegos', nombre: 'Dead Island 2 Gold Edition – Xbox Key', precio_usd: 39.25, imagen: '' },
+  { id: 'srv-184', categoria: 'xbox-juegos', nombre: 'Dead Island Definitive Collection – Xbox Key', precio_usd: 8.7, imagen: '' },
+  { id: 'srv-185', categoria: 'xbox-juegos', nombre: 'Metro Redux Bundle – Xbox Key', precio_usd: 3.33, imagen: '' },
+  { id: 'srv-186', categoria: 'xbox-juegos', nombre: 'Metro Saga Bundle – Xbox Key', precio_usd: 9.83, imagen: '' },
+  { id: 'srv-187', categoria: 'xbox-juegos', nombre: 'Borderlands 3: Next Level Edition – Xbox Key', precio_usd: 21.79, imagen: '' },
+  { id: 'srv-188', categoria: 'xbox-juegos', nombre: 'Borderlands 3: Ultimate Edition – Xbox Key', precio_usd: 30.94, imagen: '' },
+  { id: 'srv-189', categoria: 'xbox-juegos', nombre: 'Minecraft: Java & Bedrock Edition – Xbox Key', precio_usd: 24.83, imagen: '' },
+  { id: 'srv-190', categoria: 'xbox-juegos', nombre: 'Minecraft: Java & Bedrock Deluxe Collection – Xbox Key', precio_usd: 33.07, imagen: '' },
+  { id: 'srv-191', categoria: 'xbox-juegos', nombre: 'Minecraft: Deluxe Collection – Xbox Key', precio_usd: 24.83, imagen: '' },
+  { id: 'srv-192', categoria: 'xbox-juegos', nombre: 'Minecraft Dungeons Xbox One – Xbox Key', precio_usd: 12.45, imagen: '' },
+  { id: 'srv-193', categoria: 'xbox-juegos', nombre: 'Minecraft Dungeons: Ultimate Edition – Xbox Key', precio_usd: 11.06, imagen: '' },
+  { id: 'srv-194', categoria: 'xbox-juegos', nombre: 'Minecraft Dungeons: Ultimate DLC Bundle – Xbox Key', precio_usd: 5.3, imagen: '' },
+  { id: 'srv-195', categoria: 'xbox-juegos', nombre: 'Gears Triple Bundle – Xbox Key', precio_usd: 18.98, imagen: '' },
+  { id: 'srv-196', categoria: 'xbox-juegos', nombre: 'Mega Man Zero/ZX Legacy Collection – Xbox Key', precio_usd: 6.11, imagen: '' },
+  { id: 'srv-197', categoria: 'xbox-juegos', nombre: 'Overwatch 2 Coins – 1,000 – Xbox Key', precio_usd: 11.35, imagen: '' },
+  { id: 'srv-198', categoria: 'xbox-juegos', nombre: 'Overwatch 2 Coins – 2,000 – Xbox Key', precio_usd: 22.75, imagen: '' },
+  { id: 'srv-199', categoria: 'xbox-juegos', nombre: 'Overwatch 2 Coins – 5,000 – Xbox Key', precio_usd: 56.74, imagen: '' },
+  { id: 'srv-200', categoria: 'xbox-juegos', nombre: 'Overwatch 2 Coins – 10,000 – Xbox Key', precio_usd: 113.5, imagen: '' },
+  { id: 'srv-201', categoria: 'xbox-juegos', nombre: 'Fortnite: Darkfire & Ice Bundle – Xbox Key', precio_usd: 49.43, imagen: '' },
+  { id: 'srv-202', categoria: 'xbox-juegos', nombre: 'Fortnite: The Minty Legends Pack – Xbox Key', precio_usd: 11.41, imagen: '' },
+];
+
 async function fetchCatalogo() {
   try {
     const { data, error } = await supabase
@@ -2447,6 +2670,10 @@ function populateProdCatSelect(selectEl) {
       `</optgroup>`;
   }
 
+  html += `<optgroup label="🎮 Servicios">` +
+    SERVICIOS_ORDEN.map(c => `<option value="srv::${c}">${SERVICIOS_LABELS[c] || c}</option>`).join('') +
+    `</optgroup>`;
+
   html += `<option value="__manual__">✎ Producto manual</option>`;
   selectEl.innerHTML = html;
 }
@@ -2483,8 +2710,13 @@ window.onProdSearchInput = function(inputEl) {
 
   const q = inputEl.value.trim().toLowerCase();
   const isShop = cat.startsWith('shop::');
-  const source = isShop ? tiendaHoyItems.filter(p => p.categoria === cat.slice(6)) : catalogoProductos.filter(p => p.categoria === cat);
+  const isSrv = cat.startsWith('srv::');
+  const source = isShop ? tiendaHoyItems.filter(p => p.categoria === cat.slice(6))
+    : isSrv ? SERVICIOS_ITEMS.filter(p => p.categoria === cat.slice(5))
+    : catalogoProductos.filter(p => p.categoria === cat);
   const matches = source.filter(p => !q || p.nombre.toLowerCase().includes(q)).slice(0, 8);
+  const showImg = isShop || isSrv;
+  const kind = isShop ? 'shop' : (isSrv ? 'srv' : 'manual');
 
   if (isShop && tiendaHoyLoading) {
     dropdown.innerHTML = `<div class="prod-search-empty"><i class="fas fa-spinner fa-spin"></i> Cargando tienda de hoy...</div>`;
@@ -2492,8 +2724,8 @@ window.onProdSearchInput = function(inputEl) {
     dropdown.innerHTML = `<div class="prod-search-empty">Sin resultados en esta categoría</div>`;
   } else {
     dropdown.innerHTML = matches.map(p => `
-      <div class="prod-search-item" onmousedown="window.pickProdCatalogo(this, '${p.id}', ${isShop})">
-        ${isShop && p.imagen ? `<img src="${p.imagen}" alt="" style="width:26px;height:26px;object-fit:contain;border-radius:3px;flex-shrink:0">` : ''}
+      <div class="prod-search-item" onmousedown="window.pickProdCatalogo(this, '${p.id}', '${kind}')">
+        ${showImg && p.imagen ? `<img src="${p.imagen}" alt="" style="width:26px;height:26px;object-fit:contain;border-radius:3px;flex-shrink:0">` : ''}
         <span style="flex:1">${p.nombre}</span>
         <span class="prod-search-price">$${(parseFloat(p.precio_usd) || 0).toFixed(2)}</span>
       </div>`).join('');
@@ -2501,9 +2733,12 @@ window.onProdSearchInput = function(inputEl) {
   dropdown.style.display = 'block';
 };
 
-window.pickProdCatalogo = function(itemEl, itemId, isShop) {
+window.pickProdCatalogo = function(itemEl, itemId, kind) {
   const row = itemEl.closest('.prod-row');
-  const source = isShop ? tiendaHoyItems : catalogoProductos;
+  // Compatibilidad con la firma anterior (true/false = shop/manual)
+  if (kind === true) kind = 'shop';
+  if (kind === false) kind = 'manual';
+  const source = kind === 'shop' ? tiendaHoyItems : (kind === 'srv' ? SERVICIOS_ITEMS : catalogoProductos);
   const item = source.find(p => String(p.id) === String(itemId));
   if (!item || !row) return;
   const searchInput = row.querySelector('.p-desc');
