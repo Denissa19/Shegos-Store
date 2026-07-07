@@ -17,6 +17,9 @@
     <link rel="dns-prefetch" href="https://tse4.mm.bing.net">
     <link rel="dns-prefetch" href="https://imgproxy.eneba.games">
     <link rel="dns-prefetch" href="https://fortnite-api.com">
+    <!-- Precarga la PRIMERA imagen de fondo del hero con máxima prioridad, para que
+         no tarde en aparecer al refrescar (antes se cargaban 6 fondos en fila) -->
+    <link rel="preload" as="image" href="img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp" fetchpriority="high">
     <meta property="og:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
     <meta property="og:description" content="Shegos Store | Fortnite">
     <meta property="og:type" content="website">
@@ -3878,7 +3881,7 @@
     .stw-mission-name { white-space: normal; }
 }
 </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -3924,16 +3927,25 @@
         }
 
         (async function init() {
-            // Asigna una imagen (ya validada) a cada slide disponible.
-            const total = Math.min(slides.length, IMAGENES.length) || slides.length;
-            for (let i = 0; i < slides.length; i++) {
-                const candidato = IMAGENES[i % IMAGENES.length] || FALLBACK;
-                const url = await resolverImagen(candidato);
-                slides[i].style.backgroundImage = `url('${url}')`;
-            }
+            // ANTES: se esperaban (await) las 6 imágenes de fondo UNA POR UNA antes de
+            // mostrar cualquier cosa, así que la primera tardaba en aparecer lo que
+            // tardaran en validarse las 6. AHORA: mostramos la primera en cuanto está
+            // lista, y el resto se cargan en paralelo de fondo sin bloquear la vista.
+            const primerCandidato = IMAGENES[0] || FALLBACK;
+            const primeraUrl = await resolverImagen(primerCandidato);
+            slides[0].style.backgroundImage = `url('${primeraUrl}')`;
+            slides[0].classList.add('bg-slide-active');
+
+            const restoPromesas = slides.slice(1).map((slide, i) => {
+                const candidato = IMAGENES[(i + 1) % IMAGENES.length] || FALLBACK;
+                return resolverImagen(candidato).then((url) => {
+                    slide.style.backgroundImage = `url('${url}')`;
+                });
+            });
+            // No bloqueamos el arranque del rotador si alguna tarda o falla
+            Promise.all(restoPromesas).catch(() => {});
 
             let indiceActual = 0;
-            slides[0].classList.add('bg-slide-active');
 
             if (slides.length > 1) {
                 setInterval(() => {
@@ -3946,7 +3958,7 @@
         })();
     })();
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <div class="banner-codigo">Apóyanos en la tienda de Fortnite: Código <strong class="codigo-banner">DENISSA_7U7</strong></div>
  
     <!-- SIDEBAR PARA MÓVIL -->
@@ -5836,10 +5848,10 @@
                 <div class="servicios-flex-container">
 
                     <div class="servicio-card casi-agotado">
-                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5MS9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
+                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Mi9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
                         <strong style="font-size: 1.1em; display: block; margin: 5px 0;">Baila Emote (Epic Games Global Key)</strong>
                         <span class="precio-producto" data-precio-usd="19.00">$19.00 USD</span>
-                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="Baila Emote (Epic Games Global Key)" onclick="agregarAlCarrito('Baila Emote (Epic Games Global Key)', '19.00', 'https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5MS9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw', '0', 'xbox-codigo', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="Baila Emote (Epic Games Global Key)" onclick="agregarAlCarrito('Baila Emote (Epic Games Global Key)', '19.00', 'https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Mi9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw', '0', 'xbox-codigo', event)">+ Carrito</button>
                     </div>
 
                     <div class="servicio-card">
@@ -6769,7 +6781,17 @@
         // Inicialización de Supabase para index.html
         const SUPABASE_URL = "https://boifqdoojssmofanhxhj.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w";
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // El script de supabase-js ahora carga con "defer" (para no bloquear el resto
+        // de la página), así que todavía no existe "window.supabase" en este punto.
+        // Por eso creamos el cliente en cuanto el DOM esté listo (los demás sitios del
+        // código que usan supabaseClient corren dentro de eventos o de clics, que
+        // siempre ocurren después de este punto, así que ya lo encontrarán creado).
+        let supabaseClient = null;
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!supabaseClient && window.supabase) {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
+        });
 
         // Webhook de Discord para notificación de nuevos pedidos
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515418920134115540/_7jmDRsyS_gc_kGKYExwL01QsYPa6AaE__814Sj9zzlTcv3kFRDJmQoZ3c5ndh2YJPiA";
@@ -9962,7 +9984,7 @@ function mostrarModalCapturaMovil(url) {
         });
 
         /* ── Dropdown de cuenta (estilo Eneba) ── */
-        function handleAccederClick(ev) {
+        window.handleAccederClick = function(ev) {
             var btn = $e("btn-acceder-login");
             if (btn && btn.classList.contains("logueado")) {
                 if (ev) ev.stopPropagation();
@@ -9994,7 +10016,7 @@ function mostrarModalCapturaMovil(url) {
                 menu.classList.remove("abierto");
             }
         }
-        function cerrarUserDropdown() {
+        window.cerrarUserDropdown = function() {
             var wrapper = $e("user-menu-wrapper");
             var menu = $e("user-dropdown-menu");
             if (wrapper) wrapper.classList.remove("abierto");
