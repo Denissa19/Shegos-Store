@@ -2181,6 +2181,9 @@ let editingCatalogoId = null; // Id del producto de catálogo en edición (null 
 let tiendaHoyItems = [];      // Rotación diaria de la tienda de Fortnite (vía fortnite-api.com, en vivo)
 let tiendaHoyLoaded = false;
 let tiendaHoyLoading = false;
+let serviciosSincronizados = false; // Si ya se sincronizó al menos una vez con index.html
+let serviciosSincronizando = false;
+let serviciosSyncIntervalId = null;
 
 // --- INICIALIZACIÓN ---
 window.addEventListener('DOMContentLoaded', async () => {
@@ -2327,9 +2330,11 @@ const TIENDA_HOY_LABELS = {
 };
 const TASA_VBUCKS_ADMIN = 0.52; // Misma tasa base que usa el frontend (método normal, no PayPal)
 
-// Categorías y catálogo estático de la sección "Servicios" del sitio público (index.html).
-// Estos productos están escritos a mano en index.html (no vienen de Supabase ni de una API),
-// así que se listan aquí igual para poder buscarlos rápido al armar un pedido.
+// Categorías y catálogo de la sección "Servicios" del sitio público (index.html).
+// SERVICIOS_ITEMS arranca con esta lista como respaldo (por si la sincronización
+// automática con index.html todavía no corrió o falla), pero en cuanto carga el
+// panel se reemplaza por el contenido REAL y actualizado de index.html — ver
+// fetchServiciosDesdeIndex() más abajo.
 const SERVICIOS_LABELS = {
   'pavos': 'Recargas de Pavos',
   'club': 'Fortnite Crew',
@@ -2549,6 +2554,70 @@ const SERVICIOS_ITEMS = [
   { id: 'srv-201', categoria: 'xbox-juegos', nombre: 'Fortnite: Darkfire & Ice Bundle – Xbox Key', precio_usd: 49.43, imagen: '' },
   { id: 'srv-202', categoria: 'xbox-juegos', nombre: 'Fortnite: The Minty Legends Pack – Xbox Key', precio_usd: 11.41, imagen: '' },
 ];
+
+// ── Sincronización automática de "Servicios" con el index.html REAL ──
+// En vez de mantener SERVICIOS_ITEMS a mano (que se desactualiza cada vez que se
+// edita un precio, se agrega o se quita un código en index.html), esta función
+// trae el propio index.html público, lo parsea como HTML, y reconstruye
+// SERVICIOS_ITEMS leyendo cada tarjeta ".servicio-card" tal cual está hoy en el
+// sitio — el mismo nombre (data-item-nombre, igual al que usa "agregarAlCarrito"),
+// el mismo precio (data-precio-usd) y la misma imagen. Así el admin nunca queda
+// desincronizado del sitio real, sin tener que tocar nada a mano.
+async function fetchServiciosDesdeIndex(force = false) {
+  if (serviciosSincronizando) return;
+  if (serviciosSincronizados && !force) return;
+  serviciosSincronizando = true;
+  try {
+    // "no-store" + cache-busting: evitamos quedarnos con una copia vieja de
+    // index.html guardada en caché del navegador o de un CDN intermedio.
+    const res = await fetch('index.html?sync=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('No se pudo leer index.html (HTTP ' + res.status + ')');
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+
+    const nuevosItems = [];
+    let contador = 0;
+    SERVICIOS_ORDEN.forEach((categoria) => {
+      const contenedor = doc.getElementById('sub-' + categoria);
+      if (!contenedor) return;
+      contenedor.querySelectorAll('.servicio-card').forEach((card) => {
+        // El nombre "real" del producto es el mismo que usa agregarAlCarrito() —
+        // vive en el atributo data-item-nombre del botón "+ Carrito" de la tarjeta.
+        const btn = card.querySelector('[data-item-nombre]');
+        const nombre = (btn?.getAttribute('data-item-nombre') || card.querySelector('strong')?.textContent || '').trim();
+        if (!nombre) return;
+        const precioEl = card.querySelector('.precio-producto');
+        const precio_usd = parseFloat(precioEl?.getAttribute('data-precio-usd') || '0') || 0;
+        const imagen = card.querySelector('img')?.getAttribute('src') || '';
+        nuevosItems.push({ id: `srv-${categoria}-${contador++}`, categoria, nombre, precio_usd, imagen });
+      });
+    });
+
+    if (nuevosItems.length > 0) {
+      // Mutamos el arreglo EN SITIO (no reasignamos la variable) para que todo el
+      // código que ya tiene una referencia a SERVICIOS_ITEMS vea los datos nuevos.
+      SERVICIOS_ITEMS.length = 0;
+      SERVICIOS_ITEMS.push(...nuevosItems);
+      serviciosSincronizados = true;
+      console.log(`✅ Servicios sincronizados en vivo desde index.html: ${nuevosItems.length} productos.`);
+    } else {
+      console.warn('⚠️ La sincronización con index.html no encontró productos; se conserva el catálogo anterior.');
+    }
+  } catch (err) {
+    console.error('Error sincronizando Servicios desde index.html:', err);
+  } finally {
+    serviciosSincronizando = false;
+  }
+  refreshProdCatSelects();
+}
+
+// Reintenta la sincronización cada 3 minutos mientras el panel esté abierto, para
+// que los cambios que se hagan en index.html (nuevo código, precio editado, etc.)
+// se reflejen solos en el admin sin tener que recargar la página.
+function iniciarAutoSincronizacionServicios() {
+  if (serviciosSyncIntervalId) return;
+  serviciosSyncIntervalId = setInterval(() => fetchServiciosDesdeIndex(true), 3 * 60 * 1000);
+}
 
 async function fetchCatalogo() {
   try {
