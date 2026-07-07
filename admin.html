@@ -2071,7 +2071,20 @@ td{padding:12px 14px;vertical-align:middle}
                 oninput="window.calcVentaMargen()" style="border-color:rgba(255,77,109,.3)">
             </div>
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" style="color:var(--gold)">Ganancia (USD)</label>
+              <label class="flabel" style="color:#f97316">Monto Recibido (USD)</label>
+              <input class="finput" id="vc-f-monto-recibido" type="number" step="0.01" placeholder="0.00"
+                oninput="window.calcVentaMargen()" style="border-color:rgba(249,115,22,.3)"
+                title="Monto neto que realmente entró luego de comisiones (PayPal, Binance, etc). Déjalo vacío si es igual al precio de venta.">
+            </div>
+          </div>
+          <div class="frow">
+            <div class="fgroup" style="margin-bottom:0">
+              <label class="flabel" style="color:var(--text3)">Comisión (USD)</label>
+              <input class="finput" id="vc-f-comision-ceo" type="number" step="0.01" placeholder="0.00"
+                readonly style="opacity:.8">
+            </div>
+            <div class="fgroup" style="margin-bottom:0">
+              <label class="flabel" style="color:var(--gold)">Ganancia Neta (USD)</label>
               <input class="finput" id="vc-f-neta-ceo" type="number" step="0.01" placeholder="0.00"
                 readonly style="border-color:rgba(255,215,0,.3);color:var(--gold);font-weight:700">
             </div>
@@ -2336,6 +2349,7 @@ const TASA_VBUCKS_ADMIN = 0.52; // Misma tasa base que usa el frontend (método 
 // panel se reemplaza por el contenido REAL y actualizado de index.html — ver
 // fetchServiciosDesdeIndex() más abajo.
 const SERVICIOS_LABELS = {
+  'cuentas-fortnite': 'Cuentas de Fortnite',
   'pavos': 'Recargas de Pavos',
   'club': 'Fortnite Crew',
   'pases': 'Pases vía Regalo',
@@ -2348,7 +2362,7 @@ const SERVICIOS_LABELS = {
   'paquetes': 'Paquetes de Fortnite',
   'xbox-juegos': 'Juegos de Xbox — Vía Código',
 };
-const SERVICIOS_ORDEN = ['pavos', 'club', 'pases', 'gamepass', 'codpoints', 'xbox-codigos', 'overwatch', 'roblox', 'streaming', 'paquetes', 'xbox-juegos'];
+const SERVICIOS_ORDEN = ['cuentas-fortnite', 'pavos', 'club', 'pases', 'gamepass', 'codpoints', 'xbox-codigos', 'overwatch', 'roblox', 'streaming', 'paquetes', 'xbox-juegos'];
 const SERVICIOS_ITEMS = [
   { id: 'srv-0', categoria: 'pavos', nombre: 'Cuenta 2,400 V-Bucks', precio_usd: 20.99, imagen: 'img/2400vb.png' },
   { id: 'srv-1', categoria: 'pavos', nombre: 'Cuenta 4,500 V-Bucks', precio_usd: 29.99, imagen: 'img/4500vb.png' },
@@ -4252,7 +4266,7 @@ function renderVentas() {
 
   // Role-aware table headers
   let headers = `<th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Ingreso</th>`;
-  if (isCEO) headers += `<th style="color:var(--red)">Costo</th><th style="color:var(--gold)">Ganancia</th><th>Margen</th>`;
+  if (isCEO) headers += `<th style="color:var(--red)">Costo</th><th style="color:#f97316">Recibido</th><th style="color:var(--gold)">Ganancia</th><th>Margen</th>`;
   headers += `<th style="text-align:right">Acciones</th>`;
 
   let html = `<div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>`;
@@ -4261,6 +4275,7 @@ function renderVentas() {
     const cfg = TIPO_CONFIG[v.tipo] || { label: v.tipo || '—', color:'var(--text2)' };
     const ingresoVal = parseFloat(v.ingreso) || 0;
     const costoVal = parseFloat(v.costo) || 0;
+    const recibidoVal = (v.monto_recibido !== undefined && v.monto_recibido !== null) ? parseFloat(v.monto_recibido) : ingresoVal;
     const gananciaVal = parseFloat(v.ganancia_neta) || 0;
     const margenV = ingresoVal > 0 ? ((gananciaVal/ingresoVal)*100) : 0;
 
@@ -4272,6 +4287,7 @@ function renderVentas() {
 
     if (isCEO) {
       row += `<td style="color:var(--red)">$${costoVal.toFixed(2)}</td>
+      <td style="color:#f97316">$${recibidoVal.toFixed(2)}</td>
       <td class="td-money" style="color:${gananciaVal>=0?'var(--gold)':'var(--red)'}">$${gananciaVal.toFixed(2)}</td>
       <td><span class="badge ${margenV>=30?'b-done':margenV>=15?'b-proc':'b-pend'}">${v.margen || '0%'}</span></td>`;
     }
@@ -4301,7 +4317,7 @@ function openVentaModal() {
   if (lp) lp.textContent = 'Producto';
   // Reset fields
   ['vc-f-cliente','vc-f-ingreso','vc-f-notas','vc-f-producto','vc-f-wa','vc-f-id',
-   'vc-f-costo-real','vc-f-neta-ceo','vc-f-pago-parcial','vc-f-pago-pendiente',
+   'vc-f-costo-real','vc-f-monto-recibido','vc-f-comision-ceo','vc-f-neta-ceo','vc-f-pago-parcial','vc-f-pago-pendiente',
    'vc-f-cuota-adicional', 'vc-f-interes-pct'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
@@ -4363,6 +4379,8 @@ window.editVenta = function(id) {
   if (metEl) metEl.value = v.metodo_pago || '';
   const crEl = document.getElementById('vc-f-costo-real');
   if (crEl) crEl.value = v.costo_real || '';
+  const mrEl = document.getElementById('vc-f-monto-recibido');
+  if (mrEl) mrEl.value = (v.monto_recibido !== undefined && v.monto_recibido !== null) ? v.monto_recibido : '';
   const ppEl = document.getElementById('vc-f-pago-parcial');
   if (ppEl) ppEl.value = v.pago_parcial || '';
   const ppeEl = document.getElementById('vc-f-pago-pendiente');
@@ -4435,9 +4453,24 @@ window.calcVentaMargen = function() {
   const cuotaEl = document.getElementById('vc-f-cuota-adicional');
   if (cuotaEl) cuotaEl.value = cuota.toFixed(2);
 
-  // FÓRMULA ÚNICA: Ganancia = Precio de Venta − Costo
-  const costo    = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
-  const ganancia = total - costo;
+  // Costo real de obtención del producto
+  const costo = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+
+  // Monto Recibido = lo que realmente entra después de comisiones (PayPal, Binance, etc).
+  // Si se deja vacío, se asume que no hubo comisión (monto recibido = precio de venta).
+  const montoRecibidoEl = document.getElementById('vc-f-monto-recibido');
+  const montoRecibidoRaw = montoRecibidoEl?.value;
+  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
+    ? (parseFloat(montoRecibidoRaw) || 0)
+    : total;
+
+  // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
+  const comision = total - montoRecibido;
+  const comisionEl = document.getElementById('vc-f-comision-ceo');
+  if (comisionEl) comisionEl.value = comision.toFixed(2);
+
+  // FÓRMULA: Ganancia Neta = Monto Recibido − Costo
+  const ganancia = montoRecibido - costo;
 
   const netaEl = document.getElementById('vc-f-neta-ceo');
   if (netaEl) {
@@ -4569,7 +4602,12 @@ window.saveVenta = async function() {
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
   const costoReal     = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
-  const ganancia      = parseFloat(document.getElementById('vc-f-neta-ceo')?.value) || (totalVenta - costoReal);
+  const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
+  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
+    ? (parseFloat(montoRecibidoRaw) || 0)
+    : totalVenta;
+  const comision      = parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido);
+  const ganancia      = parseFloat(document.getElementById('vc-f-neta-ceo')?.value) || (montoRecibido - costoReal);
 
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
@@ -4584,6 +4622,8 @@ window.saveVenta = async function() {
     ingreso:             totalVenta,
     costo:               costoReal,
     costo_real:          costoReal,
+    monto_recibido:      montoRecibido,
+    comision:            comision,
     ganancia_neta:       ganancia,
     margen:              totalVenta > 0 ? ((ganancia / totalVenta) * 100).toFixed(1) + '%' : '0%',
     notas:               document.getElementById('vc-f-notas')?.value?.trim()    || '',
