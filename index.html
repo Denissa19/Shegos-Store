@@ -7166,6 +7166,21 @@
                     let sectionTitle = (item.layout && item.layout.name) ? item.layout.name : 'Botín de Fortnite';
                     let sectionRank  = (item.layout && item.layout.rank  != null) ? item.layout.rank  : 999;
 
+                    // Color OFICIAL de fondo de la sección, tal como lo manda la propia API
+                    // de Fortnite (el mismo que usa fortnite.com/item-shop para pintar cada
+                    // sección del día: "Teen Titans", "Battle Ready", "No Sweat", etc). Cada
+                    // sección trae su propio degradado (color1 → color3), que cambia todos
+                    // los días junto con la tienda. Si un artículo no trae "colors" (raro),
+                    // se deja null y se usa el color de rareza como respaldo.
+                    let sectionColors = null;
+                    if (item.colors && item.colors.color1) {
+                        sectionColors = {
+                            c1: '#' + item.colors.color1.slice(0, 6),
+                            c2: '#' + (item.colors.color2 || item.colors.color3 || item.colors.color1).slice(0, 6),
+                            c3: '#' + (item.colors.color3 || item.colors.color1).slice(0, 6)
+                        };
+                    }
+
                     // Si el artículo se va hoy, agrupar en su propia sección especial, siempre primero
                     if (seVaHoy) {
                         sectionTitle = 'Se Va Hoy';
@@ -7200,6 +7215,7 @@
                             categoria: categoriaFinal,
                             sectionName: sectionTitle,
                             sectionRank: sectionRank,
+                            sectionColors: sectionColors,
                             nombreSeguro: nombre.replace(/'/g, "\\'"),
                             epicId: epicId
                         });
@@ -7353,9 +7369,25 @@
                 const thumbSize = cardW - padCard * 2; // miniatura grande dentro de la tarjeta
                 const cardH = padCard + thumbSize + 33 + 13; // miniatura + nombre + precio + margen inferior
 
-                const totalFilas = Math.max(1, Math.ceil(itemsOrdenados.length / numCols));
+                // ── Cada sección de la tienda (las mismas que trae la API de Fortnite
+                // y que cambian cada día: "Teen Titans", "Battle Ready", "No Sweat",
+                // "Se Va Hoy", etc.) se dibuja por separado, con su propio título y su
+                // propia cuadrícula de tarjetas, en vez de una cuadrícula plana única. ──
+                const sectionTitleH = px(52);
+                const sectionGapAfter = px(30) + gapY;
+                const gruposConFilas = grupos.map(g => ({
+                    ...g,
+                    filas: Math.max(1, Math.ceil(g.items.length / numCols))
+                }));
+
+                let totalGridH = 0;
+                gruposConFilas.forEach(g => {
+                    totalGridH += sectionTitleH + g.filas * cardH + Math.max(0, g.filas - 1) * gapY + sectionGapAfter;
+                });
+                if (gruposConFilas.length) totalGridH -= sectionGapAfter; // sin espacio extra tras la última sección
+
                 const gridTop = headerH + 30;
-                const totalH = gridTop + totalFilas * cardH + Math.max(0, totalFilas - 1) * gapY + footerH;
+                const totalH = gridTop + totalGridH + footerH;
 
                 const canvas = document.createElement('canvas');
                 canvas.width = W;
@@ -7458,68 +7490,98 @@
                 const imgsCargadas = await Promise.all(itemsOrdenados.map(it => cargarImagen(it.imagen)));
                 itemsOrdenados.forEach((it, i) => imgsMap.set(it, imgsCargadas[i]));
 
-                // ── Dibujar cada cosmético como su propia tarjeta independiente,
-                // grande, en la posición que le toca dentro de la cuadrícula de 18 columnas ──
-                itemsOrdenados.forEach((item, idx) => {
-                    const col = idx % numCols;
-                    const row = Math.floor(idx / numCols);
-                    const x = margin + col * (cardW + gapX);
-                    const y = gridTop + row * (cardH + gapY);
+                // ── Dibujar sección por sección: título propio (igual que en
+                // fortnite.com/item-shop) y, debajo, la cuadrícula de tarjetas de esa
+                // sección. Cada tarjeta usa el color OFICIAL de fondo que trae la API
+                // de Fortnite para esa sección del día (item.sectionColors); si algún
+                // artículo no trae ese dato, se usa el color de su rareza como respaldo. ──
+                let cursorY = gridTop;
+                gruposConFilas.forEach(g => {
+                    // Color de acento de la sección: el mismo que Fortnite usa hoy para
+                    // ese grupo (color3/textBackgroundColor de la API), con reserva al
+                    // verde de marca si el grupo no trajera colores propios.
+                    const itemConColor = g.items.find(it => it.sectionColors);
+                    const accentColor = itemConColor ? itemConColor.sectionColors.c3 : '#28feb6';
 
-                    const rClass = item.rarityClass || 'common';
-                    const info = rarezaInfo[rClass] || rarezaInfo.common;
-                    const [colorArriba, colorAbajo] = rarezaGradientes[rClass] || rarezaGradientes.common;
-
-                    // Fondo de la tarjeta + borde de acento según la rareza del cosmético
+                    // Título de la sección
                     ctx.save();
-                    roundRectPath(ctx, x, y, cardW, cardH, 0);
-                    const gradFondo = ctx.createLinearGradient(x, y, x, y + cardH);
-                    gradFondo.addColorStop(0, colorArriba);
-                    gradFondo.addColorStop(1, colorAbajo);
-                    ctx.fillStyle = gradFondo;
-                    ctx.fill();
+                    ctx.textAlign = 'left';
+                    ctx.font = `900 ${px(30)}px 'BurbankBigCondensed', Arial`;
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText((g.nombre || '').toUpperCase(), margin, cursorY + px(24));
+                    ctx.fillStyle = accentColor;
+                    ctx.fillRect(margin, cursorY + px(34), Math.min(W - margin * 2, px(340)), px(4));
                     ctx.restore();
 
-                    // Borde de acento eliminado (el usuario no lo quiere)
+                    const sectionGridTop = cursorY + sectionTitleH;
 
-                    // Miniatura del cosmético (grande: ocupa casi toda la tarjeta)
-                    const tx = x + padCard, ty = y + padCard;
-                    ctx.save();
-                    roundRectPath(ctx, tx, ty, thumbSize, thumbSize, 0);
-                    ctx.fillStyle = 'rgba(0,0,0,0.25)';
-                    ctx.fill();
-                    ctx.clip();
-                    const img = imgsMap.get(item);
-                    if (img) {
-                        const ratio = Math.max(thumbSize / img.width, thumbSize / img.height);
-                        const w2 = img.width * ratio, h2 = img.height * ratio;
-                        ctx.drawImage(img, tx + (thumbSize - w2) / 2, ty + (thumbSize - h2) / 2, w2, h2);
-                    }
-                    ctx.restore();
+                    g.items.forEach((item, idxInGroup) => {
+                        const col = idxInGroup % numCols;
+                        const row = Math.floor(idxInGroup / numCols);
+                        const x = margin + col * (cardW + gapX);
+                        const y = sectionGridTop + row * (cardH + gapY);
 
-                    // Nombre truncado
-                    ctx.textAlign = 'left';
-                    ctx.font = "900 15px 'BurbankBigCondensed', Arial";
-                    ctx.fillStyle = '#ffffff';
-                    let nombreCorto = (item.nombre || '').toUpperCase();
-                    const maxCharsNombre = Math.max(6, Math.floor(thumbSize / 6.8));
-                    if (nombreCorto.length > maxCharsNombre) nombreCorto = nombreCorto.slice(0, maxCharsNombre - 1) + '…';
-                    ctx.fillText(nombreCorto, tx, ty + thumbSize + 17);
+                        const rClass = item.rarityClass || 'common';
+                        const info = rarezaInfo[rClass] || rarezaInfo.common;
+                        let colorArriba, colorAbajo;
+                        if (item.sectionColors) {
+                            colorArriba = item.sectionColors.c1;
+                            colorAbajo = item.sectionColors.c3;
+                        } else {
+                            [colorArriba, colorAbajo] = rarezaGradientes[rClass] || rarezaGradientes.common;
+                        }
 
-                    // Precio en V-Bucks con icono circular pequeño
-                    const precioTxt = (item.vbucks || 0).toLocaleString();
-                    ctx.beginPath();
-                    ctx.arc(tx + 8, ty + thumbSize + 29, 8, 0, Math.PI * 2);
-                    ctx.fillStyle = '#eaf4ff';
-                    ctx.fill();
-                    ctx.fillStyle = '#1a4fd6';
-                    ctx.font = 'bold 10px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('V', tx + 8, ty + thumbSize + 33);
-                    ctx.textAlign = 'left';
-                    ctx.font = 'bold 14px Arial';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(precioTxt, tx + 20, ty + thumbSize + 33);
+                        // Fondo de la tarjeta con el color oficial de la sección del día
+                        ctx.save();
+                        roundRectPath(ctx, x, y, cardW, cardH, 0);
+                        const gradFondo = ctx.createLinearGradient(x, y, x, y + cardH);
+                        gradFondo.addColorStop(0, colorArriba);
+                        gradFondo.addColorStop(1, colorAbajo);
+                        ctx.fillStyle = gradFondo;
+                        ctx.fill();
+                        ctx.restore();
+
+                        // Miniatura del cosmético (grande: ocupa casi toda la tarjeta)
+                        const tx = x + padCard, ty = y + padCard;
+                        ctx.save();
+                        roundRectPath(ctx, tx, ty, thumbSize, thumbSize, 0);
+                        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                        ctx.fill();
+                        ctx.clip();
+                        const img = imgsMap.get(item);
+                        if (img) {
+                            const ratio = Math.max(thumbSize / img.width, thumbSize / img.height);
+                            const w2 = img.width * ratio, h2 = img.height * ratio;
+                            ctx.drawImage(img, tx + (thumbSize - w2) / 2, ty + (thumbSize - h2) / 2, w2, h2);
+                        }
+                        ctx.restore();
+
+                        // Nombre truncado
+                        ctx.textAlign = 'left';
+                        ctx.font = "900 15px 'BurbankBigCondensed', Arial";
+                        ctx.fillStyle = '#ffffff';
+                        let nombreCorto = (item.nombre || '').toUpperCase();
+                        const maxCharsNombre = Math.max(6, Math.floor(thumbSize / 6.8));
+                        if (nombreCorto.length > maxCharsNombre) nombreCorto = nombreCorto.slice(0, maxCharsNombre - 1) + '…';
+                        ctx.fillText(nombreCorto, tx, ty + thumbSize + 17);
+
+                        // Precio en V-Bucks con icono circular pequeño
+                        const precioTxt = (item.vbucks || 0).toLocaleString();
+                        ctx.beginPath();
+                        ctx.arc(tx + 8, ty + thumbSize + 29, 8, 0, Math.PI * 2);
+                        ctx.fillStyle = '#eaf4ff';
+                        ctx.fill();
+                        ctx.fillStyle = '#1a4fd6';
+                        ctx.font = 'bold 10px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('V', tx + 8, ty + thumbSize + 33);
+                        ctx.textAlign = 'left';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(precioTxt, tx + 20, ty + thumbSize + 33);
+                    });
+
+                    cursorY = sectionGridTop + g.filas * cardH + Math.max(0, g.filas - 1) * gapY + sectionGapAfter;
                 });
 
                 // Segunda pasada de marca de agua, más sutil, encima de las tarjetas
