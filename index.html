@@ -61,6 +61,9 @@
 
         html {
             background-color: #12081a;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
         body {
@@ -69,11 +72,20 @@
             color: #ffffff; 
             margin: 0; 
             padding: 0; 
+            width: 100%;
+            max-width: 100%;
             overflow-x: hidden; 
             display: flex; 
             flex-direction: column; 
             min-height: 100vh; 
             position: relative;
+        }
+
+        /* Red de seguridad anti-desbordamiento horizontal: evita que imágenes,
+           tablas u otros elementos con medidas fijas empujen la página hacia
+           los lados en pantallas de teléfono */
+        img, svg, video, canvas, iframe, table {
+            max-width: 100%;
         }
 
         /* Fondo de temporada - rotación con crossfade entre varias imágenes */
@@ -1464,7 +1476,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
-            background: #170a1c;
+            background: linear-gradient(160deg, #5c5c66, #2b2b31);
             border: 1px solid #1f1f1f;
             border-top: 4px solid transparent;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -1476,16 +1488,16 @@
             box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         }
 
-        /* Color de borde superior según rareza */
-        .cosmetic-card.legendary     { border-top-color: #f5a623; }
-        .cosmetic-card.epic          { border-top-color: #c44dff; }
-        .cosmetic-card.rare          { border-top-color: #4aa8ff; }
-        .cosmetic-card.uncommon      { border-top-color: #3aad4e; }
-        .cosmetic-card.common        { border-top-color: #8a8a9e; }
-        .cosmetic-card.marvel        { border-top-color: #ed1d24; }
-        .cosmetic-card.dc            { border-top-color: #2e6bd6; }
-        .cosmetic-card.icon          { border-top-color: #1fd1c9; }
-        .cosmetic-card.gaminglegends { border-top-color: #8b5cf6; }
+        /* Fondo y borde superior por rareza */
+        .cosmetic-card.legendary     { background: linear-gradient(160deg, #c9761f, #5a3312); border-top-color: #f5a623; }
+        .cosmetic-card.epic          { background: linear-gradient(160deg, #7c28b8, #341153); border-top-color: #c44dff; }
+        .cosmetic-card.rare          { background: linear-gradient(160deg, #1f6cc4, #0f2e4d); border-top-color: #4aa8ff; }
+        .cosmetic-card.uncommon      { background: linear-gradient(160deg, #249144, #0f3d20); border-top-color: #3aad4e; }
+        .cosmetic-card.common        { background: linear-gradient(160deg, #5c5c66, #2b2b31); border-top-color: #8a8a9e; }
+        .cosmetic-card.marvel        { background: linear-gradient(160deg, #c41920, #4d0f0f); border-top-color: #ed1d24; }
+        .cosmetic-card.dc            { background: linear-gradient(160deg, #22318f, #0f1533); border-top-color: #2e6bd6; }
+        .cosmetic-card.icon          { background: linear-gradient(160deg, #12958a, #0f3a3a); border-top-color: #1fd1c9; }
+        .cosmetic-card.gaminglegends { background: linear-gradient(160deg, #6d28d9, #2a0f45); border-top-color: #8b5cf6; }
 
         /* Imagen del cosmético */
         .card-img {
@@ -1824,6 +1836,27 @@
             padding: 4px 10px;
             border-radius: 6px;
             z-index: 2;
+        }
+
+        /* TARJETA "CASI AGOTADO": es solo una advertencia visual, el producto
+           sigue siendo comprable normalmente (mantiene su botón "+ Carrito") */
+        .servicio-card.casi-agotado {
+            position: relative;
+        }
+        .servicio-card.casi-agotado::before {
+            content: 'CASI AGOTADO';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #f59e0b;
+            color: #12081a;
+            font-size: 0.68em;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.4);
         }
         .btn-a-pedido {
             opacity: 1 !important;
@@ -5802,6 +5835,13 @@
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 20px;">Paquetes con 600 V-Bucks incluidos. Requieren VPN para cambiar región.</p>
                 <div class="servicios-flex-container">
 
+                    <div class="servicio-card casi-agotado">
+                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5MS9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
+                        <strong style="font-size: 1.1em; display: block; margin: 5px 0;">Baila Emote (Epic Games Global Key)</strong>
+                        <span class="precio-producto" data-precio-usd="19.00">$19.00 USD</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="Baila Emote (Epic Games Global Key)" onclick="agregarAlCarrito('Baila Emote (Epic Games Global Key)', '19.00', 'https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5MS9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw', '0', 'xbox-codigo', event)">+ Carrito</button>
+                    </div>
+
                     <div class="servicio-card">
                         <img loading="lazy" decoding="async" src="https://tse4.mm.bing.net/th/id/OIP.Ld1pKKKQJTHMecPnHoUmXAHaLH?rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
                         <strong style="font-size: 1.1em; display: block; margin: 5px 0;">Darkest Grumblings Pack</strong>
@@ -7240,16 +7280,18 @@
                 }
 
                 // Color de fondo por rareza/serie OFICIAL de Fortnite (usado para el bloque de cada set)
-                const rarezaColor = {
-                    legendary:     '#5a3312',
-                    epic:          '#341153',
-                    rare:          '#0f2e4d',
-                    uncommon:      '#0f3d20',
-                    common:        '#2b2b31',
-                    marvel:        '#4d0f0f',
-                    dc:            '#0f1533',
-                    icon:          '#0f3a3a',
-                    gaminglegends: '#2a0f45'
+                // Cada rareza usa un degradado sólido y vívido (de arriba a abajo) para que
+                // el fondo de la tarjeta se lea con claridad y nunca parezca transparente.
+                const rarezaGradientes = {
+                    legendary:     ['#c9761f', '#5a3312'],
+                    epic:          ['#7c28b8', '#341153'],
+                    rare:          ['#1f6cc4', '#0f2e4d'],
+                    uncommon:      ['#249144', '#0f3d20'],
+                    common:        ['#5c5c66', '#2b2b31'],
+                    marvel:        ['#c41920', '#4d0f0f'],
+                    dc:            ['#22318f', '#0f1533'],
+                    icon:          ['#12958a', '#0f3a3a'],
+                    gaminglegends: ['#6d28d9', '#2a0f45']
                 };
                 const rarezaInfo = {
                     legendary:     { color: '#f5a623', label: 'LEGENDARIO' },
@@ -7282,17 +7324,31 @@
                 const itemsOrdenados = [];
                 grupos.forEach(g => g.items.forEach(it => itemsOrdenados.push(it)));
 
-                // ── Cuadrícula plana de 30 columnas x N filas, tarjetas 100%
+                // ── Cuadrícula plana de N columnas x N filas, tarjetas 100%
                 // independientes (fondo, borde e imagen propios). Sigue agregando
-                // filas de 30 en 30 hasta agotar los cosméticos del día. ──
-                const numCols = 15;
+                // filas hasta agotar los cosméticos del día. ──
+                // IMPORTANTE (límite de navegador en móvil): muchos navegadores de
+                // Android/iOS fallan o devuelven un blob vacío/nulo cuando el canvas
+                // supera ~4096px de ancho o alto, o cuando el área total (ancho×alto)
+                // es demasiado grande para la memoria disponible del teléfono. Por
+                // eso en móvil usamos menos columnas y tarjetas más pequeñas: el
+                // canvas final queda muy por debajo de esos límites y la imagen se
+                // genera de forma confiable también en celulares de gama baja.
+                const numCols = esMobile ? 8 : 15;
                 const margin = 40;
                 const gapX = 14, gapY = 16;
-                const cardW = 260;
+                const cardW = esMobile ? 190 : 260;
                 const W = margin * 2 + numCols * cardW + (numCols - 1) * gapX;
 
-                const headerH = 280;
-                const footerH = 100;
+                // Factor de escala del encabezado/pie: en móvil el canvas es mucho
+                // más angosto (para no exceder los límites de memoria del navegador),
+                // así que reducimos proporcionalmente los tamaños de fuente y la pill
+                // del código de creador para que sigan encajando bien sin solaparse.
+                const hs = esMobile ? 0.45 : 1;
+                const px = (n) => Math.round(n * hs);
+
+                const headerH = px(280);
+                const footerH = px(100);
                 const padCard = 10;
                 const thumbSize = cardW - padCard * 2; // miniatura grande dentro de la tarjeta
                 const cardH = padCard + thumbSize + 33 + 13; // miniatura + nombre + precio + margen inferior
@@ -7332,12 +7388,12 @@
                     ctx.save();
                     ctx.globalAlpha = 0.10;
                     ctx.fillStyle = '#ffffff';
-                    ctx.font = "bold 28px 'Poppins', Arial";
+                    ctx.font = `bold ${px(28)}px 'Poppins', Arial`;
                     ctx.textAlign = 'center';
                     ctx.translate(W / 2, canvas.height / 2);
                     ctx.rotate(-Math.PI / 8);
                     ctx.translate(-W / 2, -canvas.height / 2);
-                    const stepX = 380, stepY = 160;
+                    const stepX = px(380), stepY = px(160);
                     for (let yy = -canvas.height; yy < canvas.height * 1.5; yy += stepY) {
                         for (let xx = -W * 0.5; xx < W * 1.5; xx += stepX) {
                             ctx.fillText('CÓDIGO DENISSA_7U7', xx, yy);
@@ -7354,30 +7410,30 @@
                 // creador en una pill (ahora el TRIPLE de grande) ──
                 ctx.textAlign = 'center';
                 ctx.fillStyle = '#ffffff';
-                ctx.font = "900 78px 'BurbankBigCondensed', Arial";
-                ctx.fillText('SHEGOS STORE', W / 2, 92);
+                ctx.font = `900 ${px(78)}px 'BurbankBigCondensed', Arial`;
+                ctx.fillText('SHEGOS STORE', W / 2, px(92));
 
-                ctx.font = "900 40px 'BurbankBigCondensed', Arial";
+                ctx.font = `900 ${px(40)}px 'BurbankBigCondensed', Arial`;
                 ctx.fillStyle = '#00A676';
-                ctx.fillText('TIENDA DIARIA', W / 2, 136);
+                ctx.fillText('TIENDA DIARIA', W / 2, px(136));
 
                 const fechaHeaderTxt = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase();
-                ctx.font = '600 17px Poppins, Arial';
+                ctx.font = `900 ${px(40)}px 'BurbankBigCondensed', Arial`;
                 ctx.fillStyle = 'rgba(255,255,255,0.75)';
-                ctx.fillText(fechaHeaderTxt, W / 2, 166);
+                ctx.fillText(fechaHeaderTxt, W / 2, px(180));
                 ctx.textAlign = 'left';
 
                 // Pill "Creator code · DENISSA_7U7" arriba a la derecha, TRIPLICADA
-                ctx.font = "bold 72px 'Poppins', Arial";
+                ctx.font = `bold ${px(72)}px 'Poppins', Arial`;
                 const txtCreator = 'Creator code';
                 const txtCodigo = '  DENISSA_7U7';
                 const wCreator = ctx.measureText(txtCreator).width;
-                ctx.font = "900 102px 'BurbankBigCondensed', Arial";
+                ctx.font = `900 ${px(102)}px 'BurbankBigCondensed', Arial`;
                 const wCodigo = ctx.measureText(txtCodigo).width;
-                const pillPadX = 84, pillH = 198;
-                const pillW = wCreator + wCodigo + pillPadX * 2 + 48;
+                const pillPadX = px(84), pillH = px(198);
+                const pillW = wCreator + wCodigo + pillPadX * 2 + px(48);
                 const pillX = W - margin - pillW;
-                const pillY = 46;
+                const pillY = px(46);
                 ctx.save();
                 roundRectPath(ctx, pillX - 4, pillY - 4, pillW + 8, pillH + 8, (pillH + 8) / 2);
                 ctx.fillStyle = '#00A676';
@@ -7389,12 +7445,12 @@
                 ctx.fill();
                 ctx.restore();
                 ctx.textAlign = 'left';
-                ctx.font = "bold 72px 'Poppins', Arial";
+                ctx.font = `bold ${px(72)}px 'Poppins', Arial`;
                 ctx.fillStyle = '#0e1420';
-                ctx.fillText(txtCreator, pillX + pillPadX, pillY + pillH / 2 + 27);
-                ctx.font = "900 102px 'BurbankBigCondensed', Arial";
+                ctx.fillText(txtCreator, pillX + pillPadX, pillY + pillH / 2 + px(27));
+                ctx.font = `900 ${px(102)}px 'BurbankBigCondensed', Arial`;
                 ctx.fillStyle = '#00A676';
-                ctx.fillText(txtCodigo, pillX + pillPadX + wCreator + 24, pillY + pillH / 2 + 36);
+                ctx.fillText(txtCodigo, pillX + pillPadX + wCreator + px(24), pillY + pillH / 2 + px(36));
 
                 // ── Precargar todas las imágenes de los items (sin música), en el mismo
                 // orden en que aparecen en la cuadrícula, para no repetir llamadas de red ──
@@ -7412,12 +7468,15 @@
 
                     const rClass = item.rarityClass || 'common';
                     const info = rarezaInfo[rClass] || rarezaInfo.common;
-                    const colorFondo = rarezaColor[rClass] || rarezaColor.common;
+                    const [colorArriba, colorAbajo] = rarezaGradientes[rClass] || rarezaGradientes.common;
 
                     // Fondo de la tarjeta + borde de acento según la rareza del cosmético
                     ctx.save();
                     roundRectPath(ctx, x, y, cardW, cardH, 0);
-                    ctx.fillStyle = colorFondo;
+                    const gradFondo = ctx.createLinearGradient(x, y, x, y + cardH);
+                    gradFondo.addColorStop(0, colorArriba);
+                    gradFondo.addColorStop(1, colorAbajo);
+                    ctx.fillStyle = gradFondo;
                     ctx.fill();
                     ctx.restore();
 
@@ -7468,19 +7527,19 @@
 
                 // ── Pie de imagen ──
                 ctx.textAlign = 'center';
-                ctx.font = "900 40px 'BurbankBigCondensed', Arial";
+                ctx.font = `900 ${px(40)}px 'BurbankBigCondensed', Arial`;
                 ctx.fillStyle = '#00A676';
-                ctx.fillText('CÓDIGO: DENISSA_7U7', W / 2, canvas.height - 58);
+                ctx.fillText('CÓDIGO: DENISSA_7U7', W / 2, canvas.height - px(58));
 
                 const fechaTxt = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
                 ctx.textAlign = 'left';
-                ctx.font = '15px Arial';
+                ctx.font = `${px(15)}px Arial`;
                 ctx.fillStyle = 'rgba(255,255,255,0.55)';
-                ctx.fillText(fechaTxt, margin, canvas.height - 24);
+                ctx.fillText(fechaTxt, margin, canvas.height - px(24));
                 ctx.textAlign = 'right';
-                ctx.font = "900 26px 'BurbankBigCondensed', Arial";
+                ctx.font = `900 ${px(26)}px 'BurbankBigCondensed', Arial`;
                 ctx.fillStyle = '#4fc3ff';
-                ctx.fillText('shegostore.com', W - margin, canvas.height - 20);
+                ctx.fillText('shegostore.com', W - margin, canvas.height - px(20));
 
                 // ── Entregar la imagen (una sola, con todo organizado por tipo) ──
                 // IMPORTANTE: usamos canvas.toBlob en vez de canvas.toDataURL. Con
@@ -7518,13 +7577,17 @@
                     }
 
                     if (!compartido) {
-                        // Respaldo: navegamos la pestaña ACTUAL a la imagen ya generada.
-                        // Esto no es un popup (no usa window.open), así que ningún
-                        // bloqueador de ventanas emergentes puede impedirlo: el navegador
-                        // siempre permite que la página navegue a sí misma. El usuario
-                        // solo tiene que mantener presionada la imagen y elegir
-                        // "Guardar imagen" (o usar el botón de compartir del navegador).
-                        window.location.href = dataUrl;
+                        // Respaldo definitivo en móvil: subimos la imagen a imgbb.com y
+                        // mostramos un popup con el enlace directo de descarga. Esto ya
+                        // no depende del atributo "download" (que iOS Safari y muchos
+                        // navegadores de Android ignoran para blobs), ni de que el
+                        // usuario adivine cómo guardar una pestaña con una URL "blob:".
+                        try {
+                            await subirImagenAImgbbYMostrarPopup(blob, nombreArchivo);
+                        } catch (errUpload) {
+                            console.warn('No se pudo subir la imagen a imgbb, usando navegación directa como último recurso:', errUpload);
+                            window.location.href = dataUrl;
+                        }
                     }
                 } else {
                     // En escritorio, el atributo "download" funciona sin problema.
@@ -7553,6 +7616,88 @@
                 }
             }
         }
+
+        // ─────────────────────────────────────────────────────────────
+        // RESPALDO PARA MÓVIL: subir la imagen generada a imgbb.com y
+        // mostrar un popup con el enlace directo, para los navegadores de
+        // Android/iPhone que no soportan el share nativo con archivos ni
+        // respetan el atributo "download" en un enlace.
+        //
+        // IMPORTANTE: para que esto funcione hace falta una API key gratuita
+        // de imgbb. Se obtiene en 2 minutos en https://api.imgbb.com/ (inicia
+        // sesión con una cuenta de imgbb.com y copia la "API key"). Pega esa
+        // clave abajo, reemplazando el texto 'PEGA_AQUI_TU_API_KEY_DE_IMGBB'.
+        // Mientras no se configure una clave real, este respaldo se salta
+        // automáticamente y el sitio usa el método anterior (navegar a la
+        // imagen en la misma pestaña).
+        // ─────────────────────────────────────────────────────────────
+        const IMGBB_API_KEY = '7e6f948bead4137505ff728155c90a2a';
+
+        function blobABase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '');
+                reader.onerror = () => reject(new Error('No se pudo leer la imagen para subirla'));
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        async function subirImagenAImgbbYMostrarPopup(blob, nombreArchivo) {
+            if (!IMGBB_API_KEY || IMGBB_API_KEY.indexOf('PEGA_AQUI') === 0) {
+                throw new Error('imgbb no está configurado (falta la API key)');
+            }
+            const base64 = await blobABase64(blob);
+            const formData = new FormData();
+            formData.append('image', base64);
+            formData.append('name', nombreArchivo);
+
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_API_KEY)}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !data || !data.success || !data.data) {
+                throw new Error('imgbb no devolvió una imagen válida');
+            }
+
+            const urlDirecta = data.data.image && data.data.image.url ? data.data.image.url : data.data.url;
+            const urlVisor = data.data.url_viewer || urlDirecta;
+            mostrarPopupDescargaMovil(urlDirecta, urlVisor);
+        }
+
+        // Popup simple, con el mismo estilo oscuro/verde del resto del sitio,
+        // con el enlace directo a la imagen ya subida para que el usuario la
+        // abra y la guarde (mantener presionada > "Guardar imagen").
+        function mostrarPopupDescargaMovil(urlDirecta, urlVisor) {
+            const existente = document.getElementById('popup-descarga-movil');
+            if (existente) existente.remove();
+
+            const overlay = document.createElement('div');
+            overlay.id = 'popup-descarga-movil';
+            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;';
+
+            overlay.innerHTML = `
+                <div style="background:#1c0e22; border:2px solid #00A676; border-radius:15px; padding:28px 24px; width:100%; max-width:380px; text-align:center; box-shadow:0 10px 40px rgba(0,166,118,0.25); position:relative; box-sizing:border-box;">
+                    <button id="popup-descarga-movil-cerrar" style="position:absolute; top:10px; right:14px; background:none; border:none; color:#888; font-size:1.4em; cursor:pointer; line-height:1;">&times;</button>
+                    <i class="fas fa-circle-check" style="color:#00A676; font-size:2.4em; margin-bottom:12px; display:block;"></i>
+                    <h3 style="color:#fff; margin:0 0 10px 0; font-size:1.2em;">¡Tu imagen ya está lista!</h3>
+                    <p style="color:#ccc; font-size:0.9em; line-height:1.5; margin:0 0 20px 0;">
+                        Tu navegador no permite descargarla automáticamente. Toca el botón para abrirla y luego mantén presionada la imagen y elige <strong>"Guardar imagen"</strong>.
+                    </p>
+                    <a href="${urlVisor}" target="_blank" rel="noopener" style="display:block; background:#00A676; color:#12081a; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-decoration:none; padding:14px; border-radius:8px; margin-bottom:10px;">
+                        <i class="fas fa-image"></i> Abrir imagen
+                    </a>
+                    <a href="${urlDirecta}" target="_blank" rel="noopener" style="display:block; color:#00A676; font-size:0.8em; text-decoration:underline;">
+                        O abre el enlace directo aquí
+                    </a>
+                </div>`;
+
+            document.body.appendChild(overlay);
+            const cerrar = () => overlay.remove();
+            overlay.querySelector('#popup-descarga-movil-cerrar').addEventListener('click', cerrar);
+            overlay.addEventListener('click', (ev) => { if (ev.target === overlay) cerrar(); });
+        }
+
 
         // Rota las skins más vendidas/destacadas en la imagen del hero
         function iniciarHeroSkinRotativa(skins) {
