@@ -1811,6 +1811,7 @@ td{padding:12px 14px;vertical-align:middle}
             <i class="fas fa-search vm-client-icon"></i>
             <div id="vc-cliente-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:3000;background:var(--surface2);border:1px solid var(--border2);border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
           </div>
+          <div id="vc-cliente-hint" style="display:none;font-size:0.72em;margin-top:5px"></div>
         </div>
 
         <div class="frow">
@@ -2294,6 +2295,10 @@ async function setupRealtime() {
     })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'catalogo_productos' }, () => {
       fetchCatalogo();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'clientes' }, () => {
+      fetchClientesFromDB();
+      if (activeTab === 'clientes') window.renderClientesTab();
     })
     .subscribe();
 }
@@ -3886,6 +3891,7 @@ function mostrarPanel(email, role) {
   fetchOrders();
   fetchCatalogo();
   fetchTiendaHoy();
+  fetchClientesFromDB();
   setupRealtime();
   cargarSugerenciasClientes();
   loadSavedWallpaper();
@@ -4326,6 +4332,8 @@ function openVentaModal() {
   if (statusEl) statusEl.value = 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
+  const hintEl = document.getElementById('vc-cliente-hint');
+  if (hintEl) hintEl.style.display = 'none';
   const plazoEl = document.getElementById('vc-f-plazo');
   if (plazoEl) {
     plazoEl.value = "0";
@@ -4366,6 +4374,8 @@ window.editVenta = function(id) {
   window.toggleVentaFields();
   // Restore fields
   document.getElementById('vc-f-cliente').value = v.cliente || '';
+  window.ventaClientSearch(v.cliente || '');
+  document.getElementById('vc-cliente-dropdown').style.display = 'none';
   document.getElementById('vc-f-ingreso').value = v.ingreso || '';
   document.getElementById('vc-f-notas').value = v.notas || '';
   document.getElementById('vc-f-producto').value = v.producto || '';
@@ -5785,30 +5795,52 @@ window.loadNotes = loadNotes;
 window.renderNotesList = renderNotesList;
 
 // ═══════════════════════════════════════════════
-// SISTEMA DE CLIENTES (localStorage)
+// SISTEMA DE CLIENTES (Supabase — tabla 'clientes')
 // ═══════════════════════════════════════════════
-const CLIENTES_KEY = 'shegos_clientes_v1';
+let clientesCache = [];
+
+async function fetchClientesFromDB() {
+  try {
+    const { data, error } = await supabase
+      .from('clientes')
+      .select('*')
+      .order('updated_at', { ascending: false });
+    if (error) throw error;
+    clientesCache = (data || []).map(c => ({
+      id: c.id,
+      nombre: c.nombre,
+      wa: c.wa || '',
+      metodo: c.metodo || '',
+      updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now()
+    }));
+  } catch (err) {
+    console.error('No se pudieron cargar los clientes:', err?.message || err);
+  }
+  return clientesCache;
+}
 
 function getClientes() {
-  try { return JSON.parse(localStorage.getItem(CLIENTES_KEY) || '[]'); } catch(e) { return []; }
+  return clientesCache;
 }
 
-function saveClientes(arr) {
-  localStorage.setItem(CLIENTES_KEY, JSON.stringify(arr));
-}
-
-function upsertCliente(nombre, wa, metodo) {
+async function upsertCliente(nombre, wa, metodo) {
   if (!nombre) return;
-  const clientes = getClientes();
-  const idx = clientes.findIndex(c => c.nombre.toLowerCase() === nombre.toLowerCase());
-  if (idx >= 0) {
-    if (wa) clientes[idx].wa = wa;
-    if (metodo) clientes[idx].metodo = metodo;
-    clientes[idx].updated = Date.now();
-  } else {
-    clientes.unshift({ nombre, wa: wa||'', metodo: metodo||'', updated: Date.now() });
+  const existing = clientesCache.find(c => c.nombre.toLowerCase() === nombre.toLowerCase());
+  try {
+    if (existing) {
+      const patch = { updated_at: new Date().toISOString() };
+      if (wa) patch.wa = wa;
+      if (metodo) patch.metodo = metodo;
+      const { error } = await supabase.from('clientes').update(patch).eq('id', existing.id);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '' }]);
+      if (error) throw error;
+    }
+    await fetchClientesFromDB();
+  } catch (err) {
+    console.error('Error guardando cliente:', err?.message || err);
   }
-  saveClientes(clientes);
 }
 
 function getClienteSuggestions(query) {
@@ -5853,14 +5885,33 @@ window.orderClientSearch = function(val) {
 // Autocomplete en modal de Ventas
 window.ventaClientSearch = function(val) {
   const dropEl = document.getElementById('vc-cliente-dropdown');
-  if (!dropEl) return;
-  const suggestions = getClienteSuggestions(val);
-  renderClienteDropdown(dropEl, suggestions, (c) => {
-    document.getElementById('vc-f-cliente').value = c.nombre;
-    if (c.wa) { const el = document.getElementById('vc-f-wa'); if(el) el.value = c.wa; }
-    if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; }
-    dropEl.style.display = 'none';
-  });
+  const hintEl = document.getElementById('vc-cliente-hint');
+  if (dropEl) {
+    const suggestions = getClienteSuggestions(val);
+    renderClienteDropdown(dropEl, suggestions, (c) => {
+      document.getElementById('vc-f-cliente').value = c.nombre;
+      if (c.wa) { const el = document.getElementById('vc-f-wa'); if(el) el.value = c.wa; }
+      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; }
+      dropEl.style.display = 'none';
+      window.ventaClientSearch(c.nombre);
+    });
+  }
+  if (hintEl) {
+    const nombre = (val || '').trim();
+    if (!nombre) {
+      hintEl.style.display = 'none';
+    } else {
+      const exact = clientesCache.find(c => c.nombre.toLowerCase() === nombre.toLowerCase());
+      hintEl.style.display = 'block';
+      if (exact) {
+        hintEl.style.color = 'var(--accent)';
+        hintEl.innerHTML = `<i class="fas fa-check-circle"></i> Cliente ya registrado — se actualizará su info si cambias algo`;
+      } else {
+        hintEl.style.color = '#f97316';
+        hintEl.innerHTML = `<i class="fas fa-user-plus"></i> Cliente nuevo — se guardará automáticamente al confirmar la venta`;
+      }
+    }
+  }
 };
 
 // Al guardar pedido, guardar cliente
@@ -5869,7 +5920,7 @@ window.saveOrder = async function() {
   const nombre = document.getElementById('f-name')?.value?.trim();
   const wa = document.getElementById('f-phone')?.value?.trim();
   const metodo = document.getElementById('f-payment')?.value?.trim();
-  if (nombre) upsertCliente(nombre, wa, metodo);
+  if (nombre) await upsertCliente(nombre, wa, metodo);
   return _origSaveOrder?.apply(this, arguments);
 };
 
@@ -5879,17 +5930,20 @@ window.saveVenta = async function() {
   const nombre = document.getElementById('vc-f-cliente')?.value?.trim();
   const wa = document.getElementById('vc-f-wa')?.value?.trim();
   const metodo = document.getElementById('vc-f-metodo')?.value?.trim();
-  if (nombre) upsertCliente(nombre, wa, metodo);
+  if (nombre) await upsertCliente(nombre, wa, metodo);
   return _origSaveVenta?.apply(this, arguments);
 };
 
 // ═══════════════════════════════════════════════
 // RENDER TAB CLIENTES
 // ═══════════════════════════════════════════════
-window.renderClientesTab = function() {
+window.renderClientesTab = async function() {
   const area = document.getElementById('cli-table-area');
   const badge = document.getElementById('cli-count-badge');
   if (!area) return;
+
+  area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando clientes...</p></div>`;
+  await fetchClientesFromDB();
 
   const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
   let clientes = getClientes();
@@ -5945,10 +5999,10 @@ window.renderClientesTab = function() {
               </td>
               <td data-label="Acciones">
                 <div class="td-act">
-                  <button class="ibtn" title="Editar cliente" onclick="window.editClienteModal(${i})">
+                  <button class="ibtn" title="Editar cliente" onclick="window.editClienteModal('${c.id}')">
                     <i class="fas fa-pen"></i>
                   </button>
-                  <button class="ibtn del" title="Eliminar cliente" onclick="window.deleteCliente(${i})">
+                  <button class="ibtn del" title="Eliminar cliente" onclick="window.deleteCliente('${c.id}')">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </div>
@@ -5961,39 +6015,34 @@ window.renderClientesTab = function() {
   `;
 };
 
-window.editClienteModal = function(idx) {
-  const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
-  let clientes = getClientes();
-  if (query) clientes = clientes.filter(c => c.nombre.toLowerCase().includes(query) || (c.wa||'').includes(query));
-  const c = clientes[idx];
+window.editClienteModal = function(id) {
+  const c = clientesCache.find(cl => String(cl.id) === String(id));
   if (!c) return;
-
-  // Find real index in full list
-  const allClientes = getClientes();
-  const realIdx = allClientes.findIndex(cl => cl.nombre === c.nombre);
 
   document.getElementById('ac-nombre').value = c.nombre;
   document.getElementById('ac-wa').value = c.wa || '';
   document.getElementById('ac-metodo').value = c.metodo || '';
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
-  // Store real index for editing
-  document.getElementById('modal-add-cliente').dataset.editIdx = realIdx;
+  // Store real id for editing
+  document.getElementById('modal-add-cliente').dataset.editId = c.id;
   document.getElementById('modal-add-cliente').querySelector('.mtitle').innerHTML = '<i class="fas fa-user-pen" style="margin-right:8px"></i>Editar Cliente';
   document.getElementById('modal-add-cliente').classList.add('open');
   setTimeout(() => document.getElementById('ac-nombre').focus(), 100);
 };
 
-window.deleteCliente = function(idx) {
-  const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
-  let clientes = getClientes();
-  const filtered = query ? clientes.filter(c => c.nombre.toLowerCase().includes(query) || (c.wa||'').includes(query)) : clientes;
-  const c = filtered[idx];
+window.deleteCliente = async function(id) {
+  const c = clientesCache.find(cl => String(cl.id) === String(id));
   if (!c) return;
   if (!confirm(`¿Eliminar al cliente "${c.nombre}"?`)) return;
-  const updated = clientes.filter(cl => cl.nombre !== c.nombre);
-  saveClientes(updated);
-  showToast(`Cliente "${c.nombre}" eliminado`);
+  try {
+    const { error } = await supabase.from('clientes').delete().eq('id', id);
+    if (error) throw error;
+    showToast(`Cliente "${c.nombre}" eliminado`);
+  } catch (err) {
+    showToast('Error al eliminar cliente', true);
+    console.error(err);
+  }
   window.renderClientesTab();
 };
 
@@ -6136,7 +6185,7 @@ window.openAddClienteModal = function() {
   document.getElementById('ac-metodo').value = '';
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
-  delete document.getElementById('modal-add-cliente').dataset.editIdx;
+  delete document.getElementById('modal-add-cliente').dataset.editId;
   document.getElementById('modal-add-cliente').querySelector('.mtitle').innerHTML = '<i class="fas fa-user-plus" style="margin-right:8px"></i>Agregar Cliente';
   document.getElementById('modal-add-cliente').classList.add('open');
   setTimeout(() => document.getElementById('ac-nombre').focus(), 100);
@@ -6146,7 +6195,7 @@ window.closeAddClienteModal = function() {
   document.getElementById('modal-add-cliente').classList.remove('open');
 };
 
-window.saveAddCliente = function() {
+window.saveAddCliente = async function() {
   const nombre = document.getElementById('ac-nombre').value.trim();
   const wa = document.getElementById('ac-wa').value.trim();
   const metodo = document.getElementById('ac-metodo').value;
@@ -6157,19 +6206,24 @@ window.saveAddCliente = function() {
     return;
   }
   const modal = document.getElementById('modal-add-cliente');
-  const editIdx = modal.dataset.editIdx !== undefined ? parseInt(modal.dataset.editIdx) : -1;
-  if (editIdx >= 0) {
-    // Edit mode: update record directly
-    const clientes = getClientes();
-    if (clientes[editIdx]) {
-      clientes[editIdx].nombre = nombre;
-      if (wa) clientes[editIdx].wa = wa;
-      if (metodo) clientes[editIdx].metodo = metodo;
-      clientes[editIdx].updated = Date.now();
-      saveClientes(clientes);
+  const editId = modal.dataset.editId;
+  try {
+    if (editId) {
+      // Edit mode: update record directly by id
+      const patch = { nombre, updated_at: new Date().toISOString() };
+      if (wa) patch.wa = wa;
+      if (metodo) patch.metodo = metodo;
+      const { error } = await supabase.from('clientes').update(patch).eq('id', editId);
+      if (error) throw error;
+      await fetchClientesFromDB();
+    } else {
+      await upsertCliente(nombre, wa, metodo);
     }
-  } else {
-    upsertCliente(nombre, wa, metodo);
+  } catch (err) {
+    msg.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
+    msg.textContent = 'Error al guardar: ' + (err?.message || 'desconocido');
+    console.error(err);
+    return;
   }
   msg.style.cssText = 'display:block;background:rgba(40,254,182,.08);color:var(--accent);border:1px solid rgba(40,254,182,.25)';
   msg.textContent = `✓ Cliente "${nombre}" guardado correctamente.`;
