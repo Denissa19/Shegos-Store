@@ -1376,6 +1376,7 @@ td{padding:12px 14px;vertical-align:middle}
             <option value="paypal">PayPal</option>
             <option value="popular">Banco Popular</option>
             <option value="binance">Binance Pay</option>
+            <option value="remitly">Remitly</option>
             <option value="transferencia_mx">Transferencia MX</option>
           </select>
         </div>
@@ -1827,6 +1828,7 @@ td{padding:12px 14px;vertical-align:middle}
               <option value="paypal">PayPal</option>
               <option value="popular">Banco Popular</option>
               <option value="binance">Binance Pay</option>
+              <option value="remitly">Remitly</option>
               <option value="transferencia_mx">Transferencia MX</option>
             </select>
           </div>
@@ -5825,6 +5827,10 @@ function getClientes() {
 
 async function upsertCliente(nombre, wa, metodo) {
   if (!nombre) return;
+  // Refrescamos la caché antes de decidir insert vs update, para evitar
+  // fallos silenciosos por restricción única cuando la caché local está desactualizada
+  // (p.ej. el cliente fue creado en otra sesión/dispositivo).
+  await fetchClientesFromDB();
   const existing = clientesCache.find(c => c.nombre.toLowerCase() === nombre.toLowerCase());
   try {
     if (existing) {
@@ -5835,11 +5841,26 @@ async function upsertCliente(nombre, wa, metodo) {
       if (error) throw error;
     } else {
       const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '' }]);
-      if (error) throw error;
+      if (error) {
+        // Código 23505 = violación de restricción única (el cliente ya existe en la DB
+        // aunque no estuviera en la caché local). En ese caso, intentamos actualizar en vez de fallar.
+        if (error.code === '23505') {
+          const patch = { updated_at: new Date().toISOString() };
+          if (wa) patch.wa = wa;
+          if (metodo) patch.metodo = metodo;
+          const { error: updErr } = await supabase.from('clientes').update(patch).ilike('nombre', nombre);
+          if (updErr) throw updErr;
+        } else {
+          throw error;
+        }
+      }
     }
     await fetchClientesFromDB();
   } catch (err) {
     console.error('Error guardando cliente:', err?.message || err);
+    if (typeof showToast === 'function') {
+      showToast('No se pudo guardar el cliente automáticamente: ' + (err?.message || 'error desconocido'), true);
+    }
   }
 }
 
@@ -5961,7 +5982,7 @@ window.renderClientesTab = async function() {
     return;
   }
 
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
 
   area.innerHTML = `
     <div class="table-wrap">
@@ -6049,7 +6070,7 @@ window.deleteCliente = async function(id) {
 window.exportClientesCSV = function() {
   const clientes = getClientes();
   if (!clientes.length) { showToast('No hay clientes para exportar', true); return; }
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
   const rows = [['Nombre','WhatsApp','Método de Pago','Último Registro']];
   clientes.forEach(c => {
     rows.push([
@@ -6297,7 +6318,7 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
   if (!grid) return;
 
   const ingresos = ingresosPorMetodo || {};
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', transferencia_mx:'Transfer MX' };
+  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
 
   const retiros = await cargarRetiros();
   const retirosPorMetodo = {};
@@ -6305,7 +6326,7 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
     retirosPorMetodo[r.metodo_pago] = (retirosPorMetodo[r.metodo_pago] || 0) + (parseFloat(r.monto) || 0);
   });
 
-  const COLORS = { link:'var(--blue)', paypal:'#0070ba', popular:'var(--red)', binance:'#f0b90b', transferencia_mx:'#a855f7' };
+  const COLORS = { link:'var(--blue)', paypal:'#0070ba', popular:'var(--red)', binance:'#f0b90b', remitly:'#00b2a0', transferencia_mx:'#a855f7' };
 
   if (Object.keys(ingresos).length === 0) {
     grid.innerHTML = `<div style="font-size:0.8em;color:var(--text3)">No hay ingresos registrados aún.</div>`;
@@ -6374,8 +6395,8 @@ window.deleteRetiro = function(id) {
 // ─── GRÁFICA + TABLA COMPLETA DE RETIROS ────────────────────────────────────
 async function renderRetirosSection() {
   const retiros = _retirosCache.length ? _retirosCache : await cargarRetiros();
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', transferencia_mx:'Transfer MX' };
-  const COLORS_MAP = { link:'#5865F2', paypal:'#0070ba', popular:'#ff4d6d', binance:'#f0b90b', transferencia_mx:'#a855f7' };
+  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
+  const COLORS_MAP = { link:'#5865F2', paypal:'#0070ba', popular:'#ff4d6d', binance:'#f0b90b', remitly:'#00b2a0', transferencia_mx:'#a855f7' };
   const FALLBACK_COLORS = ['#f97316','#28feb6','#ec4899','#14b8a6','#facc15'];
 
   const canvas = document.getElementById('retiros-pie-chart');
@@ -6509,6 +6530,7 @@ window.resetWallpaper = function() {
           <option value="paypal">PayPal</option>
           <option value="popular">Banco Popular</option>
           <option value="binance">Binance Pay</option>
+          <option value="remitly">Remitly</option>
           <option value="transferencia_mx">Transferencia MX</option>
         </select>
       </div>
@@ -6610,6 +6632,7 @@ window.resetWallpaper = function() {
             <option value="paypal">PayPal</option>
             <option value="popular">Banco Popular</option>
             <option value="binance">Binance Pay</option>
+            <option value="remitly">Remitly</option>
             <option value="transferencia_mx">Transferencia MX</option>
           </select>
         </div>
