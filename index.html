@@ -7655,8 +7655,14 @@
                         try {
                             await subirImagenAImgbbYMostrarPopup(blob, nombreArchivo);
                         } catch (errUpload) {
-                            console.warn('No se pudo subir la imagen a imgbb, usando navegación directa como último recurso:', errUpload);
-                            window.location.href = dataUrl;
+                            // Si falla la subida a imgbb (sin internet, imgbb caído, API key
+                            // no configurada, etc.) NO nos quedamos en silencio: mostramos el
+                            // mismo popup de "¡Tu imagen ya está lista!" pero apuntando al
+                            // blob local en vez del enlace de imgbb. Así el usuario siempre
+                            // ve una pantalla clara con instrucciones para guardar la imagen,
+                            // en vez de que la descarga "no haga nada" sin explicación.
+                            console.warn('No se pudo subir la imagen a imgbb, usando el blob local como último recurso:', errUpload);
+                            mostrarPopupDescargaMovil(dataUrl, dataUrl);
                         }
                     }
                 } else {
