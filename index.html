@@ -7721,9 +7721,13 @@
                     <button id="popup-descarga-movil-compartir" type="button" style="display:block; width:100%; background:#00A676; color:#12081a; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; border:none; padding:14px; border-radius:8px; margin-bottom:10px; cursor:pointer; font-size:0.9em;">
                         <i class="fas fa-share-nodes"></i> Compartir / Guardar
                     </button>
-                    <a href="${urlImagen}" target="_blank" rel="noopener" style="display:block; color:#00A676; font-size:0.8em; text-decoration:underline;">
+                    <a href="${urlImagen}" target="_blank" rel="noopener" style="display:block; color:#00A676; font-size:0.8em; text-decoration:underline; margin-bottom:12px;">
                         Abrir en una pestaña nueva
                     </a>
+                    <button id="popup-descarga-movil-imgbb" type="button" style="display:block; width:100%; background:transparent; color:#00A676; font-weight:700; border:1.5px solid #00A676; padding:12px; border-radius:8px; cursor:pointer; font-size:0.85em;">
+                        <i class="fas fa-image"></i> Abrir imagen en imgbb
+                    </button>
+                    <p id="popup-descarga-movil-imgbb-msg" style="color:#999; font-size:0.75em; margin:8px 0 0 0;"></p>
                 </div>`;
 
             document.body.appendChild(overlay);
@@ -7763,6 +7767,74 @@
                 // la pulsación larga sobre la imagen de arriba.
                 alert('Tu navegador no permite compartir directamente. Mantén presionada la imagen de arriba y elige "Guardar imagen".');
             });
+
+            // Opción adicional: subir la imagen a imgbb.com y abrir el enlace
+            // directo en una pestaña nueva. Es un método aparte del principal
+            // (la pulsación larga sobre la imagen de arriba), útil para
+            // navegadores donde guardar directo de la vista previa cuesta más
+            // (por ejemplo, navegadores dentro de apps como Instagram/Facebook)
+            // o simplemente para tener un enlace que se pueda compartir.
+            const btnImgbb = overlay.querySelector('#popup-descarga-movil-imgbb');
+            const msgImgbb = overlay.querySelector('#popup-descarga-movil-imgbb-msg');
+            btnImgbb.addEventListener('click', async () => {
+                const textoOriginalBtn = btnImgbb.innerHTML;
+                btnImgbb.disabled = true;
+                btnImgbb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+                msgImgbb.textContent = '';
+                try {
+                    const urlDirecta = await subirImagenAImgbb(blob, nombreArchivo);
+                    window.open(urlDirecta, '_blank', 'noopener');
+                    msgImgbb.innerHTML = `Imagen subida. Si no se abrió sola: <a href="${urlDirecta}" target="_blank" rel="noopener" style="color:#00A676;">toca aquí</a>.`;
+                } catch (errImgbb) {
+                    console.warn('No se pudo subir la imagen a imgbb:', errImgbb);
+                    msgImgbb.textContent = 'No se pudo subir la imagen a imgbb. Usa la pulsación larga sobre la imagen de arriba.';
+                } finally {
+                    btnImgbb.disabled = false;
+                    btnImgbb.innerHTML = textoOriginalBtn;
+                }
+            });
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // OPCIÓN ADICIONAL: subir la imagen generada a imgbb.com y devolver
+        // el enlace directo. Requiere una API key gratuita de imgbb, que se
+        // obtiene en https://api.imgbb.com/ (inicia sesión con una cuenta de
+        // imgbb.com y copia la "API key"). Si no hay clave configurada, esta
+        // opción simplemente falla y el botón muestra un aviso, sin afectar
+        // el método principal de guardado (pulsación larga sobre la imagen).
+        // ─────────────────────────────────────────────────────────────
+        const IMGBB_API_KEY = '7e6f948bead4137505ff728155c90a2a';
+
+        function blobABase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '');
+                reader.onerror = () => reject(new Error('No se pudo leer la imagen para subirla'));
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        async function subirImagenAImgbb(blob, nombreArchivo) {
+            if (!IMGBB_API_KEY || IMGBB_API_KEY.indexOf('PEGA_AQUI') === 0) {
+                throw new Error('imgbb no está configurado (falta la API key)');
+            }
+            const base64 = await blobABase64(blob);
+            const formData = new FormData();
+            formData.append('image', base64);
+            formData.append('name', nombreArchivo);
+
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_API_KEY)}`, {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !data || !data.success || !data.data) {
+                throw new Error('imgbb no devolvió una imagen válida');
+            }
+
+            const urlDirecta = data.data.image && data.data.image.url ? data.data.image.url : data.data.url;
+            const urlVisor = data.data.url_viewer || urlDirecta;
+            return urlVisor;
         }
 
 
