@@ -7626,45 +7626,30 @@
                 const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.png`;
 
                 if (esMobile) {
-                    // Método principal en móvil: la API nativa de "Compartir" de
-                    // iOS/Android. Abre el selector nativo del sistema, que ya
-                    // incluye la opción "Guardar imagen" directo a la galería.
-                    let compartido = false;
-                    try {
-                        const file = new File([blob], nombreArchivo, { type: 'image/png' });
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Tienda Shegos Store',
-                                text: 'Tienda de Fortnite de hoy - shegostore.com'
-                            });
-                            compartido = true;
-                        }
-                    } catch (errShare) {
-                        // Si el usuario cancela el menú de compartir, no es un error
-                        // real: simplemente seguimos con el método de respaldo.
-                        console.warn('No se pudo usar el share nativo:', errShare);
-                    }
-
-                    if (!compartido) {
-                        // Respaldo definitivo en móvil: subimos la imagen a imgbb.com y
-                        // mostramos un popup con el enlace directo de descarga. Esto ya
-                        // no depende del atributo "download" (que iOS Safari y muchos
-                        // navegadores de Android ignoran para blobs), ni de que el
-                        // usuario adivine cómo guardar una pestaña con una URL "blob:".
-                        try {
-                            await subirImagenAImgbbYMostrarPopup(blob, nombreArchivo);
-                        } catch (errUpload) {
-                            // Si falla la subida a imgbb (sin internet, imgbb caído, API key
-                            // no configurada, etc.) NO nos quedamos en silencio: mostramos el
-                            // mismo popup de "¡Tu imagen ya está lista!" pero apuntando al
-                            // blob local en vez del enlace de imgbb. Así el usuario siempre
-                            // ve una pantalla clara con instrucciones para guardar la imagen,
-                            // en vez de que la descarga "no haga nada" sin explicación.
-                            console.warn('No se pudo subir la imagen a imgbb, usando el blob local como último recurso:', errUpload);
-                            mostrarPopupDescargaMovil(dataUrl, dataUrl);
-                        }
-                    }
+                    // ── MÓVIL: mostramos la imagen directamente en un modal, lista
+                    // para guardar con una pulsación larga. ──
+                    //
+                    // Por qué se reestructuró por completo: el método anterior
+                    // llamaba a navigator.share() al final de una cadena larga de
+                    // "await" (cargar cada imagen, dibujar el canvas, generar el
+                    // blob...). Para cuando esa llamada finalmente se ejecutaba, la
+                    // mayoría de los navegadores de Android/iOS ya no consideraban
+                    // que seguía en curso el toque original del usuario sobre el
+                    // botón ("user activation" vencida), así que el navegador
+                    // bloqueaba el share EN SILENCIO (sin lanzar ni un error visible
+                    // en muchos casos) y el botón quedaba "estático", sin hacer nada.
+                    //
+                    // La solución: en vez de intentar disparar el share/descarga de
+                    // forma automática, mostramos la imagen ya lista dentro de un
+                    // <img> en un popup. Guardar una imagen que ya está en pantalla
+                    // con una pulsación larga ("Guardar imagen") es una función del
+                    // propio navegador/sistema operativo, no depende de ningún
+                    // permiso ni de un gesto de usuario "todavía vigente", así que
+                    // funciona siempre, en cualquier navegador móvil. Además, dentro
+                    // del popup añadimos un botón de "Compartir" que si el usuario
+                    // lo toca, SÍ dispara navigator.share con un gesto de usuario
+                    // fresco y válido (el toque que acaba de hacer sobre ese botón).
+                    mostrarModalImagenParaGuardar(dataUrl, blob, nombreArchivo);
                 } else {
                     // En escritorio, el atributo "download" funciona sin problema.
                     const a = document.createElement('a');
@@ -7673,11 +7658,16 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                }
 
-                // Liberamos el object URL un poco después, dando tiempo a que la
-                // descarga/compartir/ventana ya lo hayan tomado.
-                setTimeout(() => { try { URL.revokeObjectURL(dataUrl); } catch (eRevoke) {} }, 60000);
+                    // En escritorio liberamos el object URL un poco después, dando
+                    // tiempo a que la descarga ya lo haya tomado. En móvil NO lo
+                    // revocamos aquí: el modal puede quedar abierto más de un
+                    // minuto mientras el usuario decide cómo guardar la imagen, y
+                    // revocarlo de golpe rompería el <img> que sigue en pantalla.
+                    // En móvil, mostrarModalImagenParaGuardar() se encarga de
+                    // revocarlo cuando el usuario cierra el popup.
+                    setTimeout(() => { try { URL.revokeObjectURL(dataUrl); } catch (eRevoke) {} }, 60000);
+                }
 
             } catch (e) {
                 console.error('Error generando imagen de la tienda:', e);
@@ -7694,84 +7684,85 @@
         }
 
         // ─────────────────────────────────────────────────────────────
-        // RESPALDO PARA MÓVIL: subir la imagen generada a imgbb.com y
-        // mostrar un popup con el enlace directo, para los navegadores de
-        // Android/iPhone que no soportan el share nativo con archivos ni
-        // respetan el atributo "download" en un enlace.
+        // MODAL DE GUARDADO PARA MÓVIL
         //
-        // IMPORTANTE: para que esto funcione hace falta una API key gratuita
-        // de imgbb. Se obtiene en 2 minutos en https://api.imgbb.com/ (inicia
-        // sesión con una cuenta de imgbb.com y copia la "API key"). Pega esa
-        // clave abajo, reemplazando el texto 'PEGA_AQUI_TU_API_KEY_DE_IMGBB'.
-        // Mientras no se configure una clave real, este respaldo se salta
-        // automáticamente y el sitio usa el método anterior (navegar a la
-        // imagen en la misma pestaña).
+        // Muestra la imagen de la tienda ya generada dentro de un <img> en
+        // pantalla, para que el usuario la guarde con una pulsación larga
+        // ("Guardar imagen" / "Descargar imagen"), que es la única forma de
+        // guardar una imagen que funciona de manera universal en TODOS los
+        // navegadores móviles (Safari de iPhone, Chrome/Samsung Internet de
+        // Android, navegadores dentro de apps como Instagram/Facebook, etc.),
+        // sin depender de permisos, servicios externos ni de que el "gesto
+        // de usuario" del toque original siga vigente.
+        //
+        // Además incluye un botón de "Compartir" que si el usuario lo toca,
+        // sí dispara navigator.share() con un gesto de usuario fresco (el
+        // toque que el usuario acaba de hacer sobre ESE botón), lo que
+        // permite además guardar directo en galería o reenviar por WhatsApp,
+        // etc., en los navegadores que lo soportan.
         // ─────────────────────────────────────────────────────────────
-        const IMGBB_API_KEY = '7e6f948bead4137505ff728155c90a2a';
-
-        function blobABase64(blob) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onloadend = () => resolve(String(reader.result).split(',')[1] || '');
-                reader.onerror = () => reject(new Error('No se pudo leer la imagen para subirla'));
-                reader.readAsDataURL(blob);
-            });
-        }
-
-        async function subirImagenAImgbbYMostrarPopup(blob, nombreArchivo) {
-            if (!IMGBB_API_KEY || IMGBB_API_KEY.indexOf('PEGA_AQUI') === 0) {
-                throw new Error('imgbb no está configurado (falta la API key)');
-            }
-            const base64 = await blobABase64(blob);
-            const formData = new FormData();
-            formData.append('image', base64);
-            formData.append('name', nombreArchivo);
-
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_API_KEY)}`, {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json().catch(() => null);
-            if (!res.ok || !data || !data.success || !data.data) {
-                throw new Error('imgbb no devolvió una imagen válida');
-            }
-
-            const urlDirecta = data.data.image && data.data.image.url ? data.data.image.url : data.data.url;
-            const urlVisor = data.data.url_viewer || urlDirecta;
-            mostrarPopupDescargaMovil(urlDirecta, urlVisor);
-        }
-
-        // Popup simple, con el mismo estilo oscuro/verde del resto del sitio,
-        // con el enlace directo a la imagen ya subida para que el usuario la
-        // abra y la guarde (mantener presionada > "Guardar imagen").
-        function mostrarPopupDescargaMovil(urlDirecta, urlVisor) {
+        function mostrarModalImagenParaGuardar(urlImagen, blob, nombreArchivo) {
             const existente = document.getElementById('popup-descarga-movil');
             if (existente) existente.remove();
 
             const overlay = document.createElement('div');
             overlay.id = 'popup-descarga-movil';
-            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;';
+            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box;';
 
             overlay.innerHTML = `
-                <div style="background:#1c0e22; border:2px solid #00A676; border-radius:15px; padding:28px 24px; width:100%; max-width:380px; text-align:center; box-shadow:0 10px 40px rgba(0,166,118,0.25); position:relative; box-sizing:border-box;">
-                    <button id="popup-descarga-movil-cerrar" style="position:absolute; top:10px; right:14px; background:none; border:none; color:#888; font-size:1.4em; cursor:pointer; line-height:1;">&times;</button>
-                    <i class="fas fa-circle-check" style="color:#00A676; font-size:2.4em; margin-bottom:12px; display:block;"></i>
-                    <h3 style="color:#fff; margin:0 0 10px 0; font-size:1.2em;">¡Tu imagen ya está lista!</h3>
-                    <p style="color:#ccc; font-size:0.9em; line-height:1.5; margin:0 0 20px 0;">
-                        Tu navegador no permite descargarla automáticamente. Toca el botón para abrirla y luego mantén presionada la imagen y elige <strong>"Guardar imagen"</strong>.
+                <div style="background:#1c0e22; border:2px solid #00A676; border-radius:15px; padding:20px 18px; width:100%; max-width:420px; max-height:92vh; overflow-y:auto; text-align:center; box-shadow:0 10px 40px rgba(0,166,118,0.25); position:relative; box-sizing:border-box;">
+                    <button id="popup-descarga-movil-cerrar" style="position:absolute; top:8px; right:12px; background:none; border:none; color:#888; font-size:1.6em; cursor:pointer; line-height:1; z-index:2;">&times;</button>
+                    <i class="fas fa-circle-check" style="color:#00A676; font-size:2em; margin:6px 0 8px 0; display:block;"></i>
+                    <h3 style="color:#fff; margin:0 0 8px 0; font-size:1.15em;">¡Tu imagen ya está lista!</h3>
+                    <p style="color:#ccc; font-size:0.85em; line-height:1.45; margin:0 0 14px 0;">
+                        Mantén presionada la imagen de abajo y elige <strong>"Guardar imagen"</strong> (o "Descargar imagen").
                     </p>
-                    <a href="${urlVisor}" target="_blank" rel="noopener" style="display:block; background:#00A676; color:#12081a; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; text-decoration:none; padding:14px; border-radius:8px; margin-bottom:10px;">
-                        <i class="fas fa-image"></i> Abrir imagen
-                    </a>
-                    <a href="${urlDirecta}" target="_blank" rel="noopener" style="display:block; color:#00A676; font-size:0.8em; text-decoration:underline;">
-                        O abre el enlace directo aquí
+                    <img id="popup-descarga-movil-img" src="${urlImagen}" alt="Tienda Shegos Store" style="width:100%; height:auto; border-radius:10px; border:1px solid rgba(0,166,118,0.4); display:block; margin-bottom:16px;">
+                    <button id="popup-descarga-movil-compartir" type="button" style="display:block; width:100%; background:#00A676; color:#12081a; font-weight:800; text-transform:uppercase; letter-spacing:0.5px; border:none; padding:14px; border-radius:8px; margin-bottom:10px; cursor:pointer; font-size:0.9em;">
+                        <i class="fas fa-share-nodes"></i> Compartir / Guardar
+                    </button>
+                    <a href="${urlImagen}" target="_blank" rel="noopener" style="display:block; color:#00A676; font-size:0.8em; text-decoration:underline;">
+                        Abrir en una pestaña nueva
                     </a>
                 </div>`;
 
             document.body.appendChild(overlay);
-            const cerrar = () => overlay.remove();
+
+            const cerrar = () => {
+                overlay.remove();
+                // Ahora sí liberamos el object URL: el usuario ya cerró el modal,
+                // así que la imagen visible ya no lo necesita.
+                try { URL.revokeObjectURL(urlImagen); } catch (eRevoke) {}
+            };
             overlay.querySelector('#popup-descarga-movil-cerrar').addEventListener('click', cerrar);
             overlay.addEventListener('click', (ev) => { if (ev.target === overlay) cerrar(); });
+
+            const btnCompartir = overlay.querySelector('#popup-descarga-movil-compartir');
+            btnCompartir.addEventListener('click', async () => {
+                // Este toque es un gesto de usuario NUEVO y directo sobre este
+                // mismo botón (no viene de en medio de una cadena larga de
+                // "await" como antes), así que aquí navigator.share() sí es
+                // confiable en los navegadores que lo soportan.
+                try {
+                    const file = new File([blob], nombreArchivo, { type: 'image/png' });
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Tienda Shegos Store',
+                            text: 'Tienda de Fortnite de hoy - shegostore.com'
+                        });
+                        return;
+                    }
+                } catch (errShare) {
+                    // Si el usuario cancela el menú de compartir, no es un error
+                    // real: la imagen sigue visible arriba para guardarla a mano.
+                    console.warn('No se pudo compartir:', errShare);
+                    return;
+                }
+                // Si el navegador no soporta compartir archivos, avisamos que use
+                // la pulsación larga sobre la imagen de arriba.
+                alert('Tu navegador no permite compartir directamente. Mantén presionada la imagen de arriba y elige "Guardar imagen".');
+            });
         }
 
 
