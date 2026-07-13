@@ -991,6 +991,18 @@
             z-index: 0;
             overflow: hidden;
             background-color: transparent;
+            /* Es un fondo puramente decorativo (no tiene nada clickeable adentro),
+               pero al ser "position: fixed" cubre TODA la pantalla en todo momento,
+               sin importar el scroll. En desktop no se notaba porque los botones y
+               textos del hero tienen su propio z-index más alto, pero en móvil la
+               sección "Tienda de Hoy" se mueve más arriba en el DOM (ver
+               colocarTiendaHome()) y quedaba por debajo de este fondo en el orden
+               de apilamiento, así que sus toques nunca llegaban al botón de
+               descargar la imagen (ni a nada más que estuviera debajo). Con
+               pointer-events:none los toques lo atraviesan sin afectar el fondo
+               visual, que sigue viéndose exactamente igual.
+            */
+            pointer-events: none;
         }
         .hero-text { position: relative; z-index: 2; flex: 1; max-width: 820px; order: 1; }
         .hero-eyebrow { display: block; color: #ffffff; text-transform: uppercase; letter-spacing: 4px; font-weight: 800; font-size: 0.95em; margin-bottom: 6px; }
