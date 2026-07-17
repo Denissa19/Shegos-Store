@@ -1821,14 +1821,20 @@
             border-radius: 12px; 
             padding: 20px; 
             width: 260px; 
+            height: 100%;
             display: flex; 
             flex-direction: column; 
             transition: transform 0.3s ease;
             text-align: center;
+            box-sizing: border-box;
         }
         .servicio-card:hover { transform: translateY(-5px); }
         .servicio-card strong { margin: 15px 0 12px 0; font-size: 1.1em; color: #fff; display: block; }
         .servicio-card .precio-producto { margin-bottom: 25px; display: block; }
+        /* Empuja el botón "+ Carrito" al fondo de la tarjeta, para que tarjetas
+           con nombres/precios de distinto largo queden alineadas entre sí */
+        .servicio-card > button:last-child,
+        .servicio-card > .btn-outline-mint:last-child { margin-top: auto; }
 
         /* TARJETAS AGOTADAS / BAJO PEDIDO */
         .servicio-card.agotado {
@@ -1923,7 +1929,7 @@
         .club-grid-3 { display: grid; grid-template-columns: repeat(4, 260px); justify-content: center; gap: 20px; margin-top: 20px; }
         @media (max-width: 1200px) { .club-grid-3 { grid-template-columns: repeat(3, 260px); } }
         @media (max-width: 900px) { .club-grid-3 { grid-template-columns: repeat(2, 260px); } }
-        @media (max-width: 600px) { .club-grid-3 { grid-template-columns: 260px; gap: 15px; } }
+        @media (max-width: 600px) { .club-grid-3 { grid-template-columns: repeat(2, 1fr); gap: 12px; justify-content: stretch; } }
         
         /* Estilo para imágenes de servicios con contorno blanco */
         .img-servicio-premium {
@@ -2840,16 +2846,27 @@
                 margin-top: 6px !important;
             }
             .servicios-flex-container {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
                 gap: 10px !important;
-                justify-content: space-between !important;
+                justify-content: stretch !important;
             }
             .servicio-card {
-                width: calc(50% - 5px) !important;
+                width: 100% !important;
+                margin: 0 !important;
                 box-sizing: border-box !important;
             }
 
             .codpoints-grid { grid-template-columns: 1fr !important; }
             .codpoints-card { padding: 18px !important; }
+
+            /* Tarjetas de servicios (gamepass, streaming, codpoints, xbox, etc):
+               forzar 2 columnas alineadas también aquí, en vez de las 3 columnas
+               que usa .grid-productos por defecto para la tienda de skins */
+            #recargas .grid-productos {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
 
             /* Sección Cómo Funciona Compacta */
             .grid-pasos { gap: 10px !important; margin-top: 10px !important; }
@@ -4693,7 +4710,6 @@
                     </div>
                 </div>
                 </div>
-            </div>
 
             <div id="sub-pases" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
@@ -4900,6 +4916,31 @@
                     </div>
                 </div>
 
+                <!-- ViX - Cuenta Global (elige duración) -->
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 40px;">ViX — Cuenta Global</h4>
+                <p style="color: #00A676; font-size: 0.85em; margin: -10px 0 15px; font-weight: 500;">CUENTA GLOBAL · ELIGE TU DURACIÓN</p>
+                <div class="grid-productos" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                    <div class="servicio-card" style="width: 100%;">
+                        <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
+                        <strong>ViX — 1 Mes</strong>
+                        <span class="precio-producto" data-precio-usd="5.99">$5.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Global 1 Mes" onclick="agregarAlCarrito('ViX - Cuenta Global 1 Mes', '5.99', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card" style="width: 100%;">
+                        <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
+                        <strong>ViX — 3 Meses</strong>
+                        <span class="precio-producto" data-precio-usd="13.99">$13.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Global 3 Meses" onclick="agregarAlCarrito('ViX - Cuenta Global 3 Meses', '13.99', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
+                    </div>
+                    <div class="servicio-card" style="border-color: #00A676; width: 100%;">
+                        <span style="background: #00A676; color: #12081a; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">MEJOR PRECIO ✦</span>
+                        <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
+                        <strong>ViX — 6 Meses</strong>
+                        <span class="precio-producto" data-precio-usd="23.99">$23.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Global 6 Meses" onclick="agregarAlCarrito('ViX - Cuenta Global 6 Meses', '23.99', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
+                    </div>
+                </div>
+
                 <!-- Cuenta Completa mensual -->
                 <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 40px;">Cuenta Completa — Mensual</h4>
                 <div class="grid-productos" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-bottom: 40px;">
@@ -4968,6 +5009,23 @@
                         <strong>Crunchyroll</strong>
                         <span class="precio-producto" data-precio-usd="">$575 MXN</span>
                         <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Cuenta Completa 1 Año" onclick="agregarAlCarrito('Crunchyroll - Cuenta Completa 1 Año', '28.75', '', '0', 'streaming', event)">+ Carrito</button>
+                    </div>
+                </div>
+
+                <!-- Cuenta Global ViX (elige duración) -->
+                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 40px;">ViX — Cuenta Global</h4>
+                <p style="color: #00A676; font-size: 0.9em; margin-bottom: 20px; font-weight: 500;">CUENTA GLOBAL · ELIGE TU DURACIÓN</p>
+                <div class="grid-productos" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px;">
+                    <div class="servicio-card" style="width: 100%;">
+                        <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
+                        <strong>ViX — Cuenta Global</strong>
+                        <select id="vix-global-duracion" class="vix-duracion-select" onchange="actualizarPrecioVixGlobal()">
+                            <option value="1|5.99">1 Mes</option>
+                            <option value="3|13.99">3 Meses</option>
+                            <option value="6|23.99">6 Meses</option>
+                        </select>
+                        <span class="precio-producto" id="vix-global-precio" data-precio-usd="5.99">$5.99 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="vix-global" onclick="agregarVixGlobal(event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -6318,9 +6376,6 @@
                     </div>
 
                 </div>
-            </div>
-        </div>
-            <div class="grid-resenas">
             </div>
         </div>
 
