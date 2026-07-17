@@ -888,6 +888,7 @@ td{padding:12px 14px;vertical-align:middle}
     <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
     <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
     <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
+    <button class="tab-nav-btn" id="btn-tab-xboxgames" onclick="window.switchTab('xboxgames',this)"><i class="fab fa-xbox"></i> Juegos Xbox</button>
   </div>
 
   <!-- Mobile Bottom Navigation -->
@@ -907,6 +908,9 @@ td{padding:12px 14px;vertical-align:middle}
       </button>
       <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
+      </button>
+      <button class="mnav-btn" id="mnav-xboxgames" onclick="window.switchTab('xboxgames', document.getElementById('btn-tab-xboxgames')); window.setActiveMNav('xboxgames')">
+        <i class="fab fa-xbox"></i>Xbox
       </button>
     </div>
   </nav>
@@ -1322,6 +1326,34 @@ td{padding:12px 14px;vertical-align:middle}
           <textarea class="note-textarea" id="note-content-input" placeholder="Escribe tu idea, dinámica de sorteo, borrador..." style="display:none"></textarea>
         </div>
       </div>
+    </div>
+
+    <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
+    <div class="tab-panel" id="tab-xboxgames">
+      <div style="background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.35);border-radius:10px;padding:14px 16px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start">
+        <i class="fas fa-triangle-exclamation" style="color:#ff9f0a;font-size:1.2em;margin-top:2px"></i>
+        <div style="font-size:0.8em;color:var(--text2);line-height:1.5">
+          <strong style="color:#ff9f0a">Los precios de estos juegos cambian continuamente.</strong>
+          Por eso el precio siempre se muestra como <strong>"Consultar"</strong> — confirma el costo actual antes de cerrar la venta.
+        </div>
+      </div>
+
+      <div class="toolbar" style="margin-bottom:18px">
+        <div class="search-wrap">
+          <i class="fas fa-search"></i>
+          <input class="search-input" id="xbox-games-search" placeholder="Buscar juego de Xbox..." oninput="window.renderXboxGamesList()">
+        </div>
+        <button class="btn btn-accent" onclick="window.cargarCatalogoXboxGames()"><i class="fas fa-cloud-download-alt"></i> Cargar catálogo de juegos</button>
+        <button class="btn btn-ghost" onclick="window.openCatalogoModal()"><i class="fas fa-box"></i> Gestionar catálogo</button>
+      </div>
+
+      <div class="sec-title">
+        <h3><i class="fab fa-xbox" style="margin-right:8px"></i>Juegos Xbox</h3>
+        <div class="sec-line"></div>
+        <span id="xbox-games-count-badge" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span>
+      </div>
+
+      <div id="xbox-games-list-area"></div>
     </div>
 
   </div></div>
@@ -2194,6 +2226,26 @@ let importMode = 'merge';
 let toastTimer;
 let catalogoProductos = [];   // Catálogo manual de productos (Supabase: tabla catalogo_productos)
 let editingCatalogoId = null; // Id del producto de catálogo en edición (null = nuevo)
+
+// Categoría reservada para los juegos de Xbox: el precio real fluctúa seguido,
+// así que en la UI siempre se muestra "Consultar" en vez del precio_usd guardado.
+const XBOX_GAMES_CATEGORIA = 'Juegos Xbox';
+const XBOX_GAMES_SEED = [
+  'Assassin\'s Creed Chronicles','Assassin\'s Creed III Remastered','Assassin\'s Creed Mirage',
+  'Assassin\'s Creed Odyssey','Assassin\'s Creed Origins','Assassin\'s Creed Rogue Remastered',
+  'Assassin\'s Creed Shadows','Assassin\'s Creed Syndicate','Assassin\'s Creed The Ezio Collection',
+  'Assassin\'s Creed Unity','Battlefield 4','Battlefield 4 Premium Edition','Battlefield 6',
+  'Battlefield 2042 (EA Play)','Battlefield 2042 Cross-Gen Bundle','Battlefield 2042 Elite Edition',
+  'Borderlands 3','Borderlands 3 Season Pass Bundle','Borderlands 3 Super Deluxe Edition',
+  'Borderlands 4','Borderlands 4 Super Deluxe Edition','Borderlands Collection: Pandora\'s Box',
+  'Call of Duty Black Ops','Call of Duty Black Ops II','Call of Duty Black Ops 4 Digital Deluxe',
+  'Call of Duty Modern Warfare','Dead Cells','Dead Island 2','Dragon Ball FighterZ',
+  'Dragon Ball Xenoverse','Dragon Ball Xenoverse 2','Dragon Ball Z Kakarot','Dragon Ball: The Breakers',
+  'Dying Light: The Beast','Fallout 76','Far Cry 6','Far Cry Classic','Far Cry Primal',
+  'Helldivers 2','Lego Star Wars: The Complete Saga','Microsoft Flight Simulator (Premium Deluxe)',
+  'NHL 26','Red Dead Redemption 2','Resident Evil (Requiem)','Sea of Thieves (Premium Edition)',
+  'Tainted Grail: The Fall of Avalon','The Outer Worlds 2','Voice of Cards: The Beasts of Burden'
+];
 let tiendaHoyItems = [];      // Rotación diaria de la tienda de Fortnite (vía fortnite-api.com, en vivo)
 let tiendaHoyLoaded = false;
 let tiendaHoyLoading = false;
@@ -2896,7 +2948,7 @@ function renderCatalogoList() {
     grupos[cat].forEach(p => {
       html += `<tr>
         <td class="td-name">${p.nombre}</td>
-        <td class="td-money">$${(parseFloat(p.precio_usd) || 0).toFixed(2)}</td>
+        <td class="td-money">${p.categoria === XBOX_GAMES_CATEGORIA ? '<span style="color:#ff9f0a;font-weight:700">Consultar</span>' : '$' + (parseFloat(p.precio_usd) || 0).toFixed(2)}</td>
         <td style="text-align:right">
           <div class="td-act" style="justify-content:flex-end">
             <button class="ibtn" onclick="window.editarProductoCatalogo('${p.id}')" title="Editar"><i class="fas fa-pen"></i></button>
@@ -2963,6 +3015,85 @@ async function eliminarProductoCatalogo(id) {
   } catch (err) {
     showToast('Error: ' + err.message, true);
   }
+}
+
+// ═══════════════════════════════════════════════
+// SECCIÓN JUEGOS XBOX (categoría "Juegos Xbox" en catalogo_productos).
+// El precio real cambia seguido, así que se guarda en 0 y la UI siempre
+// muestra "Consultar" en vez del precio_usd.
+// ═══════════════════════════════════════════════
+
+// Inserta en Supabase los juegos de XBOX_GAMES_SEED que todavía no existan
+// en el catálogo (evita duplicados comparando por nombre, sin importar mayúsculas).
+async function cargarCatalogoXboxGames() {
+  const existentes = new Set(
+    catalogoProductos
+      .filter(p => p.categoria === XBOX_GAMES_CATEGORIA)
+      .map(p => p.nombre.trim().toLowerCase())
+  );
+  const faltantes = XBOX_GAMES_SEED.filter(nombre => !existentes.has(nombre.trim().toLowerCase()));
+
+  if (faltantes.length === 0) {
+    showToast('Ya están todos los juegos en el catálogo');
+    return;
+  }
+
+  try {
+    const filas = faltantes.map(nombre => ({
+      categoria: XBOX_GAMES_CATEGORIA,
+      nombre,
+      precio_usd: 0
+    }));
+    const { error } = await supabase.from('catalogo_productos').insert(filas);
+    if (error) throw error;
+    showToast(`${faltantes.length} juego${faltantes.length !== 1 ? 's' : ''} agregado${faltantes.length !== 1 ? 's' : ''} al catálogo`);
+    await fetchCatalogo();
+    renderXboxGamesList();
+  } catch (err) {
+    showToast('Error: ' + err.message, true);
+  }
+}
+
+function renderXboxGamesList() {
+  const area = document.getElementById('xbox-games-list-area');
+  if (!area) return;
+
+  const juegos = catalogoProductos.filter(p => p.categoria === XBOX_GAMES_CATEGORIA);
+  const badge = document.getElementById('xbox-games-count-badge');
+
+  if (juegos.length === 0) {
+    if (badge) badge.textContent = '';
+    area.innerHTML = `<div class="empty"><i class="fab fa-xbox"></i><p>Aún no has cargado los juegos de Xbox. Usa "Cargar catálogo de juegos".</p></div>`;
+    return;
+  }
+
+  const q = (document.getElementById('xbox-games-search')?.value || '').toLowerCase();
+  const filtrados = juegos
+    .filter(p => !q || p.nombre.toLowerCase().includes(q))
+    .sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+  if (badge) badge.textContent = `${juegos.length} juego${juegos.length !== 1 ? 's' : ''}`;
+
+  if (filtrados.length === 0) {
+    area.innerHTML = `<div class="empty"><i class="fas fa-search"></i><p>Sin resultados para tu búsqueda</p></div>`;
+    return;
+  }
+
+  let html = `<div class="table-wrap"><table><thead><tr><th>Juego</th><th>Precio</th><th style="text-align:right">Acciones</th></tr></thead><tbody>`;
+  filtrados.forEach(p => {
+    html += `<tr>
+      <td class="td-name"><i class="fab fa-xbox" style="color:#107C10;margin-right:8px"></i>${p.nombre}</td>
+      <td><span style="color:#ff9f0a;font-weight:700">Consultar</span></td>
+      <td style="text-align:right">
+        <div class="td-act" style="justify-content:flex-end">
+          <button class="ibtn" onclick="window.editarProductoCatalogo('${p.id}')" title="Editar"><i class="fas fa-pen"></i></button>
+          <button class="ibtn del" onclick="window.eliminarProductoCatalogo('${p.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+        </div>
+      </td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  area.innerHTML = html;
 }
 
 async function saveOrder() {
@@ -3853,6 +3984,9 @@ function switchTab(tab, btn) {
   // renderAccounting() internamente).
   if (tab === 'contabilidad') {
     renderAccounting();
+  }
+  if (tab === 'xboxgames') {
+    renderXboxGamesList();
   }
 }
 
@@ -5767,6 +5901,8 @@ window.editarProductoCatalogo = editarProductoCatalogo;
 window.eliminarProductoCatalogo = eliminarProductoCatalogo;
 window.resetCatalogoForm = resetCatalogoForm;
 window.renderCatalogoList = renderCatalogoList;
+window.cargarCatalogoXboxGames = cargarCatalogoXboxGames;
+window.renderXboxGamesList = renderXboxGamesList;
 window.renderAccounting = renderAccounting;
 window.fetchVentas = fetchVentas;
 window.renderVentas = renderVentas;
