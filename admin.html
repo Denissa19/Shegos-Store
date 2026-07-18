@@ -1068,7 +1068,7 @@ td{padding:12px 14px;vertical-align:middle}
     <div class="tab-panel" id="tab-cuentas">
 
       <!-- Tarjetas por tipo — solo contador visible para ADMIN, $ solo CEO -->
-      <div class="stats-row" style="grid-template-columns:repeat(6,1fr);margin-bottom:14px">
+      <div class="stats-row" style="grid-template-columns:repeat(7,1fr);margin-bottom:14px">
         <div class="stat-card" style="--accent-c:#a855f7">
           <div class="stat-label" style="color:#a855f7"><i class="fas fa-gamepad"></i> Cuenta FN</div>
           <div class="stat-value" style="color:#a855f7;font-size:1.8em" id="vc-t-cuenta">0</div>
@@ -1088,6 +1088,11 @@ td{padding:12px 14px;vertical-align:middle}
           <div class="stat-label" style="color:var(--accent)"><i class="fas fa-box-open"></i> Packs</div>
           <div class="stat-value" style="color:var(--accent);font-size:1.8em" id="vc-t-packs">0</div>
           <div class="stat-sub sec-ceo-only" id="vc-t-packs-sum">$0.00</div>
+        </div>
+        <div class="stat-card" style="--accent-c:#22c55e">
+          <div class="stat-label" style="color:#22c55e"><i class="fas fa-tv"></i> Streaming</div>
+          <div class="stat-value" style="color:#22c55e;font-size:1.8em" id="vc-t-streaming">0</div>
+          <div class="stat-sub sec-ceo-only" id="vc-t-streaming-sum">$0.00</div>
         </div>
         <div class="stat-card" style="--accent-c:#ec4899">
           <div class="stat-label" style="color:#ec4899"><i class="fas fa-gift"></i> Regalo</div>
@@ -1150,6 +1155,7 @@ td{padding:12px 14px;vertical-align:middle}
           <option value="Club de fortnite">Club FN</option>
           <option value="Recarga de pavos">Pavos</option>
           <option value="Packs">Packs</option>
+          <option value="Streaming">Streaming</option>
           <option value="Venta via regalo">Regalo</option>
           <option value="Apartar cuentas">Financiar/Apartar</option>
         </select>
@@ -1790,6 +1796,9 @@ td{padding:12px 14px;vertical-align:middle}
           <button type="button" class="vm-tipo-chip" data-tipo="Packs" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-box"></i>Packs
           </button>
+          <button type="button" class="vm-tipo-chip" data-tipo="Streaming" onclick="window.vmSelectTipo(this)">
+            <i class="fas fa-tv"></i>Streaming
+          </button>
           <button type="button" class="vm-tipo-chip" data-tipo="Venta via regalo" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-gift"></i>Regalo
           </button>
@@ -2075,6 +2084,18 @@ td{padding:12px 14px;vertical-align:middle}
             </button>
           </div>
           <input type="hidden" id="vc-f-apartarpago">
+        </div>
+      </div>
+
+      <!-- ─── Campos exclusivos: Streaming ─── -->
+      <div id="vm-streaming-fields" style="display:none">
+        <div class="vm-sep"><span style="color:var(--text2)"><i class="fas fa-tv" style="margin-right:5px"></i>Plataforma de Streaming</span></div>
+        <div class="fgroup">
+          <label class="flabel">Selecciona la plataforma</label>
+          <select class="fsel" id="vc-f-streaming-select" onchange="window.vmStreamingSelect(this)">
+            <option value="">— Seleccionar plataforma —</option>
+          </select>
+          <div style="font-size:0.72em;color:var(--text3);margin-top:5px">Se autocompleta el nombre y el precio con los planes publicados en la tienda (index.html). Puedes ajustarlos manualmente abajo si es necesario.</div>
         </div>
       </div>
 
@@ -2682,6 +2703,7 @@ async function fetchServiciosDesdeIndex(force = false) {
     serviciosSincronizando = false;
   }
   refreshProdCatSelects();
+  populateStreamingSelect();
 }
 
 // Reintenta la sincronización cada 3 minutos mientras el panel esté abierto, para
@@ -3445,6 +3467,7 @@ function renderDistribucionChart(distribucionTipo) {
     'Club de fortnite': 'var(--blue)',
     'Recarga de pavos': '#f97316',
     'Packs': 'var(--accent)',
+    'Streaming': '#22c55e',
     'Venta via regalo': '#ec4899',
     'Apartar cuentas': '#f97316',
     'Otro': 'var(--text2)',
@@ -4207,6 +4230,7 @@ const TIPO_CONFIG = {
   'Club de fortnite':   { label:'Club FN',      color:'var(--blue)', icon:'fa-crown', id:'vc-t-club'   },
   'Recarga de pavos':   { label:'Pavos',        color:'#f97316', icon:'fa-bolt',     id:'vc-t-pavos'  },
   'Packs':              { label:'Packs',        color:'var(--accent)', icon:'fa-box-open', id:'vc-t-packs' },
+  'Streaming':          { label:'Streaming',    color:'#22c55e', icon:'fa-tv',       id:'vc-t-streaming' },
   'Venta via regalo':   { label:'Regalo',       color:'#ec4899', icon:'fa-gift',     id:'vc-t-regalo' },
   'Apartar cuentas':    { label:'Apartar',      color:'#f97316', icon:'fa-bookmark', id:'vc-t-apartar'}
 };
@@ -4343,10 +4367,12 @@ function parseVentaAutomatica(txt) {
   // Detect tipo from keywords
   const txtL = txt.toLowerCase();
   let tipoDetectado = '';
+  const streamingKeywords = ['netflix','hbo','max platino','disney','prime video','spotify','crunchyroll','paramount','vix','viki','claro video','universal+','streaming'];
   if (txtL.includes('regalo')) tipoDetectado = 'Venta via regalo';
   else if (txtL.includes('club')) tipoDetectado = 'Club de fortnite';
   else if (txtL.includes('pav') || txtL.includes('vbuck') || txtL.includes('v-buck')) tipoDetectado = 'Recarga de pavos';
   else if (txtL.includes('pack')) tipoDetectado = 'Packs';
+  else if (streamingKeywords.some(k => txtL.includes(k))) tipoDetectado = 'Streaming';
   else if (platforms.length > 0 || txtL.includes('cuenta') || txtL.includes('skin')) tipoDetectado = 'Cuenta de fortnite';
 
   // Price
@@ -4455,6 +4481,10 @@ function openVentaModal() {
   document.querySelectorAll('.vm-tipo-chip').forEach(c => c.classList.remove('active'));
   document.getElementById('vc-f-tipo').value = '';
   document.getElementById('vm-cuenta-fields').style.display = 'none';
+  const streamingBlock0 = document.getElementById('vm-streaming-fields');
+  if (streamingBlock0) streamingBlock0.style.display = 'none';
+  const streamingSel0 = document.getElementById('vc-f-streaming-select');
+  if (streamingSel0) streamingSel0.value = '';
   const lp = document.getElementById('label-vc-f-producto');
   if (lp) lp.textContent = 'Producto';
   // Reset fields
@@ -4656,14 +4686,21 @@ window.toggleVentaFields = function() {
   const tipo = document.getElementById('vc-f-tipo').value;
   const isCuenta = tipo === 'Cuenta de fortnite';
   const isApartar = tipo === 'Apartar cuentas';
+  const isStreaming = tipo === 'Streaming';
   const cuentaBlock = document.getElementById('vm-cuenta-fields');
   const apartarBlock = document.getElementById('vm-apartar-fields');
+  const streamingBlock = document.getElementById('vm-streaming-fields');
   if (cuentaBlock) cuentaBlock.style.display = isCuenta ? 'block' : 'none';
   if (apartarBlock) apartarBlock.style.display = isApartar ? 'block' : 'none';
+  if (streamingBlock) {
+    streamingBlock.style.display = isStreaming ? 'block' : 'none';
+    if (isStreaming) populateStreamingSelect();
+  }
   const labelProd = document.getElementById('label-vc-f-producto');
   if (labelProd) {
     if (isCuenta) labelProd.textContent = 'Nombre de la Cuenta';
     else if (isApartar) labelProd.textContent = 'Nombre / Referencia de la Cuenta';
+    else if (isStreaming) labelProd.textContent = 'Plataforma / Plan';
     else labelProd.textContent = 'Nombre del Producto';
   }
   // Auto-generate ID for cuentas
@@ -4671,6 +4708,31 @@ window.toggleVentaFields = function() {
   if ((isCuenta || isApartar) && idInp && !idInp.value) {
     idInp.value = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
   }
+};
+
+// Llena el <select> de plataformas de Streaming con los planes reales de la tienda
+// (SERVICIOS_ITEMS, categoria 'streaming'), incluyendo su precio en USD.
+function populateStreamingSelect() {
+  const sel = document.getElementById('vc-f-streaming-select');
+  if (!sel) return;
+  const items = SERVICIOS_ITEMS.filter(p => p.categoria === 'streaming');
+  const prevValue = sel.value;
+  sel.innerHTML = '<option value="">— Seleccionar plataforma —</option>' +
+    items.map(p => `<option value="${p.nombre.replace(/"/g,'&quot;')}" data-precio="${p.precio_usd}">${p.nombre} — $${Number(p.precio_usd).toFixed(2)} USD</option>`).join('');
+  // Intentar mantener la selección previa si sigue existiendo tras un refresco
+  if (prevValue && items.some(p => p.nombre === prevValue)) sel.value = prevValue;
+}
+
+// Al elegir una plataforma, autocompleta nombre de producto y precio de venta
+window.vmStreamingSelect = function(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt || !opt.value) return;
+  const nombreEl = document.getElementById('vc-f-producto');
+  const precioEl = document.getElementById('vc-f-ingreso');
+  if (nombreEl) nombreEl.value = opt.value;
+  if (precioEl) precioEl.value = Number(opt.dataset.precio || 0).toFixed(2);
+  window.calcVentaMargen();
+  window.vmUpdateTotal();
 };
 
 window.handleVentaReceipt = function(input) {
