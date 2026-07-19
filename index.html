@@ -2,6 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <!-- Con rutas limpias (ej. /tienda, /checkout) el navegador resuelve los recursos
+         relativos (img/..., etc.) como si estuvieran dentro de esa "carpeta". Esta
+         etiqueta fuerza a que siempre se resuelvan contra la raíz del sitio. -->
+    <base href="/">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shegos Store - Tu tienda Fortnite de Confianza</title>
@@ -1940,21 +1944,28 @@
 
         .btn-outline-mint { 
             background: #12081a; 
-            border: 2px solid #00A676; 
+            border: 1.5px solid #00A676; 
             color: #00A676; 
-            padding: 10px; 
-            border-radius: 6px; 
-            font-weight: 800; 
+            padding: 10px 14px; 
+            border-radius: 9px; 
+            font-weight: 700; 
             text-transform: uppercase; 
+            letter-spacing: 0.3px;
             cursor: pointer; 
-            transition: background 0.3s ease; 
+            transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease; 
             margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
         }
-        .btn-outline-mint:hover { background: #00A676; color: #12081a; }
+        .btn-outline-mint i { font-size: 0.85em; }
+        .btn-outline-mint:hover { background: #00A676; color: #12081a; border-color: #00A676; }
         .btn-outline-mint:active { transform: scale(0.96); }
         .btn-outline-mint.added {
             background: #00A676 !important;
             color: #12081a !important;
+            border-color: #00A676 !important;
             cursor: not-allowed;
         }
 
@@ -4856,63 +4867,63 @@
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
                         <strong>ViX</strong>
-                        <span class="precio-producto" data-precio-usd="">$29 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="ViX - Perfil 1 Mes" onclick="agregarAlCarrito('ViX - Perfil 1 Mes', '1.45', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="1.45">$1.45 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Perfil 1 Mes" onclick="agregarAlCarrito('ViX - Perfil 1 Mes', '1.45', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://i.pinimg.com/736x/a8/9c/dd/a89cddbba84bcdde5d193ae02956eac2.jpg" class="club-img-16-9">
                         <strong>Paramount+</strong>
-                        <span class="precio-producto" data-precio-usd="">$35 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Paramount+ - Perfil 1 Mes" onclick="agregarAlCarrito('Paramount+ - Perfil 1 Mes', '1.75', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="1.75">$1.75 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Paramount+ - Perfil 1 Mes" onclick="agregarAlCarrito('Paramount+ - Perfil 1 Mes', '1.75', 'https://i.pinimg.com/736x/a8/9c/dd/a89cddbba84bcdde5d193ae02956eac2.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://techgameworld.com/wp-content/uploads/2021/03/Best-Animated-Movies-on-Amazon-Prime-The-10-Must-See-780x429.jpg" class="club-img-16-9">
                         <strong>Prime Video</strong>
-                        <span class="precio-producto" data-precio-usd="">$46 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Prime Video - Perfil 1 Mes" onclick="agregarAlCarrito('Prime Video - Perfil 1 Mes', '2.30', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.30">$2.30 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Prime Video - Perfil 1 Mes" onclick="agregarAlCarrito('Prime Video - Perfil 1 Mes', '2.30', 'https://techgameworld.com/wp-content/uploads/2021/03/Best-Animated-Movies-on-Amazon-Prime-The-10-Must-See-780x429.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://heroichollywood.com/wp-content/uploads/2020/04/HBO-Max-WarnerMedia-Warner-Bros.jpg" class="club-img-16-9">
                         <strong>HBO Max</strong>
-                        <span class="precio-producto" data-precio-usd="">$46 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="HBO Max - Perfil 1 Mes" onclick="agregarAlCarrito('HBO Max - Perfil 1 Mes', '2.30', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.30">$2.30 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="HBO Max - Perfil 1 Mes" onclick="agregarAlCarrito('HBO Max - Perfil 1 Mes', '2.30', 'https://heroichollywood.com/wp-content/uploads/2020/04/HBO-Max-WarnerMedia-Warner-Bros.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png" class="club-img-16-9">
                         <strong>Crunchyroll</strong>
-                        <span class="precio-producto" data-precio-usd="">$46 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Perfil 1 Mes" onclick="agregarAlCarrito('Crunchyroll - Perfil 1 Mes', '2.30', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.30">$2.30 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Perfil 1 Mes" onclick="agregarAlCarrito('Crunchyroll - Perfil 1 Mes', '2.30', 'https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://campaignme.com/wp-content/uploads/2024/03/New-Disney-MENA-Logo.jpg" class="club-img-16-9">
                         <strong>Disney+ Premium</strong>
-                        <span class="precio-producto" data-precio-usd="">$52 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Disney+ Premium - Perfil 1 Mes" onclick="agregarAlCarrito('Disney+ Premium - Perfil 1 Mes', '2.60', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.60">$2.60 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Disney+ Premium - Perfil 1 Mes" onclick="agregarAlCarrito('Disney+ Premium - Perfil 1 Mes', '2.60', 'https://campaignme.com/wp-content/uploads/2024/03/New-Disney-MENA-Logo.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://streamdiag.com/wp-content/uploads/Rakuten-Viki-768x433.jpg" class="club-img-16-9">
                         <strong>Viki</strong>
-                        <span class="precio-producto" data-precio-usd="">$52 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Viki - Perfil 1 Mes" onclick="agregarAlCarrito('Viki - Perfil 1 Mes', '2.60', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.60">$2.60 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Viki - Perfil 1 Mes" onclick="agregarAlCarrito('Viki - Perfil 1 Mes', '2.60', 'https://streamdiag.com/wp-content/uploads/Rakuten-Viki-768x433.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/2024-spotify-brand-assets-media-kit-768x381.jpg" class="club-img-16-9">
                         <strong>Spotify Invitación</strong>
-                        <span class="precio-producto" data-precio-usd="">$58 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Spotify - Invitación 1 Mes" onclick="agregarAlCarrito('Spotify - Invitación 1 Mes', '2.90', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.90">$2.90 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Spotify - Invitación 1 Mes" onclick="agregarAlCarrito('Spotify - Invitación 1 Mes', '2.90', 'https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/2024-spotify-brand-assets-media-kit-768x381.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://www.tendenciadigital.com.co/wp-content/uploads/2021/08/Claro-Video-logo-780x470.jpg" class="club-img-16-9">
                         <strong>Claro Video</strong>
-                        <span class="precio-producto" data-precio-usd="">$63 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Claro Video - Perfil 1 Mes" onclick="agregarAlCarrito('Claro Video - Perfil 1 Mes', '3.15', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="3.15">$3.15 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Claro Video - Perfil 1 Mes" onclick="agregarAlCarrito('Claro Video - Perfil 1 Mes', '3.15', 'https://www.tendenciadigital.com.co/wp-content/uploads/2021/08/Claro-Video-logo-780x470.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #E50914; width: 100%;">
                         <span style="background: #E50914; color: #fff; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">POPULAR ✦</span>
                         <img loading="lazy" decoding="async" src="https://www.gamespot.com/a/uploads/screen_kubrick/1562/15626911/4058860-netflix-new-logo.jpg" class="club-img-16-9">
                         <strong>Netflix</strong>
-                        <span class="precio-producto" data-precio-usd="">$98 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Netflix - Perfil 1 Mes" onclick="agregarAlCarrito('Netflix - Perfil 1 Mes', '4.90', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="4.90">$4.90 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Netflix - Perfil 1 Mes" onclick="agregarAlCarrito('Netflix - Perfil 1 Mes', '4.90', 'https://www.gamespot.com/a/uploads/screen_kubrick/1562/15626911/4058860-netflix-new-logo.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -4947,51 +4958,51 @@
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
                         <strong>ViX</strong>
-                        <span class="precio-producto" data-precio-usd="">$58 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('ViX - Cuenta Completa 1 Mes', '2.90', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="2.90">$2.90 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('ViX - Cuenta Completa 1 Mes', '2.90', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png" class="club-img-16-9">
                         <strong>Crunchyroll</strong>
-                        <span class="precio-producto" data-precio-usd="">$92 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Crunchyroll - Cuenta Completa 1 Mes', '4.60', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="4.60">$4.60 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Crunchyroll - Cuenta Completa 1 Mes', '4.60', 'https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://i.pinimg.com/736x/a8/9c/dd/a89cddbba84bcdde5d193ae02956eac2.jpg" class="club-img-16-9">
                         <strong>Paramount+</strong>
-                        <span class="precio-producto" data-precio-usd="">$104 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Paramount+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Paramount+ - Cuenta Completa 1 Mes', '5.20', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="5.20">$5.20 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Paramount+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Paramount+ - Cuenta Completa 1 Mes', '5.20', 'https://i.pinimg.com/736x/a8/9c/dd/a89cddbba84bcdde5d193ae02956eac2.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://techgameworld.com/wp-content/uploads/2021/03/Best-Animated-Movies-on-Amazon-Prime-The-10-Must-See-780x429.jpg" class="club-img-16-9">
                         <strong>Prime Video</strong>
-                        <span class="precio-producto" data-precio-usd="">$115 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Prime Video - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Prime Video - Cuenta Completa 1 Mes', '5.75', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="5.75">$5.75 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Prime Video - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Prime Video - Cuenta Completa 1 Mes', '5.75', 'https://techgameworld.com/wp-content/uploads/2021/03/Best-Animated-Movies-on-Amazon-Prime-The-10-Must-See-780x429.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://heroichollywood.com/wp-content/uploads/2020/04/HBO-Max-WarnerMedia-Warner-Bros.jpg" class="club-img-16-9">
                         <strong>Max Platino</strong>
-                        <span class="precio-producto" data-precio-usd="">$138 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Max Platino - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Max Platino - Cuenta Completa 1 Mes', '6.90', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="6.90">$6.90 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Max Platino - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Max Platino - Cuenta Completa 1 Mes', '6.90', 'https://heroichollywood.com/wp-content/uploads/2020/04/HBO-Max-WarnerMedia-Warner-Bros.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/451e1b93-9c46-4e4d-9e4e-570ffa420eee/dj8hnog-4d07f63c-dd54-47c0-9e7e-6d234e2cf00c.png/v1/fill/w_1193,h_670/universal_network_ident_2014__univ_g_au__by_potolo2009_dj8hnog-pre.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzE5IiwicGF0aCI6IlwvZlwvNDUxZTFiOTMtOWM0Ni00ZTRkLTllNGUtNTcwZmZhNDIwZWVlXC9kajhobm9nLTRkMDdmNjNjLWRkNTQtNDdjMC05ZTdlLTZkMjM0ZTJjZjAwYy5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.TJ7dZKAmQ4ehefVVxgJ1S3Tiixh8UZ3Eb6uVkNL7niE" class="club-img-16-9">
                         <strong>Universal+</strong>
-                        <span class="precio-producto" data-precio-usd="">$138 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Universal+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Universal+ - Cuenta Completa 1 Mes', '6.90', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="6.90">$6.90 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Universal+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Universal+ - Cuenta Completa 1 Mes', '6.90', 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/451e1b93-9c46-4e4d-9e4e-570ffa420eee/dj8hnog-4d07f63c-dd54-47c0-9e7e-6d234e2cf00c.png/v1/fill/w_1193,h_670/universal_network_ident_2014__univ_g_au__by_potolo2009_dj8hnog-pre.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9NzE5IiwicGF0aCI6IlwvZlwvNDUxZTFiOTMtOWM0Ni00ZTRkLTllNGUtNTcwZmZhNDIwZWVlXC9kajhobm9nLTRkMDdmNjNjLWRkNTQtNDdjMC05ZTdlLTZkMjM0ZTJjZjAwYy5wbmciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.TJ7dZKAmQ4ehefVVxgJ1S3Tiixh8UZ3Eb6uVkNL7niE', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://campaignme.com/wp-content/uploads/2024/03/New-Disney-MENA-Logo.jpg" class="club-img-16-9">
                         <strong>Disney+</strong>
-                        <span class="precio-producto" data-precio-usd="">$150 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Disney+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Disney+ - Cuenta Completa 1 Mes', '7.50', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="7.50">$7.50 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Disney+ - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Disney+ - Cuenta Completa 1 Mes', '7.50', 'https://campaignme.com/wp-content/uploads/2024/03/New-Disney-MENA-Logo.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #E50914; width: 100%;">
                         <span style="background: #E50914; color: #fff; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">POPULAR ✦</span>
                         <img loading="lazy" decoding="async" src="https://www.gamespot.com/a/uploads/screen_kubrick/1562/15626911/4058860-netflix-new-logo.jpg" class="club-img-16-9">
                         <strong>Netflix</strong>
-                        <span class="precio-producto" data-precio-usd="">$391 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Netflix - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Netflix - Cuenta Completa 1 Mes', '19.55', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="19.55">$19.55 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Netflix - Cuenta Completa 1 Mes" onclick="agregarAlCarrito('Netflix - Cuenta Completa 1 Mes', '19.55', 'https://www.gamespot.com/a/uploads/screen_kubrick/1562/15626911/4058860-netflix-new-logo.jpg', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -5001,14 +5012,14 @@
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png" class="club-img-16-9">
                         <strong>ViX</strong>
-                        <span class="precio-producto" data-precio-usd="">$173 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Completa 1 Año" onclick="agregarAlCarrito('ViX - Cuenta Completa 1 Año', '8.65', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="8.65">$8.65 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="ViX - Cuenta Completa 1 Año" onclick="agregarAlCarrito('ViX - Cuenta Completa 1 Año', '8.65', 'https://media.filmelier.com/images/plataformas/icone_mobile/7d5587d4696eb2ccc71fa7698d92f8de.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="width: 100%;">
                         <img loading="lazy" decoding="async" src="https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png" class="club-img-16-9">
                         <strong>Crunchyroll</strong>
-                        <span class="precio-producto" data-precio-usd="">$575 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Cuenta Completa 1 Año" onclick="agregarAlCarrito('Crunchyroll - Cuenta Completa 1 Año', '28.75', '', '0', 'streaming', event)">+ Carrito</button>
+                        <span class="precio-producto" data-precio-usd="28.75">$28.75 USD</span>
+                        <button class="btn-outline-mint" data-item-nombre="Crunchyroll - Cuenta Completa 1 Año" onclick="agregarAlCarrito('Crunchyroll - Cuenta Completa 1 Año', '28.75', 'https://logosmarken.com/wp-content/uploads/2021/03/Crunchyroll-Zeichen.png', '0', 'streaming', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -5935,10 +5946,14 @@
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 20px;">Paquetes con 600 V-Bucks incluidos. Requieren VPN para cambiar región.</p>
                 <div class="servicios-flex-container">
 
-                    <div class="servicio-card agotado">
-                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/n1hfMnN--lL26OVc-KD8_uHGWqh9knxK6O1yc6yPBtM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWdw/cm94eS5lbmViYS5n/YW1lcy93TENLdVZq/TWwzNGpZVlFaS0JL/dF9ncUp4bWdlbDlY/WFZVQUhuamRPLW9B/L3JzOmZpdDozMDAv/YXI6MS9jek02THk5/d2NtOWtkV04wL2N5/NWxibVZpWVM1bllX/MWwvY3k5d2NtOWtk/V04wY3k5Mi9UMk5N/U0RCQldHTk5WMFZQ/L2F5MUdOMjlDWjFR/eVpYcEMvYzFSWGFX/MHpaRlpPZW1ScC9i/SHA0ZFU0d0xtcHda/dw" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
-                        <strong style="font-size: 1.1em; display: block; margin: 5px 0;">Baila Emote (Epic Games Global Key)</strong>
-                        <span style="color: #888; font-size: 0.8em; display: block; margin-top: auto; font-weight: 700;">No disponible por el momento</span>
+                    <div class="servicio-card">
+                        <img loading="lazy" decoding="async" src="https://driffle.com/_next/image?url=https%3A%2F%2Fstatic.driffle.com%2Ffit-in%2F720x512%2Fmedia-gallery%2Fprod%2F169536748857718900_Golden_Touch_1695367496.webp&w=1080&q=75" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;" onerror="this.src='https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430'">
+                        <strong style="font-size: 1.1em; display: block; margin: 5px 0;">Golden Touch Quest Pack DLC</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">US · XBOX One / XBOX Series X|S</span>
+                        <span class="precio-producto" data-precio-usd="12.99">$12.99 USD</span>
+                        <span style="color: #888; font-size: 0.75em; display: block; margin: 2px 0 10px 0;">Vía recarga $12.99 · Vía código Xbox $13.99</span>
+                        <button class="btn-outline-mint" style="margin-top: auto;" data-item-nombre="Fortnite - Golden Touch Quest Pack DLC (Recarga)" onclick="agregarAlCarrito('Fortnite - Golden Touch Quest Pack DLC (Recarga)', '12.99', 'https://driffle.com/_next/image?url=https%3A%2F%2Fstatic.driffle.com%2Ffit-in%2F720x512%2Fmedia-gallery%2Fprod%2F169536748857718900_Golden_Touch_1695367496.webp&w=1080&q=75', '0', 'xbox-codigo', event)">+ Carrito (Recarga $12.99)</button>
+                        <button class="btn-outline-mint" style="margin-top: 8px;" data-item-nombre="Fortnite - Golden Touch Quest Pack DLC (Código Xbox)" onclick="agregarAlCarrito('Fortnite - Golden Touch Quest Pack DLC (Código Xbox)', '13.99', 'https://driffle.com/_next/image?url=https%3A%2F%2Fstatic.driffle.com%2Ffit-in%2F720x512%2Fmedia-gallery%2Fprod%2F169536748857718900_Golden_Touch_1695367496.webp&w=1080&q=75', '0', 'xbox-codigo', event)">+ Carrito (Código Xbox $13.99)</button>
                     </div>
 
                     <div class="servicio-card">
@@ -8334,7 +8349,7 @@
             document.querySelectorAll('[data-item-nombre]').forEach(btn => {
                 const nombre = btn.getAttribute('data-item-nombre');
                 const esTienda = btn.classList.contains('btn-add-cart');
-                const textoAgregar = esTienda ? '<i class="fas fa-plus"></i> AGREGAR' : '+ Carrito';
+                const textoAgregar = esTienda ? '<i class="fas fa-plus"></i> AGREGAR' : '<i class="fas fa-cart-plus"></i> Carrito';
                 const textoAgregado = '<i class="fas fa-check"></i> Agregado';
 
                 if (nombresEnCarrito.has(nombre)) {
@@ -9183,18 +9198,21 @@ _He adjuntado mi comprobante de pago arriba._`;
             else document.body.classList.add('en-checkout');
         }
 
-        /* Mapa de hash amigable → id interno de pestaña */
-        var HASH_MAP = {
-            'inicio':   'inicio-landing',
-            'tienda':   'tienda',
-            'cuentas':  'ids-regalos',
-            'pedidos':  'rastreo-pedidos',
-            'servicios':'recargas',
+        /* Mapa de ruta amigable → id interno de pestaña */
+        var ROUTE_MAP = {
+            '':           'inicio-landing',
+            'inicio':     'inicio-landing',
+            'tienda':     'tienda',
+            'cuentas':    'ids-regalos',
+            'pedidos':    'rastreo-pedidos',
+            'servicios':  'recargas',
+            'checkout':   'checkout',
             'alertas-stw':'stw-alertas'
         };
-        /* Inverso: id interno → hash amigable */
-        var ID_TO_HASH = {};
-        Object.keys(HASH_MAP).forEach(function(h){ ID_TO_HASH[HASH_MAP[h]] = h; });
+        /* Inverso: id interno → ruta amigable (el inicio siempre usa "/") */
+        var ID_TO_ROUTE = {};
+        Object.keys(ROUTE_MAP).forEach(function(r){ if (r !== '') ID_TO_ROUTE[ROUTE_MAP[r]] = r; });
+        ID_TO_ROUTE['inicio-landing'] = '';
 
         function abrirPestana(id) {
             // Quita el foco de cualquier botón/enlace previamente clickeado para que no quede
@@ -9206,9 +9224,9 @@ _He adjuntado mi comprobante de pago arriba._`;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
             document.getElementById(id).classList.remove('oculto');
             
-            // Actualizar el hash de la URL sin hacer scroll
-            var hash = ID_TO_HASH[id] || id;
-            history.replaceState(null, '', '#' + hash);
+            // Actualizar la ruta de la URL sin hacer scroll ni recargar la página
+            var ruta = ID_TO_ROUTE.hasOwnProperty(id) ? ID_TO_ROUTE[id] : id;
+            history.replaceState(null, '', '/' + ruta);
 
             // Cerrar sidebar si está abierto (en móvil)
             if (document.getElementById('sidebar').classList.contains('abierto') && window.innerWidth <= 768) {
@@ -9238,11 +9256,15 @@ _He adjuntado mi comprobante de pago arriba._`;
             }
         }
 
-        /* Al cargar la página, leer el hash y abrir la sección correcta */
+        /* Al cargar la página, leer la ruta (pathname) y abrir la sección correcta.
+           También soporta enlaces directos a /login y /sign-in que abren el modal
+           de acceso sobre la sección de inicio. */
         window.addEventListener('load', function() {
-            var hash = window.location.hash.replace('#', '').toLowerCase();
-            if (hash && HASH_MAP[hash]) {
-                abrirPestana(HASH_MAP[hash]);
+            var ruta = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+            if (ruta === 'login') { abrirModalAuth('login'); return; }
+            if (ruta === 'sign-in') { abrirModalAuth('register'); return; }
+            if (ruta && ROUTE_MAP.hasOwnProperty(ruta)) {
+                abrirPestana(ROUTE_MAP[ruta]);
             }
         }); 
         function irATienda() {
@@ -9926,6 +9948,7 @@ function mostrarModalCapturaMovil(url) {
         };
 
         /* ── Abrir / cerrar modal ── */
+        var _rutaAntesDeModal = null;
         window.abrirModalAuth = function(tab) {
             var email = sessionStorage.getItem("shegos_email");
             if (email) { abrirPestana("rastreo-pedidos"); return; }
@@ -9933,6 +9956,9 @@ function mostrarModalCapturaMovil(url) {
             $e("auth-step-ok").style.display   = "none";
             authSwitchTab(tab === "register" ? "register" : "login");
             $e("auth-modal-overlay").classList.add("active");
+            // Recordar la ruta actual para poder restaurarla al cerrar el modal
+            if (_rutaAntesDeModal === null) _rutaAntesDeModal = window.location.pathname;
+            history.replaceState(null, '', tab === 'register' ? '/sign-in' : '/login');
             setTimeout(function(){
                 var el = (tab === "register") ? $e("auth-reg-email") : $e("auth-login-email");
                 if(el) el.focus();
@@ -9940,6 +9966,8 @@ function mostrarModalCapturaMovil(url) {
         };
         window.cerrarModalAuth = function() {
             $e("auth-modal-overlay").classList.remove("active");
+            history.replaceState(null, '', _rutaAntesDeModal || '/');
+            _rutaAntesDeModal = null;
         };
         window.authModalClickFuera = function(e) {
             if (e.target === $e("auth-modal-overlay")) cerrarModalAuth();
@@ -9976,6 +10004,11 @@ function mostrarModalCapturaMovil(url) {
                 var el=$e(id); if(el){el.textContent="";el.style.display="none";}
             });
             var t=$e("auth-modal-title"); if(t) t.textContent="Bienvenido";
+            // Si el modal ya está abierto, reflejar el tab activo en la URL
+            var overlay=$e("auth-modal-overlay");
+            if (overlay && overlay.classList.contains("active")) {
+                history.replaceState(null, '', isRegister ? '/sign-in' : '/login');
+            }
         };
 
         /* ── Enviar OTP ── */
@@ -9990,10 +10023,20 @@ function mostrarModalCapturaMovil(url) {
             $e(errId).style.display="none";
             btn.disabled=true; btn.textContent="Enviando...";
             try {
-                var {error} = await supabaseClient.auth.signInWithOtp({
-                    email: email,
-                    options: { shouldCreateUser: true }
+                if (!supabaseClient) throw new Error("Supabase no está disponible. Revisa tu conexión y recarga la página.");
+                // Tiempo límite de seguridad: si Supabase no responde en 15s (proyecto
+                // pausado, red bloqueada, etc.) mostramos error en vez de dejar el
+                // botón en "Enviando..." para siempre.
+                var timeoutPromise = new Promise(function(_, reject){
+                    setTimeout(function(){ reject(new Error("timeout")); }, 15000);
                 });
+                var {error} = await Promise.race([
+                    supabaseClient.auth.signInWithOtp({
+                        email: email,
+                        options: { shouldCreateUser: true }
+                    }),
+                    timeoutPromise
+                ]);
                 if (error) throw error;
                 // Mostrar paso OTP
                 var emailStep = $e(tipo==='login' ? 'auth-login-email-step' : 'auth-reg-email-step');
@@ -10009,6 +10052,7 @@ function mostrarModalCapturaMovil(url) {
                 var msg="No se pudo enviar el código. Intenta de nuevo.";
                 if(err.message&&err.message.includes("rate limit")) msg="Demasiados intentos. Espera un momento.";
                 if(err.message&&err.message.includes("email")) msg="Correo inválido o bloqueado. Prueba con otro.";
+                if(err.message&&err.message.includes("timeout")) msg="El servidor tardó demasiado en responder. Revisa tu conexión e intenta de nuevo.";
                 mostrarError(errId,msg);
                 console.error("OTP send error:",err.message);
             } finally {
@@ -10657,9 +10701,10 @@ function mostrarModalCapturaMovil(url) {
             });
         }
 
-        // Si el usuario entra directo con #alertas-stw, carga los datos apenas el DOM esté listo
+        // Si el usuario entra directo a /alertas-stw, carga los datos apenas el DOM esté listo
         document.addEventListener('DOMContentLoaded', function () {
-            if (location.hash === '#alertas-stw') cargarAlertasSTW();
+            var _ruta = location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+            if (_ruta === 'alertas-stw') cargarAlertasSTW();
         });
     })();
     </script>
