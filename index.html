@@ -4130,16 +4130,19 @@
         gap: 10px;
         margin: 16px 0 18px;
     }
+    .sprites-header { margin-bottom: 14px; }
+    .sprites-header h2 { font-size: 1.3em; }
+    .sprites-header p { font-size: 0.8em; }
     .sprites-search { flex: none; margin-bottom: 0; }
     .sprites-search input {
         background: #170a1c;
         border: 1px solid #1f1f1f;
-        border-radius: 12px;
-        padding: 14px 14px 14px 46px;
-        font-size: 0.9em;
+        border-radius: 10px;
+        padding: 10px 12px 10px 38px;
+        font-size: 0.85em;
     }
-    .sprites-search i { left: 18px; color: #00A676; font-size: 0.95em; }
-    .sprites-stats { text-align: center; order: 3; }
+    .sprites-search i { left: 14px; color: #00A676; font-size: 0.85em; }
+    .sprites-stats { text-align: center; order: 3; font-size: 0.8em; }
     .sprites-actions {
         justify-content: flex-start;
         flex-wrap: nowrap;
@@ -4150,8 +4153,13 @@
         order: 2;
     }
     .sprites-actions::-webkit-scrollbar { display: none; }
-    .sprites-actions button { flex: 0 0 auto; white-space: nowrap; }
-    .sprites-filtro-panel { left: 0; right: auto; }
+    .sprites-actions button {
+        flex: 0 0 auto;
+        white-space: nowrap;
+        padding: 8px 12px;
+        font-size: 0.75em;
+    }
+    .sprites-filtro-panel { left: 0; right: auto; max-width: calc(100vw - 32px); }
 }
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
@@ -11209,7 +11217,8 @@ function mostrarModalCapturaMovil(url) {
                     img: rutaImagen,
                     emoji: base.emoji,
                     color: base.color,
-                    filtro: VARIANT_FILTRO[variante]
+                    filtro: VARIANT_FILTRO[variante],
+                    variante: variante
                 });
             });
         });
@@ -11217,6 +11226,11 @@ function mostrarModalCapturaMovil(url) {
         var SPRITES_STORAGE_KEY = 'shegos_espiritus_seleccionados';
         var spritesSeleccionados = {};      // { id: true }
         var spritesCargados = false;
+
+        // Lista de variantes disponibles para el panel de filtros, en el orden
+        // en que queremos mostrarlas (independiente del orden de aparición).
+        var VARIANTES_FILTRO_ORDEN = ['Base', 'Gold', 'Gummy', 'Galaxy', 'Holofoil'];
+        var variantesFiltroActivas = {};    // { 'Gold': true, ... } — vacío = sin filtro (mostrar todo)
 
         function cargarSeleccionSprites() {
             try {
@@ -11246,7 +11260,13 @@ function mostrarModalCapturaMovil(url) {
         function renderSpritesGrid(filtro) {
             var grid = document.getElementById('sprites-grid');
             var f = (filtro || '').trim().toLowerCase();
-            var lista = f ? ESPIRITUS_DATA.filter(function (s) { return s.nombre.toLowerCase().indexOf(f) !== -1; }) : ESPIRITUS_DATA;
+            var variantesActivas = Object.keys(variantesFiltroActivas).filter(function (v) { return variantesFiltroActivas[v]; });
+
+            var lista = ESPIRITUS_DATA.filter(function (s) {
+                if (f && s.nombre.toLowerCase().indexOf(f) === -1) return false;
+                if (variantesActivas.length && variantesActivas.indexOf(s.variante) === -1) return false;
+                return true;
+            });
 
             if (!lista.length) {
                 grid.innerHTML = '<div class="sprites-empty">No se encontraron espíritus con ese nombre.</div>';
@@ -11300,6 +11320,64 @@ function mostrarModalCapturaMovil(url) {
                 renderSpritesGrid(valor);
             }, 150);
         };
+
+        // ── Panel de filtros por variante (Base, Gold, Gummy, Galaxy, Holofoil) ──
+        var _spritesFiltroChipsConstruidos = false;
+
+        function construirChipsFiltroVariantes() {
+            if (_spritesFiltroChipsConstruidos) return;
+            var cont = document.getElementById('sprites-filtro-opciones');
+            if (!cont) return;
+            cont.innerHTML = VARIANTES_FILTRO_ORDEN.map(function (v) {
+                return '<button type="button" class="sprites-filtro-chip" data-variante="' + v + '" onclick="toggleVarianteFiltro(\'' + v + '\')">' + escapeHtml(v) + '</button>';
+            }).join('');
+            _spritesFiltroChipsConstruidos = true;
+        }
+
+        function actualizarBadgeFiltroSprites() {
+            var activas = Object.keys(variantesFiltroActivas).filter(function (v) { return variantesFiltroActivas[v]; });
+            var badge = document.getElementById('sprites-filtro-badge');
+            var btn = document.getElementById('sprites-btn-filtro');
+            if (badge) {
+                badge.textContent = activas.length;
+                badge.style.display = activas.length ? 'inline-flex' : 'none';
+            }
+            if (btn) btn.classList.toggle('activo', activas.length > 0);
+        }
+
+        window.toggleFiltroSprites = function (event) {
+            if (event) event.stopPropagation();
+            construirChipsFiltroVariantes();
+            var panel = document.getElementById('sprites-filtro-panel');
+            if (panel) panel.classList.toggle('abierto');
+        };
+
+        window.toggleVarianteFiltro = function (variante) {
+            variantesFiltroActivas[variante] = !variantesFiltroActivas[variante];
+            if (!variantesFiltroActivas[variante]) delete variantesFiltroActivas[variante];
+            var chip = document.querySelector('.sprites-filtro-chip[data-variante="' + variante + '"]');
+            if (chip) chip.classList.toggle('activo', !!variantesFiltroActivas[variante]);
+            actualizarBadgeFiltroSprites();
+            renderSpritesGrid(document.getElementById('sprites-buscar').value);
+        };
+
+        window.limpiarFiltroVariantes = function () {
+            variantesFiltroActivas = {};
+            document.querySelectorAll('.sprites-filtro-chip.activo').forEach(function (chip) {
+                chip.classList.remove('activo');
+            });
+            actualizarBadgeFiltroSprites();
+            renderSpritesGrid(document.getElementById('sprites-buscar').value);
+        };
+
+        // Cierra el panel de filtros al tocar/clickear fuera de él.
+        document.addEventListener('click', function (e) {
+            var panel = document.getElementById('sprites-filtro-panel');
+            var wrap = document.querySelector('.sprites-filtro-wrap');
+            if (!panel || !panel.classList.contains('abierto')) return;
+            if (wrap && wrap.contains(e.target)) return;
+            panel.classList.remove('abierto');
+        });
 
         window.abrirModalGenerarSprites = function () {
             var seleccionados = Object.keys(spritesSeleccionados).filter(function (id) { return spritesSeleccionados[id]; });
