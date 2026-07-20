@@ -7040,7 +7040,7 @@
             <div class="footer-social-icons">
                 <a href="https://discord.gg/W6wmXXUe" target="_blank" class="footer-social-icon" title="Stock Cuentas STW (Discord)"><i class="fab fa-discord"></i></a>
                 <a href="https://chat.whatsapp.com/DJM0mEoYaDrLHDyUBMBcHL" target="_blank" class="footer-social-icon" title="Grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://wa.me/18299847680" target="_blank" class="footer-social-icon" title="Contacto por WhatsApp"><img loading="lazy" decoding="async" src="https://cdn.brandfetch.io/id6Zq084G_/theme/light/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Contacto" style="width:18px; height:18px; object-fit:contain;"></a>
+                <a href="https://wa.me/message/UXZFWTS7K6RTP1" target="_blank" class="footer-social-icon" title="Contacto por WhatsApp"><img loading="lazy" decoding="async" src="https://cdn.brandfetch.io/id6Zq084G_/theme/light/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Contacto" style="width:18px; height:18px; object-fit:contain;"></a>
             </div>
         </div>
 
@@ -8943,7 +8943,7 @@
                 // Abrir WhatsApp directamente con el pedido
                 const metodo = metodoRaw.toUpperCase();
                 const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
-                window.open("https://wa.me/18299847680?text=" + encodeURIComponent(mensaje), '_blank');
+                window.open("https://wa.me/message/UXZFWTS7K6RTP1?text=" + encodeURIComponent(mensaje), '_blank');
 
                 vaciarCarrito();
 
@@ -9073,7 +9073,7 @@ ${listaProductos}
 
 _He adjuntado mi comprobante de pago arriba._`;
 
-            const urlFinal = "https://wa.me/18299847680?text=" + encodeURIComponent(mensaje);
+            const urlFinal = "https://wa.me/message/UXZFWTS7K6RTP1?text=" + encodeURIComponent(mensaje);
             window.open(urlFinal, '_blank');
             cerrarModalInstrucciones();
         }
@@ -9425,7 +9425,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             const btnWhatsapp = document.getElementById('a-pedido-btn-whatsapp');
             const mensaje = 'Hola! Quisiera pedir el siguiente código bajo pedido: ' + nombreProducto + '. ¿Me puedes indicar el costo?';
             btnWhatsapp.onclick = function() {
-                window.open('https://wa.me/18299847680?text=' + encodeURIComponent(mensaje), '_blank');
+                window.open('https://wa.me/message/UXZFWTS7K6RTP1?text=' + encodeURIComponent(mensaje), '_blank');
             };
             document.getElementById('modal-a-pedido').style.display = 'flex';
             document.body.style.overflow = 'hidden';
