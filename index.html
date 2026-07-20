@@ -8230,6 +8230,9 @@
                     <button id="popup-descarga-movil-imgbb" type="button" style="display:block; width:100%; background:transparent; color:#00A676; font-weight:700; border:1.5px solid #00A676; padding:12px; border-radius:8px; cursor:pointer; font-size:0.85em;">
                         <i class="fas fa-image"></i> Abrir imagen en imgbb
                     </button>
+                    <div id="popup-descarga-movil-imgbb-barra-wrap" style="display:none; width:100%; height:6px; background:rgba(255,255,255,0.12); border-radius:5px; overflow:hidden; margin-top:8px;">
+                        <div id="popup-descarga-movil-imgbb-barra" style="width:0%; height:100%; background:#00A676; transition:width 0.2s ease;"></div>
+                    </div>
                     <p id="popup-descarga-movil-imgbb-msg" style="color:#999; font-size:0.75em; margin:8px 0 0 0;"></p>
                 </div>`;
 
@@ -8279,18 +8282,27 @@
             // o simplemente para tener un enlace que se pueda compartir.
             const btnImgbb = overlay.querySelector('#popup-descarga-movil-imgbb');
             const msgImgbb = overlay.querySelector('#popup-descarga-movil-imgbb-msg');
+            const barraWrapImgbb = overlay.querySelector('#popup-descarga-movil-imgbb-barra-wrap');
+            const barraImgbb = overlay.querySelector('#popup-descarga-movil-imgbb-barra');
             btnImgbb.addEventListener('click', async () => {
                 const textoOriginalBtn = btnImgbb.innerHTML;
                 btnImgbb.disabled = true;
-                btnImgbb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
+                btnImgbb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo... 0%';
                 msgImgbb.textContent = '';
+                if (barraWrapImgbb) barraWrapImgbb.style.display = 'block';
+                if (barraImgbb) barraImgbb.style.width = '0%';
                 try {
-                    const urlDirecta = await subirImagenAImgbb(blob, nombreArchivo);
+                    const urlDirecta = await subirImagenAImgbbConProgreso(blob, nombreArchivo, (pct) => {
+                        btnImgbb.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo... ' + pct + '%';
+                        if (barraImgbb) barraImgbb.style.width = pct + '%';
+                    });
+                    if (barraImgbb) barraImgbb.style.width = '100%';
                     window.open(urlDirecta, '_blank', 'noopener');
-                    msgImgbb.innerHTML = `Imagen subida. Si no se abrió sola: <a href="${urlDirecta}" target="_blank" rel="noopener" style="color:#00A676;">toca aquí</a>.`;
+                    msgImgbb.innerHTML = `Imagen subida. Enlace directo: <a href="${urlDirecta}" target="_blank" rel="noopener" style="color:#00A676;">${urlDirecta}</a>`;
                 } catch (errImgbb) {
                     console.warn('No se pudo subir la imagen a imgbb:', errImgbb);
                     msgImgbb.textContent = 'No se pudo subir la imagen a imgbb. Usa la pulsación larga sobre la imagen de arriba.';
+                    if (barraWrapImgbb) barraWrapImgbb.style.display = 'none';
                 } finally {
                     btnImgbb.disabled = false;
                     btnImgbb.innerHTML = textoOriginalBtn;
@@ -8338,6 +8350,42 @@
             const urlDirecta = data.data.image && data.data.image.url ? data.data.image.url : data.data.url;
             const urlVisor = data.data.url_viewer || urlDirecta;
             return urlVisor;
+        }
+
+        // Misma subida a imgbb, pero por XMLHttpRequest en vez de fetch, para
+        // poder reportar el progreso REAL de la subida (fetch no expone eso
+        // de forma simple). onProgreso(pct) se llama con un número 0-100.
+        function subirImagenAImgbbConProgreso(blob, nombreArchivo, onProgreso) {
+            if (!IMGBB_API_KEY || IMGBB_API_KEY.indexOf('PEGA_AQUI') === 0) {
+                return Promise.reject(new Error('imgbb no está configurado (falta la API key)'));
+            }
+            return blobABase64(blob).then(function (base64) {
+                return new Promise(function (resolve, reject) {
+                    const formData = new FormData();
+                    formData.append('image', base64);
+                    formData.append('name', nombreArchivo);
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', `https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_API_KEY)}`);
+                    if (xhr.upload && typeof onProgreso === 'function') {
+                        xhr.upload.onprogress = function (ev) {
+                            if (ev.lengthComputable) onProgreso(Math.round((ev.loaded / ev.total) * 100));
+                        };
+                    }
+                    xhr.onload = function () {
+                        let data = null;
+                        try { data = JSON.parse(xhr.responseText); } catch (e) { /* respuesta no era JSON */ }
+                        if (xhr.status >= 200 && xhr.status < 300 && data && data.success && data.data) {
+                            const urlDirecta = data.data.image && data.data.image.url ? data.data.image.url : data.data.url;
+                            resolve(data.data.url_viewer || urlDirecta);
+                        } else {
+                            reject(new Error('imgbb no devolvió una imagen válida'));
+                        }
+                    };
+                    xhr.onerror = function () { reject(new Error('Error de red subiendo la imagen a imgbb')); };
+                    xhr.send(formData);
+                });
+            });
         }
 
 
@@ -10448,7 +10496,7 @@ function mostrarModalCapturaMovil(url) {
                         options: { shouldCreateUser: true }
                     }),
                     timeoutPromise
-                ]);
+                ]);a
                 if (error) throw error;
                 // Mostrar paso OTP
                 var emailStep = $e(tipo==='login' ? 'auth-login-email-step' : 'auth-reg-email-step');
@@ -11512,24 +11560,37 @@ function mostrarModalCapturaMovil(url) {
             return '<div style="' + cajaEstilo + 'border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:' + Math.round(tamanoPx * 0.45) + 'px; background:linear-gradient(160deg,' + s.color + ',#222); filter:' + s.filtro + ';">' + s.emoji + '</div>';
         }
 
+        // Cantidad de columnas FIJA para la plantilla generada (antes se
+        // calculaba automáticamente según cuántos íconos entraban).
+        var COLUMNAS_CAPTURA = 10;
+
         // Calcula el tamaño de ícono más grande que permite que TODOS los
         // elementos seleccionados quepan dentro del área de contenido
         // disponible (sin invadir el marco decorativo ni el recuadro de
-        // "Apoya a un creador" que ya vienen impresos en la plantilla).
+        // "Apoya a un creador" que ya vienen impresos en la plantilla),
+        // siempre respetando exactamente COLUMNAS_CAPTURA columnas por fila.
         // Así nunca se omite ninguna variante: si hay muchas, los íconos
         // simplemente se achican para que todas entren.
         function calcularTamanoIconoCaptura(cantidad, anchoDisp, altoDisp, gap, textoAlto) {
-            for (var tam = 118; tam >= 40; tam -= 2) {
-                var columnas = Math.max(1, Math.floor((anchoDisp + gap) / (tam + gap)));
+            var columnas = COLUMNAS_CAPTURA;
+            // Tamaño máximo de ícono que permite que 10 columnas + sus gaps
+            // entren en el ancho disponible.
+            var tamMaxAncho = Math.floor((anchoDisp - gap * (columnas - 1)) / columnas);
+            for (var tam = Math.min(118, tamMaxAncho); tam >= 30; tam -= 2) {
                 var filas = Math.ceil(cantidad / columnas);
                 var altoTotal = filas * (tam + textoAlto + gap) - gap;
                 if (altoTotal <= altoDisp) return tam;
             }
-            return 40;
+            return 30;
         }
 
         // Ejecuta una promesa con un límite de tiempo: si no resuelve a
-        // tiempo, la rechaza en vez de dejar el proceso colgado.
+        // tiempo, la rechaza en vez de dejar el proceso colgado. OJO: esto
+        // NO cancela la promesa original (html2canvas no se puede abortar a
+        // mitad de camino) — solo deja de esperarla en el flujo principal.
+        // La promesa original sigue corriendo sola; la aprovechamos más abajo
+        // en manejarGeneracionLentaSprites() para no tirar a la basura el
+        // trabajo ya hecho si termina un poco después del límite.
         function conLimiteDeTiempo(promesa, ms, mensaje) {
             return Promise.race([
                 promesa,
@@ -11553,12 +11614,110 @@ function mostrarModalCapturaMovil(url) {
         var CONTENIDO_LEFT = 80;
         var CONTENIDO_RIGHT = 1006;
 
+        // ── Overlay con barra de progreso (reemplaza al spinner simple) ──
+        // Usamos un progreso SIMULADO (no hay forma de saber el % real de
+        // html2canvas) que avanza rápido al principio y se frena cerca del
+        // 90%, para no prometer un tiempo que no podemos garantizar. Llega
+        // a 100% recién cuando el trabajo realmente terminó.
+        function crearOverlaySprites() {
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999; color:#fff; text-align:center; flex-direction:column; gap:14px; opacity:0; animation: fadeIn 0.25s ease forwards; padding:20px; box-sizing:border-box;';
+            overlay.innerHTML = `
+                <i class="fas fa-image" style="font-size:1.8em; color:#00A676;"></i>
+                <div id="gen-sprites-msg" style="font-size:1.05em; max-width:320px;">Preparando tus espíritus...</div>
+                <div style="width:min(280px, 80vw); height:8px; background:rgba(255,255,255,0.12); border-radius:6px; overflow:hidden;">
+                    <div id="gen-sprites-barra" style="width:0%; height:100%; background:#00A676; border-radius:6px; transition:width 0.25s ease;"></div>
+                </div>
+                <div id="gen-sprites-pct" style="font-size:0.8em; color:#999;">0%</div>`;
+            document.body.appendChild(overlay);
+
+            var barra = overlay.querySelector('#gen-sprites-barra');
+            var pctEl = overlay.querySelector('#gen-sprites-pct');
+            var msgEl = overlay.querySelector('#gen-sprites-msg');
+            var progresoActual = 0;
+            var intervalo = setInterval(function () {
+                var restante = 90 - progresoActual;
+                progresoActual += Math.max(0.4, restante * 0.06);
+                if (progresoActual > 90) progresoActual = 90;
+                barra.style.width = progresoActual + '%';
+                pctEl.textContent = Math.round(progresoActual) + '%';
+            }, 220);
+
+            return {
+                el: overlay,
+                setMensaje: function (txt) { if (msgEl) msgEl.textContent = txt; },
+                completar: function () {
+                    clearInterval(intervalo);
+                    if (barra) barra.style.width = '100%';
+                    if (pctEl) pctEl.textContent = '100%';
+                },
+                detener: function () { clearInterval(intervalo); },
+                remover: function () {
+                    clearInterval(intervalo);
+                    if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                }
+            };
+        }
+
+        // ── Manejo de generación lenta ──
+        // Si se cumple el límite de tiempo, NO tiramos el trabajo a la
+        // basura: html2canvas sigue corriendo solo en segundo plano (no se
+        // puede cancelar a mitad de camino). Seguimos esperando esa MISMA
+        // promesa por separado y, apenas termine (aunque sea unos segundos
+        // más tarde), generamos la imagen igual y ofrecemos guardarla /
+        // abrirla / subirla a imgbb.com para tener un link directo, en vez
+        // de dejar al usuario con un simple mensaje de error.
+        function manejarGeneracionLentaSprites(promesaCanvas, nombre) {
+            mostrarToastSprites('Tu imagen sigue generándose en segundo plano. Te avisamos apenas esté lista — no cierres esta pestaña.', 'fa-clock');
+            promesaCanvas.then(function (canvas) {
+                return new Promise(function (resolve, reject) {
+                    canvas.toBlob(function (b) { b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')); }, 'image/jpeg', 0.85);
+                });
+            }).then(function (blob) {
+                var nombreArchivo = (nombre || 'mis').replace(/[^a-z0-9_\-]+/gi, '_') || 'mis';
+                var nombreArchivoJpg = nombreArchivo + '-sprites.jpg';
+                var urlImagen = URL.createObjectURL(blob);
+                mostrarToastSprites('¡Tu imagen ya está lista!', 'fa-circle-check');
+                // Reutilizamos el mismo modal de guardado que usa la tienda:
+                // ya incluye "Abrir en pestaña nueva", "Compartir/Guardar" y
+                // "Abrir imagen en imgbb" (link directo con barra de subida).
+                mostrarModalImagenParaGuardar(urlImagen, blob, nombreArchivoJpg, {
+                    altTexto: 'Mis sprites - ' + nombre,
+                    shareTitulo: 'Mis sprites de Fortnite',
+                    shareTexto: 'Mis sprites/espíritus de Fortnite - shegostore.com'
+                });
+            }).catch(function (err) {
+                console.warn('[sprites] La generación tardía también falló:', err);
+                mostrarToastSprites('No se pudo terminar de generar la imagen. Intenta de nuevo con menos espíritus marcados.', 'fa-triangle-exclamation');
+            });
+        }
+
+        // Aviso flotante no bloqueante (a diferencia de alert(), no congela
+        // la pestaña ni corta el trabajo que sigue en curso en segundo plano).
+        function mostrarToastSprites(mensaje, icono) {
+            var existente = document.getElementById('toast-sprites');
+            if (existente) existente.remove();
+            var toast = document.createElement('div');
+            toast.id = 'toast-sprites';
+            toast.style.cssText = 'position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#1c0e22; border:1px solid #00A676; color:#fff; padding:14px 18px; border-radius:10px; z-index:100000; max-width:min(360px, calc(100vw - 32px)); box-shadow:0 10px 30px rgba(0,0,0,0.5); font-size:0.88em; display:flex; align-items:flex-start; gap:10px; opacity:0; animation: fadeIn 0.25s ease forwards;';
+            toast.innerHTML = '<i class="fas ' + (icono || 'fa-circle-info') + '" style="color:#00A676; margin-top:2px;"></i><span>' + escapeHtml(mensaje) + '</span>';
+            document.body.appendChild(toast);
+            setTimeout(function () { if (toast.parentNode) toast.remove(); }, 7000);
+        }
+
         async function generarImagenSprites(nombre) {
             var toolbar = document.querySelector('.sprites-toolbar');
-            var overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:99999; color:#fff; font-size:1.05em; text-align:center; flex-direction:column; gap:10px; opacity:0; animation: fadeIn 0.25s ease forwards;';
-            overlay.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size:1.8em;"></i><div>Generando tu imagen, un momento...</div>';
-            document.body.appendChild(overlay);
+            var seleccionIds = Object.keys(spritesSeleccionados).filter(function (id) { return spritesSeleccionados[id]; });
+            var elegidos = ESPIRITUS_DATA.filter(function (s) { return seleccionIds.indexOf(s.id) !== -1; });
+
+            // Límite de tiempo ADAPTATIVO: mientras más espíritus se eligen,
+            // más imágenes tiene que cargar y dibujar html2canvas, así que le
+            // damos más margen antes de considerarlo "lento" (antes era un
+            // valor fijo de 20s para cualquier cantidad, lo que disparaba el
+            // error seguido cuando se marcaban muchos espíritus a la vez).
+            var TIEMPO_LIMITE_MS = Math.min(45000, 15000 + (elegidos.length || 1) * 350);
+
+            var overlaySprites = crearOverlaySprites();
             if (toolbar) toolbar.classList.add('generando');
 
             // Cede el hilo principal al navegador para que pinte el overlay
@@ -11569,8 +11728,6 @@ function mostrarModalCapturaMovil(url) {
 
             var capturaDiv = null;
             try {
-                var seleccionIds = Object.keys(spritesSeleccionados).filter(function (id) { return spritesSeleccionados[id]; });
-                var elegidos = ESPIRITUS_DATA.filter(function (s) { return seleccionIds.indexOf(s.id) !== -1; });
                 var tituloEscapado = escapeHtml(nombre);
 
                 var anchoContenido = CONTENIDO_RIGHT - CONTENIDO_LEFT;
@@ -11581,13 +11738,15 @@ function mostrarModalCapturaMovil(url) {
                 var tamanoIcono = calcularTamanoIconoCaptura(elegidos.length || 1, anchoContenido, altoContenidoGrid, gapItems, altoTexto);
                 var tamanoFuenteNombre = tamanoIcono <= 56 ? 9 : (tamanoIcono <= 76 ? 10 : 11);
 
+                overlaySprites.setMensaje('Dibujando ' + (elegidos.length || 0) + ' espíritu' + ((elegidos.length === 1) ? '' : 's') + '...');
+
                 var itemsHtml = elegidos.map(function (s) {
                     return `
                         <div style="width:${tamanoIcono}px; text-align:center;">
-                            <div style="background:rgba(255,255,255,0.55); border-radius:10px; padding:5px; box-shadow:0 2px 6px rgba(0,0,0,0.15);">
+                            <div style="background:rgba(35,35,40,0.55); border-radius:10px; padding:5px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
                                 ${construirIconoEspirituCaptura(s, tamanoIcono)}
                             </div>
-                            <div style="margin-top:4px; font-size:${tamanoFuenteNombre}px; font-weight:700; color:#1c1c1c; font-family:Poppins,sans-serif; line-height:1.15; max-height:${altoTexto}px; overflow:hidden;">${escapeHtml(s.nombre)}</div>
+                            <div style="margin-top:4px; font-size:${tamanoFuenteNombre}px; font-weight:700; color:#16233d; font-family:Poppins,sans-serif; line-height:1.15; max-height:${altoTexto}px; overflow:hidden;">${escapeHtml(s.nombre)}</div>
                         </div>`;
                 }).join('');
 
@@ -11613,18 +11772,31 @@ function mostrarModalCapturaMovil(url) {
                 // html2canvas (abajo) para que nunca se quede esperando una
                 // imagen rota/lenta más de unos segundos, y el límite global de
                 // conLimiteDeTiempo como red de seguridad final.
-                var canvas = await conLimiteDeTiempo(
-                    html2canvas(capturaDiv, {
-                        backgroundColor: '#fdf3e3',
-                        scale: 1,
-                        useCORS: true,
-                        allowTaint: false,
-                        imageTimeout: 5000,
-                        logging: false
-                    }),
-                    20000,
-                    'La generación de la imagen tardó demasiado. Intenta de nuevo.'
-                );
+                var promesaCanvas = html2canvas(capturaDiv, {
+                    backgroundColor: '#fdf3e3',
+                    scale: 1,
+                    useCORS: true,
+                    allowTaint: false,
+                    imageTimeout: 5000,
+                    logging: false
+                });
+
+                // Aviso "esto está tardando" a mitad de camino del límite,
+                // sin cortar el trabajo — solo para que el usuario sepa que
+                // seguimos activos y no algo se congeló.
+                var avisoLento = setTimeout(function () {
+                    overlaySprites.setMensaje('Esto está tardando más de lo normal, seguimos generando tu imagen...');
+                }, Math.max(6000, TIEMPO_LIMITE_MS * 0.55));
+
+                var canvas;
+                try {
+                    canvas = await conLimiteDeTiempo(promesaCanvas, TIEMPO_LIMITE_MS,
+                        'La generación de la imagen tardó demasiado.');
+                } finally {
+                    clearTimeout(avisoLento);
+                }
+
+                overlaySprites.completar();
 
                 var link = document.createElement('a');
                 var nombreArchivo = nombre.replace(/[^a-z0-9_\-]+/gi, '_') || 'mis';
@@ -11663,10 +11835,20 @@ function mostrarModalCapturaMovil(url) {
                 }
             } catch (err) {
                 console.error('[sprites] Error al generar imagen:', err);
-                alert((err && err.message) ? err.message : 'Ocurrió un error generando la imagen. Intenta de nuevo.');
+                var esTimeout = err && /tardó demasiado/i.test(err.message || '');
+                if (esTimeout) {
+                    // No mostramos un error definitivo: seguimos esperando la
+                    // MISMA promesa de html2canvas en segundo plano (sigue
+                    // corriendo aunque dejamos de esperarla acá) y, apenas
+                    // termine, ofrecemos guardarla / abrirla / subirla a
+                    // imgbb.com con un link directo.
+                    manejarGeneracionLentaSprites(promesaCanvas, nombre);
+                } else {
+                    alert((err && err.message) ? err.message : 'Ocurrió un error generando la imagen. Intenta de nuevo.');
+                }
             } finally {
                 if (capturaDiv && capturaDiv.parentNode) capturaDiv.parentNode.removeChild(capturaDiv);
-                if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                overlaySprites.remover();
                 if (toolbar) toolbar.classList.remove('generando');
             }
         }
