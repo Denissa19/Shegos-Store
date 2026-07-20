@@ -366,9 +366,10 @@
         
         .sidebar-footer { position: relative; bottom: auto; width: 100%; padding: 20px; box-sizing: border-box; border-top: 1px solid #1c0e22; margin-top: auto; }
 
-        .header-left { display: flex; align-items: center; gap: 25px; }
-        nav { display: flex; align-items: center; background-color: rgba(255,255,255,0.03); padding: 6px; gap: 4px; flex-wrap: nowrap; border-radius: 30px; width: fit-content; border: 1px solid #2a1430; margin: 0; animation: none; }
-        nav .tab-btn { padding: 8px 14px; font-size: 0.78em; }
+        .header-left { display: flex; align-items: center; gap: 25px; min-width: 0; flex: 1 1 auto; }
+        nav { display: flex; align-items: center; background-color: rgba(255,255,255,0.03); padding: 6px; gap: 4px; flex-wrap: nowrap; border-radius: 30px; width: fit-content; max-width: 100%; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; border: 1px solid #2a1430; margin: 0; animation: none; }
+        nav::-webkit-scrollbar { display: none; }
+        nav .tab-btn { padding: 8px 14px; font-size: 0.78em; flex: 0 0 auto; }
 
         /* =========================================
            MEJORAS PARA MÓVIL Y RESPONSIVIDAD
@@ -4187,7 +4188,7 @@
                 <button class="tab-btn" onclick="abrirPestana('sprites-espiritus')"><i class="fas fa-ghost"></i> Plantilla Espíritus</button>
             </nav>
         </div>
-        <div class="header-controls" style="display: flex; align-items: center; gap: 15px;">
+        <div class="header-controls" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
             <!-- Trigger Visual para Escritorio -->
             <div id="currency-trigger-desktop" class="currency-trigger" onclick="abrirModalDivisa()">
                 <img id="header-flag" src="https://flagcdn.com/w40/us.png" alt="Flag">
@@ -11031,27 +11032,40 @@ function mostrarModalCapturaMovil(url) {
             { id: 'pollo',       nombre: 'Pollo',        rareza: 'Mítico',     color: '#d9a441', emoji: '🐔', img: 'img/Sprites/Pollo.webp',        variantes: ['Base'] }
         ];
 
-        // Filtros CSS para simular cada variante sobre la imagen/ícono base
+        // Filtros CSS — ya no se usan para recolorear (cada variante tiene su
+        // propio archivo real en img/Sprites/), se dejan en 'none' por compatibilidad.
         var VARIANT_FILTRO = {
             Base: 'none',
-            Gold: 'sepia(0.55) saturate(3.2) hue-rotate(-12deg) brightness(1.05)',
-            Gummy: 'saturate(2.4) hue-rotate(300deg) brightness(1.08)',
-            Galaxy: 'hue-rotate(200deg) saturate(2.1) brightness(0.95) contrast(1.15)',
-            Holofoil: 'saturate(1.6) hue-rotate(50deg) brightness(1.2) contrast(1.1)'
+            Gold: 'none',
+            Gummy: 'none',
+            Galaxy: 'none',
+            Holofoil: 'none'
         };
         var RAREZA_COLOR = { 'Común': '#8a8a9e', 'Rara': '#4aa8ff', 'Épico': '#c44dff', 'Legendaria': '#e0a52e', 'Mítico': '#f5b942' };
 
-        // Aplana la lista base en una entrada por cada variante (igual que fortnite.gg/sprites)
+        // Obtiene el nombre de archivo (sin carpeta ni extensión) a partir de la
+        // ruta base, ej. 'img/Sprites/Grim.webp' -> 'Grim'.
+        function nombreArchivoBase(rutaImg) {
+            var partes = rutaImg.split('/');
+            var archivo = partes[partes.length - 1];
+            return archivo.replace(/\.[^/.]+$/, '');
+        }
+
+        // Aplana la lista base en una entrada por cada variante (igual que fortnite.gg/sprites).
+        // Cada variante (Gold, Gummy, Galaxy, Holofoil) usa su PROPIO archivo real,
+        // ej. img/Sprites/Gold Batman.webp, img/Sprites/Gummy Batman.webp, etc.
         var ESPIRITUS_DATA = [];
         ESPIRITUS_BASE.forEach(function (base) {
+            var archivoBase = nombreArchivoBase(base.img);
             base.variantes.forEach(function (variante) {
                 var esBase = variante === 'Base';
+                var rutaImagen = esBase ? base.img : ('img/Sprites/' + variante + ' ' + archivoBase + '.webp');
                 ESPIRITUS_DATA.push({
                     id: base.id + '_' + variante.toLowerCase(),
                     nombre: esBase ? base.nombre : (variante + ' ' + base.nombre),
                     etiqueta: esBase ? base.rareza : 'Especial',
                     colorEtiqueta: esBase ? (RAREZA_COLOR[base.rareza] || '#8a8a9e') : '#2fd6c4',
-                    img: base.img,
+                    img: rutaImagen,
                     emoji: base.emoji,
                     color: base.color,
                     filtro: VARIANT_FILTRO[variante]
@@ -11083,7 +11097,7 @@ function mostrarModalCapturaMovil(url) {
 
         function construirIconoEspiritu(s) {
             if (s.img) {
-                return '<img src="' + s.img + '" loading="lazy" alt="' + escapeHtml(s.nombre) + '" style="filter:' + s.filtro + ';">';
+                return '<img src="' + s.img + '" loading="lazy" alt="' + escapeHtml(s.nombre) + '" style="filter:' + s.filtro + ';" onerror="this.outerHTML=\'<div class=&quot;sprite-placeholder&quot;>' + s.emoji + '</div>\';">';
             }
             return '<div class="sprite-placeholder" style="filter:' + s.filtro + ';">' + s.emoji + '</div>';
         }
@@ -11207,17 +11221,17 @@ function mostrarModalCapturaMovil(url) {
                 }).join('');
 
                 capturaDiv = document.createElement('div');
-                capturaDiv.style.cssText = 'position:fixed; left:-99999px; top:0; width:1200px; background:linear-gradient(160deg,#fdf3e3,#f3e1c2); box-sizing:border-box; padding:30px 30px 0 30px;';
+                capturaDiv.style.cssText = 'position:fixed; left:-99999px; top:0; width:1086px; background-image:url(\'img/fondo-sprites-plantilla.png\'); background-size:cover; background-position:center; background-repeat:no-repeat; box-sizing:border-box; padding:60px 70px 110px 70px;';
 
                 capturaDiv.innerHTML = `
-                    <div style="text-align:center; margin-bottom:18px;">
-                        <div style="font-family:'Anton',sans-serif; font-size:36px; letter-spacing:1px; color:#101010;">${tituloEscapado}</div>
+                    <div style="text-align:center; margin-bottom:24px;">
+                        <div style="font-family:'Anton',sans-serif; font-size:36px; letter-spacing:1px; color:#16233d;">${tituloEscapado}</div>
                     </div>
-                    <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center; padding:6px 0 30px 0;">
+                    <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center;">
                         ${itemsHtml}
                     </div>
-                    <div style="background:#1c2b45; border-radius:10px 10px 0 0; text-align:center; padding:14px; margin:0 -30px;">
-                        <span style="color:#fff; font-weight:800; letter-spacing:1px; font-size:15px; font-family:Poppins,sans-serif;">APOYA A UN CREADOR: ${escapeHtml(nombre.toUpperCase())}</span>
+                    <div style="position:absolute; left:0; right:0; bottom:40px; text-align:center;">
+                        <span style="color:#16233d; font-weight:800; letter-spacing:1px; font-size:17px; font-family:'Anton',sans-serif; text-transform:uppercase;">Apoya a un creador: ${escapeHtml(nombre.toUpperCase())}</span>
                     </div>`;
 
                 document.body.appendChild(capturaDiv);
