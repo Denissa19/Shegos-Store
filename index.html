@@ -1565,6 +1565,11 @@
             cursor: grab;
             user-select: none;
             padding-bottom: 8px;
+            /* Deja que el navegador siga manejando el scroll VERTICAL de la
+               página con normalidad, pero le avisa que el gesto horizontal
+               (deslizar para ver más cosméticos) lo controla nuestro JS y no
+               debe iniciar una navegación/scroll nativo que lo bloquee. */
+            touch-action: pan-y;
         }
         .carrusel-se-va-hoy:hover {
             animation-play-state: paused;
@@ -3943,22 +3948,15 @@
 </head>
 <body>
     <div class="hero-bg-rotator">
-        <div class="hero-bg-track" id="hero-bg-track">
-            <div class="bg-slide"></div>
-            <div class="bg-slide"></div>
-            <div class="bg-slide"></div>
-            <div class="bg-slide"></div>
-            <div class="bg-slide"></div>
-            <div class="bg-slide"></div>
-        </div>
+        <div class="hero-bg-track" id="hero-bg-track"></div>
     </div>
     <script>
     /* ── Rotador de fondo con crossfade (estilo Fortnite.com) ── */
     (function () {
-        // Lista de imágenes a rotar. Rutas relativas a la carpeta img/
-        // (mismo nivel que index.html). Si una no existe, se ignora
-        // automáticamente y se usa la primera como respaldo.
-        const IMAGENES = [
+        // Respaldo local: se usa mientras cargan las imágenes oficiales y también
+        // si la API llegara a fallar (sin conexión, mantenimiento, etc). Así el
+        // fondo NUNCA se queda en blanco.
+        const IMAGENES_RESPALDO = [
             'img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp',
             'img/FNECO_41-10_ChefTarTar_WebCarousel_Background_1920x1080.webp',
             'img/FNECO_41-10_Trolley_WebCarousel_Background_1920x1080.webp',
@@ -3966,45 +3964,86 @@
             'img/FNSP_41-10_PearlTaffy_VisID_2UP_WebCarousel_Background_1920x1080.webp',
             'img/fortnite-runners-keyart-webheader.webp'
         ];
-        const FALLBACK = 'img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp';
+        const FALLBACK = IMAGENES_RESPALDO[0];
         const INTERVALO = 8000; // 8 segundos entre cambios
+        // No se puede leer fortnite.com directamente desde el navegador (el sitio
+        // no permite peticiones desde otros dominios, por seguridad del propio
+        // navegador). En su lugar usamos fortnite-api.com/v2/news, que expone el
+        // MISMO arte promocional oficial que publica Epic para el contenido de
+        // cada temporada/modo, y se actualiza solo cada vez que Epic actualiza
+        // ese contenido: no hace falta tocar nada acá cuando cambie.
+        const NEWS_ENDPOINT = 'https://fortnite-api.com/v2/news?language=es';
+        const MAX_IMAGENES = 8;
 
         const track = document.getElementById('hero-bg-track');
         if (!track) return;
-        const slides = Array.from(track.querySelectorAll('.bg-slide'));
-        if (!slides.length) return;
 
-        // Verifica si una imagen carga correctamente; si no, usa el fallback.
-        function resolverImagen(src) {
+        // Verifica si una imagen carga correctamente antes de usarla.
+        function probarImagen(src) {
             return new Promise((resolve) => {
+                if (!src) { resolve(null); return; }
                 const img = new Image();
                 img.onload = () => resolve(src);
-                img.onerror = () => resolve(FALLBACK);
+                img.onerror = () => resolve(null);
                 img.src = src;
             });
         }
 
-        (async function init() {
-            // ANTES: se esperaban (await) las 6 imágenes de fondo UNA POR UNA antes de
-            // mostrar cualquier cosa, así que la primera tardaba en aparecer lo que
-            // tardaran en validarse las 6. AHORA: mostramos la primera en cuanto está
-            // lista, y el resto se cargan en paralelo de fondo sin bloquear la vista.
-            const primerCandidato = IMAGENES[0] || FALLBACK;
-            const primeraUrl = await resolverImagen(primerCandidato);
-            slides[0].style.backgroundImage = `url('${primeraUrl}')`;
-            slides[0].classList.add('bg-slide-active');
-
-            const restoPromesas = slides.slice(1).map((slide, i) => {
-                const candidato = IMAGENES[(i + 1) % IMAGENES.length] || FALLBACK;
-                return resolverImagen(candidato).then((url) => {
-                    slide.style.backgroundImage = `url('${url}')`;
+        // Extrae las URLs de imagen de las "motds" (mensajes del día) de BR,
+        // Salvar el Mundo y Creativo — son los banners/keyart oficiales que Epic
+        // publica y renueva junto con cada actualización del juego.
+        async function obtenerImagenesOficiales() {
+            try {
+                const res = await fetch(NEWS_ENDPOINT, { cache: 'no-store' });
+                if (!res.ok) throw new Error('Respuesta no OK: ' + res.status);
+                const datos = await res.json();
+                const modos = ['br', 'stw', 'creative'];
+                let candidatas = [];
+                modos.forEach((modo) => {
+                    const bloque = datos && datos.data && datos.data[modo];
+                    const motds = bloque && bloque.motds;
+                    if (Array.isArray(motds)) {
+                        motds.forEach((m) => { if (m && m.image) candidatas.push(m.image); });
+                    }
                 });
+                // Quitar duplicados manteniendo el orden que entrega la API
+                candidatas = [...new Set(candidatas)];
+                // Confirmar que cada imagen realmente carga (algún link puede fallar)
+                const validadas = await Promise.all(candidatas.slice(0, MAX_IMAGENES).map(probarImagen));
+                return validadas.filter(Boolean);
+            } catch (err) {
+                console.warn('[fondo-hero] No se pudo obtener el arte oficial de fortnite-api.com, se usa el respaldo local:', err);
+                return [];
+            }
+        }
+
+        (async function init() {
+            // Mostramos de inmediato una imagen de respaldo local como primer slide,
+            // para que el fondo aparezca al instante sin esperar a la API.
+            const primeraSlide = document.createElement('div');
+            primeraSlide.className = 'bg-slide';
+            primeraSlide.style.backgroundImage = `url('${FALLBACK}')`;
+            primeraSlide.classList.add('bg-slide-active');
+            track.appendChild(primeraSlide);
+            let slides = [primeraSlide];
+
+            // En paralelo, buscamos el arte oficial actual. Si consigue al menos 2
+            // imágenes válidas, reemplaza por completo la cuadrícula de slides;
+            // si no, nos quedamos con el respaldo local (rotando entre esas 6).
+            const imagenesOficiales = await obtenerImagenesOficiales();
+            const listaFinal = imagenesOficiales.length >= 2 ? imagenesOficiales : IMAGENES_RESPALDO;
+
+            track.innerHTML = '';
+            slides = listaFinal.map((url, i) => {
+                const slide = document.createElement('div');
+                slide.className = 'bg-slide' + (i === 0 ? ' bg-slide-active' : '');
+                slide.style.backgroundImage = `url('${url}')`;
+                track.appendChild(slide);
+                return slide;
             });
-            // No bloqueamos el arranque del rotador si alguna tarda o falla
-            Promise.all(restoPromesas).catch(() => {});
+            if (!slides.length) return;
 
             let indiceActual = 0;
-
             if (slides.length > 1) {
                 setInterval(() => {
                     const siguiente = (indiceActual + 1) % slides.length;
@@ -6920,8 +6959,8 @@
         let pasoCheckoutActual = 1;
 
         // Precio por cada 100 V-Bucks de los cosméticos de la tienda, según método de pago
-        const TASA_VBUCKS_NORMAL = 0.52; // Cualquier método excepto PayPal
-        const TASA_VBUCKS_PAYPAL = 0.62; // PayPal
+        const TASA_VBUCKS_NORMAL = 0.57; // Cualquier método excepto PayPal
+        const TASA_VBUCKS_PAYPAL = 0.60; // PayPal
 
         // Orden oficial de secciones de la tienda de Fortnite (global)
         const ordenSeccionesOficiales = [
@@ -7235,14 +7274,38 @@
                 let skinsParaHero = [];
 
                 objetos.forEach(item => {
-                    let nombre = item.bundle ? item.bundle.name : (item.brItems && item.brItems[0] ? item.brItems[0].name : (item.cars ? item.cars[0].name : (item.tracks && item.tracks[0] ? item.tracks[0].title : "")));
-                    let vbucks = item.finalPrice;
-                    let imagen = item.bundle ? item.bundle.image : (item.brItems && item.brItems[0] ? item.brItems[0].images.icon : (item.tracks && item.tracks[0] ? item.tracks[0].albumArt : ""));
-                    
-                    // Punto 2: Lógica de Categorización Estricta
-                    let epicId = (item.brItems && item.brItems[0]) ? item.brItems[0].id : null;
+                    // brItems puede venir sin item.bundle (venta individual) o dentro de item.bundle
+                    // (lote). Algunos cosméticos de colaboración con licencia (ej. Jujutsu Kaisen,
+                    // Marvel, DC) no siempre traen "images.icon" cuando se venden solos, así que
+                    // antes se perdían del listado. Ahora se busca el primer brItem que SÍ tenga
+                    // alguna imagen utilizable, y si ninguno la tiene, se usa un placeholder en vez
+                    // de descartar el artículo.
+                    let brItemPrincipal = (item.brItems && item.brItems.find(b => b.images && (b.images.icon || b.images.smallIcon || b.images.featured))) || (item.brItems && item.brItems[0]) || null;
 
-                    let tipoVal = (item.brItems && item.brItems[0]) ? item.brItems[0].type.value : 
+                    let nombre = item.bundle ? item.bundle.name
+                        : (item.brItems && item.brItems.length ? item.brItems.map(b => b.name).filter(Boolean).join(' + ')
+                        : (item.cars && item.cars[0] ? item.cars[0].name : (item.tracks && item.tracks[0] ? item.tracks[0].title : "")));
+                    if (!nombre) nombre = 'Cosmético de Fortnite';
+
+                    let vbucks = item.finalPrice;
+
+                    let imagen = item.bundle ? item.bundle.image
+                        : (brItemPrincipal && brItemPrincipal.images ? (brItemPrincipal.images.icon || brItemPrincipal.images.smallIcon || brItemPrincipal.images.featured) : "");
+                    if (!imagen && item.cars && item.cars[0] && item.cars[0].images) {
+                        imagen = item.cars[0].images.large || item.cars[0].images.small || "";
+                    }
+                    if (!imagen && item.tracks && item.tracks[0]) {
+                        imagen = item.tracks[0].albumArt || "";
+                    }
+                    if (!imagen) {
+                        imagen = 'https://fortnite-api.com/images/vbuck.png'; // Placeholder: nunca se descarta un artículo solo por falta de imagen
+                        console.warn('[tienda] Artículo sin imagen propia, se usó placeholder:', nombre);
+                    }
+
+                    // Punto 2: Lógica de Categorización Estricta
+                    let epicId = brItemPrincipal ? brItemPrincipal.id : null;
+
+                    let tipoVal = brItemPrincipal ? brItemPrincipal.type.value :
                                   (item.cars && item.cars[0]) ? item.cars[0].type.value : 
                                   (item.tracks && item.tracks[0]) ? "jam_track" : "other";
                     tipoVal = tipoVal.toLowerCase();
@@ -7261,8 +7324,8 @@
                     // Mapeo de Rarezas según instrucción — ahora también detecta la "serie"
                     // (Marvel, DC, Icon Series, Gaming Legends) para que cada una tenga su
                     // propio color oficial en vez de caer todas en "legendary".
-                    let rarityVal = item.brItems && item.brItems[0] ? item.brItems[0].rarity.value : (item.bundle ? "legendary" : "common");
-                    let seriesVal = (item.brItems && item.brItems[0] && item.brItems[0].series) ? item.brItems[0].series.value : '';
+                    let rarityVal = brItemPrincipal && brItemPrincipal.rarity ? brItemPrincipal.rarity.value : (item.bundle ? "legendary" : "common");
+                    let seriesVal = (brItemPrincipal && brItemPrincipal.series) ? brItemPrincipal.series.value : '';
                     let rarityClass = "common"; // Default
                     const rLower = rarityVal.toLowerCase();
                     const sLower = (seriesVal || '').toLowerCase();
@@ -7310,8 +7373,8 @@
                     
                     // Hero Image Logic — solo usar imágenes "featured" (cuerpo completo), nunca icon
                     let featuredImg = null;
-                    if (item.brItems && item.brItems[0] && item.brItems[0].images) {
-                        featuredImg = item.brItems[0].images.featured || null;
+                    if (brItemPrincipal && brItemPrincipal.images) {
+                        featuredImg = brItemPrincipal.images.featured || null;
                     } else if (item.bundle && item.bundle.image) {
                         featuredImg = item.bundle.image;
                     }
@@ -7321,7 +7384,7 @@
 
                     let precioOriginal = (item.regularPrice && item.regularPrice > vbucks) ? item.regularPrice : null;
 
-                    if(nombre && imagen && vbucks) {
+                    if(vbucks) {
                         tiendaItems.push({
                             nombre,
                             vbucks,
@@ -7488,7 +7551,24 @@
                 const footerH = px(100);
                 const padCard = 10;
                 const thumbSize = cardW - padCard * 2; // miniatura grande dentro de la tarjeta
-                const cardH = padCard + thumbSize + 33 + 13; // miniatura + nombre + precio + margen inferior
+
+                // Tamaños de texto proporcionales al ancho de la tarjeta (antes eran
+                // valores fijos muy pequeños —15px nombre, 14px precio— que se veían
+                // diminutos junto a una miniatura de 240px). Ahora escalan con cardW,
+                // así se ven grandes y legibles tanto en escritorio como en móvil.
+                const nameFontSize = Math.max(13, Math.round(cardW * 0.078));   // ~20px en desktop, ~15px en móvil
+                const priceFontSize = Math.max(15, Math.round(cardW * 0.105));  // ~27px en desktop, ~20px en móvil
+                const vIconRadius = Math.max(8, Math.round(cardW * 0.05));      // ~13px en desktop, ~9.5px en móvil
+                const nameLineY = padCard + thumbSize + nameFontSize + 8;
+                // Precio como "pill" oscura (mismo estilo que el badge de V-Bucks de
+                // la tienda real del sitio: fondo negro semitransparente, redondeado,
+                // ícono circular azul con "V" y el número en negrita). El alto de la
+                // pill es constante (no depende del texto), así que se calcula una
+                // sola vez aquí y se usa para reservar el espacio de la tarjeta.
+                const pillPadY = Math.max(5, Math.round(priceFontSize * 0.26));
+                const precioPillH = Math.max(vIconRadius * 2, priceFontSize) + pillPadY * 2;
+                const pillTopY = nameLineY + 10; // separación entre el nombre y el precio
+                const cardH = pillTopY + precioPillH + 12; // miniatura + nombre + pill de precio + margen inferior
 
                 // ── Cuadrícula ÚNICA y pareja: todos los cosméticos del día se
                 // dibujan uno detrás de otro en la misma cuadrícula continua, sin
@@ -7528,7 +7608,8 @@
                         document.fonts.load("900 102px 'BurbankBigCondensed'"),
                         document.fonts.load("900 78px 'BurbankBigCondensed'"),
                         document.fonts.load("900 40px 'BurbankBigCondensed'"),
-                        document.fonts.load("900 15px 'BurbankBigCondensed'"),
+                        document.fonts.load(`900 ${nameFontSize}px 'BurbankBigCondensed'`),
+                        document.fonts.load(`900 ${priceFontSize}px 'BurbankBigCondensed'`),
                         document.fonts.ready
                     ]);
                 } catch (eFont) { /* si falla, seguimos con el fallback de la fuente */ }
@@ -7664,27 +7745,48 @@
 
                     // Nombre truncado
                     ctx.textAlign = 'left';
-                    ctx.font = "900 15px 'BurbankBigCondensed', Arial";
+                    ctx.font = `900 ${nameFontSize}px 'BurbankBigCondensed', Arial`;
                     ctx.fillStyle = '#ffffff';
                     let nombreCorto = (item.nombre || '').toUpperCase();
-                    const maxCharsNombre = Math.max(6, Math.floor(thumbSize / 6.8));
+                    const maxCharsNombre = Math.max(6, Math.floor(thumbSize / (nameFontSize * 0.62)));
                     if (nombreCorto.length > maxCharsNombre) nombreCorto = nombreCorto.slice(0, maxCharsNombre - 1) + '…';
-                    ctx.fillText(nombreCorto, tx, ty + thumbSize + 17);
+                    ctx.fillText(nombreCorto, tx, y + nameLineY);
 
-                    // Precio en V-Bucks con icono circular pequeño
+                    // Precio en V-Bucks como badge oscuro tipo "pill", igual al que
+                    // ya se usa en las tarjetas de la tienda en vivo del sitio:
+                    // fondo negro semitransparente y redondeado, ícono circular
+                    // azul con "V" adentro, y el número en Burbank Big.
                     const precioTxt = (item.vbucks || 0).toLocaleString();
+                    ctx.font = `900 ${priceFontSize}px 'BurbankBigCondensed', Arial`;
+                    const anchoTexto = ctx.measureText(precioTxt).width;
+                    const pillPadX = Math.max(8, Math.round(priceFontSize * 0.42));
+                    const iconDiam = vIconRadius * 2;
+                    const pillW = pillPadX * 2 + iconDiam + 6 + anchoTexto;
+                    const pillX = tx, pillY = y + pillTopY;
+
+                    ctx.save();
+                    roundRectPath(ctx, pillX, pillY, pillW, precioPillH, precioPillH / 2);
+                    ctx.fillStyle = 'rgba(0,0,0,0.62)';
+                    ctx.fill();
+                    ctx.restore();
+
+                    const iconCx = pillX + pillPadX + vIconRadius;
+                    const iconCy = pillY + precioPillH / 2;
                     ctx.beginPath();
-                    ctx.arc(tx + 8, ty + thumbSize + 29, 8, 0, Math.PI * 2);
+                    ctx.arc(iconCx, iconCy, vIconRadius, 0, Math.PI * 2);
                     ctx.fillStyle = '#eaf4ff';
                     ctx.fill();
                     ctx.fillStyle = '#1a4fd6';
-                    ctx.font = 'bold 10px Arial';
+                    ctx.font = `bold ${Math.round(vIconRadius * 1.15)}px Arial`;
                     ctx.textAlign = 'center';
-                    ctx.fillText('V', tx + 8, ty + thumbSize + 33);
-                    ctx.textAlign = 'left';
-                    ctx.font = 'bold 14px Arial';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('V', iconCx, iconCy + 1);
+
+                    ctx.font = `900 ${priceFontSize}px 'BurbankBigCondensed', Arial`;
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(precioTxt, tx + 20, ty + thumbSize + 33);
+                    ctx.textAlign = 'left';
+                    ctx.fillText(precioTxt, iconCx + vIconRadius + 6, iconCy + Math.round(priceFontSize * 0.03));
+                    ctx.textBaseline = 'alphabetic';
                 });
 
                 // Segunda pasada de marca de agua, más sutil, encima de las tarjetas
@@ -7707,18 +7809,23 @@
                 ctx.fillText('shegostore.com', W - margin, logicalH - px(20));
 
                 // ── Entregar la imagen (una sola, con todo organizado por tipo) ──
-                // IMPORTANTE: usamos canvas.toBlob en vez de canvas.toDataURL. Con
-                // imágenes grandes (muchas secciones/artículos) el data URL en base64
-                // puede pesar decenas de MB; varios navegadores de Android (Chrome/
-                // WebView) truncan o directamente fallan al manejar strings tan largos,
-                // lo que dejaba el botón de descarga "sin hacer nada" en esos equipos.
-                // toBlob entrega los bytes directamente, sin pasar por una cadena de
-                // texto gigante, y es lo que ya usamos con éxito en otras descargas del sitio.
+                // IMPORTANTE: usamos JPEG en vez de PNG. El canvas no necesita
+                // transparencia (el fondo es un degradado sólido que cubre toda el
+                // área), y PNG es un formato SIN pérdida: con canvases tan grandes
+                // (muchas tarjetas con fotos reales) el archivo podía pesar más de
+                // 50MB, lo cual además falla al compartir por WhatsApp/Discord. JPEG
+                // con calidad alta (0.92) se ve prácticamente igual pero pesa una
+                // fracción de eso.
+                // También seguimos usando canvas.toBlob en vez de canvas.toDataURL:
+                // con imágenes grandes el data URL en base64 puede pesar decenas de
+                // MB y varios navegadores de Android (Chrome/WebView) truncan o fallan
+                // al manejar strings tan largos, dejando el botón de descarga "sin
+                // hacer nada" en esos equipos. toBlob entrega los bytes directamente.
                 const blob = await new Promise((resolve, reject) => {
-                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/png');
+                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.92);
                 });
                 const dataUrl = URL.createObjectURL(blob);
-                const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.png`;
+                const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.jpg`;
 
                 if (esMobile) {
                     // ── MÓVIL: mostramos la imagen directamente en un modal, lista
@@ -7843,7 +7950,7 @@
                 // "await" como antes), así que aquí navigator.share() sí es
                 // confiable en los navegadores que lo soportan.
                 try {
-                    const file = new File([blob], nombreArchivo, { type: 'image/png' });
+                    const file = new File([blob], nombreArchivo, { type: 'image/jpeg' });
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
                         await navigator.share({
                             files: [file],
@@ -10397,21 +10504,57 @@ function mostrarModalCapturaMovil(url) {
             }, { passive: false });
 
             // ── Touch ──
-            let touchStartX = 0, touchStartTX = 0;
+            // Antes: los listeners eran pasivos y nunca marcaban "isDown", así
+            // que 1) el navegador podía interpretar el gesto como scroll de
+            // página en vez de dejarlo mover el carrusel, y 2) el bucle que
+            // sincroniza el scrollbar (más abajo) seguía "corrigiendo" la
+            // posición mientras el usuario arrastraba, cancelando el gesto.
+            // Ahora: detectamos si el gesto es más horizontal que vertical
+            // apenas empieza a moverse; si es horizontal, tomamos el control
+            // (preventDefault) y movemos el carrusel; si es vertical, no
+            // hacemos nada y dejamos que la página haga scroll normal.
+            let touchStartX = 0, touchStartY = 0, touchStartTX = 0;
+            let arrastreHorizontal = null; // null = aún sin decidir, true/false ya decidido
+
             el.addEventListener('touchstart', (e) => {
+                if (e.target.closest('button')) return;
+                isDown = true; // evita que syncLoop() pelee con el arrastre
+                arrastreHorizontal = null;
                 pauseAndCapture();
                 touchStartX = e.touches[0].pageX;
+                touchStartY = e.touches[0].pageY;
                 touchStartTX = currentTX;
             }, { passive: true });
 
             el.addEventListener('touchmove', (e) => {
-                const delta = e.touches[0].pageX - touchStartX;
-                applyTX(touchStartTX + delta);
-            }, { passive: true });
+                if (!isDown) return;
+                const dx = e.touches[0].pageX - touchStartX;
+                const dy = e.touches[0].pageY - touchStartY;
 
-            el.addEventListener('touchend', () => {
-                setTimeout(resume, 800);
-            });
+                if (arrastreHorizontal === null) {
+                    // Esperamos a que el movimiento sea claro (>6px) para decidir
+                    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+                    arrastreHorizontal = Math.abs(dx) > Math.abs(dy);
+                    if (!arrastreHorizontal) {
+                        // Es un scroll vertical de la página: soltamos el control
+                        isDown = false;
+                        resume();
+                        return;
+                    }
+                }
+                if (!arrastreHorizontal) return;
+                e.preventDefault(); // ya confirmado horizontal: evita que la página se mueva
+                applyTX(touchStartTX + dx);
+            }, { passive: false });
+
+            function terminarTouch() {
+                if (!isDown) return;
+                isDown = false;
+                if (arrastreHorizontal) setTimeout(resume, 800);
+                arrastreHorizontal = null;
+            }
+            el.addEventListener('touchend', terminarTouch);
+            el.addEventListener('touchcancel', terminarTouch);
 
             // ── Scrollbar thumb ──
             const track = document.getElementById('seva-scrollbar-track');
@@ -10491,8 +10634,19 @@ function mostrarModalCapturaMovil(url) {
             if (carousel && !carousel.dataset.dragInit) {
                 carousel.dataset.dragInit = '1';
                 initDragScroll(carousel);
-                // Velocidad fija solicitada: 1500s por vuelta completa
-                carousel.style.animationDuration = '1500s';
+                // Antes: 1500s fijos (25 minutos por vuelta completa), tan lento
+                // que se veía prácticamente estático. Ahora calculamos la
+                // duración según el ancho real de las tarjetas para que la
+                // velocidad se sienta igual sin importar cuántos cosméticos
+                // "se van hoy" haya: una velocidad constante de ~55px/seg.
+                const aplicarVelocidad = () => {
+                    const mitadAncho = carousel.scrollWidth / 2; // scrollWidth = 2 copias
+                    const PX_POR_SEGUNDO = 55;
+                    const duracion = mitadAncho > 0 ? Math.max(12, mitadAncho / PX_POR_SEGUNDO) : 30;
+                    carousel.style.animationDuration = duracion + 's';
+                };
+                // Medimos tras un pequeño delay: recién insertado el layout puede no estar listo
+                setTimeout(aplicarVelocidad, 50);
             }
         });
         observer.observe(document.body, { childList: true, subtree: true });
