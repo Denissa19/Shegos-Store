@@ -4071,6 +4071,7 @@
 .sprite-img-wrap {
     position: relative; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
     padding: 14px; box-sizing: border-box;
+    background-color: #ffffff; border-radius: 10px;
 }
 .sprite-item img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform 0.15s ease; }
 .sprite-item.marcado img { transform: scale(0.94); }
@@ -7094,10 +7095,14 @@
         <div class="modal-pavos-content" style="max-width: 420px; background: #09090b; border: 1px solid #27272a;">
             <button onclick="cerrarModalSpritesNombre()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: #fff; font-size: 1.5em; cursor: pointer;">✕</button>
             <h2 style="color: #00A676; margin: 0 0 10px 0; font-size: 1.3em;"><i class="fas fa-image"></i> Antes de descargar</h2>
-            <p style="color: #ccc; font-size: 0.9em; line-height: 1.6; margin-bottom: 18px;">Escribe tu nombre de usuario o ID. Se usará como título de tu imagen.</p>
-            <input id="sprites-nombre-input" maxlength="24" placeholder="Tu nombre o ID"
-                style="width:100%; box-sizing:border-box; background:#191c28; border:1px solid #27272a; color:#fff; padding:12px 14px; border-radius:10px; font-size:0.95em; outline:none; margin-bottom:20px;"
+            <p style="color: #ccc; font-size: 0.9em; line-height: 1.6; margin-bottom: 18px;">Escribe tu nombre de usuario o ID (opcional). Si lo dejas vacío, la imagen se genera sin título.</p>
+            <input id="sprites-nombre-input" maxlength="24" placeholder="Tu nombre o ID (opcional)"
+                style="width:100%; box-sizing:border-box; background:#191c28; border:1px solid #27272a; color:#fff; padding:12px 14px; border-radius:10px; font-size:0.95em; outline:none; margin-bottom:14px;"
                 onkeydown="if(event.key==='Enter') confirmarGenerarSprites()">
+            <label style="display:flex; align-items:center; gap:9px; color:#ccc; font-size:0.88em; margin-bottom:20px; cursor:pointer; user-select:none;">
+                <input type="checkbox" id="sprites-sin-id-check" onchange="toggleSpritesSinId()" style="width:18px; height:18px; accent-color:#00A676; cursor:pointer; flex-shrink:0;">
+                No quiero agregar mi ID
+            </label>
             <button id="btn-generar-sprites" class="btn-accion" style="width: 100%; background: #00A676; color: #06131c; border: none; border-radius: 10px; font-weight: 800; font-size: 0.95em; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor:pointer; transition: all 0.2s ease;" onclick="confirmarGenerarSprites()">
                 <i class="fas fa-download"></i> Generar y descargar
             </button>
@@ -10496,7 +10501,7 @@ function mostrarModalCapturaMovil(url) {
                         options: { shouldCreateUser: true }
                     }),
                     timeoutPromise
-                ]);a
+                ]);
                 if (error) throw error;
                 // Mostrar paso OTP
                 var emailStep = $e(tipo==='login' ? 'auth-login-email-step' : 'auth-reg-email-step');
@@ -11509,6 +11514,10 @@ function mostrarModalCapturaMovil(url) {
                 alert('Marca al menos un espíritu antes de generar la imagen.');
                 return;
             }
+            var checkSinId = document.getElementById('sprites-sin-id-check');
+            var inputNombrePrevio = document.getElementById('sprites-nombre-input');
+            if (checkSinId) checkSinId.checked = false;
+            if (inputNombrePrevio) { inputNombrePrevio.disabled = false; inputNombrePrevio.style.opacity = '1'; }
             document.getElementById('modal-sprites-nombre').style.display = 'flex';
             document.body.style.overflow = 'hidden';
             setTimeout(function () {
@@ -11521,6 +11530,24 @@ function mostrarModalCapturaMovil(url) {
             document.body.style.overflow = 'auto';
         };
 
+        // Cuando el usuario marca "No quiero agregar mi ID", deshabilitamos
+        // y vaciamos el campo de texto (por si ya había escrito algo), así
+        // la imagen se genera sin título. Al desmarcarla, se reactiva el
+        // campo para que pueda volver a escribir su nombre/ID si quiere.
+        window.toggleSpritesSinId = function () {
+            var check = document.getElementById('sprites-sin-id-check');
+            var input = document.getElementById('sprites-nombre-input');
+            if (!check || !input) return;
+            if (check.checked) {
+                input.value = '';
+                input.disabled = true;
+                input.style.opacity = '0.5';
+            } else {
+                input.disabled = false;
+                input.style.opacity = '1';
+            }
+        };
+
         function esperarFrame() {
             return new Promise(function (resolve) {
                 requestAnimationFrame(function () { requestAnimationFrame(resolve); });
@@ -11529,8 +11556,7 @@ function mostrarModalCapturaMovil(url) {
 
         window.confirmarGenerarSprites = async function () {
             var input = document.getElementById('sprites-nombre-input');
-            var nombre = (input.value || '').trim();
-            if (!nombre) { input.focus(); return; }
+            var nombre = (input.value || '').trim(); // opcional: puede quedar vacío
             var btn = document.getElementById('btn-generar-sprites');
             var contenidoOriginal = btn.innerHTML;
             btn.disabled = true;
@@ -11549,20 +11575,43 @@ function mostrarModalCapturaMovil(url) {
             }
         };
 
+        // Cuánto se "acerca" (zoom) el sprite dentro de su caja para comerse
+        // el margen transparente que traen las imágenes originales del API
+        // de Fortnite. Sin este zoom, el personaje se ve chico y la casilla
+        // de marcar (que sí ocupa todo su espacio) termina pareciendo más
+        // grande que el propio sprite.
+        var ZOOM_SPRITE_CAPTURA = 1.42;
+
         function construirIconoEspirituCaptura(s, tamanoPx) {
             var cajaEstilo = 'width:' + tamanoPx + 'px; height:' + tamanoPx + 'px;';
+            // Fondo cuadrado redondeado, blanco/gris claro y translúcido,
+            // detrás de cada sprite (como en la tarjeta de referencia). El
+            // sprite en sí se dibuja un poco más chico adentro, dejando un
+            // margen/padding parejo alrededor.
+            var radioEsquinas = Math.max(8, Math.round(tamanoPx * 0.18));
+            var fondoCuadradoEstilo = cajaEstilo + ' border-radius:' + radioEsquinas + 'px; background-color:rgba(255,255,255,0.28); border:1px solid rgba(255,255,255,0.35); box-sizing:border-box; display:flex; align-items:center; justify-content:center;';
+            var interiorPx = Math.round(tamanoPx * 0.8); // deja un margen parejo dentro del cuadrado
+            var interiorEstilo = 'width:' + interiorPx + 'px; height:' + interiorPx + 'px; overflow:hidden; display:flex; align-items:center; justify-content:center;';
             if (s.img) {
                 var esAbsoluta = /^https?:\/\//i.test(s.img);
                 var crossOrigin = esAbsoluta ? ' crossorigin="anonymous"' : '';
-                var placeholderFallback = 'this.outerHTML=\'<div style=&quot;' + cajaEstilo + 'border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(tamanoPx * 0.45) + 'px;background:linear-gradient(160deg,' + s.color + ',#222);&quot;>' + s.emoji + '</div>\';';
-                return '<img src="' + s.img + '"' + crossOrigin + ' onerror="' + placeholderFallback + '" style="' + cajaEstilo + ' object-fit:contain; display:block; filter:' + s.filtro + ';">';
+                var placeholderFallback = 'this.outerHTML=\'<div style=&quot;width:' + interiorPx + 'px;height:' + interiorPx + 'px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(interiorPx * 0.5) + 'px;background:linear-gradient(160deg,' + s.color + ',#222);&quot;>' + s.emoji + '</div>\';';
+                // La caja exterior mantiene el tamaño original (para no romper
+                // la grilla ni el espaciado), pero recorta (overflow:hidden)
+                // y el <img> de adentro se dibuja más grande y centrado con
+                // transform:scale, "acercando" el sprite y comiéndose el
+                // espacio transparente sobrante de la imagen original.
+                return '<div style="' + fondoCuadradoEstilo + '">' +
+                    '<div style="' + interiorEstilo + '">' +
+                    '<img src="' + s.img + '"' + crossOrigin + ' onerror="' + placeholderFallback + '" style="width:100%; height:100%; object-fit:contain; display:block; filter:' + s.filtro + '; transform:scale(' + ZOOM_SPRITE_CAPTURA + ');">' +
+                    '</div></div>';
             }
-            return '<div style="' + cajaEstilo + 'border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:' + Math.round(tamanoPx * 0.45) + 'px; background:linear-gradient(160deg,' + s.color + ',#222); filter:' + s.filtro + ';">' + s.emoji + '</div>';
+            return '<div style="' + fondoCuadradoEstilo + '"><div style="' + interiorEstilo + ' border-radius:8px; font-size:' + Math.round(interiorPx * 0.55) + 'px; background:linear-gradient(160deg,' + s.color + ',#222); filter:' + s.filtro + ';">' + s.emoji + '</div></div>';
         }
 
         // Cantidad de columnas FIJA para la plantilla generada (antes se
         // calculaba automáticamente según cuántos íconos entraban).
-        var COLUMNAS_CAPTURA = 10;
+        var COLUMNAS_CAPTURA = 8;
 
         // Calcula el tamaño de ícono más grande que permite que TODOS los
         // elementos seleccionados quepan dentro del área de contenido
@@ -11582,6 +11631,58 @@ function mostrarModalCapturaMovil(url) {
                 if (altoTotal <= altoDisp) return tam;
             }
             return 30;
+        }
+
+        // Agrupa la lista de espíritus elegidos por su espíritu "base"
+        // (mismo personaje, distintas variantes: Base/Gold/Gummy/Galaxy/
+        // Holofoil), preservando el orden en que aparecen en ESPIRITUS_DATA
+        // (que ya viene agrupado por base). Devuelve { multiples, unicos }:
+        // - multiples: grupos con 2 o más variantes marcadas (van en
+        //   bloques de 4-5 columnas, dos grupos por fila, como en la
+        //   plantilla de referencia).
+        // - unicos: espíritus con una sola variante marcada (van todos
+        //   juntos en una fila final centrada, como los espíritus especiales
+        //   de una sola variante en la plantilla de referencia).
+        function agruparEspiritusPorBase(elegidos) {
+            var grupos = [];
+            var porBase = {};
+            elegidos.forEach(function (s) {
+                var baseId = s.id.replace(/_[a-z]+$/, '');
+                if (!porBase[baseId]) {
+                    porBase[baseId] = { baseId: baseId, items: [] };
+                    grupos.push(porBase[baseId]);
+                }
+                porBase[baseId].items.push(s);
+            });
+            return {
+                multiples: grupos.filter(function (g) { return g.items.length > 1; }),
+                unicos: grupos.filter(function (g) { return g.items.length === 1; }).map(function (g) { return g.items[0]; })
+            };
+        }
+
+        // Igual que calcularTamanoIconoCaptura, pero para el nuevo formato
+        // "en bloques": dos grupos de variantes por fila (uno a cada lado,
+        // con un espacio ancho al medio) y, al final, una fila centrada con
+        // los espíritus de variante única. Busca el ícono más grande que
+        // permita que todo entre en el área de contenido disponible.
+        function calcularTamanoIconoAgrupado(maxColsPorBloque, numGrupos, gruposUnicos, anchoDisp, altoDisp, gapItems, gapBloques, gapFilas, textoAlto) {
+            var anchoBloque = (anchoDisp - gapBloques) / 2;
+
+            for (var tam = 118; tam >= 28; tam -= 2) {
+                var anchoNecesarioBloque = maxColsPorBloque * tam + (maxColsPorBloque - 1) * gapItems;
+                if (anchoNecesarioBloque > anchoBloque) continue;
+
+                var filasMultiples = Math.ceil(numGrupos / 2);
+                var colsPorFilaUnicos = Math.max(1, Math.floor((anchoDisp + gapItems) / (tam + gapItems)));
+                var filasUnicos = gruposUnicos.length ? Math.ceil(gruposUnicos.length / colsPorFilaUnicos) : 0;
+
+                var filasTotales = filasMultiples + filasUnicos;
+                if (filasTotales === 0) return tam;
+                var altoFila = tam + textoAlto;
+                var altoTotal = filasTotales * altoFila + Math.max(0, filasTotales - 1) * gapFilas;
+                if (altoTotal <= altoDisp) return tam;
+            }
+            return 28;
         }
 
         // Ejecuta una promesa con un límite de tiempo: si no resuelve a
@@ -11729,36 +11830,76 @@ function mostrarModalCapturaMovil(url) {
             var capturaDiv = null;
             try {
                 var tituloEscapado = escapeHtml(nombre);
+                var hayTitulo = !!(nombre && nombre.trim());
 
                 var anchoContenido = CONTENIDO_RIGHT - CONTENIDO_LEFT;
-                var altoTitulo = 56; // alto reservado para el nombre de usuario + separación
+                var altoEtiquetaPlantilla = 190; // alto reservado para "Plantilla de Espíritus" (siempre visible; generoso por si el texto ocupa 2 líneas a 76px)
+                var altoTitulo = altoEtiquetaPlantilla + (hayTitulo ? 56 : 0); // + el nombre de usuario, si se puso
                 var altoContenidoGrid = (CONTENIDO_BOTTOM - CONTENIDO_TOP) - altoTitulo;
-                var gapItems = 12;
-                var altoTexto = 22;
-                var tamanoIcono = calcularTamanoIconoCaptura(elegidos.length || 1, anchoContenido, altoContenidoGrid, gapItems, altoTexto);
+                var gapItems = 11;      // espacio entre íconos (horizontal y vertical)
+                var altoTexto = 20;     // alto reservado para el nombre debajo del ícono
+                var margenCasilla = 5;  // espacio entre el nombre y la casilla de marcar
+                var proporcionCasilla = 0.38; // la casilla mide esta proporción del ancho del ícono
+
+                // Grilla simple, en un solo flujo continuo (sin separar en
+                // bloques izquierda/derecha), con COLUMNAS fijas (14) — el
+                // mismo orden en que aparecen los espíritus seleccionados,
+                // llenando cada columna de arriba hacia abajo antes de pasar
+                // a la siguiente.
+                var COLUMNAS_FIJAS = 12;
+
+                // Busca el ícono más grande que permita que TODOS los
+                // elementos quepan, dejando espacio para el nombre y la
+                // casilla de marcar debajo de cada uno.
+                var cantidad = elegidos.length || 1;
+                var columnas = Math.min(COLUMNAS_FIJAS, cantidad); // nunca más columnas que espíritus haya
+                var filasGrilla = Math.ceil(cantidad / columnas);
+                var tamanoIcono = 32;
+                for (var tam = 132; tam >= 32; tam -= 2) {
+                    var anchoNecesario = columnas * tam + (columnas - 1) * gapItems;
+                    if (anchoNecesario > anchoContenido) continue;
+                    var casillaTam = Math.round(tam * proporcionCasilla);
+                    var altoFila = tam + altoTexto + margenCasilla + casillaTam;
+                    var altoTotal = filasGrilla * altoFila + Math.max(0, filasGrilla - 1) * gapItems;
+                    if (altoTotal <= altoContenidoGrid) { tamanoIcono = tam; break; }
+                }
+                var tamanoCasilla = Math.round(tamanoIcono * proporcionCasilla);
                 var tamanoFuenteNombre = tamanoIcono <= 56 ? 9 : (tamanoIcono <= 76 ? 10 : 11);
 
                 overlaySprites.setMensaje('Dibujando ' + (elegidos.length || 0) + ' espíritu' + ((elegidos.length === 1) ? '' : 's') + '...');
 
+                // Casilla para marcar debajo del nombre: sin color gris de
+                // fondo detrás del ícono, la casilla es lo único que se
+                // dibuja aparte del propio espíritu.
+                var construirCasilla = function () {
+                    return `<div style="margin:${margenCasilla}px auto 0; width:${tamanoCasilla}px; height:${tamanoCasilla}px; border:2px solid rgba(70,70,70,0.6); border-radius:4px; background-color:rgba(160,160,160,0.22); background-image:repeating-linear-gradient(45deg, rgba(100,100,100,0.35) 0px, rgba(100,100,100,0.35) 3px, transparent 3px, transparent 9px);"></div>`;
+                };
+
                 var itemsHtml = elegidos.map(function (s) {
                     return `
                         <div style="width:${tamanoIcono}px; text-align:center;">
-                            <div style="background:rgba(35,35,40,0.55); border-radius:10px; padding:5px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+                            <div style="background:transparent;">
                                 ${construirIconoEspirituCaptura(s, tamanoIcono)}
                             </div>
-                            <div style="margin-top:4px; font-size:${tamanoFuenteNombre}px; font-weight:700; color:#16233d; font-family:Poppins,sans-serif; line-height:1.15; max-height:${altoTexto}px; overflow:hidden;">${escapeHtml(s.nombre)}</div>
+                            <div style="margin-top:4px; font-size:${tamanoFuenteNombre}px; font-weight:bold; color:#16233d; font-family:'BurbankBigCondensed',sans-serif; letter-spacing:0.5px; line-height:1.15; max-height:${altoTexto}px; overflow:hidden;">${escapeHtml(s.nombre)}</div>
+                            ${construirCasilla()}
                         </div>`;
                 }).join('');
 
                 capturaDiv = document.createElement('div');
                 capturaDiv.style.cssText = 'position:fixed; left:-99999px; top:0; width:' + PLANTILLA_ANCHO + 'px; height:' + PLANTILLA_ALTO + 'px; background-image:url(\'img/fondo-sprites-plantilla.png\'); background-size:cover; background-position:center; background-repeat:no-repeat; box-sizing:border-box;';
 
+                // Nota: el fondo "img/fondo-sprites-plantilla.png" ya trae
+                // impreso el recuadro "APOYA A UN CREADOR: DENISSA_7u7" en la
+                // parte inferior — no se toca ni se dibuja nada encima de esa
+                // zona, solo se reorganiza la grilla de espíritus arriba.
                 capturaDiv.innerHTML = `
                     <div style="position:absolute; left:${CONTENIDO_LEFT}px; top:${CONTENIDO_TOP}px; width:${anchoContenido}px; height:${CONTENIDO_BOTTOM - CONTENIDO_TOP}px; display:flex; flex-direction:column; align-items:center;">
                         <div style="text-align:center; margin-bottom:14px;">
-                            <div style="font-family:'Anton',sans-serif; font-size:30px; letter-spacing:1px; color:#16233d;">${tituloEscapado}</div>
+                            <div style="font-family:'BurbankBigCondensed',sans-serif; font-weight:900; font-size:76px; letter-spacing:0.5px; color:#16233d; text-transform:uppercase; margin-bottom:4px; -webkit-text-stroke:0.6px #16233d; line-height:1;">Plantilla de Espíritus</div>
+                            <div style="font-family:'BurbankBigCondensed',sans-serif; font-weight:900; font-size:32px; letter-spacing:1px; color:#16233d; -webkit-text-stroke:0.5px #16233d;">${tituloEscapado}</div>
                         </div>
-                        <div style="display:flex; flex-wrap:wrap; gap:${gapItems}px; justify-content:center; align-content:flex-start;">
+                        <div style="display:grid; grid-template-columns:repeat(${columnas}, ${tamanoIcono}px); grid-template-rows:repeat(${filasGrilla}, auto); grid-auto-flow:column; gap:${gapItems}px; justify-content:center; align-content:flex-start;">
                             ${itemsHtml}
                         </div>
                     </div>`;
@@ -11774,7 +11915,7 @@ function mostrarModalCapturaMovil(url) {
                 // conLimiteDeTiempo como red de seguridad final.
                 var promesaCanvas = html2canvas(capturaDiv, {
                     backgroundColor: '#fdf3e3',
-                    scale: 1,
+                    scale: 2,
                     useCORS: true,
                     allowTaint: false,
                     imageTimeout: 5000,
@@ -11810,7 +11951,7 @@ function mostrarModalCapturaMovil(url) {
                 // rápido, además de permitir subir la imagen a imgbb.com como
                 // opción alterna en móvil.
                 var blob = await new Promise((resolve, reject) => {
-                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.85);
+                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.95);
                 });
                 var urlImagen = URL.createObjectURL(blob);
 
