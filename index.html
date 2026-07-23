@@ -4071,7 +4071,6 @@
 .sprite-img-wrap {
     position: relative; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
     padding: 14px; box-sizing: border-box;
-    background-color: #ffffff; border-radius: 10px;
 }
 .sprite-item img { width: 100%; height: 100%; object-fit: contain; display: block; transition: transform 0.15s ease; }
 .sprite-item.marcado img { transform: scale(0.94); }
@@ -11580,17 +11579,16 @@ function mostrarModalCapturaMovil(url) {
         // de Fortnite. Sin este zoom, el personaje se ve chico y la casilla
         // de marcar (que sí ocupa todo su espacio) termina pareciendo más
         // grande que el propio sprite.
-        var ZOOM_SPRITE_CAPTURA = 1.42;
+        var ZOOM_SPRITE_CAPTURA = 1.12;
 
         function construirIconoEspirituCaptura(s, tamanoPx) {
             var cajaEstilo = 'width:' + tamanoPx + 'px; height:' + tamanoPx + 'px;';
-            // Fondo cuadrado redondeado, blanco/gris claro y translúcido,
-            // detrás de cada sprite (como en la tarjeta de referencia). El
-            // sprite en sí se dibuja un poco más chico adentro, dejando un
-            // margen/padding parejo alrededor.
+            // Fondo cuadrado redondeado, transparente/translúcido, detrás de
+            // cada sprite. El sprite en sí se dibuja un poco más chico
+            // adentro, dejando un margen/padding parejo alrededor.
             var radioEsquinas = Math.max(8, Math.round(tamanoPx * 0.18));
-            var fondoCuadradoEstilo = cajaEstilo + ' border-radius:' + radioEsquinas + 'px; background-color:rgba(255,255,255,0.28); border:1px solid rgba(255,255,255,0.35); box-sizing:border-box; display:flex; align-items:center; justify-content:center;';
-            var interiorPx = Math.round(tamanoPx * 0.8); // deja un margen parejo dentro del cuadrado
+            var fondoCuadradoEstilo = cajaEstilo + ' border-radius:' + radioEsquinas + 'px; background-color:rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.5); box-sizing:border-box; display:flex; align-items:center; justify-content:center;';
+            var interiorPx = Math.round(tamanoPx * 0.88); // deja un margen parejo dentro del cuadrado
             var interiorEstilo = 'width:' + interiorPx + 'px; height:' + interiorPx + 'px; overflow:hidden; display:flex; align-items:center; justify-content:center;';
             if (s.img) {
                 var esAbsoluta = /^https?:\/\//i.test(s.img);
@@ -11833,24 +11831,22 @@ function mostrarModalCapturaMovil(url) {
                 var hayTitulo = !!(nombre && nombre.trim());
 
                 var anchoContenido = CONTENIDO_RIGHT - CONTENIDO_LEFT;
-                var altoEtiquetaPlantilla = 190; // alto reservado para "Plantilla de Espíritus" (siempre visible; generoso por si el texto ocupa 2 líneas a 76px)
-                var altoTitulo = altoEtiquetaPlantilla + (hayTitulo ? 56 : 0); // + el nombre de usuario, si se puso
+                var altoTitulo = hayTitulo ? 70 : 20; // solo el nombre de usuario arriba (sin título grande ni casillas)
                 var altoContenidoGrid = (CONTENIDO_BOTTOM - CONTENIDO_TOP) - altoTitulo;
                 var gapItems = 11;      // espacio entre íconos (horizontal y vertical)
                 var altoTexto = 20;     // alto reservado para el nombre debajo del ícono
-                var margenCasilla = 5;  // espacio entre el nombre y la casilla de marcar
-                var proporcionCasilla = 0.38; // la casilla mide esta proporción del ancho del ícono
 
                 // Grilla simple, en un solo flujo continuo (sin separar en
-                // bloques izquierda/derecha), con COLUMNAS fijas (14) — el
-                // mismo orden en que aparecen los espíritus seleccionados,
-                // llenando cada columna de arriba hacia abajo antes de pasar
-                // a la siguiente.
-                var COLUMNAS_FIJAS = 12;
+                // bloques izquierda/derecha), con COLUMNAS fijas (10, como en
+                // la plantilla de referencia) — el mismo orden en que
+                // aparecen los espíritus seleccionados, llenando cada
+                // columna de arriba hacia abajo antes de pasar a la
+                // siguiente.
+                var COLUMNAS_FIJAS = 10;
 
                 // Busca el ícono más grande que permita que TODOS los
-                // elementos quepan, dejando espacio para el nombre y la
-                // casilla de marcar debajo de cada uno.
+                // elementos quepan, dejando espacio para el nombre debajo de
+                // cada uno.
                 var cantidad = elegidos.length || 1;
                 var columnas = Math.min(COLUMNAS_FIJAS, cantidad); // nunca más columnas que espíritus haya
                 var filasGrilla = Math.ceil(cantidad / columnas);
@@ -11858,22 +11854,13 @@ function mostrarModalCapturaMovil(url) {
                 for (var tam = 132; tam >= 32; tam -= 2) {
                     var anchoNecesario = columnas * tam + (columnas - 1) * gapItems;
                     if (anchoNecesario > anchoContenido) continue;
-                    var casillaTam = Math.round(tam * proporcionCasilla);
-                    var altoFila = tam + altoTexto + margenCasilla + casillaTam;
+                    var altoFila = tam + altoTexto;
                     var altoTotal = filasGrilla * altoFila + Math.max(0, filasGrilla - 1) * gapItems;
                     if (altoTotal <= altoContenidoGrid) { tamanoIcono = tam; break; }
                 }
-                var tamanoCasilla = Math.round(tamanoIcono * proporcionCasilla);
                 var tamanoFuenteNombre = tamanoIcono <= 56 ? 9 : (tamanoIcono <= 76 ? 10 : 11);
 
                 overlaySprites.setMensaje('Dibujando ' + (elegidos.length || 0) + ' espíritu' + ((elegidos.length === 1) ? '' : 's') + '...');
-
-                // Casilla para marcar debajo del nombre: sin color gris de
-                // fondo detrás del ícono, la casilla es lo único que se
-                // dibuja aparte del propio espíritu.
-                var construirCasilla = function () {
-                    return `<div style="margin:${margenCasilla}px auto 0; width:${tamanoCasilla}px; height:${tamanoCasilla}px; border:2px solid rgba(70,70,70,0.6); border-radius:4px; background-color:rgba(160,160,160,0.22); background-image:repeating-linear-gradient(45deg, rgba(100,100,100,0.35) 0px, rgba(100,100,100,0.35) 3px, transparent 3px, transparent 9px);"></div>`;
-                };
 
                 var itemsHtml = elegidos.map(function (s) {
                     return `
@@ -11882,7 +11869,6 @@ function mostrarModalCapturaMovil(url) {
                                 ${construirIconoEspirituCaptura(s, tamanoIcono)}
                             </div>
                             <div style="margin-top:4px; font-size:${tamanoFuenteNombre}px; font-weight:bold; color:#16233d; font-family:'BurbankBigCondensed',sans-serif; letter-spacing:0.5px; line-height:1.15; max-height:${altoTexto}px; overflow:hidden;">${escapeHtml(s.nombre)}</div>
-                            ${construirCasilla()}
                         </div>`;
                 }).join('');
 
@@ -11895,10 +11881,7 @@ function mostrarModalCapturaMovil(url) {
                 // zona, solo se reorganiza la grilla de espíritus arriba.
                 capturaDiv.innerHTML = `
                     <div style="position:absolute; left:${CONTENIDO_LEFT}px; top:${CONTENIDO_TOP}px; width:${anchoContenido}px; height:${CONTENIDO_BOTTOM - CONTENIDO_TOP}px; display:flex; flex-direction:column; align-items:center;">
-                        <div style="text-align:center; margin-bottom:14px;">
-                            <div style="font-family:'BurbankBigCondensed',sans-serif; font-weight:900; font-size:76px; letter-spacing:0.5px; color:#16233d; text-transform:uppercase; margin-bottom:4px; -webkit-text-stroke:0.6px #16233d; line-height:1;">Plantilla de Espíritus</div>
-                            <div style="font-family:'BurbankBigCondensed',sans-serif; font-weight:900; font-size:32px; letter-spacing:1px; color:#16233d; -webkit-text-stroke:0.5px #16233d;">${tituloEscapado}</div>
-                        </div>
+                        ${hayTitulo ? `<div style="text-align:center; margin-bottom:14px; font-family:'BurbankBigCondensed',sans-serif; font-weight:900; font-size:32px; letter-spacing:1px; color:#16233d; -webkit-text-stroke:0.5px #16233d;">${tituloEscapado}</div>` : ''}
                         <div style="display:grid; grid-template-columns:repeat(${columnas}, ${tamanoIcono}px); grid-template-rows:repeat(${filasGrilla}, auto); grid-auto-flow:column; gap:${gapItems}px; justify-content:center; align-content:flex-start;">
                             ${itemsHtml}
                         </div>
