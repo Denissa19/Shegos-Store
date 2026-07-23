@@ -11766,13 +11766,19 @@ function mostrarModalCapturaMovil(url) {
         // más tarde), generamos la imagen igual y ofrecemos guardarla /
         // abrirla / subirla a imgbb.com para tener un link directo, en vez
         // de dejar al usuario con un simple mensaje de error.
-        function manejarGeneracionLentaSprites(promesaCanvas, nombre) {
+        function manejarGeneracionLentaSprites(promesaCanvas, nombre, capturaDivPendiente) {
             mostrarToastSprites('Tu imagen sigue generándose en segundo plano. Te avisamos apenas esté lista — no cierres esta pestaña.', 'fa-clock');
+            var limpiarCapturaDivPendiente = function () {
+                if (capturaDivPendiente && capturaDivPendiente.parentNode) {
+                    capturaDivPendiente.parentNode.removeChild(capturaDivPendiente);
+                }
+            };
             promesaCanvas.then(function (canvas) {
                 return new Promise(function (resolve, reject) {
                     canvas.toBlob(function (b) { b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')); }, 'image/jpeg', 0.85);
                 });
             }).then(function (blob) {
+                limpiarCapturaDivPendiente();
                 var nombreArchivo = (nombre || 'mis').replace(/[^a-z0-9_\-]+/gi, '_') || 'mis';
                 var nombreArchivoJpg = nombreArchivo + '-sprites.jpg';
                 var urlImagen = URL.createObjectURL(blob);
@@ -11786,6 +11792,7 @@ function mostrarModalCapturaMovil(url) {
                     shareTexto: 'Mis sprites/espíritus de Fortnite - shegostore.com'
                 });
             }).catch(function (err) {
+                limpiarCapturaDivPendiente();
                 console.warn('[sprites] La generación tardía también falló:', err);
                 mostrarToastSprites('No se pudo terminar de generar la imagen. Intenta de nuevo con menos espíritus marcados.', 'fa-triangle-exclamation');
             });
@@ -11966,7 +11973,14 @@ function mostrarModalCapturaMovil(url) {
                     // corriendo aunque dejamos de esperarla acá) y, apenas
                     // termine, ofrecemos guardarla / abrirla / subirla a
                     // imgbb.com con un link directo.
-                    manejarGeneracionLentaSprites(promesaCanvas, nombre);
+                    // IMPORTANTE: capturaDiv NO se borra en el "finally" de
+                    // abajo en este caso — html2canvas todavía lo está leyendo
+                    // en segundo plano, y si lo sacamos del DOM ahora la
+                    // captura queda rota/colgada y jamás termina de generarse.
+                    // Lo limpiamos recién dentro de manejarGeneracionLentaSprites,
+                    // una vez que esa promesa realmente se resuelve o falla.
+                    manejarGeneracionLentaSprites(promesaCanvas, nombre, capturaDiv);
+                    capturaDiv = null;
                 } else {
                     alert((err && err.message) ? err.message : 'Ocurrió un error generando la imagen. Intenta de nuevo.');
                 }
