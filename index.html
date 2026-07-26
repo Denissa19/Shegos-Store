@@ -2511,6 +2511,38 @@
 
         /* MODAL INFO PAVOS */
         .modal-pavos { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 12, 17, 0.9); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(12px); animation: fadeIn 0.4s ease; transition: opacity 0.5s ease; }
+
+        /* ===== Popup de anuncios promocionales (imagen + link a WhatsApp) ===== */
+        .promo-ad-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 3, 8, 0.88); z-index: 9500; display: none;
+            align-items: center; justify-content: center; backdrop-filter: blur(10px);
+            animation: fadeIn 0.4s ease; padding: 20px; box-sizing: border-box;
+        }
+        .promo-ad-overlay.abierto { display: flex; }
+        .promo-ad-card {
+            position: relative; width: 100%; max-width: 380px;
+            animation: sbFadeInUp 0.4s ease both;
+        }
+        .promo-ad-card img {
+            width: 100%; display: block; border-radius: 16px; cursor: pointer;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.08);
+        }
+        .promo-ad-close {
+            position: absolute; top: -14px; right: -14px; width: 34px; height: 34px;
+            border-radius: 50%; background: #12081a; border: 1.5px solid rgba(255,255,255,0.25);
+            color: #fff; font-size: 1em; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1;
+        }
+        .promo-ad-close:hover { background: #1c0e22; border-color: #fff; }
+        .promo-ad-tag {
+            position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6);
+            color: #aaa; font-size: 0.65em; letter-spacing: 1px; text-transform: uppercase;
+            padding: 4px 10px; border-radius: 20px; pointer-events: none;
+        }
+        @media (max-width: 500px) {
+            .promo-ad-card { max-width: 320px; }
+        }
         .modal-pavos-content { background: #1c0e22; border: 2px solid #00A676; border-radius: 15px; padding: 30px; width: 90%; max-width: 500px; position: relative; box-shadow: 0 10px 40px rgba(0,166,118, 0.2); }
         .info-paso { margin: 20px 0; display: flex; gap: 15px; text-align: left; align-items: flex-start; }
         .info-paso strong { color: #00A676; font-size: 1em; min-width: 28px; height: 28px; border: 1px solid #00A676; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -7224,6 +7256,15 @@
         <p class="footer-text">&copy; 2026. Todos los derechos reservados.</p>
     </footer>
 
+    <!-- Popup de anuncios promocionales -->
+    <div id="promo-ad-overlay" class="promo-ad-overlay" onclick="if(event.target === this) cerrarPromoAd()">
+        <div class="promo-ad-card">
+            <button class="promo-ad-close" onclick="cerrarPromoAd()" title="Cerrar">✕</button>
+            <img id="promo-ad-img" src="" alt="Promoción Shegos Store" onclick="clickPromoAd()">
+            <span class="promo-ad-tag">Publicidad · Shegos Store</span>
+        </div>
+    </div>
+
     <div class="floating-container">
         <a href="https://wa.me/18295392881" target="_blank" class="float-btn float-ws" title="Contáctanos por WhatsApp">
             <i class="fab fa-whatsapp"></i>
@@ -7254,6 +7295,58 @@
 
         // Webhook de Discord para notificación de nuevos pedidos
         const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1515418920134115540/_7jmDRsyS_gc_kGKYExwL01QsYPa6AaE__814Sj9zzlTcv3kFRDJmQoZ3c5ndh2YJPiA";
+
+        // ==========================================
+        // POPUP DE ANUNCIOS PROMOCIONALES
+        // ==========================================
+        // Cada anuncio: la imagen a mostrar y el mensaje que se preescribe en WhatsApp.
+        // Para agregar/quitar anuncios, solo edita este arreglo.
+        // Para subir un anuncio nuevo: sube la imagen a la carpeta img/promos/ del hosting
+        // y agrega un objeto aquí con su ruta.
+        const PROMO_ADS = [
+            { img: 'img/promos/CLUB_FORTNITE.png', mensaje: 'Hola! Me interesa el Club de Fortnite Crew, ¿me das más info?' },
+            { img: 'img/promos/cuentas_con_pavos.png', mensaje: 'Hola! Me interesan las cuentas STW con V-Bucks, ¿me das más info?' },
+            { img: 'img/promos/Golden_cuadrado.png', mensaje: 'Hola! Me interesa el Golden Touch Challenge Pack, ¿me das más info?' },
+            { img: 'img/promos/Via_regalo_cuadrado.png', mensaje: 'Hola! Me interesan las skins vía regalo, ¿me das más info?' },
+            { img: 'img/promos/Xbox_game_pass.png', mensaje: 'Hola! Me interesa el código de Xbox Game Pass Ultimate, ¿me das más info?' }
+        ];
+        const PROMO_AD_WHATSAPP = '18295392881';
+        const PROMO_AD_HORAS_ENTRE_MUESTRAS = 20; // cada cuántas horas puede volver a salir (aprox. "de vez en cuando")
+        let promoAdActual = null;
+
+        function iniciarPopupPromo() {
+            if (!PROMO_ADS.length) return;
+            // No molestar si está en checkout, con el menú móvil abierto, o con otro modal ya abierto
+            if (document.body.classList.contains('en-checkout')) return;
+            if (document.querySelector('.sidebar.abierto')) return;
+
+            const ultimaVez = parseInt(localStorage.getItem('promo_ad_last_shown') || '0', 10);
+            const horasPasadas = (Date.now() - ultimaVez) / (1000 * 60 * 60);
+            if (horasPasadas < PROMO_AD_HORAS_ENTRE_MUESTRAS) return;
+
+            setTimeout(() => {
+                // Doble chequeo por si el usuario ya entró a checkout o abrió el menú en esos segundos
+                if (document.body.classList.contains('en-checkout')) return;
+                if (document.querySelector('.sidebar.abierto')) return;
+
+                promoAdActual = PROMO_ADS[Math.floor(Math.random() * PROMO_ADS.length)];
+                document.getElementById('promo-ad-img').src = promoAdActual.img;
+                document.getElementById('promo-ad-overlay').classList.add('abierto');
+                localStorage.setItem('promo_ad_last_shown', Date.now().toString());
+            }, 4000);
+        }
+
+        function cerrarPromoAd() {
+            document.getElementById('promo-ad-overlay').classList.remove('abierto');
+        }
+
+        function clickPromoAd() {
+            const mensaje = promoAdActual ? promoAdActual.mensaje : '';
+            window.open(`https://wa.me/${PROMO_AD_WHATSAPP}?text=${encodeURIComponent(mensaje)}`, '_blank');
+            cerrarPromoAd();
+        }
+
+        document.addEventListener('DOMContentLoaded', iniciarPopupPromo);
 
         // ==========================================
         // CONFIGURACIÓN Y VARIABLES GLOBALES
