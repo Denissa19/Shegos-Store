@@ -9045,6 +9045,8 @@
                 color: 2868662, // verde menta #2BC6B6 aprox
                 fields: [
                     { name: '👤 Cliente', value: orderData.nombre_cliente || '—', inline: true },
+                    { name: '📱 WhatsApp', value: orderData.whatsapp_cliente || '—', inline: true },
+                    { name: '💬 Discord', value: orderData.discord_cliente || '—', inline: true },
                     { name: '🎮 Epic ID', value: orderData.epic_id_cliente || '—', inline: true },
                     { name: '🆔 Cuenta(s) agregada(s)', value: (orderData.cuentas_agregadas && orderData.cuentas_agregadas.length) ? orderData.cuentas_agregadas.join(', ') : '—', inline: false },
                     { name: '🛍️ Productos', value: productosTxt, inline: false },
