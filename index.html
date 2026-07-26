@@ -4732,14 +4732,6 @@
                               <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/5V5xxYibiTcHwiscexYKfRWspDX1Qs6Jxwlfr9Thzf4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5na2V5LmNvbS9w/bmcvZnVsbC8yNDMt/MjQzNTAzNF9lcGlj/LWdhbWVzLWVwaWMt/Z2FtZXMtbG9nby1w/bmcucG5n" alt="Epic Games">
                               <span>Epic</span>
                             </button>
-                            <button type="button" class="sb-platform-btn" data-platform="psn" onclick="sbSeleccionarPlataforma('psn', this)">
-                              <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/xGroOsF4I5s3N0zT8mMAsXST20C2pS1mmTk9-L9teww/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5ncGxheS5jb20v/d3AtY29udGVudC91/cGxvYWRzLzEzL1Bs/YXlzdGF0aW9uLUxv/Z28tUE5HLUhELVF1/YWxpdHkucG5n" alt="PlayStation">
-                              <span>PSN</span>
-                            </button>
-                            <button type="button" class="sb-platform-btn" data-platform="xbl" onclick="sbSeleccionarPlataforma('xbl', this)">
-                              <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/crnX-kAIOrzDRjVOADN8OrVkAl4WjdlPW3zQ4WOZZvY/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/cG5nYWxsLmNvbS93/cC1jb250ZW50L3Vw/bG9hZHMvMTMvWGJv/eC1Mb2dvLVBORy1G/aWxlLnBuZw" alt="Xbox">
-                              <span>Xbox</span>
-                            </button>
                           </div>
                         </div>
                         <div>
@@ -7202,7 +7194,7 @@
             <div class="footer-social-icons">
                 <a href="https://discord.gg/W6wmXXUe" target="_blank" class="footer-social-icon" title="Stock Cuentas STW (Discord)"><i class="fab fa-discord"></i></a>
                 <a href="https://chat.whatsapp.com/DJM0mEoYaDrLHDyUBMBcHL" target="_blank" class="footer-social-icon" title="Grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                <a href="https://wa.me/message/UXZFWTS7K6RTP1" target="_blank" class="footer-social-icon" title="Contacto por WhatsApp"><img loading="lazy" decoding="async" src="https://cdn.brandfetch.io/id6Zq084G_/theme/light/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Contacto" style="width:18px; height:18px; object-fit:contain;"></a>
+                <a href="https://wa.me/18295392881" target="_blank" class="footer-social-icon" title="Contacto por WhatsApp"><img loading="lazy" decoding="async" src="https://cdn.brandfetch.io/id6Zq084G_/theme/light/logo.svg?c=1dxbfHSJFAPEGdCLU4o5B" alt="Contacto" style="width:18px; height:18px; object-fit:contain;"></a>
             </div>
         </div>
 
@@ -9158,7 +9150,7 @@
                 // Abrir WhatsApp directamente con el pedido
                 const metodo = metodoRaw.toUpperCase();
                 const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
-                window.open("https://wa.me/message/UXZFWTS7K6RTP1?text=" + encodeURIComponent(mensaje), '_blank');
+                window.open("https://wa.me/18295392881?text=" + encodeURIComponent(mensaje), '_blank');
 
                 vaciarCarrito();
 
@@ -9288,7 +9280,7 @@ ${listaProductos}
 
 _He adjuntado mi comprobante de pago arriba._`;
 
-            const urlFinal = "https://wa.me/message/UXZFWTS7K6RTP1?text=" + encodeURIComponent(mensaje);
+            const urlFinal = "https://wa.me/18295392881?text=" + encodeURIComponent(mensaje);
             window.open(urlFinal, '_blank');
             cerrarModalInstrucciones();
         }
@@ -9640,7 +9632,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             const btnWhatsapp = document.getElementById('a-pedido-btn-whatsapp');
             const mensaje = 'Hola! Quisiera pedir el siguiente código bajo pedido: ' + nombreProducto + '. ¿Me puedes indicar el costo?';
             btnWhatsapp.onclick = function() {
-                window.open('https://wa.me/message/UXZFWTS7K6RTP1?text=' + encodeURIComponent(mensaje), '_blank');
+                window.open('https://wa.me/18295392881?text=' + encodeURIComponent(mensaje), '_blank');
             };
             document.getElementById('modal-a-pedido').style.display = 'flex';
             document.body.style.overflow = 'hidden';
@@ -11300,7 +11292,9 @@ function mostrarModalCapturaMovil(url) {
         });
 
         var SPRITES_STORAGE_KEY = 'shegos_espiritus_seleccionados';
+        var SPRITES_POSEIDOS_KEY = 'shegos_espiritus_poseidos';
         var spritesSeleccionados = {};      // { id: true }
+        var spritesPoseidos = {};           // { id: true } — espíritus que el usuario ya tiene (no afecta la imagen generada, es solo un marcador personal)
         var spritesCargados = false;
 
         // Lista de variantes disponibles para el panel de filtros, en el orden
