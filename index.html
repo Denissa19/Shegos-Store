@@ -4275,8 +4275,6 @@
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
             <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
             <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
-            <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-map"></i> Alertas STW</button>
-            <button class="tab-btn" onclick="abrirPestana('sprites-espiritus')"><i class="fas fa-ghost"></i> Plantilla Espíritus</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
             <a href="https://wa.me/18295392881" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Contactar por WhatsApp</a>
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;"><i class="fab fa-discord" style="color:#5865F2;"></i> Únete a nuestro Discord</a>
@@ -4305,8 +4303,6 @@
                 <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
                 <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
-                <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-map"></i> Alertas STW</button>
-                <button class="tab-btn" onclick="abrirPestana('sprites-espiritus')"><i class="fas fa-ghost"></i> Plantilla Espíritus</button>
             </nav>
         </div>
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
@@ -6637,78 +6633,7 @@
             </div>
         </div>
 
-        <div id="stw-alertas" class="pestana oculto">
-            <div class="stw-section" id="stw-capture-area">
-                <div class="stw-header">
-                    <h2><i class="fas fa-map"></i> Alertas STW</h2>
-                    <p class="stw-sub">Misiones diarias de Salva el Mundo. Consulta V-Bucks, supervivientes, héroes, materiales EVO y más. Se actualizan cada día a las 2:00 (hora de España).</p>
-                </div>
 
-                <div class="stw-stats-grid" id="stw-stats-grid">
-                    <div class="stw-stat-card"><div class="stw-stat-num" id="stw-stat-total">—</div><div class="stw-stat-label">Misiones</div></div>
-                    <div class="stw-stat-card"><div class="stw-stat-num" id="stw-stat-alertas">—</div><div class="stw-stat-label">Con alertas</div></div>
-                    <div class="stw-stat-card"><div class="stw-stat-num stw-vbucks-num" id="stw-stat-vbucks">—</div><div class="stw-stat-label">V-Bucks</div></div>
-                    <div class="stw-stat-card"><div class="stw-stat-num stw-updated-num" id="stw-stat-updated">—</div><div class="stw-stat-label">Actualizado</div></div>
-                </div>
-
-                <div class="stw-cat-tabs" id="stw-cat-tabs">
-                    <!-- Las pestañas de categoría se generan dinámicamente en JS a partir
-                         de la lista "categories" que devuelve la API (ver script más abajo),
-                         así que siempre quedan sincronizadas con lo que exista en el servidor. -->
-                </div>
-
-                <div class="stw-download-wrap">
-                    <button class="stw-btn-descarga" onclick="descargarCapturaSTW()"><i class="fas fa-camera"></i> Descargar captura</button>
-                </div>
-
-                <div id="stw-content">
-                    <div class="stw-loading"><i class="fas fa-spinner fa-spin"></i> Cargando alertas de misión...</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="sprites-espiritus" class="pestana oculto">
-            <div class="stw-section">
-                <div class="sprites-header">
-                    <h2><i class="fas fa-ghost"></i> Plantilla de Sprites / Espíritus</h2>
-                    <p>Marca los sprites o espíritus que ya tienes en tu cuenta y genera tu propia imagen para compartir. No necesitas registrarte.</p>
-                </div>
-
-                <div class="sprites-toolbar">
-                    <div class="sprites-search">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="sprites-buscar" placeholder="Buscar sprite por nombre..." oninput="filtrarSprites()">
-                    </div>
-                    <div class="sprites-stats"><span id="sprites-contador">0</span> seleccionados de <span id="sprites-total">0</span></div>
-                    <div class="sprites-actions">
-                        <div class="sprites-filtro-wrap">
-                            <button id="sprites-btn-filtro" class="sprites-btn-filtro" onclick="toggleFiltroSprites(event)">
-                                <i class="fas fa-sliders-h"></i> Filtros<span id="sprites-filtro-badge" class="sprites-filtro-badge" style="display:none;">0</span>
-                            </button>
-                        </div>
-                        <button onclick="marcarTodosSprites(true)"><i class="fas fa-check-double"></i> Marcar todos</button>
-                        <button onclick="marcarTodosSprites(false)"><i class="fas fa-eraser"></i> Desmarcar todos</button>
-                        <button class="sprites-btn-generar" onclick="abrirModalGenerarSprites()"><i class="fas fa-image"></i> Generar imagen</button>
-                    </div>
-                </div>
-
-                <div id="sprites-filtro-backdrop" class="sprites-filtro-backdrop" onclick="cerrarFiltroSprites()"></div>
-                <div id="sprites-filtro-panel" class="sprites-filtro-panel">
-                    <div class="sprites-filtro-panel-titulo">
-                        <span>Variante</span>
-                        <div class="sprites-filtro-panel-titulo-acciones">
-                            <button type="button" onclick="limpiarFiltroVariantes()">Limpiar</button>
-                            <button type="button" class="sprites-filtro-cerrar" onclick="cerrarFiltroSprites()"><i class="fas fa-xmark"></i></button>
-                        </div>
-                    </div>
-                    <div id="sprites-filtro-opciones" class="sprites-filtro-opciones"></div>
-                </div>
-
-                <div id="sprites-grid" class="sprites-grid">
-                    <div class="sprites-loading"><i class="fas fa-spinner fa-spin"></i> Cargando sprites...</div>
-                </div>
-            </div>
-        </div>
 
         <div id="checkout" class="pestana oculto">
             <div class="co-wrap">
@@ -9715,9 +9640,7 @@ _He adjuntado mi comprobante de pago arriba._`;
             'cuentas':    'ids-regalos',
             'pedidos':    'rastreo-pedidos',
             'servicios':  'recargas',
-            'checkout':   'checkout',
-            'alertas-stw':'stw-alertas',
-            'sprites':    'sprites-espiritus'
+            'checkout':   'checkout'
         };
         /* Inverso: id interno → ruta amigable (el inicio siempre usa "/") */
         var ID_TO_ROUTE = {};
