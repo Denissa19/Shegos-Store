@@ -4227,9 +4227,9 @@
     <script>
     /* ── Rotador de fondo con crossfade (estilo Fortnite.com) ── */
     (function () {
-        // Respaldo local: se usa mientras cargan las imágenes oficiales y también
-        // si la API llegara a fallar (sin conexión, mantenimiento, etc). Así el
-        // fondo NUNCA se queda en blanco.
+        // Imágenes locales del rotador de fondo. Ya no se intenta traer el
+        // arte oficial desde fortnite-api.com (esa llamada se eliminó por
+        // completo): el fondo rota únicamente entre estas imágenes locales.
         const IMAGENES_RESPALDO = [
             'img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp',
             'img/FNECO_41-10_ChefTarTar_WebCarousel_Background_1920x1080.webp',
@@ -4238,95 +4238,29 @@
             'img/FNSP_41-10_PearlTaffy_VisID_2UP_WebCarousel_Background_1920x1080.webp',
             'img/fortnite-runners-keyart-webheader.webp'
         ];
-        const FALLBACK = IMAGENES_RESPALDO[0];
         const INTERVALO = 8000; // 8 segundos entre cambios
-        // No se puede leer fortnite.com directamente desde el navegador (el sitio
-        // no permite peticiones desde otros dominios, por seguridad del propio
-        // navegador). En su lugar usamos fortnite-api.com/v2/news, que expone el
-        // MISMO arte promocional oficial que publica Epic para el contenido de
-        // cada temporada/modo, y se actualiza solo cada vez que Epic actualiza
-        // ese contenido: no hace falta tocar nada acá cuando cambie.
-        const NEWS_ENDPOINT = 'https://fortnite-api.com/v2/news?language=es';
-        const MAX_IMAGENES = 8;
 
         const track = document.getElementById('hero-bg-track');
         if (!track) return;
 
-        // Verifica si una imagen carga correctamente antes de usarla.
-        function probarImagen(src) {
-            return new Promise((resolve) => {
-                if (!src) { resolve(null); return; }
-                const img = new Image();
-                img.onload = () => resolve(src);
-                img.onerror = () => resolve(null);
-                img.src = src;
-            });
+        const slides = IMAGENES_RESPALDO.map((url, i) => {
+            const slide = document.createElement('div');
+            slide.className = 'bg-slide' + (i === 0 ? ' bg-slide-active' : '');
+            slide.style.backgroundImage = `url('${url}')`;
+            track.appendChild(slide);
+            return slide;
+        });
+        if (!slides.length) return;
+
+        let indiceActual = 0;
+        if (slides.length > 1) {
+            setInterval(() => {
+                const siguiente = (indiceActual + 1) % slides.length;
+                slides[indiceActual].classList.remove('bg-slide-active');
+                slides[siguiente].classList.add('bg-slide-active');
+                indiceActual = siguiente;
+            }, INTERVALO);
         }
-
-        // Extrae las URLs de imagen de las "motds" (mensajes del día) de BR,
-        // Salvar el Mundo y Creativo — son los banners/keyart oficiales que Epic
-        // publica y renueva junto con cada actualización del juego.
-        async function obtenerImagenesOficiales() {
-            try {
-                const res = await fetch(NEWS_ENDPOINT, { cache: 'no-store' });
-                if (!res.ok) throw new Error('Respuesta no OK: ' + res.status);
-                const datos = await res.json();
-                const modos = ['br', 'stw', 'creative'];
-                let candidatas = [];
-                modos.forEach((modo) => {
-                    const bloque = datos && datos.data && datos.data[modo];
-                    const motds = bloque && bloque.motds;
-                    if (Array.isArray(motds)) {
-                        motds.forEach((m) => { if (m && m.image) candidatas.push(m.image); });
-                    }
-                });
-                // Quitar duplicados manteniendo el orden que entrega la API
-                candidatas = [...new Set(candidatas)];
-                // Confirmar que cada imagen realmente carga (algún link puede fallar)
-                const validadas = await Promise.all(candidatas.slice(0, MAX_IMAGENES).map(probarImagen));
-                return validadas.filter(Boolean);
-            } catch (err) {
-                console.warn('[fondo-hero] No se pudo obtener el arte oficial de fortnite-api.com, se usa el respaldo local:', err);
-                return [];
-            }
-        }
-
-        (async function init() {
-            // Mostramos de inmediato una imagen de respaldo local como primer slide,
-            // para que el fondo aparezca al instante sin esperar a la API.
-            const primeraSlide = document.createElement('div');
-            primeraSlide.className = 'bg-slide';
-            primeraSlide.style.backgroundImage = `url('${FALLBACK}')`;
-            primeraSlide.classList.add('bg-slide-active');
-            track.appendChild(primeraSlide);
-            let slides = [primeraSlide];
-
-            // En paralelo, buscamos el arte oficial actual. Si consigue al menos 2
-            // imágenes válidas, reemplaza por completo la cuadrícula de slides;
-            // si no, nos quedamos con el respaldo local (rotando entre esas 6).
-            const imagenesOficiales = await obtenerImagenesOficiales();
-            const listaFinal = imagenesOficiales.length >= 2 ? imagenesOficiales : IMAGENES_RESPALDO;
-
-            track.innerHTML = '';
-            slides = listaFinal.map((url, i) => {
-                const slide = document.createElement('div');
-                slide.className = 'bg-slide' + (i === 0 ? ' bg-slide-active' : '');
-                slide.style.backgroundImage = `url('${url}')`;
-                track.appendChild(slide);
-                return slide;
-            });
-            if (!slides.length) return;
-
-            let indiceActual = 0;
-            if (slides.length > 1) {
-                setInterval(() => {
-                    const siguiente = (indiceActual + 1) % slides.length;
-                    slides[indiceActual].classList.remove('bg-slide-active');
-                    slides[siguiente].classList.add('bg-slide-active');
-                    indiceActual = siguiente;
-                }, INTERVALO);
-            }
-        })();
     })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -7447,7 +7381,7 @@
                     const productosHTML = (p.productos || []).map(prod => `
                         <div class="checkout-item-summary" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #2a1430;">
                             <img loading="lazy" decoding="async" src="${prod.imagen || 'https://fortnite-api.com/images/vbuck.png'}" 
-                                 onerror="this.src='https://fortnite-api.com/images/vbuck.png'"
+                                 onerror="this.onerror=null;this.src='img/logo.png';this.style.objectFit='contain';this.style.background='rgba(0,0,0,0.45)';"
                                  style="width:50px; height:50px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#1c0e22;">
                             <div style="flex:1; min-width:0;">
                                 <div style="font-weight:700; color:#fff; font-size:0.92em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${prod.nombre}</div>
@@ -7565,7 +7499,7 @@
                     const productosHTML = (p.productos || []).map(prod => `
                         <div style="display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid #2a1430;">
                             <img loading="lazy" decoding="async" src="${prod.imagen || 'https://fortnite-api.com/images/vbuck.png'}"
-                                 onerror="this.src='https://fortnite-api.com/images/vbuck.png'"
+                                 onerror="this.onerror=null;this.src='img/logo.png';this.style.objectFit='contain';this.style.background='rgba(0,0,0,0.45)';"
                                  style="width:42px; height:42px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#1c0e22;">
                             <div style="flex:1; min-width:0;">
                                 <div style="font-weight:700; color:#fff; font-size:0.9em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${prod.nombre}</div>
@@ -7605,34 +7539,10 @@
 
 
 
-        // Tasas actualizadas (valores de respaldo por si falla la API en tiempo real)
+        // Tasas de cambio fijas. Ya no se intenta actualizar en tiempo real
+        // (esa llamada a open.er-api.com se eliminó por completo).
         const tasas = { USD: 1, EUR: 0.87, MXN: 17.80, ARS: 1452, COP: 3447, PEN: 3.38, DOP: 58.29, USDT: 1, CLP: 906.65 };
 
-        // ── Actualización de tasas en tiempo real (USD base) ──
-        async function actualizarTasasEnVivo() {
-            try {
-                const res = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await res.json();
-                if (data && data.result === 'success' && data.rates) {
-                    const r = data.rates;
-                    if (r.MXN) tasas.MXN = r.MXN;
-                    if (r.EUR) tasas.EUR = r.EUR;
-                    if (r.ARS) tasas.ARS = r.ARS;
-                    if (r.COP) tasas.COP = r.COP;
-                    if (r.PEN) tasas.PEN = r.PEN;
-                    if (r.DOP) tasas.DOP = r.DOP;
-                    if (r.CLP) tasas.CLP = r.CLP;
-                    console.log('Tasas de cambio actualizadas en tiempo real:', tasas);
-                    if (typeof actualizarPreciosGlobales === 'function') actualizarPreciosGlobales();
-                }
-            } catch (e) {
-                console.warn('No se pudo actualizar la tasa en tiempo real, usando valores de respaldo.', e);
-            }
-        }
-        // Se ejecuta al cargar la página y luego se refresca cada 30 minutos
-        actualizarTasasEnVivo();
-        setInterval(actualizarTasasEnVivo, 30 * 60 * 1000);
-        
         // Usamos 'userCurrency' como clave principal
         let divisaActual = localStorage.getItem('userCurrency') || 'USD';
 
@@ -8808,7 +8718,7 @@
                             <div class="cosmetic-card ${p.rarityClass}">
                                 ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : ''}
                                 <div style="position:relative;">
-                                    <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}">
+                                    <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}" onerror="this.onerror=null;this.src='img/logo.png';this.style.objectFit='contain';this.style.padding='18%';this.style.background='rgba(0,0,0,0.45)';">
                                     <div class="card-vbucks-overlay">
                                         <img loading="lazy" decoding="async" src="https://logodix.com/logo/803916.png" alt="V-Bucks">
                                         <span>${parseInt(p.vbucks).toLocaleString()}</span>
@@ -8986,7 +8896,7 @@
                 <div class="cart-item ${rareza}">
                     <button class="btn-eliminar-item" onclick="eliminarItem(${index})" title="Eliminar artículo">✕</button>
                     <div class="cart-item-img-wrap">
-                        <img loading="lazy" decoding="async" src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
+                        <img loading="lazy" decoding="async" src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}" onerror="this.onerror=null;this.src='img/logo.png';this.style.objectFit='contain';this.style.padding='15%';this.style.background='rgba(0,0,0,0.45)';">
                     </div>
                     <div class="cart-item-details">
                         <span class="cart-item-title" title="${item.nombre}">${item.nombre}</span>
@@ -9483,7 +9393,7 @@ _He adjuntado mi comprobante de pago arriba._`;
                 return `
                     <div class="co-cart-item">
                         <div class="co-cart-img-wrap">
-                            <img loading="lazy" decoding="async" src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}">
+                            <img loading="lazy" decoding="async" src="${item.imagen || 'https://fortnite-api.com/images/vbuck.png'}" onerror="this.onerror=null;this.src='img/logo.png';this.style.objectFit='contain';this.style.padding='15%';this.style.background='rgba(0,0,0,0.45)';">
                         </div>
                         <div class="co-cart-info">
                             <span class="co-cart-name" title="${item.nombre}">${item.nombre}</span>
@@ -10502,8 +10412,8 @@ function mostrarModalCapturaMovil(url) {
         var g=document.getElementById("sb-bots-grid"); if(!g) return;
         var d=sbDedupe(on,off); on=d[0]; off=d[1];
         var h="";
-        on.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="this.parentElement.textContent=\''+ini+'\';this.parentElement.removeAttribute(\'style\')"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; });
-        off.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card offline"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="this.parentElement.textContent=\''+ini+'\';this.parentElement.removeAttribute(\'style\')"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; });
+        on.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';p.removeAttribute(\'style\');}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; });
+        off.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card offline"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';p.removeAttribute(\'style\');}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; });
         g.innerHTML=h;
         var pill=document.getElementById("sb-count-pill");
         if(pill && pill.style.display!=="none"){ pill.textContent=on.length+"/"+(on.length+off.length)+" ONLINE"; }
