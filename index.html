@@ -9047,6 +9047,71 @@
             }
         }
 
+        // =====================================================
+        // MENSAJE DE WHATSAPP DEL PEDIDO (un solo constructor)
+        // Los emojis van como codigos Unicode: no dependen de la
+        // codificacion del archivo ni del editor donde se guarde.
+        // =====================================================
+        const WA_NUMERO_TIENDA = '18295392881';
+        const WA_EMOJI = {
+            cart:    String.fromCodePoint(0x1F6D2), // carrito
+            id:      String.fromCodePoint(0x1F194), // ID
+            user:    String.fromCodePoint(0x1F464), // persona
+            phone:   String.fromCodePoint(0x1F4F1), // celular
+            discord: String.fromCodePoint(0x1F4AC), // globo de chat
+            epic:    String.fromCodePoint(0x1F3AE), // control de juego
+            account: String.fromCodePoint(0x1F517), // enlace
+            card:    String.fromCodePoint(0x1F4B3), // tarjeta
+            status:  String.fromCodePoint(0x1F4CA), // grafica
+            box:     String.fromCodePoint(0x1F4E6), // paquete
+            photo:   String.fromCodePoint(0x1F4F8), // camara
+            money:   String.fromCodePoint(0x1F4B0), // dinero
+            clip:    String.fromCodePoint(0x1F4CE)  // clip
+        };
+
+        function construirMensajePedidoWhatsApp(d) {
+            const E = WA_EMOJI;
+            const linea = '\u2501'.repeat(18);
+
+            const productos = d.carrito.map((i, idx) => {
+                const precio = (i.precio === 'Consultar') ? 'Precio a consultar' : '$' + i.precio;
+                const foto = i.imagen ? '\n     ' + E.photo + ' ' + i.imagen : '';
+                return (idx + 1) + '. *' + i.nombre + '* \u2014 ' + precio + foto;
+            }).join('\n\n');
+
+            const partes = [
+                E.cart + ' *NUEVO PEDIDO \u2022 SHEGOS STORE*',
+                linea
+            ];
+            if (d.idPedido) partes.push(E.id + ' *Pedido:* ' + d.idPedido);
+            partes.push(
+                E.user + ' *Cliente:* ' + d.nombre,
+                E.phone + ' *WhatsApp:* ' + (d.whatsapp || '\u2014'),
+                E.discord + ' *Discord:* ' + (d.discord || '\u2014'),
+                E.epic + ' *Epic ID:* ' + d.epicId
+            );
+            if (d.cuentas) partes.push(E.account + ' *Cuenta agregada:* ' + d.cuentas);
+            partes.push(
+                E.card + ' *M\u00e9todo de pago:* ' + d.metodo,
+                E.status + ' *Estado:* PROCESANDO',
+                linea,
+                E.box + ' *PRODUCTOS (' + d.carrito.length + ')*',
+                '',
+                productos,
+                linea,
+                E.money + ' *TOTAL: $' + d.total + ' USD*',
+                '',
+                E.clip + ' ' + d.comprobante
+            );
+            return partes.join('\n');
+        }
+
+        function abrirWhatsAppPedido(mensaje) {
+            const url = 'https://api.whatsapp.com/send?phone=' + WA_NUMERO_TIENDA +
+                        '&text=' + encodeURIComponent(mensaje);
+            window.open(url, '_blank');
+        }
+
         async function enviarPedidoFinal() {
             const btnFinal = document.getElementById('btn-main-checkout');
             if (!btnFinal || btnFinal.classList.contains('locked')) return;
@@ -9081,10 +9146,7 @@
             }
             
             let totalSum = 0;
-            const listaProductos = carrito.map(i => {
-                if(i.precio !== 'Consultar') totalSum += parseFloat(i.precio);
-                return `• *${i.nombre}* ($${i.precio})\n  📸 Foto: ${i.imagen}`;
-            }).join('\n');
+            carrito.forEach(i => { if (i.precio !== 'Consultar') totalSum += parseFloat(i.precio); });
             const total = Math.round(totalSum);
 
             // Estado de carga
@@ -9127,8 +9189,19 @@
 
                 // Abrir WhatsApp directamente con el pedido
                 const metodo = metodoRaw.toUpperCase();
-                const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*\n\n---------------------------------------\n\n👤 *Nombre:* ${nombre}\n\n📱 *WhatsApp:* ${whatsappCliente || '—'}\n\n💬 *Discord:* ${discordCliente || '—'}\n\n🎮 *Epic ID:* ${epicId}\n\n💳 *Método:* ${metodo}\n\n📊 *Estado:* PROCESANDO\n\n🛍️ *Productos:*\n\n${listaProductos}\n\n\n\n💰 *TOTAL:* $${total} USD\n\n---------------------------------------\n\n_He adjuntado mi comprobante de pago._`;
-                window.open("https://wa.me/18295392881?text=" + encodeURIComponent(mensaje), '_blank');
+                const mensaje = construirMensajePedidoWhatsApp({
+                    idPedido: orderId,
+                    nombre: nombre,
+                    whatsapp: whatsappCliente,
+                    discord: discordCliente,
+                    epicId: epicId,
+                    cuentas: cuentaSeleccionada,
+                    metodo: metodo,
+                    carrito: carrito,
+                    total: total,
+                    comprobante: 'Adjunto mi comprobante de pago en este chat.'
+                });
+                abrirWhatsAppPedido(mensaje);
 
                 vaciarCarrito();
 
@@ -9230,44 +9303,21 @@
             const metodo = seleccionado ? seleccionado.value.toUpperCase() : "";
 
             let totalSum = 0;
-            const listaProductos = carrito.map(i => {
-                if(i.precio !== 'Consultar') totalSum += parseFloat(i.precio);
-                return `• *${i.nombre}* ($${i.precio})\n  📸 Foto: ${i.imagen}`;
-            }).join('\n');
+            carrito.forEach(i => { if (i.precio !== 'Consultar') totalSum += parseFloat(i.precio); });
             const total = Math.round(totalSum);
 
-            const mensaje = `*NUEVO PEDIDO - SHEGOS STORE*
-
----------------------------------------
-
-👤 *Nombre:* ${nombre}
-
-📱 *WhatsApp:* ${whatsappCliente || '—'}
-
-💬 *Discord:* ${discordCliente || '—'}
-
-🎮 *Epic ID:* ${epicId}
-
-🆔 *Cuenta Agregada:* ${cuentaSeleccionada}
-
-💳 *Método:* ${metodo}
-
-📊 *Estado:* PROCESANDO
-
-🛍️ *Productos:*
-
-${listaProductos}
-
-
-
-💰 *TOTAL:* $${total} USD
-
----------------------------------------
-
-_He adjuntado mi comprobante de pago arriba._`;
-
-            const urlFinal = "https://wa.me/18295392881?text=" + encodeURIComponent(mensaje);
-            window.open(urlFinal, '_blank');
+            const mensaje = construirMensajePedidoWhatsApp({
+                nombre: nombre,
+                whatsapp: whatsappCliente,
+                discord: discordCliente,
+                epicId: epicId,
+                cuentas: cuentaSeleccionada,
+                metodo: metodo,
+                carrito: carrito,
+                total: total,
+                comprobante: 'Ya envi\u00e9 mi comprobante de pago arriba en este chat.'
+            });
+            abrirWhatsAppPedido(mensaje);
             cerrarModalInstrucciones();
         }
 
