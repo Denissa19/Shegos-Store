@@ -2,18 +2,26 @@ import os
 import json
 import asyncio
 import logging
+import urllib.parse
 import aiohttp
 from datetime import datetime
 from epic_api_bot import EpicApiBot
 
 logger = logging.getLogger(__name__)
 
+# Misma instancia de Supabase que ya usa el frontend (puedes sobreescribir por env var).
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://boifqdoojssmofanhxhj.supabase.co")
+SUPABASE_KEY = os.getenv(
+    "SUPABASE_KEY",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w",
+)
+
 
 class BotManager:
     def __init__(self):
         self.bots: list[EpicApiBot] = []
         self.credentials: dict = self._load_credentials()
-        self.request_timestamps: dict = {}  # Guarda timestamps de aceptación
+        self.request_timestamps: dict = {}
 
     def _load_credentials(self) -> dict:
         bots_json_env = os.getenv("BOTS_JSON")
@@ -66,7 +74,7 @@ class BotManager:
                             logger.error(f"[{bot.bot_name}] Error aceptando solicitudes: {e}")
             except Exception as e:
                 logger.error(f"watch_and_accept: error inesperado: {e}")
-                await asyncio.sleep(30)  # Espera breve y reintenta
+                await asyncio.sleep(30)
 
     async def watch_bots(self):
         """Reinicia bots caídos cada 60 segundos."""
@@ -83,26 +91,37 @@ class BotManager:
                 logger.error(f"watch_bots: error inesperado: {e}")
                 await asyncio.sleep(30)
 
+    async def watch_friend_acceptance(self):
+        """Placeholder de compatibilidad — ajustar si tenías lógica adicional aquí."""
+        while True:
+            await asyncio.sleep(300)
+
+    async def get_friend_status(self, username: str, platform: str = "epic") -> dict:
+        created_at = self.request_timestamps.get(username)
+        return {"username": username, "created_at": created_at}
+
     async def send_friend_requests_to(self, username: str, account_id: str = None, platform: str = "epic") -> dict:
         ready_bots = [bot for bot in self.bots if bot.is_ready()]
         if not ready_bots:
             logger.warning("No hay bots listos.")
             return {"requests_sent": 0, "already_added": 0, "failed": 0, "message": "No hay bots disponibles."}
-            
+
         tasks = [bot.send_friend_request_safe(username, account_id=account_id, platform=platform) for bot in ready_bots]
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         stats = {"requests_sent": 0, "already_added": 0, "failed": 0, "created_at": None}
         for r in results:
             if isinstance(r, dict):
                 status = r.get("status")
-                if status == "sent": stats["requests_sent"] += 1
-                elif status == "already": 
+                if status == "sent":
+                    stats["requests_sent"] += 1
+                elif status == "already":
                     stats["already_added"] += 1
-                    if not stats["created_at"]: stats["created_at"] = r.get("created_at")
-            else: stats["failed"] += 1
-            
-        # Generar mensaje unificado para la respuesta
+                    if not stats["created_at"]:
+                        stats["created_at"] = r.get("created_at")
+            else:
+                stats["failed"] += 1
+
         if stats["requests_sent"] > 0:
             stats["message"] = f"Solicitud procesada: {stats['requests_sent']} enviada(s), {stats['already_added']} ya existentes."
         elif stats["already_added"] > 0:
@@ -111,14 +130,12 @@ class BotManager:
             stats["message"] = "No se pudo encontrar al usuario o enviar la solicitud."
 
         logger.info(f"Resultado para '{username}': {stats}")
-        
-        # Guardar timestamp si la solicitud fue aceptada
+
         if stats["already_added"] > 0:
             self.request_timestamps[username] = datetime.utcnow().isoformat()
-        
-        # Enviar alerta Webhook si está configurado
+
         asyncio.create_task(self.send_webhook_alert(username, stats))
-        
+
         return stats
 
     async def send_webhook_alert(self, username: str, stats: dict):
@@ -132,11 +149,11 @@ class BotManager:
             "username": "Shegos Bots Alerta",
             "embeds": [{
                 "title": "🔔 Nueva Solicitud Procesada",
-                "color": 3066993 if stats["sent"] > 0 else 15105570,
+                "color": 3066993 if stats["requests_sent"] > 0 else 15105570,
                 "fields": [
                     {"name": "Usuario", "value": f"`{username}`", "inline": True},
-                    {"name": "Estado", "value": "✅ Enviada" if stats["sent"] > 0 else "⚠️ Ya era amigo", "inline": True},
-                    {"name": "Detalles", "value": f"🚀 Enviadas: {stats['sent']}\n🤝 Ya agregados: {stats['already']}\n❌ Fallidos: {stats['failed']}"}
+                    {"name": "Estado", "value": "✅ Enviada" if stats["requests_sent"] > 0 else "⚠️ Ya era amigo", "inline": True},
+                    {"name": "Detalles", "value": f"🚀 Enviadas: {stats['requests_sent']}\n🤝 Ya agregados: {stats['already_added']}\n❌ Fallidos: {stats['failed']}"}
                 ],
                 "footer": {"text": "Shegos Bots System"}
             }]
