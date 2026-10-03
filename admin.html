@@ -2508,7 +2508,9 @@ tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
+
 <script type="module">
 // Mapa de rol por correo real
 const ROLE_MAP = {
@@ -3701,6 +3703,51 @@ function getTableRow(o) {
 }
 
 // --- CONTABILIDAD ---
+function calcularPanelLocal(period) {
+  const num = x => parseFloat(x) || 0;
+  const mes = iso => vcLocalDay(iso).slice(0, 7);
+  const enPeriodo = iso => !period || mes(iso) === period;
+  const pedsPer = currentOrders.filter(o => enPeriodo(o.fecha || o.created_at || ''));
+  const vensPer = currentVentas.filter(v => enPeriodo(v.created_at));
+  const compl = pedsPer.filter(o => o.estado === 'Completado');
+  const sumPed = compl.reduce((s, o) => s + num(o.total_usd), 0);
+  const sumVen = vensPer.reduce((s, v) => s + num(v.ingreso), 0);
+  const addM = (obj, k, v) => { k = k || 'sin_metodo'; obj[k] = (obj[k] || 0) + v; };
+  const metodos = {}, metodosTotal = {}, dist = {};
+  currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.total_usd)));
+  currentVentas.forEach(v => addM(metodosTotal, v.metodo_pago, num(v.ingreso)));
+  compl.forEach(o => addM(metodos, o.metodo_pago, num(o.total_usd)));
+  vensPer.forEach(v => addM(metodos, v.metodo_pago, num(v.ingreso)));
+  if (sumPed > 0) dist['Pedido'] = sumPed;
+  vensPer.forEach(v => { const t = v.tipo || 'Otro'; dist[t] = (dist[t] || 0) + num(v.ingreso); });
+  const serie = [], hoy = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(hoy.getFullYear(), hoy.getMonth() - i, 1);
+    const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    serie.push({
+      periodo: k,
+      pedidos: currentOrders.filter(o => o.estado === 'Completado' && mes(o.fecha || o.created_at || '') === k).reduce((s, o) => s + num(o.total_usd), 0),
+      ventas: currentVentas.filter(v => mes(v.created_at) === k).reduce((s, v) => s + num(v.ingreso), 0)
+    });
+  }
+  const pendPed = pedsPer.filter(o => o.estado === 'Pendiente' || o.estado === 'En Proceso').reduce((s, o) => s + num(o.total_usd), 0);
+  const pendVen = vensPer.reduce((s, v) => s + num(v.pago_pendiente), 0);
+  return {
+    es_ceo: currentRole === 'CEO',
+    ingresos_totales: sumPed + sumVen,
+    pedidos_completados: compl.length,
+    ventas_manuales_count: vensPer.length,
+    pendiente_cobro: pendPed + pendVen,
+    costo_total: vensPer.reduce((s, v) => s + (num(v.costo_real) || num(v.costo)), 0),
+    ganancia_neta: vensPer.reduce((s, v) => s + num(v.ganancia_neta), 0),
+    metodos, metodos_total: metodosTotal, distribucion_tipo: dist, serie_mensual: serie,
+    registros: [
+      ...pedsPer.map(o => ({ id: o.id_pedido, fuente: 'Pedido', cliente: o.nombre_cliente, metodo: o.metodo_pago, total: num(o.total_usd), estado: o.estado })),
+      ...vensPer.map(v => ({ id: v.id_pedido || v.id, fuente: 'Venta', cliente: v.cliente, metodo: v.metodo_pago, total: num(v.ingreso), estado: v.estado || 'Completado' }))
+    ]
+  };
+}
+
 // Guarda el último panel cargado (lo usa exportAccounting y renderSaldoMetodo)
 let _ultimoPanelContabilidad = null;
 
@@ -3716,18 +3763,7 @@ async function renderAccounting() {
     hasta = new Date(y, m, 1).toISOString();
   }
 
-  let panel;
-  try {
-    const qs = new URLSearchParams();
-    if (desde) qs.set('desde', desde);
-    if (hasta) qs.set('hasta', hasta);
-    panel = await apiFetch(`/api/ventas/panel?${qs.toString()}`);
-  } catch (e) {
-    area.innerHTML = `<p style="font-size:0.82em;color:var(--red)">Error cargando contabilidad: ${e.message}</p>`;
-    showToast('Error cargando contabilidad: ' + e.message, true);
-    return;
-  }
-
+  const panel = calcularPanelLocal(period);
   _ultimoPanelContabilidad = panel;
   const isCEO = !!panel.es_ceo;
 
@@ -3786,7 +3822,7 @@ async function renderAccounting() {
 
   // El CEO además ve saldo por método y retiros (se cargan aparte, ver bloque RETIROS)
   if (isCEO) {
-    renderSaldoMetodo(metodos);
+    renderSaldoMetodo(panel.metodos_total || metodos);
     renderRetirosSection();
   }
 }
@@ -4608,6 +4644,7 @@ async function fetchVentas() {
     renderVentas();
     updateVentasStats();
     updateStats(); // Refresh topbar total with ventas included
+    renderAccounting();
   } catch (err) {
     console.error(err);
     const msg = err?.message || 'Sin detalles';
@@ -7566,7 +7603,9 @@ let _retirosCache = []; // último listado traído del backend
 
 async function cargarRetiros() {
   try {
-    _retirosCache = await apiFetch('/api/ventas/retiros');
+    const { data, error } = await supabase.from('retiros').select('*').order('creado_en', { ascending: false });
+    if (error) throw error;
+    _retirosCache = data || [];
   } catch (e) {
     _retirosCache = [];
     console.error('No se pudieron cargar los retiros:', e.message);
@@ -7605,13 +7644,11 @@ window.saveRetiro = async function() {
     return;
   }
   try {
-    await apiFetch('/api/ventas/retiros', {
-      method: 'POST',
-      body: JSON.stringify({ monto, metodo_pago: metodo, motivo: tipo + (notas ? ` — ${notas}` : '') }),
-    });
+    const { error: errR } = await supabase.from('retiros').insert([{ monto, metodo_pago: metodo, motivo: tipo + (notas ? ' — ' + notas : '') }]);
+    if (errR) throw errR;
     window.closeRetiroModal();
     showToast(`Retiro de $${monto.toFixed(2)} registrado ✓`);
-    await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos || {});
+    await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos_total || {});
     await renderRetirosSection();
   } catch (e) {
     showToast('Error registrando retiro: ' + e.message, true);
@@ -7688,8 +7725,9 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
 window.deleteRetiro = function(id) {
   window.openConfirmModal('Eliminar Retiro', '¿Eliminar este retiro del historial?', async function() {
     try {
-      await apiFetch(`/api/ventas/retiros/${id}`, { method: 'DELETE' });
-      await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos || {});
+      const { error: errD } = await supabase.from('retiros').delete().eq('id_retiro', id);
+      if (errD) throw errD;
+      await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos_total || {});
       await renderRetirosSection();
       showToast('Retiro eliminado');
     } catch (e) {
