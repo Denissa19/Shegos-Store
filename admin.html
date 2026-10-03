@@ -950,6 +950,17 @@ tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
 .rv-banner{display:flex;gap:12px;align-items:flex-start;background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.35);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.8em;color:var(--text2);line-height:1.5}
 .rv-banner i{color:#ff9f0a;margin-top:2px}
 .rv-banner code{background:var(--bg);padding:1px 6px;border-radius:4px;color:var(--text)}
+
+/* ── Listas desplegables en oscuro ── */
+select{color-scheme:dark}
+select option,select optgroup{background:#111;color:#fff}
+
+/* ── Sin efecto de "levantarse" al pasar el cursor por los botones ── */
+.btn:hover,.btn:hover i,.ibtn:hover,.ibtn.del:hover,.btn-logout:hover,.tab-nav-btn:hover i,
+.vm-tipo-chip:hover,.vm-tipo-chip:hover i,.vm-apago-chip:hover,.rem-chip:hover,.qtag:hover,
+.cal-nav:hover,.cal-day:hover,.cal-month-item:hover,.mclose:hover,.group-wa:hover,
+.toggle-btn:hover,.imode:hover,.btn-add-prod:hover,.login-btn:hover,.mnav-btn:hover{transform:none !important;box-shadow:none !important}
+.btn-accent:hover{box-shadow:0 4px 16px rgba(40,254,182,.22) !important}
 </style>
 <body>
 
