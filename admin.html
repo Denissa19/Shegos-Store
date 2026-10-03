@@ -418,6 +418,9 @@ td{padding:12px 14px;vertical-align:middle}
   text-transform: uppercase; transition: all .2s; z-index: 2; position: relative;
 }
 .vm-receipt-remove:hover { background: var(--red); color: #000; }
+.vm-receipt-view { background:none; border:1px solid var(--accent); color:var(--accent); border-radius:4px; padding:3px 10px; font-size:0.68em; font-weight:700; cursor:pointer; letter-spacing:1px; text-transform:uppercase; transition:all .2s; z-index:2; position:relative; margin-left:auto; margin-right:6px; }
+.vm-receipt-view:hover { background:var(--accent); color:#000; }
+#modal-imgviewer { z-index: 99985; }
 
 /* ── MOBILE OPTIMIZATIONS ───────────────── */
 /* Bottom navigation for mobile */
@@ -799,6 +802,9 @@ td{padding:12px 14px;vertical-align:middle}
 .cal-day.selected { background: var(--accent); color: #000; font-weight: 800; border-color: var(--accent); }
 .cal-day.other-month { color: var(--text3); opacity: .4; }
 .cal-day.disabled { opacity: .2; cursor: default; pointer-events: none; }
+.cal-day { position: relative; }
+.cal-day.has-sales::after { content:''; position:absolute; bottom:2px; left:50%; transform:translateX(-50%); width:4px; height:4px; border-radius:50%; background:var(--gold); }
+.cal-day.selected.has-sales::after { background:#000; }
 .cal-time-row { display: flex; align-items: center; gap: 6px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
 .cal-time-label { font-size: .68em; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
 .cal-time-input { flex: 1; background: var(--bg); border: 1px solid var(--border2); color: var(--text); padding: 6px 8px; border-radius: 4px; font-family: var(--font-body); font-size: .78em; outline: none; text-align: center; }
@@ -813,6 +819,137 @@ td{padding:12px 14px;vertical-align:middle}
 .cal-month-item { text-align: center; padding: 8px 4px; font-size: .75em; font-weight: 700; cursor: pointer; border-radius: 5px; color: var(--text2); transition: all .15s; text-transform: uppercase; letter-spacing: .5px; border: 1px solid transparent; }
 .cal-month-item:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(40,254,182,.3); }
 .cal-month-item.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+<style id="ux-polish">
+/* ── PULIDO UX: movimiento, profundidad y feedback ── */
+:root{--ease:cubic-bezier(.2,.8,.2,1)}
+@keyframes uxTabIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes uxCardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes uxModalIn{from{opacity:0;transform:translateY(18px) scale(.95)}to{opacity:1;transform:none}}
+@keyframes uxSheetIn{from{transform:translateY(100%)}to{transform:none}}
+@keyframes uxFade{from{opacity:0}to{opacity:1}}
+@keyframes uxFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes uxRipple{to{transform:scale(1);opacity:0}}
+.ux-ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.35);transform:scale(0);animation:uxRipple .65s ease-out;pointer-events:none}
+
+/* Topbar y marca */
+.topbar{box-shadow:0 1px 0 rgba(40,254,182,.14),0 10px 30px rgba(0,0,0,.35)}
+.topbar-brand span{text-shadow:0 0 20px rgba(40,254,182,.6)}
+
+/* Pestañas */
+.tab-nav-btn{transition:color .25s,background .25s,border-color .25s,text-shadow .25s}
+.tab-nav-btn i{display:inline-block;transition:transform .3s var(--ease)}
+.tab-nav-btn:hover{background:rgba(255,255,255,.04)}
+.tab-nav-btn:hover i{transform:translateY(-2px) scale(1.15)}
+.tab-nav-btn.active{text-shadow:0 0 16px rgba(40,254,182,.55);background:linear-gradient(180deg,transparent,rgba(40,254,182,.07))}
+.tab-panel.active{animation:uxTabIn .45s var(--ease)}
+
+/* Botones */
+.btn{position:relative;overflow:hidden;transition:transform .2s var(--ease),box-shadow .25s,background .25s,border-color .25s,color .25s,opacity .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.96)}
+.btn i{transition:transform .3s var(--ease)}
+.btn:hover i{transform:scale(1.2) rotate(-8deg)}
+.btn-accent{background:linear-gradient(135deg,#28feb6,#12d896);box-shadow:0 4px 16px rgba(40,254,182,.22)}
+.btn-accent:hover{opacity:1;box-shadow:0 10px 28px rgba(40,254,182,.45)}
+.btn-outline:hover{box-shadow:0 8px 22px rgba(40,254,182,.2)}
+.btn-blue:hover{box-shadow:0 8px 22px rgba(88,101,242,.3)}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.btn-danger:hover{box-shadow:0 8px 22px rgba(255,77,109,.28)}
+.btn-logout{transition:all .25s var(--ease)}
+.btn-logout:hover{transform:translateY(-2px)}
+.ibtn{transition:transform .2s var(--ease),box-shadow .25s,border-color .25s,color .25s,background .25s}
+.ibtn:hover{transform:translateY(-3px) scale(1.08);background:rgba(40,254,182,.08);box-shadow:0 6px 16px rgba(40,254,182,.22)}
+.ibtn.del:hover{background:rgba(255,77,109,.1);box-shadow:0 6px 16px rgba(255,77,109,.28)}
+.ibtn:active{transform:scale(.9)}
+
+/* Tarjetas */
+.stat-card,.acc-card,.meth-card,.month-chart,.note-card,.rec-history-card,.recovery-chart-wrap{transition:transform .3s var(--ease),box-shadow .3s,border-color .25s}
+.stat-card:hover,.acc-card:hover,.meth-card:hover{transform:translateY(-5px);box-shadow:0 14px 34px rgba(0,0,0,.45),0 0 26px rgba(40,254,182,.12)}
+.month-chart:hover,.recovery-chart-wrap:hover,.rec-history-card:hover,.note-card:hover{box-shadow:0 10px 28px rgba(0,0,0,.4)}
+.stat-card::after{transition:height .25s}
+.stat-card:hover::after{height:4px}
+.stats-row .stat-card,.accounting-grid .acc-card{animation:uxCardIn .55s var(--ease) both}
+.stats-row .stat-card:nth-child(2),.accounting-grid .acc-card:nth-child(2){animation-delay:.06s}
+.stats-row .stat-card:nth-child(3),.accounting-grid .acc-card:nth-child(3){animation-delay:.12s}
+.stats-row .stat-card:nth-child(4),.accounting-grid .acc-card:nth-child(4){animation-delay:.18s}
+.stats-row .stat-card:nth-child(5){animation-delay:.24s}
+.stats-row .stat-card:nth-child(6){animation-delay:.3s}
+.stats-row .stat-card:nth-child(7){animation-delay:.36s}
+.stat-value{transition:text-shadow .3s}
+.stat-card:hover .stat-value{text-shadow:0 0 18px currentColor}
+
+/* Tablas */
+tbody tr{transition:background .2s}
+tbody tr:hover{background:rgba(40,254,182,.045)}
+tbody tr td:first-child{transition:box-shadow .2s}
+tbody tr:hover td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+.group-header{transition:transform .25s var(--ease),border-color .25s}
+.group-header:hover{transform:translateX(4px)}
+
+/* Inputs */
+.finput,.fsel,.ftarea,.search-input,.filter-sel,.month-input{transition:border-color .25s,box-shadow .25s,background .25s}
+.finput:focus,.fsel:focus,.ftarea:focus,.search-input:focus,.filter-sel:focus,.month-input:focus{box-shadow:0 0 0 3px rgba(40,254,182,.16);background:rgba(40,254,182,.03)}
+.filter-sel:hover,.month-input:hover,.search-input:hover{border-color:#3a3a3a}
+
+/* Chips */
+.vm-tipo-chip,.vm-apago-chip{transition:transform .22s var(--ease),border-color .2s,color .2s,background .2s,box-shadow .25s}
+.vm-tipo-chip:hover,.vm-apago-chip:hover{transform:translateY(-3px)}
+.vm-tipo-chip:active,.vm-apago-chip:active{transform:scale(.94)}
+.vm-tipo-chip i{display:inline-block;transition:transform .3s var(--ease)}
+.vm-tipo-chip:hover i{transform:scale(1.25) rotate(-8deg)}
+.vm-tipo-chip.active{transform:translateY(-2px);box-shadow:0 8px 22px rgba(40,254,182,.22)}
+
+/* Modales */
+.overlay.open{animation:uxFade .2s ease}
+.overlay.open .mcard,.overlay.open .confirm-card{animation:uxModalIn .35s var(--ease)}
+.mclose{transition:transform .25s var(--ease),color .2s}
+.mclose:hover{transform:rotate(90deg) scale(1.1)}
+@media(max-width:768px){.overlay.open .mcard{animation-name:uxSheetIn;animation-duration:.4s}}
+
+/* Calendario */
+.cal-day{transition:transform .15s var(--ease),background .15s,color .15s,box-shadow .2s}
+.cal-day:hover{transform:scale(1.14)}
+.cal-day.selected{box-shadow:0 0 16px rgba(40,254,182,.55)}
+.cal-nav{border-radius:6px;transition:background .2s,color .2s,transform .15s}
+.cal-nav:hover{background:var(--accent-dim)}
+.cal-nav:active{transform:scale(.85)}
+.cal-month-item{transition:transform .15s var(--ease),background .15s,color .15s}
+.cal-month-item:hover{transform:scale(1.08)}
+.cal-month-label{transition:color .2s}
+
+/* Vacíos, toast, comprobantes */
+.empty i:not(.fa-spin){animation:uxFloat 3.2s ease-in-out infinite}
+.toast{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 12px 34px rgba(0,0,0,.55)}
+.toast::before{content:'✓';margin-right:8px;color:var(--accent);font-weight:800}
+.toast.err::before{content:'✕';color:var(--red)}
+.vm-receipt{transition:border-color .25s,box-shadow .25s,transform .2s}
+.vm-receipt:hover{transform:translateY(-1px)}
+.login-card{animation:uxCardIn .7s var(--ease) both}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+.rem-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.rem-chip{background:var(--bg);border:1px solid var(--border2);color:var(--text2);padding:6px 12px;border-radius:20px;font-family:var(--font-body);font-size:.72em;font-weight:700;cursor:pointer;transition:all .2s var(--ease)}
+.rem-chip:hover{transform:translateY(-2px);border-color:var(--c);color:var(--c)}
+.rem-chip.active{color:var(--c);border-color:var(--c);background:rgba(255,255,255,.05);box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.rem-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;margin-top:8px;border-radius:8px;background:var(--bg);border:1px solid var(--border2);border-left:3px solid var(--c,var(--text3));animation:uxCardIn .3s var(--ease)}
+.rem-item.done{opacity:.55}.rem-item.done .rem-txt{text-decoration:line-through}
+.rem-tipo{font-size:.62em;letter-spacing:1px;text-transform:uppercase;font-weight:800;color:var(--c)}
+.rem-txt{font-size:.82em;line-height:1.4;margin-top:2px;word-break:break-word}
+.rem-meta{font-size:.62em;color:var(--text3);margin-top:3px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ── Reseñas, recompensas y remarks rápidos ── */
+.b-rv-none{background:rgba(136,136,136,.1);color:var(--text2);border:1px solid rgba(136,136,136,.3)}
+.b-rv-gift{background:rgba(236,72,153,.1);color:#ec4899;border:1px solid rgba(236,72,153,.35)}
+.rv-stars{color:var(--gold);letter-spacing:2px;font-size:.95em;white-space:nowrap}
+.rv-stars .off{color:var(--text3)}
+.rv-sub{font-size:.68em;color:var(--text3);margin-top:3px}
+.star-pick{display:flex;gap:6px;margin-bottom:8px}
+.star-pick button{background:var(--bg);border:1px solid var(--border2);color:var(--text3);width:46px;height:46px;border-radius:8px;font-size:1.3em;cursor:pointer;transition:transform .2s var(--ease),border-color .2s,color .2s,background .2s}
+.star-pick button:hover{transform:translateY(-2px);border-color:var(--gold);color:var(--gold)}
+.star-pick button.on{color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.08)}
+.rv-banner{display:flex;gap:12px;align-items:flex-start;background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.35);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.8em;color:var(--text2);line-height:1.5}
+.rv-banner i{color:#ff9f0a;margin-top:2px}
+.rv-banner code{background:var(--bg);padding:1px 6px;border-radius:4px;color:var(--text)}
 </style>
 <body>
 
@@ -958,6 +1095,11 @@ td{padding:12px 14px;vertical-align:middle}
           <option>En Proceso</option>
           <option>Completado</option>
           <option>Cancelado</option>
+        </select>
+        <select class="filter-sel" id="filt-rem" onchange="window.renderTable()" title="Filtrar por remarks">
+          <option value="">Remarks: todos</option>
+          <option value="open">Con pendientes abiertos</option>
+          <option value="any">Con remarks</option>
         </select>
         <select class="filter-sel" id="filt-group">
           <option value="phone">Agrupar: Teléfono</option>
@@ -1173,13 +1315,25 @@ td{padding:12px 14px;vertical-align:middle}
           </div>
           <div class="cal-popup" id="cal-vc-date-to"></div>
         </div>
+        <select class="filter-sel" id="vc-rem-filter" onchange="window.renderVentas()" title="Filtrar por remarks">
+          <option value="">Remarks: todos</option>
+          <option value="open">Con pendientes abiertos</option>
+          <option value="any">Con remarks</option>
+        </select>
+        <select class="filter-sel" id="vc-range-quick" onchange="window.vcQuickRange(this.value)" title="Rango rápido">
+          <option value="">Rango rápido</option>
+          <option value="30">Últimos 30 días</option>
+          <option value="90">Últimos 3 meses</option>
+          <option value="180">Últimos 6 meses</option>
+          <option value="365">Último año</option>
+        </select>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
         <button class="btn btn-accent" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
         <button class="btn btn-ghost sec-ceo-only" onclick="window.openRetiroModal()" style="border-color:#f97316;color:#f97316"><i class="fas fa-wallet"></i> Registrar Retiro</button>
         <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
       </div>
 
-      <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div></div>
+      <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div><span id="vc-count-info" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span></div>
       <div id="vc-table-area"></div>
     </div>
 
@@ -1279,18 +1433,27 @@ td{padding:12px 14px;vertical-align:middle}
       <div class="toolbar" style="margin-bottom:20px">
         <div class="search-wrap">
           <i class="fas fa-search"></i>
-          <input class="search-input" id="cli-search" placeholder="Buscar cliente por nombre o WhatsApp..." oninput="window.renderClientesTab()">
+          <input class="search-input" id="cli-search" placeholder="Buscar cliente por nombre o WhatsApp..." oninput="window.renderClientesTab('local')">
         </div>
+        <select class="filter-sel" id="cli-rv-filter" onchange="window.renderClientesTab('local')" title="Filtrar por reseña">
+          <option value="">Reseñas: todos</option>
+          <option value="pendiente">Sin pedir</option>
+          <option value="solicitada">Pedida, sin respuesta</option>
+          <option value="recibida">Reseña recibida</option>
+          <option value="premio">Recompensa por entregar</option>
+        </select>
         <button class="btn btn-accent" onclick="window.openAddClienteModal()" style="background:#a855f7">
           <i class="fas fa-user-plus"></i> Nuevo Cliente
         </button>
         <button class="btn" onclick="window.openFeedbackModal()" style="background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none">
-          <i class="fab fa-whatsapp"></i> Pedir Feedback
+          <i class="fab fa-whatsapp"></i> Pedir reseñas
         </button>
         <button class="btn btn-ghost" onclick="window.exportClientesCSV()">
           <i class="fas fa-download"></i> Exportar CSV
         </button>
       </div>
+
+      <div id="cli-rv-wrap"></div>
 
       <div class="sec-title">
         <h3 style="color:#a855f7"><i class="fas fa-users" style="margin-right:8px"></i>Base de Clientes</h3>
@@ -1475,6 +1638,7 @@ td{padding:12px 14px;vertical-align:middle}
             <img id="order-receipt-img" src="" alt="Comprobante">
             <div class="vm-receipt-preview-bar">
               <span class="vm-receipt-preview-name" id="order-receipt-name"><i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>Comprobante cargado</span>
+              <button type="button" class="vm-receipt-view" onclick="event.stopPropagation();window.viewFormReceipt('f-receipt-base64')"><i class="fas fa-expand"></i> Ver</button>
               <button class="vm-receipt-remove" onclick="event.stopPropagation();window.clearReceipt()">
                 <i class="fas fa-trash-alt"></i> Quitar
               </button>
@@ -1482,6 +1646,44 @@ td{padding:12px 14px;vertical-align:middle}
           </div>
         </div>
         <input type="hidden" id="f-receipt-base64">
+      </div>
+
+      <!-- Foto del producto / prueba de entrega -->
+      <div class="fgroup">
+        <label class="flabel">Foto del Producto / Prueba de Entrega</label>
+        <div class="vm-receipt" id="f-prod-zone"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="event.preventDefault();this.classList.remove('drag-over');window.orderProdDrop(event)">
+          <input type="file" id="f-prod-file" accept="image/*" onchange="window.handleOrderProd(this)">
+          <div class="vm-receipt-idle" id="f-prod-idle">
+            <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
+            <div class="vm-receipt-text">
+              <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
+              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP</small>
+            </div>
+          </div>
+          <div class="vm-receipt-preview" id="f-prod-preview">
+            <img id="f-prod-img" src="" alt="Producto">
+            <div class="vm-receipt-preview-bar">
+              <span class="vm-receipt-preview-name" id="f-prod-name">Foto cargada</span>
+              <button type="button" class="vm-receipt-view" onclick="event.stopPropagation();window.viewFormReceipt('f-prod-base64','Foto del producto')"><i class="fas fa-expand"></i> Ver</button>
+              <button class="vm-receipt-remove" onclick="event.stopPropagation();window.clearOrderProd()"><i class="fas fa-trash-alt"></i> Quitar</button>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="f-prod-base64">
+      </div>
+
+      <!-- Remarks / acuerdos importantes -->
+      <div class="fgroup" id="ord-remarks-section">
+        <label class="flabel"><i class="fas fa-flag" style="margin-right:6px;color:#f97316"></i>Remarks / Acuerdos importantes</label>
+        <div class="rem-chips" id="ord-chips"></div>
+        <div style="display:flex;gap:8px">
+          <input class="finput" id="ord-text" placeholder="Ej: se le dio crédito, se prometió un skin, quedó pendiente..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();RemEd.ord.add()}">
+          <button type="button" class="btn btn-outline" onclick="RemEd.ord.add()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="ord-list"></div>
       </div>
     </div>
     <div class="mfoot">
@@ -2173,6 +2375,7 @@ td{padding:12px 14px;vertical-align:middle}
             <img id="vc-receipt-img" src="" alt="Comprobante">
             <div class="vm-receipt-preview-bar">
               <span class="vm-receipt-preview-name" id="vc-receipt-name"><i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>Comprobante cargado</span>
+              <button type="button" class="vm-receipt-view" onclick="event.stopPropagation();window.viewFormReceipt('vc-f-receipt-base64')"><i class="fas fa-expand"></i> Ver</button>
               <button class="vm-receipt-remove" onclick="event.stopPropagation();window.vmClearReceipt()">
                 <i class="fas fa-trash-alt"></i> Quitar
               </button>
@@ -2180,6 +2383,44 @@ td{padding:12px 14px;vertical-align:middle}
           </div>
         </div>
         <input type="hidden" id="vc-f-receipt-base64">
+      </div>
+
+      <!-- Foto del producto / prueba de entrega -->
+      <div class="fgroup">
+        <label class="flabel">Foto del Producto / Prueba de Entrega</label>
+        <div class="vm-receipt" id="vc-prod-zone"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="event.preventDefault();this.classList.remove('drag-over');window.vmProdDrop(event)">
+          <input type="file" id="vc-f-prod-file" accept="image/*" onchange="window.handleVentaProd(this)">
+          <div class="vm-receipt-idle" id="vc-prod-idle">
+            <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
+            <div class="vm-receipt-text">
+              <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
+              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP</small>
+            </div>
+          </div>
+          <div class="vm-receipt-preview" id="vc-prod-preview">
+            <img id="vc-prod-img" src="" alt="Producto">
+            <div class="vm-receipt-preview-bar">
+              <span class="vm-receipt-preview-name" id="vc-prod-name">Foto cargada</span>
+              <button type="button" class="vm-receipt-view" onclick="event.stopPropagation();window.viewFormReceipt('vc-f-prod-base64','Foto del producto')"><i class="fas fa-expand"></i> Ver</button>
+              <button class="vm-receipt-remove" onclick="event.stopPropagation();window.vmClearProd()"><i class="fas fa-trash-alt"></i> Quitar</button>
+            </div>
+          </div>
+        </div>
+        <input type="hidden" id="vc-f-prod-base64">
+      </div>
+
+      <!-- Remarks / acuerdos importantes -->
+      <div class="fgroup" id="vm-remarks-section">
+        <label class="flabel"><i class="fas fa-flag" style="margin-right:6px;color:#f97316"></i>Remarks / Acuerdos importantes</label>
+        <div class="rem-chips" id="vm-rem-chips"></div>
+        <div style="display:flex;gap:8px">
+          <input class="finput" id="vm-rem-text" placeholder="Ej: se le dio 2 días de crédito, se prometió un skin..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();window.vmAddRemark()}">
+          <button type="button" class="btn btn-outline" onclick="window.vmAddRemark()"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="vm-rem-list"></div>
       </div>
 
       <!-- Total bar -->
@@ -2193,6 +2434,77 @@ td{padding:12px 14px;vertical-align:middle}
     <div class="mfoot">
       <button class="btn btn-ghost" onclick="window.closeVentaModal()">Cancelar</button>
       <button class="btn btn-accent" onclick="window.saveVenta()"><i class="fas fa-save"></i> Guardar Venta</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="modal-imgviewer">
+  <div class="mcard" style="max-width:900px">
+    <div class="mhead">
+      <div class="mtitle" id="imgv-title">Comprobante</div>
+      <button class="mclose" onclick="window.closeImageViewer()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody" style="text-align:center">
+      <img id="imgv-img" src="" alt="Comprobante" style="max-width:100%;max-height:70vh;border-radius:6px;border:1px solid var(--border2)">
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="window.closeImageViewer()">Cerrar</button>
+      <button class="btn btn-outline" onclick="window.openImageNewTab()"><i class="fas fa-up-right-from-square"></i> Abrir en pestaña</button>
+      <button class="btn btn-accent" onclick="window.downloadViewerImage()"><i class="fas fa-download"></i> Descargar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL REMARKS RÁPIDOS (ventas y pedidos ya registrados) ── -->
+<div class="overlay" id="modal-remarks">
+  <div class="mcard" style="max-width:520px">
+    <div class="mhead">
+      <div class="mtitle" style="color:#f97316"><i class="fas fa-flag" style="margin-right:8px"></i>Remarks</div>
+      <button class="mclose" onclick="window.closeRemarksModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <div id="rq-sub" style="font-size:0.8em;color:var(--text2);margin-bottom:14px;line-height:1.5"></div>
+      <div class="rem-chips" id="rq-chips"></div>
+      <div style="display:flex;gap:8px">
+        <input class="finput" id="rq-text" placeholder="Ej: se le dio crédito, se prometió un skin, quedó pendiente..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();RemEd.rq.add()}">
+        <button type="button" class="btn btn-outline" onclick="RemEd.rq.add()"><i class="fas fa-plus"></i> Agregar</button>
+      </div>
+      <div id="rq-list"></div>
+      <div style="font-size:0.7em;color:var(--text3);margin-top:14px">Los cambios se guardan al instante.</div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" onclick="window.closeRemarksModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL RESEÑA DE CLIENTE ── -->
+<div class="overlay" id="modal-resena">
+  <div class="mcard" style="max-width:440px">
+    <div class="mhead">
+      <div class="mtitle" style="color:var(--gold)"><i class="fas fa-star" style="margin-right:8px"></i>Reseña del cliente</div>
+      <button class="mclose" onclick="window.closeResenaModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mbody">
+      <div id="rv-cliente" style="font-weight:700;font-size:1em;margin-bottom:16px"></div>
+      <div class="fgroup">
+        <label class="flabel">Calificación *</label>
+        <div class="star-pick" id="rv-stars"></div>
+        <div style="font-size:0.72em;color:var(--text3)">1 = Malo, 5 = Muy bueno</div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel">Comentario <span style="color:var(--text3);font-size:.85em">(opcional)</span></label>
+        <textarea class="ftarea" id="rv-comentario" placeholder="Lo que dijo el cliente..." style="min-height:80px"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.3);border-radius:8px;padding:10px 12px;font-size:0.76em;color:var(--text2);line-height:1.5">
+        <i class="fas fa-gift" style="color:#ec4899;margin-top:2px"></i>
+        <span>Al guardar, el cliente queda con una recompensa por entregar.</span>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn btn-danger" id="rv-quitar" onclick="window.quitarResena()" style="margin-right:auto;display:none"><i class="fas fa-trash-alt"></i> Quitar reseña</button>
+      <button class="btn btn-ghost" onclick="window.closeResenaModal()">Cancelar</button>
+      <button class="btn btn-accent" onclick="window.saveResena()"><i class="fas fa-save"></i> Guardar reseña</button>
     </div>
   </div>
 </div>
@@ -3128,6 +3440,7 @@ async function saveOrder() {
     showToast('Por favor completa los campos obligatorios (*)', true);
     return;
   }
+  window.RemEd.ord.flush(); // incluye el remark que quedó escrito sin pulsar "Agregar"
 
   const saveBtn = document.querySelector('#modal-order .btn-accent[onclick*="saveOrder"]');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
@@ -3166,6 +3479,13 @@ async function saveOrder() {
     notes: document.getElementById('f-notes').value.trim(),
     comprobante: document.getElementById('f-receipt-base64').value || null
   };
+  // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
+  // así guardar un pedido normal sigue funcionando aunque falten las columnas.
+  const origOrder = editingOrderId ? currentOrders.find(x => x.id === editingOrderId) : null;
+  const fotoProdOrd = document.getElementById('f-prod-base64')?.value || '';
+  if (fotoProdOrd || origOrder?.foto_producto) orderData.foto_producto = fotoProdOrd || null;
+  const ordRems = window.RemEd.ord.get();
+  if (ordRems.length || (Array.isArray(origOrder?.remarks) && origOrder.remarks.length)) orderData.remarks = ordRems;
 
   try {
     if (editingOrderId) {
@@ -3184,7 +3504,11 @@ async function saveOrder() {
     closeModal();
     fetchOrders();
   } catch (err) {
-    showToast('Error al sincronizar: ' + (err?.message || 'revisa la consola'), true);
+    if (err?.code === '42703' || err?.code === 'PGRST204' || /column|schema cache/i.test(err?.message || '')) {
+      showToast('Faltan columnas en Supabase (remarks / foto_producto) — corre actualizacion-supabase.sql', true);
+    } else {
+      showToast('Error al sincronizar: ' + (err?.message || 'revisa la consola'), true);
+    }
     console.error(err);
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar'; }
@@ -3260,6 +3584,12 @@ function renderTable() {
   // Filtrado elemental
   let filtered = currentOrders.filter(o => {
     if (statusFilter && o.estado !== statusFilter) return false;
+    const remF = document.getElementById('filt-rem')?.value || '';
+    if (remF) {
+      const rr = Array.isArray(o.remarks) ? o.remarks : [];
+      if (remF === 'any' && !rr.length) return false;
+      if (remF === 'open' && !rr.some(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto)) return false;
+    }
     if (query) {
       const matchId = String(o.id_pedido).toLowerCase().includes(query);
       const matchName = String(o.nombre_cliente).toLowerCase().includes(query);
@@ -3358,6 +3688,10 @@ function getTableRow(o) {
     </td>
     <td style="text-align:right">
       <div class="td-act" style="justify-content:flex-end">
+        ${o.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
+        ${o.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+        ${remFlagBtn('pedido', o)}
+        ${o.estado === 'Completado' ? rvBtn('pedido', o) : ''}
         <button class="ibtn" onclick="window.viewDetail('${o.id}')" title="Ver Detalle"><i class="fas fa-eye"></i></button>
         <button class="ibtn" onclick="window.editOrder('${o.id}')" title="Editar"><i class="fas fa-pen"></i></button>
         <button class="ibtn del" onclick="window.deleteOrder('${o.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
@@ -3562,6 +3896,8 @@ function openModal() {
   document.getElementById('prod-list').innerHTML = '';
   addProdRow();
   clearReceipt();
+  window.clearOrderProd();
+  window.RemEd.ord.load([]);
 
   document.getElementById('modal-order').classList.add('open');
 }
@@ -3606,6 +3942,17 @@ function editOrder(id) {
   } else {
     clearReceipt();
   }
+
+  if (o.foto_producto) {
+    document.getElementById('f-prod-base64').value = o.foto_producto;
+    document.getElementById('f-prod-img').src = o.foto_producto;
+    document.getElementById('f-prod-idle').style.display = 'none';
+    document.getElementById('f-prod-preview').style.display = 'block';
+    document.getElementById('f-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
+  } else {
+    window.clearOrderProd();
+  }
+  window.RemEd.ord.load(o.remarks);
 
   document.getElementById('modal-order').classList.add('open');
 }
@@ -3652,8 +3999,17 @@ function viewDetail(id) {
     ${o.comprobante ? `
       <div style="margin-top:14px">
         <div class="flabel">Comprobante Digital Adjunto:</div>
-        <img src="${o.comprobante}" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px">
+        <img src="${o.comprobante}" onclick="window.viewReceipt('pedido','${o.id}')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
+        <div style="margin-top:8px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-expand"></i> Ampliar / Descargar</button></div>
       </div>` : ''}
+
+    ${o.foto_producto ? `
+      <div style="margin-top:14px">
+        <div class="flabel">Foto del Producto / Prueba de Entrega:</div>
+        <img src="${o.foto_producto}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
+      </div>` : ''}
+
+    ${remDetailHTML('pedido', o)}
   </div>`;
 
   document.getElementById('det-body').innerHTML = html;
@@ -3750,19 +4106,15 @@ function renderQuickTags() {
 }
 
 // --- IMAGEN COMPROBANTE BASE64 ---
-function handleReceiptUpload(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    const fileName = input.files[0].name;
-    reader.onload = function(e) {
-      document.getElementById('f-receipt-base64').value = e.target.result;
-      document.getElementById('order-receipt-img').src = e.target.result;
-      document.getElementById('order-receipt-idle').style.display = 'none';
-      document.getElementById('order-receipt-preview').style.display = 'block';
-      document.getElementById('order-receipt-name').innerHTML = `<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
+async function handleReceiptUpload(input) {
+  if (!(input.files && input.files[0])) return;
+  const fileName = input.files[0].name;
+  const data = await readImageCompressed(input.files[0]);
+  document.getElementById('f-receipt-base64').value = data;
+  document.getElementById('order-receipt-img').src = data;
+  document.getElementById('order-receipt-idle').style.display = 'none';
+  document.getElementById('order-receipt-preview').style.display = 'block';
+  document.getElementById('order-receipt-name').innerHTML = `<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
 }
 
 function clearReceipt() {
@@ -4239,9 +4591,20 @@ async function fetchVentas() {
   const area = document.getElementById('vc-table-area');
   if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando ventas...</p></div>`;
   try {
-    const { data, error } = await supabase.from('ventas').select('*');
-    if (error) throw error;
-    currentVentas = (data || []).sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    // Supabase devuelve máx. 1000 filas por consulta: se pide por páginas
+    // (ordenadas) hasta traer TODAS las ventas, para que el historial nunca se corte.
+    const PAGE = 100;
+    let all = [];
+    for (let desde = 0; desde < 50000; desde += PAGE) {
+      const { data, error } = await supabase.from('ventas').select('*')
+        .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
+        .range(desde, desde + PAGE - 1);
+      if (error) throw error;
+      all = all.concat(data || []);
+      if (!data || data.length < PAGE) break;
+    }
+    currentVentas = all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
     renderVentas();
     updateVentasStats();
     updateStats(); // Refresh topbar total with ventas included
@@ -4411,14 +4774,21 @@ function renderVentas() {
   const area = document.getElementById('vc-table-area');
   const query = (document.getElementById('vc-search')?.value || '').toLowerCase();
   const tipoFilter = document.getElementById('vc-tipo-filter')?.value || '';
+  const remFilter = document.getElementById('vc-rem-filter')?.value || '';
   const from = document.getElementById('vc-date-from')?.value;
   const to = document.getElementById('vc-date-to')?.value;
   const isCEO = currentRole === 'CEO';
 
   let filtered = currentVentas.filter(v => {
-    if (from && v.created_at && v.created_at.substring(0,10) < from) return false;
-    if (to && v.created_at && v.created_at.substring(0,10) > to) return false;
+    const dia = vcLocalDay(v.created_at);
+    if (from && dia && dia < from) return false;
+    if (to && dia && dia > to) return false;
     if (tipoFilter && v.tipo !== tipoFilter) return false;
+    if (remFilter) {
+      const rr = Array.isArray(v.remarks) ? v.remarks : [];
+      if (remFilter === 'any' && !rr.length) return false;
+      if (remFilter === 'open' && !rr.some(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto)) return false;
+    }
     if (query) return (v.tipo||'').toLowerCase().includes(query) ||
                       (v.cliente||'').toLowerCase().includes(query) ||
                       (v.notas||'').toLowerCase().includes(query);
@@ -4426,9 +4796,11 @@ function renderVentas() {
   });
 
   updateVentasStats(filtered);
+  const countInfo = document.getElementById('vc-count-info');
+  if (countInfo) countInfo.textContent = `${filtered.length} de ${currentVentas.length} venta${currentVentas.length !== 1 ? 's' : ''}`;
 
   if (filtered.length === 0) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-coins"></i><p>No hay ventas registradas</p></div>`;
+    area.innerHTML = `<div class="empty"><i class="fas fa-coins"></i><p>${currentVentas.length ? 'Ninguna venta coincide con los filtros' : 'No hay ventas registradas'}</p></div>`;
     return;
   }
 
@@ -4446,9 +4818,11 @@ function renderVentas() {
     const recibidoVal = (v.monto_recibido !== undefined && v.monto_recibido !== null) ? parseFloat(v.monto_recibido) : ingresoVal;
     const gananciaVal = parseFloat(v.ganancia_neta) || 0;
     const margenV = ingresoVal > 0 ? ((gananciaVal/ingresoVal)*100) : 0;
+    const rems = Array.isArray(v.remarks) ? v.remarks : [];
+    const abiertos = rems.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length;
 
     let row = `<tr>
-      <td class="td-date">${v.created_at ? v.created_at.substring(0,16).replace('T',' ') : '—'}</td>
+      <td class="td-date">${vcLocalDateTime(v.created_at)}</td>
       <td><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
       <td class="td-money" style="color:var(--accent)">$${ingresoVal.toFixed(2)}</td>`;
@@ -4462,6 +4836,10 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
+          ${v.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
+          ${v.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('venta','${v.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+          ${remFlagBtn('venta', v)}
+          ${rvBtn('venta', v)}
           <button class="ibtn" onclick="window.editVenta('${v.id}')"><i class="fas fa-pen"></i></button>
           <button class="ibtn del" onclick="window.deleteVenta('${v.id}')"><i class="fas fa-trash-alt"></i></button>
         </div>
@@ -4516,6 +4894,8 @@ function openVentaModal() {
   if (apartarBlock) apartarBlock.style.display = 'none';
   // Reset comprobante
   window.vmClearReceipt();
+  window.vmClearProd();
+  vmRemarks = []; vmRemTipo = 'nota'; vmRenderRemarks();
   // Set current date/time
   const now = new Date();
   now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
@@ -4597,6 +4977,18 @@ window.editVenta = function(id) {
   } else {
     window.vmClearReceipt();
   }
+  if (v.foto_producto) {
+    document.getElementById('vc-f-prod-base64').value = v.foto_producto;
+    document.getElementById('vc-prod-img').src = v.foto_producto;
+    document.getElementById('vc-prod-idle').style.display = 'none';
+    document.getElementById('vc-prod-preview').style.display = 'block';
+    document.getElementById('vc-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
+  } else {
+    window.vmClearProd();
+  }
+  vmRemarks = Array.isArray(v.remarks) ? v.remarks.map(r => ({ ...r })) : [];
+  vmRemTipo = 'nota';
+  vmRenderRemarks();
   window.calcVentaMargen();
   window.vmUpdateTotal();
   document.getElementById('modal-venta').classList.add('open');
@@ -4735,19 +5127,15 @@ window.vmStreamingSelect = function(sel) {
   window.vmUpdateTotal();
 };
 
-window.handleVentaReceipt = function(input) {
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    const fileName = input.files[0].name;
-    reader.onload = function(e) {
-      document.getElementById('vc-f-receipt-base64').value = e.target.result;
-      document.getElementById('vc-receipt-img').src = e.target.result;
-      document.getElementById('vc-receipt-idle').style.display = 'none';
-      document.getElementById('vc-receipt-preview').style.display = 'block';
-      document.getElementById('vc-receipt-name').innerHTML = `<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
-    };
-    reader.readAsDataURL(input.files[0]);
-  }
+window.handleVentaReceipt = async function(input) {
+  if (!(input.files && input.files[0])) return;
+  const fileName = input.files[0].name;
+  const data = await readImageCompressed(input.files[0]);
+  document.getElementById('vc-f-receipt-base64').value = data;
+  document.getElementById('vc-receipt-img').src = data;
+  document.getElementById('vc-receipt-idle').style.display = 'none';
+  document.getElementById('vc-receipt-preview').style.display = 'block';
+  document.getElementById('vc-receipt-name').innerHTML = `<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
 };
 
 window.vmHandleDrop = function(event) {
@@ -4854,6 +5242,13 @@ window.saveVenta = async function() {
     fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value)          || null,
     created_at:          fechaISO
   };
+  if ((document.getElementById('vm-rem-text')?.value || '').trim()) window.vmAddRemark(); // no perder un remark sin "Agregar"
+  // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
+  // así guardar una venta normal sigue funcionando aunque falten las columnas.
+  const origVenta = window.editingVentaId ? currentVentas.find(x => String(x.id) === String(window.editingVentaId)) : null;
+  const fotoProd = document.getElementById('vc-f-prod-base64')?.value || '';
+  if (fotoProd || origVenta?.foto_producto) record.foto_producto = fotoProd || null;
+  if (vmRemarks.length || (Array.isArray(origVenta?.remarks) && origVenta.remarks.length)) record.remarks = vmRemarks;
   if (window.editingVentaId) record.id = window.editingVentaId;
 
   try {
@@ -4874,7 +5269,7 @@ window.saveVenta = async function() {
   } catch (err) {
     console.error('saveVenta error:', err);
     if (err?.message?.includes('column') || err?.code === '42703') {
-      showToast('Faltan columnas en Supabase — corre el SQL de actualización', true);
+      showToast('Faltan columnas en Supabase (remarks / foto_producto) — corre el SQL de actualización', true);
     } else {
       showToast('Error: ' + (err?.message || JSON.stringify(err)), true);
     }
@@ -4900,6 +5295,42 @@ async function deleteVenta(id) {
 function vcClearDates() {
   document.getElementById('vc-date-from').value = '';
   document.getElementById('vc-date-to').value = '';
+  const q = document.getElementById('vc-range-quick');
+  if (q) q.value = '';
+  renderVentas();
+}
+
+// Día local (YYYY-MM-DD) de un timestamp guardado en UTC
+function vcLocalDay(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d)) return String(iso).substring(0, 10);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// Fecha y hora local legible (YYYY-MM-DD HH:mm)
+function vcLocalDateTime(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (isNaN(d)) return String(iso).substring(0, 16).replace('T', ' ');
+  return `${vcLocalDay(iso)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// Conjunto de días (locales) que tienen al menos una venta — para marcar el calendario
+function vcDaysWithSales() {
+  const set = new Set();
+  currentVentas.forEach(v => { const d = vcLocalDay(v.created_at); if (d) set.add(d); });
+  return set;
+}
+
+// Rango rápido: llena Desde/Hasta con los últimos N días
+function vcQuickRange(days) {
+  if (!days) return;
+  const hoy = new Date();
+  const desde = new Date();
+  desde.setDate(hoy.getDate() - parseInt(days, 10));
+  document.getElementById('vc-date-from').value = vcLocalDay(desde.toISOString());
+  document.getElementById('vc-date-to').value = vcLocalDay(hoy.toISOString());
   renderVentas();
 }
 
@@ -5669,7 +6100,8 @@ window.openCal = function(inputId, mode) {
         now = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, 1);
       }
     } else {
-      const parsed = new Date(existing);
+      const dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(existing);
+      const parsed = dm ? new Date(+dm[1], +dm[2] - 1, +dm[3]) : new Date(existing);
       if (!isNaN(parsed)) now = parsed;
     }
   }
@@ -5688,7 +6120,7 @@ window.openCal = function(inputId, mode) {
   // Click outside to close
   setTimeout(() => {
     const handler = (e) => {
-      if (!popup.contains(e.target) && e.target.id !== inputId && !e.target.closest('.date-picker-input-row')) {
+      if (!e.composedPath().includes(popup) && e.target.id !== inputId && !e.target.closest('.date-picker-input-row')) {
         popup.classList.remove('open');
         document.removeEventListener('click', handler);
       }
@@ -5704,10 +6136,29 @@ function renderCalPopup(inputId) {
 
   if (s.mode === 'month') {
     renderMonthPicker(inputId, popup, s);
+  } else if (s.view === 'months') {
+    renderMonthJump(inputId, popup, s);
   } else {
     renderDayPicker(inputId, popup, s);
   }
 }
+
+// Vista rápida para saltar de mes/año dentro del selector de días
+function renderMonthJump(inputId, popup, s) {
+  const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  let html = `<div class="cal-header">
+    <button class="cal-nav" onclick="window.calNavYear('${inputId}',-1)"><i class="fas fa-chevron-left"></i></button>
+    <span class="cal-month-label" onclick="window.calSetView('${inputId}','days')">${s.year}</span>
+    <button class="cal-nav" onclick="window.calNavYear('${inputId}',1)"><i class="fas fa-chevron-right"></i></button>
+  </div><div class="cal-month-grid">`;
+  names.forEach((n, i) => {
+    html += `<div class="cal-month-item${i === s.month ? ' selected' : ''}" onclick="window.calJumpMonth('${inputId}',${i})">${n}</div>`;
+  });
+  html += `</div>`;
+  popup.innerHTML = html;
+}
+window.calSetView = function(id, v) { const s = calState[id]; if (!s) return; s.view = v; renderCalPopup(id); };
+window.calJumpMonth = function(id, m) { const s = calState[id]; if (!s) return; s.month = m; s.view = 'days'; renderCalPopup(id); };
 
 function renderMonthPicker(inputId, popup, s) {
   const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -5745,12 +6196,19 @@ function renderDayPicker(inputId, popup, s) {
   startDow = startDow === 0 ? 6 : startDow - 1; // Mon=0
 
   const monthName = firstDay.toLocaleString('es', { month: 'long' }).toUpperCase();
+  const salesDays = (inputId === 'vc-date-from' || inputId === 'vc-date-to') ? vcDaysWithSales() : null;
 
   let html = `
     <div class="cal-header">
-      <button class="cal-nav" onclick="window.calNav('${inputId}',-1)"><i class="fas fa-chevron-left"></i></button>
-      <span class="cal-month-label" onclick="window.calNavYear('${inputId}',0)">${monthName} ${s.year}</span>
-      <button class="cal-nav" onclick="window.calNav('${inputId}',1)"><i class="fas fa-chevron-right"></i></button>
+      <div style="display:flex">
+        <button class="cal-nav" title="Año anterior" onclick="window.calNavYear('${inputId}',-1)"><i class="fas fa-angles-left"></i></button>
+        <button class="cal-nav" title="Mes anterior" onclick="window.calNav('${inputId}',-1)"><i class="fas fa-chevron-left"></i></button>
+      </div>
+      <span class="cal-month-label" title="Elegir mes y año" onclick="window.calSetView('${inputId}','months')">${monthName} ${s.year} <i class="fas fa-caret-down" style="font-size:.8em;opacity:.6"></i></span>
+      <div style="display:flex">
+        <button class="cal-nav" title="Mes siguiente" onclick="window.calNav('${inputId}',1)"><i class="fas fa-chevron-right"></i></button>
+        <button class="cal-nav" title="Año siguiente" onclick="window.calNavYear('${inputId}',1)"><i class="fas fa-angles-right"></i></button>
+      </div>
     </div>
     <div class="cal-grid">
   `;
@@ -5767,12 +6225,17 @@ function renderDayPicker(inputId, popup, s) {
     const isToday = date.toDateString() === now.toDateString();
     const isSel = s.selected && date.toDateString() === s.selected.toDateString();
     let cls = 'cal-day';
+    if (salesDays && salesDays.has(`${s.year}-${String(s.month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`)) cls += ' has-sales';
     if (isToday) cls += ' today';
     if (isSel) cls += ' selected';
     html += `<div class="${cls}" onclick="window.calSelectDay('${inputId}',${day})">${day}</div>`;
   }
 
   html += `</div>`;
+
+  if (salesDays) {
+    html += `<div style="font-size:.62em;color:var(--text3);margin-top:8px"><span style="color:var(--gold)">●</span> día con ventas registradas</div>`;
+  }
 
   // Time picker for datetime mode
   if (s.mode === 'datetime') {
@@ -5877,7 +6340,11 @@ window.calConfirm = function(inputId) {
   document.getElementById(inputId).value = val;
   document.getElementById('cal-' + inputId).classList.remove('open');
   // Trigger dependent filters
-  if (inputId === 'vc-date-from' || inputId === 'vc-date-to') renderVentas();
+  if (inputId === 'vc-date-from' || inputId === 'vc-date-to') {
+    const q = document.getElementById('vc-range-quick');
+    if (q) q.value = '';
+    renderVentas();
+  }
 };
 
 // ═══════════════════════════════════════════════
@@ -5975,6 +6442,347 @@ window.deleteVenta = deleteVenta;
 window.saveVenta = saveVenta;
 window.parseVentaAutomatica = parseVentaAutomatica;
 window.vcClearDates = vcClearDates;
+window.vcQuickRange = vcQuickRange;
+
+// ── VISOR DE COMPROBANTES / FOTOS (abrir y descargar) ──
+let _imgViewerSrc = '', _imgViewerName = 'comprobante';
+
+function _srcToBlob(src) {
+  if (src.startsWith('data:')) {
+    const [head, b64] = src.split(',');
+    const mime = (head.match(/data:([^;]+)/) || [])[1] || 'image/png';
+    const bin = atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return Promise.resolve(new Blob([arr], { type: mime }));
+  }
+  return fetch(src).then(r => r.blob());
+}
+
+window.openImageViewer = function(src, name, title) {
+  if (!src) { showToast('No hay imagen adjunta', true); return; }
+  _imgViewerSrc = src;
+  _imgViewerName = name || 'comprobante';
+  document.getElementById('imgv-img').src = src;
+  document.getElementById('imgv-title').innerHTML = '<i class="fas fa-image" style="margin-right:8px"></i>' + (title || 'Comprobante');
+  document.getElementById('modal-imgviewer').classList.add('open');
+};
+
+window.closeImageViewer = function() {
+  document.getElementById('modal-imgviewer').classList.remove('open');
+  document.getElementById('imgv-img').src = '';
+};
+
+window.openImageNewTab = async function() {
+  try {
+    const blob = await _srcToBlob(_imgViewerSrc);
+    window.open(URL.createObjectURL(blob), '_blank');
+  } catch (e) { showToast('No se pudo abrir la imagen', true); }
+};
+
+window.downloadViewerImage = async function() {
+  try {
+    const blob = await _srcToBlob(_imgViewerSrc);
+    const ext = (blob.type.split('/')[1] || 'png').replace('jpeg', 'jpg').split('+')[0];
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = _imgViewerName + '.' + ext;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  } catch (e) { showToast('No se pudo descargar la imagen', true); }
+};
+
+// Abre el comprobante guardado de una venta o un pedido
+window.viewReceipt = function(kind, id, field) {
+  const key = field || 'comprobante';
+  const rec = kind === 'venta'
+    ? currentVentas.find(x => String(x.id) === String(id))
+    : currentOrders.find(x => String(x.id) === String(id));
+  if (!rec || !rec[key]) { showToast('Este registro no tiene esa imagen', true); return; }
+  const ref = rec.id_pedido || String(rec.id).slice(0, 8);
+  const esFoto = key === 'foto_producto';
+  window.openImageViewer(rec[key], (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
+};
+
+// Abre la imagen que se está cargando en el formulario (antes de guardar)
+window.viewFormReceipt = function(hiddenInputId, title) {
+  window.openImageViewer(document.getElementById(hiddenInputId)?.value, (title || 'comprobante').toLowerCase().replace(/\s+/g, '-'), title || 'Comprobante');
+};
+
+// Reduce el peso de las fotos (máx. 1600px, JPEG) antes de guardarlas
+function readImageCompressed(file, maxDim = 1600, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = e => {
+      const img = new Image();
+      img.onerror = () => resolve(e.target.result);
+      img.onload = () => {
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ── FOTO DEL PRODUCTO / PRUEBA DE ENTREGA ──
+window.handleVentaProd = async function(input) {
+  if (!(input.files && input.files[0])) return;
+  const fileName = input.files[0].name;
+  const data = await readImageCompressed(input.files[0]);
+  document.getElementById('vc-f-prod-base64').value = data;
+  document.getElementById('vc-prod-img').src = data;
+  document.getElementById('vc-prod-idle').style.display = 'none';
+  document.getElementById('vc-prod-preview').style.display = 'block';
+  document.getElementById('vc-prod-name').innerHTML = `<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
+};
+window.vmProdDrop = function(event) {
+  const f = event.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) window.handleVentaProd({ files: [f] });
+};
+window.vmClearProd = function() {
+  document.getElementById('vc-f-prod-base64').value = '';
+  document.getElementById('vc-prod-img').src = '';
+  document.getElementById('vc-prod-idle').style.display = 'flex';
+  document.getElementById('vc-prod-preview').style.display = 'none';
+  const fi = document.getElementById('vc-f-prod-file');
+  if (fi) fi.value = '';
+};
+
+// ── REMARKS / ACUERDOS IMPORTANTES ──
+const REM_TIPOS = {
+  credito:   { label: 'Crédito',         color: '#f97316', icon: 'fa-hand-holding-dollar', abierto: true },
+  promesa:   { label: 'Promesa',         color: '#a855f7', icon: 'fa-handshake',           abierto: true },
+  gratis:    { label: 'Regalo / Gratis', color: '#ec4899', icon: 'fa-gift',                abierto: false },
+  pendiente: { label: 'Pendiente',       color: '#ff4d6d', icon: 'fa-clock',               abierto: true },
+  nota:      { label: 'Nota',            color: '#5865F2', icon: 'fa-note-sticky',         abierto: false }
+};
+let vmRemarks = [];
+let vmRemTipo = 'nota';
+function remEsc(t) { return String(t).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c])); }
+
+function vmRenderRemarks() {
+  const chips = document.getElementById('vm-rem-chips');
+  const list = document.getElementById('vm-rem-list');
+  if (!chips || !list) return;
+  chips.innerHTML = Object.entries(REM_TIPOS).map(([k, c]) =>
+    `<button type="button" class="rem-chip${k === vmRemTipo ? ' active' : ''}" style="--c:${c.color}" onclick="window.vmSelectRemTipo('${k}')"><i class="fas ${c.icon}" style="margin-right:6px"></i>${c.label}</button>`).join('');
+  list.innerHTML = vmRemarks.map(r => {
+    const c = REM_TIPOS[r.tipo] || REM_TIPOS.nota;
+    return `<div class="rem-item${r.resuelto ? ' done' : ''}" style="--c:${c.color}">
+      <i class="fas ${c.icon}" style="color:${c.color};margin-top:3px"></i>
+      <div style="flex:1;min-width:0">
+        <div class="rem-tipo">${c.label}${r.resuelto ? ' · resuelto' : ''}</div>
+        <div class="rem-txt">${remEsc(r.texto)}</div>
+        <div class="rem-meta">${vcLocalDateTime(r.fecha)}${r.por ? ' · ' + remEsc(r.por) : ''}</div>
+      </div>
+      ${c.abierto ? `<button type="button" class="ibtn" title="${r.resuelto ? 'Reabrir' : 'Marcar como resuelto'}" onclick="window.vmToggleRemark('${r.id}')"><i class="fas ${r.resuelto ? 'fa-rotate-left' : 'fa-check'}"></i></button>` : ''}
+      <button type="button" class="ibtn del" title="Eliminar" onclick="window.vmDeleteRemark('${r.id}')"><i class="fas fa-trash-alt"></i></button>
+    </div>`;
+  }).join('');
+}
+window.vmSelectRemTipo = function(t) { vmRemTipo = t; vmRenderRemarks(); };
+window.vmAddRemark = function() {
+  const inp = document.getElementById('vm-rem-text');
+  const txt = (inp?.value || '').trim();
+  if (!txt) { showToast('Escribe el remark primero', true); return; }
+  vmRemarks.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tipo: vmRemTipo, texto: txt, fecha: new Date().toISOString(), por: sessionStorage.getItem('shegos_email') || '', resuelto: false });
+  inp.value = '';
+  vmRenderRemarks();
+};
+window.vmToggleRemark = function(id) {
+  const r = vmRemarks.find(x => x.id === id);
+  if (!r) return;
+  r.resuelto = !r.resuelto;
+  r.resuelto_en = r.resuelto ? new Date().toISOString() : null;
+  vmRenderRemarks();
+};
+window.vmDeleteRemark = function(id) { vmRemarks = vmRemarks.filter(x => x.id !== id); vmRenderRemarks(); };
+window.openVentaRemarks = function(id) { window.openRemarksModal('venta', id); };
+
+// ── Editor de remarks reutilizable (formulario de pedido y ventana rápida) ──
+let rqCtx = null;
+
+function makeRemEditor(p, onChange) {
+  const st = { items: [], tipo: 'nota' };
+  const $ = s => document.getElementById(p + '-' + s);
+  const mk = txt => ({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+    tipo: st.tipo, texto: txt, fecha: new Date().toISOString(),
+    por: sessionStorage.getItem('shegos_email') || '', resuelto: false
+  });
+  const api = {
+    load(arr) {
+      st.items = Array.isArray(arr) ? arr.map(r => ({ ...r })) : [];
+      st.tipo = 'nota';
+      const t = $('text'); if (t) t.value = '';
+      api.render();
+    },
+    get() { return st.items; },
+    setTipo(t) { st.tipo = t; api.render(); },
+    render() {
+      const chips = $('chips'), list = $('list');
+      if (!chips || !list) return;
+      chips.innerHTML = Object.entries(REM_TIPOS).map(([k, c]) =>
+        `<button type="button" class="rem-chip${k === st.tipo ? ' active' : ''}" style="--c:${c.color}" onclick="RemEd.${p}.setTipo('${k}')"><i class="fas ${c.icon}" style="margin-right:6px"></i>${c.label}</button>`).join('');
+      list.innerHTML = st.items.map(r => {
+        const c = REM_TIPOS[r.tipo] || REM_TIPOS.nota;
+        return `<div class="rem-item${r.resuelto ? ' done' : ''}" style="--c:${c.color}">
+          <i class="fas ${c.icon}" style="color:${c.color};margin-top:3px"></i>
+          <div style="flex:1;min-width:0">
+            <div class="rem-tipo">${c.label}${r.resuelto ? ' · resuelto' : ''}</div>
+            <div class="rem-txt">${remEsc(r.texto)}</div>
+            <div class="rem-meta">${vcLocalDateTime(r.fecha)}${r.por ? ' · ' + remEsc(r.por) : ''}</div>
+          </div>
+          ${c.abierto ? `<button type="button" class="ibtn" title="${r.resuelto ? 'Reabrir' : 'Marcar como resuelto'}" onclick="RemEd.${p}.toggle('${r.id}')"><i class="fas ${r.resuelto ? 'fa-rotate-left' : 'fa-check'}"></i></button>` : ''}
+          <button type="button" class="ibtn del" title="Eliminar" onclick="RemEd.${p}.del('${r.id}')"><i class="fas fa-trash-alt"></i></button>
+        </div>`;
+      }).join('');
+    },
+    // Aplica un cambio; si hay persistencia (ventana rápida) y falla, lo revierte
+    async commit(next) {
+      const prev = st.items;
+      st.items = next;
+      api.render();
+      if (onChange) {
+        const ok = await onChange(st.items);
+        if (!ok) { st.items = prev; api.render(); return false; }
+      }
+      return true;
+    },
+    async add() {
+      const inp = $('text');
+      const txt = (inp?.value || '').trim();
+      if (!txt) { showToast('Escribe el remark primero', true); return false; }
+      if (inp) inp.value = '';
+      const ok = await api.commit([...st.items, mk(txt)]);
+      if (!ok && inp) inp.value = txt;
+      return ok;
+    },
+    // Si quedó texto escrito sin pulsar "Agregar", lo incluye (solo formularios sin persistencia)
+    flush() {
+      const inp = $('text');
+      const txt = (inp?.value || '').trim();
+      if (!txt) return;
+      st.items = [...st.items, mk(txt)];
+      if (inp) inp.value = '';
+      api.render();
+    },
+    toggle(id) {
+      return api.commit(st.items.map(r => r.id === id
+        ? { ...r, resuelto: !r.resuelto, resuelto_en: !r.resuelto ? new Date().toISOString() : null }
+        : r));
+    },
+    del(id) { return api.commit(st.items.filter(r => r.id !== id)); }
+  };
+  return api;
+}
+
+// Guarda en Supabase los remarks de un registro ya existente (sin abrir el formulario completo)
+async function rqPersist(items) {
+  if (!rqCtx) return false;
+  const table = rqCtx.kind === 'venta' ? 'ventas' : 'pedidos';
+  const { error } = await supabase.from(table).update({ remarks: items }).eq('id', rqCtx.id);
+  if (error) {
+    console.error('remarks:', error);
+    const faltaCol = error.code === '42703' || error.code === 'PGRST204' || /column|schema cache/i.test(error.message || '');
+    showToast(faltaCol
+      ? 'Falta la columna remarks en Supabase — corre actualizacion-supabase.sql'
+      : 'No se pudo guardar el remark: ' + (error.message || 'error desconocido'), true);
+    return false;
+  }
+  const list = rqCtx.kind === 'venta' ? currentVentas : currentOrders;
+  const rec = list.find(x => String(x.id) === String(rqCtx.id));
+  if (rec) rec.remarks = items.map(r => ({ ...r }));
+  if (rqCtx.kind === 'venta') renderVentas(); else renderTable();
+  return true;
+}
+
+window.RemEd = { ord: makeRemEditor('ord'), rq: makeRemEditor('rq', rqPersist) };
+
+window.openRemarksModal = function(kind, id) {
+  const list = kind === 'venta' ? currentVentas : currentOrders;
+  const rec = list.find(x => String(x.id) === String(id));
+  if (!rec) { showToast('No se encontró el registro', true); return; }
+  rqCtx = { kind, id: rec.id };
+  const quien = kind === 'venta' ? (rec.cliente || 'Sin cliente') : (rec.nombre_cliente || 'Sin cliente');
+  const ref = kind === 'venta' ? 'Venta' : 'Pedido ' + (rec.id_pedido || '');
+  document.getElementById('rq-sub').innerHTML = `<strong style="color:var(--text)">${ref}</strong> de ${remEsc(quien)}`;
+  window.RemEd.rq.load(rec.remarks);
+  document.getElementById('modal-remarks').classList.add('open');
+  setTimeout(() => document.getElementById('rq-text')?.focus(), 150);
+};
+window.closeRemarksModal = function() {
+  document.getElementById('modal-remarks').classList.remove('open');
+  rqCtx = null;
+};
+
+// Botón de bandera para las filas de ventas y pedidos (siempre visible)
+function remFlagBtn(kind, rec) {
+  const rems = Array.isArray(rec.remarks) ? rec.remarks : [];
+  const abiertos = rems.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length;
+  const title = rems.length ? `${abiertos} abierto(s), ${rems.length} remark(s)` : 'Agregar remark';
+  const color = abiertos ? '#ff4d6d' : rems.length ? 'var(--text2)' : 'var(--text3)';
+  const border = abiertos ? 'rgba(255,77,109,.5)' : 'var(--border2)';
+  const badge = abiertos ? `<span style="position:absolute;top:-7px;right:-7px;background:#ff4d6d;color:#000;border-radius:10px;font-size:.7em;font-weight:800;padding:0 5px">${abiertos}</span>` : '';
+  return `<button class="ibtn" title="${title}" style="position:relative;color:${color};border-color:${border}" onclick="window.openRemarksModal('${kind}','${rec.id}')"><i class="${rems.length ? 'fas' : 'far'} fa-flag"></i>${badge}</button>`;
+}
+
+// Bloque de remarks (solo lectura) para el detalle de un pedido
+function remDetailHTML(kind, rec) {
+  const rems = Array.isArray(rec.remarks) ? rec.remarks : [];
+  const items = rems.map(r => {
+    const c = REM_TIPOS[r.tipo] || REM_TIPOS.nota;
+    return `<div class="rem-item${r.resuelto ? ' done' : ''}" style="--c:${c.color}">
+      <i class="fas ${c.icon}" style="color:${c.color};margin-top:3px"></i>
+      <div style="flex:1;min-width:0">
+        <div class="rem-tipo">${c.label}${r.resuelto ? ' · resuelto' : ''}</div>
+        <div class="rem-txt">${remEsc(r.texto)}</div>
+        <div class="rem-meta">${vcLocalDateTime(r.fecha)}${r.por ? ' · ' + remEsc(r.por) : ''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div style="margin-top:14px">
+    <div class="flabel" style="display:flex;align-items:center;justify-content:space-between">
+      <span><i class="fas fa-flag" style="margin-right:6px;color:#f97316"></i>Remarks</span>
+      <button class="btn btn-outline" style="padding:5px 12px;font-size:.68em" onclick="window.closeDetail();window.openRemarksModal('${kind}','${rec.id}')"><i class="fas fa-${rems.length ? 'pen' : 'plus'}"></i> ${rems.length ? 'Gestionar' : 'Agregar'}</button>
+    </div>
+    ${items || '<div style="font-size:.78em;color:var(--text3);margin-top:6px">Sin remarks</div>'}
+  </div>`;
+}
+
+// ── Foto del producto / prueba de entrega en pedidos ──
+window.handleOrderProd = async function(input) {
+  if (!(input.files && input.files[0])) return;
+  const fileName = input.files[0].name;
+  const data = await readImageCompressed(input.files[0]);
+  document.getElementById('f-prod-base64').value = data;
+  document.getElementById('f-prod-img').src = data;
+  document.getElementById('f-prod-idle').style.display = 'none';
+  document.getElementById('f-prod-preview').style.display = 'block';
+  document.getElementById('f-prod-name').innerHTML = `<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>${remEsc(fileName)}`;
+};
+window.orderProdDrop = function(event) {
+  const f = event.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) window.handleOrderProd({ files: [f] });
+};
+window.clearOrderProd = function() {
+  document.getElementById('f-prod-base64').value = '';
+  document.getElementById('f-prod-img').src = '';
+  document.getElementById('f-prod-idle').style.display = 'flex';
+  document.getElementById('f-prod-preview').style.display = 'none';
+  const fi = document.getElementById('f-prod-file');
+  if (fi) fi.value = '';
+};
 window.exportVentasCSV = exportVentasCSV;
 window.updateInterestPct = updateInterestPct;
 window.vmSelectTipo = window.vmSelectTipo;
@@ -6006,14 +6814,25 @@ async function fetchClientesFromDB() {
       .select('*')
       .order('updated_at', { ascending: false });
     if (error) throw error;
+    window._clientesLoadError = null;
     clientesCache = (data || []).map(c => ({
       id: c.id,
       nombre: c.nombre,
       wa: c.wa || '',
       metodo: c.metodo || '',
-      updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now()
+      updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now(),
+      resena: c.resena_estado || 'pendiente',
+      resenaSolicitadaEn: c.resena_solicitada_en || null,
+      resenaRecibidaEn: c.resena_recibida_en || null,
+      resenaVeces: c.resena_veces || 0,
+      calificacion: c.resena_calificacion || 0,
+      comentario: c.resena_comentario || '',
+      recompensa: c.recompensa_estado || 'ninguna'
     }));
+    // null = sin datos para saber; false = faltan las columnas de reseñas en Supabase
+    window._resenaColsOk = (data && data.length) ? ('resena_estado' in data[0]) : null;
   } catch (err) {
+    window._clientesLoadError = err?.message || String(err);
     console.error('No se pudieron cargar los clientes:', err?.message || err);
   }
   return clientesCache;
@@ -6054,11 +6873,14 @@ async function upsertCliente(nombre, wa, metodo) {
       }
     }
     await fetchClientesFromDB();
+    return true;
   } catch (err) {
+    window._clientesSaveError = err?.message || String(err);
     console.error('Error guardando cliente:', err?.message || err);
     if (typeof showToast === 'function') {
       showToast('No se pudo guardar el cliente automáticamente: ' + (err?.message || 'error desconocido'), true);
     }
+    return false;
   }
 }
 
@@ -6156,31 +6978,65 @@ window.saveVenta = async function() {
 // ═══════════════════════════════════════════════
 // RENDER TAB CLIENTES
 // ═══════════════════════════════════════════════
-window.renderClientesTab = async function() {
+window.renderClientesTab = async function(mode) {
   const area = document.getElementById('cli-table-area');
   const badge = document.getElementById('cli-count-badge');
   if (!area) return;
 
-  area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando clientes...</p></div>`;
-  await fetchClientesFromDB();
+  // mode === 'local' repinta con lo que ya está en memoria (sin volver a pedirlo a Supabase)
+  if (mode !== 'local') {
+    area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando clientes...</p></div>`;
+    await fetchClientesFromDB();
+  }
+
+  if (window._clientesLoadError) {
+    area.innerHTML = `<div class="empty"><i class="fas fa-cloud-slash" style="color:var(--red)"></i><p style="color:var(--red)">No se pudo leer la tabla clientes</p><p style="font-size:0.75em;color:var(--text3);margin-top:8px">${window._clientesLoadError}</p></div>`;
+    return;
+  }
+
+  const all = getClientes();
+  rvRenderPanel(all);
 
   const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
-  let clientes = getClientes();
+  const rvF = document.getElementById('cli-rv-filter')?.value || '';
+  let clientes = all;
   if (query) {
     clientes = clientes.filter(c =>
       c.nombre.toLowerCase().includes(query) ||
       (c.wa || '').includes(query)
     );
   }
+  if (rvF) {
+    clientes = clientes.filter(c => rvF === 'premio' ? c.recompensa === 'ganada' : c.resena === rvF);
+  }
 
   if (badge) badge.textContent = `${clientes.length} cliente${clientes.length !== 1 ? 's' : ''}`;
 
   if (!clientes.length) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-users"></i><p>${query ? 'Sin resultados para tu búsqueda' : 'Aún no hay clientes guardados. Agrega uno con el botón de arriba.'}</p></div>`;
+    const msg = (query || rvF) ? 'Ningún cliente coincide con estos filtros' : 'Aún no hay clientes guardados. Agrega uno con el botón de arriba.';
+    area.innerHTML = `<div class="empty"><i class="fas fa-users"></i><p>${msg}</p></div>`;
     return;
   }
 
   const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
+
+  const resenaCell = c => {
+    const st = RV_ESTADOS[c.resena] || RV_ESTADOS.pendiente;
+    let h = `<span class="badge ${st.cls}" style="font-size:0.65em">${st.label}</span>`;
+    if (c.resena === 'recibida') {
+      h += `<div style="margin-top:5px" title="${rvEsc(c.comentario)}">${rvStarsHTML(c.calificacion)}</div>`;
+      if (c.comentario) h += `<div class="rv-sub" style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">“${rvEsc(c.comentario)}”</div>`;
+    } else if (c.resena === 'solicitada') {
+      h += `<div class="rv-sub">Pedida el ${rvFecha(c.resenaSolicitadaEn) || '—'}${c.resenaVeces > 1 ? ` (${c.resenaVeces} veces)` : ''}</div>`;
+    }
+    return h;
+  };
+
+  const premioCell = c => {
+    if (c.recompensa === 'ganada') return `<span class="badge b-rv-gift" style="font-size:0.65em"><i class="fas fa-gift" style="margin-right:5px"></i>Por entregar</span>`;
+    if (c.recompensa === 'entregada') return `<span class="badge b-done" style="font-size:0.65em"><i class="fas fa-check" style="margin-right:5px"></i>Entregada</span>`;
+    return `<span style="color:var(--text3);font-size:0.78em">—</span>`;
+  };
 
   area.innerHTML = `
     <div class="table-wrap">
@@ -6191,6 +7047,8 @@ window.renderClientesTab = async function() {
             <th>Nombre</th>
             <th>WhatsApp</th>
             <th>Método Preferido</th>
+            <th>Reseña</th>
+            <th>Recompensa</th>
             <th>Último Registro</th>
             <th>Acciones</th>
           </tr>
@@ -6213,11 +7071,18 @@ window.renderClientesTab = async function() {
                   ? `<span class="badge b-proc" style="font-size:0.65em">${METODO_LABELS[c.metodo] || c.metodo}</span>`
                   : `<span style="color:var(--text3);font-size:0.78em">—</span>`}
               </td>
+              <td data-label="Reseña">${resenaCell(c)}</td>
+              <td data-label="Recompensa">${premioCell(c)}</td>
               <td class="td-date" data-label="Actualizado">
                 ${c.updated ? new Date(c.updated).toLocaleDateString('es-MX', {day:'2-digit',month:'short',year:'numeric'}) : '—'}
               </td>
               <td data-label="Acciones">
                 <div class="td-act">
+                  ${c.wa && c.resena !== 'recibida' ? `<button class="ibtn" title="${c.resena === 'solicitada' ? 'Volver a pedir reseña' : 'Pedir reseña por WhatsApp'}" style="color:#25D366;border-color:rgba(37,211,102,.4)" onclick="window.pedirResenaA('${c.id}')"><i class="fab fa-whatsapp"></i></button>` : ''}
+                  <button class="ibtn" title="${c.resena === 'recibida' ? 'Editar reseña' : 'Registrar reseña recibida'}" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.openResenaModal('${c.id}')">
+                    <i class="${c.resena === 'recibida' ? 'fas' : 'far'} fa-star"></i>
+                  </button>
+                  ${c.recompensa === 'ganada' ? `<button class="ibtn" title="Marcar recompensa como entregada" style="color:#ec4899;border-color:rgba(236,72,153,.4)" onclick="window.entregarRecompensa('${c.id}')"><i class="fas fa-gift"></i></button>` : ''}
                   <button class="ibtn" title="Editar cliente" onclick="window.editClienteModal('${c.id}')">
                     <i class="fas fa-pen"></i>
                   </button>
@@ -6269,13 +7134,19 @@ window.exportClientesCSV = function() {
   const clientes = getClientes();
   if (!clientes.length) { showToast('No hay clientes para exportar', true); return; }
   const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
-  const rows = [['Nombre','WhatsApp','Método de Pago','Último Registro']];
+  const RV_LABEL = { pendiente: 'Sin pedir', solicitada: 'Pedida', recibida: 'Recibida' };
+  const PREMIO_LABEL = { ninguna: '', ganada: 'Por entregar', entregada: 'Entregada' };
+  const rows = [['Nombre','WhatsApp','Método de Pago','Último Registro','Reseña','Calificación','Comentario','Recompensa']];
   clientes.forEach(c => {
     rows.push([
       c.nombre,
       c.wa || '',
       METODO_LABELS[c.metodo] || c.metodo || '',
-      c.updated ? new Date(c.updated).toLocaleDateString('es-MX') : ''
+      c.updated ? new Date(c.updated).toLocaleDateString('es-MX') : '',
+      RV_LABEL[c.resena] || '',
+      c.calificacion || '',
+      c.comentario || '',
+      PREMIO_LABEL[c.recompensa] || ''
     ]);
   });
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -6287,19 +7158,126 @@ window.exportClientesCSV = function() {
 };
 
 // ═══════════════════════════════════════════════
-// FEEDBACK WHATSAPP
+// RESEÑAS Y RECOMPENSAS (pedir por WhatsApp)
 // ═══════════════════════════════════════════════
-const FB_DEFAULT_MSG = `No haz enviado tu referencia, Porfavor deja tu feedback!\nhttps://discord.gg/jyDF3QgDXG`;
+const FB_DEFAULT_MSG = `¡Hola {nombre}! 👋 Gracias por comprar en Shegos Store.\nNos encantaría tu reseña: te toma un minuto y todos los clientes que la dejan recibirán una recompensa próximamente 🎁\nDéjala aquí: https://discord.gg/jyDF3QgDXG`;
 
-let fbSelectedWA = new Set();
+const RV_ESTADOS = {
+  pendiente:  { label: 'Sin pedir', cls: 'b-rv-none' },
+  solicitada: { label: 'Pedida',    cls: 'b-pend' },
+  recibida:   { label: 'Recibida',  cls: 'b-done' }
+};
+
+function rvEsc(t) { return remEsc(t == null ? '' : t); }
+function rvStarsHTML(n) {
+  n = Math.max(0, Math.min(5, parseInt(n) || 0));
+  return `<span class="rv-stars">${'★'.repeat(n)}<span class="off">${'★'.repeat(5 - n)}</span></span>`;
+}
+function rvFecha(iso) { return iso ? new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }) : ''; }
+function rvFirstName(n) { return String(n || '').trim().split(/\s+/)[0] || 'amigo'; }
+function rvMsgFor(c, tpl) { return (tpl || FB_DEFAULT_MSG).replace(/\{nombre\}/gi, rvFirstName(c && c.nombre)); }
+function rvWaUrl(c, tpl) { return `https://wa.me/${String(c.wa).replace(/\D/g, '')}?text=${encodeURIComponent(rvMsgFor(c, tpl))}`; }
+function rvColsMissing(err) { return !!err && (err.code === '42703' || err.code === 'PGRST204' || /column|schema cache/i.test(err.message || '')); }
+
+async function rvUpdate(id, patch, silent) {
+  const { error } = await supabase.from('clientes').update(patch).eq('id', id);
+  if (error) {
+    console.error('Reseñas:', error);
+    if (!silent) showToast(rvColsMissing(error)
+      ? 'Faltan columnas de reseñas en Supabase — corre actualizacion-supabase.sql'
+      : 'Error: ' + (error.message || 'no se pudo guardar'), true);
+    return false;
+  }
+  return true;
+}
+
+// Marca al cliente como "reseña pedida" (no pisa a quien ya la dejó)
+async function rvMarkAsked(c, silent) {
+  if (!c || c.resena === 'recibida') return true;
+  return rvUpdate(c.id, {
+    resena_estado: 'solicitada',
+    resena_solicitada_en: new Date().toISOString(),
+    resena_veces: (c.resenaVeces || 0) + 1
+  }, silent);
+}
+
+function rvFindCliente(nombre, wa) {
+  let list = [];
+  try { list = clientesCache; } catch (e) { list = []; }
+  const n = String(nombre || '').trim().toLowerCase();
+  const d = String(wa || '').replace(/\D/g, '');
+  return list.find(c => n && c.nombre.toLowerCase() === n)
+      || (d ? list.find(c => c.wa && c.wa.replace(/\D/g, '') === d) : null)
+      || null;
+}
+
+// Botón de estrella en las filas de pedidos y ventas: pedir reseña en el momento
+function rvBtn(kind, rec) {
+  const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
+  const wa = kind === 'venta' ? rec.whatsapp : rec.telefono_cliente;
+  if (!wa) return '';
+  const c = rvFindCliente(nombre, wa);
+  const done = !!c && c.resena === 'recibida';
+  const asked = !!c && c.resena === 'solicitada';
+  const title = done ? 'Ya dejó su reseña' : asked ? 'Reseña pedida, volver a pedir' : 'Pedir reseña por WhatsApp';
+  const color = done ? 'var(--gold)' : '#25D366';
+  const border = done ? 'rgba(255,215,0,.4)' : 'rgba(37,211,102,.4)';
+  return `<button class="ibtn" title="${title}" style="color:${color};border-color:${border}" onclick="window.pedirResenaDeRegistro('${kind}','${rec.id}')"><i class="${done || asked ? 'fas' : 'far'} fa-star"></i></button>`;
+}
+
+window.pedirResenaDeRegistro = async function(kind, id) {
+  const rec = (kind === 'venta' ? currentVentas : currentOrders).find(x => String(x.id) === String(id));
+  if (!rec) return;
+  const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
+  const wa = kind === 'venta' ? rec.whatsapp : rec.telefono_cliente;
+  if (!wa) { showToast('Este registro no tiene WhatsApp', true); return; }
+  const c = rvFindCliente(nombre, wa);
+  if (c && c.resena === 'recibida') { showToast(`${c.nombre} ya dejó su reseña ✓`); return; }
+  window.open(rvWaUrl(c || { nombre, wa }), '_blank');
+  if (c && await rvMarkAsked(c)) {
+    await fetchClientesFromDB();
+    renderTable(); renderVentas();
+    window.renderClientesTab('local');
+  }
+};
+
+window.pedirResenaA = async function(id) {
+  const c = getClientes().find(x => String(x.id) === String(id));
+  if (!c) return;
+  if (!c.wa) { showToast('Este cliente no tiene WhatsApp', true); return; }
+  const modalOpen = document.getElementById('modal-feedback').classList.contains('open');
+  const tplEl = document.getElementById('fb-msg-text');
+  const tpl = modalOpen && tplEl && tplEl.value.trim() ? tplEl.value.trim() : FB_DEFAULT_MSG;
+  window.open(rvWaUrl(c, tpl), '_blank');
+  fbSelected.delete(String(c.id));
+  if (c.resena !== 'recibida' && await rvMarkAsked(c)) {
+    await fetchClientesFromDB();
+    window.renderClientesTab('local');
+    renderTable(); renderVentas();
+  }
+  if (modalOpen) window.fbRenderClientsList();
+};
+
+// ── Modal "Pedir reseñas" (envío a varios clientes) ──
+let fbFilter = 'abiertas';
+let fbSelected = new Set();
+
+function fbCandidates(f) {
+  const filtro = f || fbFilter;
+  return getClientes().filter(c => c.wa && c.wa.trim()).filter(c => {
+    if (filtro === 'todos') return true;
+    if (filtro === 'pendiente') return c.resena === 'pendiente';
+    if (filtro === 'solicitada') return c.resena === 'solicitada';
+    return c.resena !== 'recibida';
+  });
+}
 
 window.openFeedbackModal = function() {
-  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
+  fbFilter = 'abiertas';
   document.getElementById('fb-msg-text').value = FB_DEFAULT_MSG;
-  window.fbUpdatePreview();
-  fbSelectedWA = new Set(clientes.map(c => c.wa.trim()));
+  fbSelected = new Set(fbCandidates().map(c => String(c.id)));
+  document.getElementById('fb-no-wa').style.display = getClientes().some(c => !(c.wa && c.wa.trim())) ? 'block' : 'none';
   window.fbRenderClientsList();
-  document.getElementById('fb-no-wa').style.display = clientes.length === 0 ? 'block' : 'none';
   document.getElementById('modal-feedback').classList.add('open');
 };
 
@@ -6307,93 +7285,222 @@ window.closeFeedbackModal = function() {
   document.getElementById('modal-feedback').classList.remove('open');
 };
 
+window.fbSetFilter = function(f) {
+  fbFilter = f;
+  fbSelected = new Set(fbCandidates().map(c => String(c.id)));
+  window.fbRenderClientsList();
+};
+
 window.fbUpdatePreview = function() {
-  const txt = document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG;
-  document.getElementById('fb-msg-preview').textContent = txt;
+  const tpl = document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG;
+  const first = fbCandidates().find(c => fbSelected.has(String(c.id)));
+  document.getElementById('fb-msg-preview').textContent = rvMsgFor(first || { nombre: 'Cliente' }, tpl);
 };
 
 window.fbRenderClientsList = function() {
-  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
+  const clientes = fbCandidates();
   const list = document.getElementById('fb-clients-list');
-  const countEl = document.getElementById('fb-sel-count');
+  const chipsEl = document.getElementById('fb-filter-chips');
+
+  if (chipsEl) {
+    const defs = [
+      ['abiertas',   'Sin reseña',            '#25D366'],
+      ['pendiente',  'Nunca pedida',          '#888888'],
+      ['solicitada', 'Pedida, sin respuesta', '#ffd700'],
+      ['todos',      'Todos',                 '#5865F2']
+    ];
+    chipsEl.innerHTML = defs.map(([k, label, color]) =>
+      `<button type="button" class="rem-chip${k === fbFilter ? ' active' : ''}" style="--c:${color}" onclick="window.fbSetFilter('${k}')">${label} (${fbCandidates(k).length})</button>`).join('');
+  }
 
   if (!clientes.length) {
-    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);font-size:0.82em"><i class="fas fa-user-slash" style="font-size:1.5em;display:block;margin-bottom:8px"></i>Ningún cliente tiene WhatsApp registrado</div>`;
-    if (countEl) countEl.textContent = '';
+    list.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text3);font-size:0.82em"><i class="fas fa-user-slash" style="font-size:1.5em;display:block;margin-bottom:8px"></i>Ningún cliente con WhatsApp coincide con este filtro</div>`;
+    window.fbUpdateSelCount();
+    window.fbUpdatePreview();
     return;
   }
 
   list.innerHTML = clientes.map((c, i) => {
-    const selected = fbSelectedWA.has(c.wa.trim());
+    const selected = fbSelected.has(String(c.id));
+    const st = RV_ESTADOS[c.resena] || RV_ESTADOS.pendiente;
     return `
-      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s${i===clientes.length-1?';border-bottom:none':''}"
-        onclick="window.fbToggleClient('${c.wa.trim().replace(/'/g,"\\'")}')">
-        <div style="width:20px;height:20px;border-radius:5px;border:2px solid ${selected?'#25D366':'var(--border2)'};background:${selected?'#25D366':'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s">
+      <div style="display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;transition:background .15s;${i === clientes.length - 1 ? '' : 'border-bottom:1px solid var(--border)'}"
+        onclick="window.fbToggleClient('${c.id}')">
+        <div style="width:20px;height:20px;border-radius:5px;border:2px solid ${selected ? '#25D366' : 'var(--border2)'};background:${selected ? '#25D366' : 'transparent'};display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s">
           ${selected ? '<i class="fas fa-check" style="color:#000;font-size:0.6em"></i>' : ''}
         </div>
         <div style="flex:1;min-width:0">
           <div style="font-weight:600;font-size:0.85em;color:var(--text)">${c.nombre}</div>
           <div style="font-size:0.75em;color:#25D366"><i class="fab fa-whatsapp" style="margin-right:4px"></i>${c.wa}</div>
         </div>
-        <a href="https://wa.me/${c.wa.replace(/\D/g,'')}" target="_blank" onclick="event.stopPropagation()"
-          style="font-size:0.7em;color:var(--text3);text-decoration:none;padding:4px 8px;border:1px solid var(--border2);border-radius:4px;transition:all .2s;white-space:nowrap"
-          onmouseover="this.style.borderColor='#25D366';this.style.color='#25D366'"
-          onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text3)'">
-          <i class="fas fa-external-link-alt"></i>
-        </a>
+        <span class="badge ${st.cls}" style="font-size:0.6em">${st.label}${c.resenaVeces > 1 ? ' x' + c.resenaVeces : ''}</span>
+        <button type="button" class="ibtn" title="Enviar solo a este cliente" style="color:#25D366;border-color:rgba(37,211,102,.4)"
+          onclick="event.stopPropagation();window.pedirResenaA('${c.id}')"><i class="fab fa-whatsapp"></i></button>
       </div>`;
   }).join('');
 
   window.fbUpdateSelCount();
+  window.fbUpdatePreview();
 };
 
-window.fbToggleClient = function(wa) {
-  if (fbSelectedWA.has(wa)) fbSelectedWA.delete(wa);
-  else fbSelectedWA.add(wa);
+window.fbToggleClient = function(id) {
+  id = String(id);
+  if (fbSelected.has(id)) fbSelected.delete(id); else fbSelected.add(id);
   window.fbRenderClientsList();
 };
 
 window.fbSelectAll = function() {
-  const clientes = getClientes().filter(c => c.wa && c.wa.trim());
-  fbSelectedWA = new Set(clientes.map(c => c.wa.trim()));
+  fbSelected = new Set(fbCandidates().map(c => String(c.id)));
   window.fbRenderClientsList();
 };
 
 window.fbDeselectAll = function() {
-  fbSelectedWA = new Set();
+  fbSelected = new Set();
   window.fbRenderClientsList();
 };
 
 window.fbUpdateSelCount = function() {
   const countEl = document.getElementById('fb-sel-count');
-  if (countEl) countEl.textContent = `${fbSelectedWA.size} seleccionado${fbSelectedWA.size !== 1 ? 's' : ''}`;
+  const visibles = fbCandidates().filter(c => fbSelected.has(String(c.id))).length;
+  if (countEl) countEl.textContent = `${visibles} seleccionado${visibles !== 1 ? 's' : ''}`;
 };
 
-window.sendFeedbackMessages = function() {
-  const msg = (document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG).trim();
-  const selected = Array.from(fbSelectedWA);
+window.sendFeedbackMessages = async function() {
+  const tpl = (document.getElementById('fb-msg-text').value || FB_DEFAULT_MSG).trim();
+  const chosen = fbCandidates().filter(c => fbSelected.has(String(c.id)));
+  if (!chosen.length) { showToast('Selecciona al menos un cliente', true); return; }
 
-  if (!selected.length) {
-    showToast('Selecciona al menos un cliente', true);
-    return;
-  }
-
-  // Número fijo desde el cual siempre se envía el mensaje
-  const SENDER_NUMBER = '18299847680';
-  const encoded = encodeURIComponent(msg);
-  let delay = 0;
-
-  selected.forEach(wa => {
-    const clean = wa.replace(/\D/g, '');
-    setTimeout(() => {
-      // Abre el chat hacia el cliente, enviando desde el número fijo de la tienda
-      window.open(`https://wa.me/${clean}?text=${encoded}&phone=${SENDER_NUMBER}`, '_blank');
-    }, delay);
-    delay += 700;
+  // El primero se abre al instante (el navegador lo permite); el resto escalonado
+  chosen.forEach((c, i) => {
+    const abrir = () => window.open(rvWaUrl(c, tpl), '_blank');
+    if (i === 0) abrir(); else setTimeout(abrir, i * 700);
   });
-
   window.closeFeedbackModal();
-  showToast(`Abriendo WhatsApp para ${selected.length} cliente${selected.length !== 1 ? 's' : ''} ✓`);
+  showToast(`Abriendo WhatsApp para ${chosen.length} cliente${chosen.length !== 1 ? 's' : ''} ✓`);
+
+  const res = await Promise.all(chosen.map(c => rvMarkAsked(c, true)));
+  if (res.some(ok => !ok)) {
+    showToast('Se abrieron los chats, pero no se pudo marcar como "pedida". Corre actualizacion-supabase.sql', true);
+  }
+  await fetchClientesFromDB();
+  window.renderClientesTab('local');
+  renderTable(); renderVentas();
+};
+
+// ── Panel, reseña recibida y recompensas ──
+function rvRenderPanel(all) {
+  const wrap = document.getElementById('cli-rv-wrap');
+  if (!wrap) return;
+  const rec = all.filter(c => c.resena === 'recibida');
+  const avg = rec.length ? rec.reduce((s, c) => s + (c.calificacion || 0), 0) / rec.length : 0;
+  const pendientes = all.filter(c => c.resena === 'pendiente').length;
+  const esperando = all.filter(c => c.resena === 'solicitada').length;
+  const premios = all.filter(c => c.recompensa === 'ganada').length;
+  const entregadas = all.filter(c => c.recompensa === 'entregada').length;
+  const pct = all.length ? Math.round((rec.length / all.length) * 100) : 0;
+
+  const banner = window._resenaColsOk === false
+    ? `<div class="rv-banner"><i class="fas fa-triangle-exclamation"></i><div><strong style="color:#ff9f0a">Falta activar el seguimiento de reseñas.</strong> Corre <code>actualizacion-supabase.sql</code> en el SQL Editor de Supabase para guardar quién ya dejó su reseña y qué recompensas faltan por entregar.</div></div>`
+    : '';
+  const card = (label, value, sub, color, filtro) =>
+    `<div class="stat-card" style="--accent-c:${color}" onclick="window.cliRvFilter('${filtro}')">
+      <div class="stat-label">${label}</div>
+      <div class="stat-value" style="color:${color}">${value}</div>
+      <div class="stat-sub">${sub}</div>
+    </div>`;
+
+  wrap.innerHTML = banner + `<div class="stats-row" style="margin-bottom:24px">`
+    + card('Clientes', all.length, `${pct}% ya dejó reseña`, 'var(--blue)', '')
+    + card('Reseñas recibidas', rec.length, rec.length ? `Promedio ${avg.toFixed(1)} de 5` : 'Aún ninguna', 'var(--accent)', 'recibida')
+    + card('Sin pedir', pendientes, 'Nunca se les ha preguntado', '#888888', 'pendiente')
+    + card('Esperando respuesta', esperando, 'Ya se les pidió', 'var(--gold)', 'solicitada')
+    + card('Recompensas por entregar', premios, `${entregadas} ya entregada${entregadas !== 1 ? 's' : ''}`, '#ec4899', 'premio')
+    + `</div>`;
+}
+
+window.cliRvFilter = function(f) {
+  const sel = document.getElementById('cli-rv-filter');
+  if (sel) sel.value = f;
+  window.renderClientesTab('local');
+};
+
+let rvEditId = null;
+let rvStarVal = 0;
+
+function rvRenderStars() {
+  const box = document.getElementById('rv-stars');
+  if (!box) return;
+  box.innerHTML = [1, 2, 3, 4, 5].map(n =>
+    `<button type="button" class="${n <= rvStarVal ? 'on' : ''}" title="${n} de 5" onclick="window.rvSetStars(${n})">★</button>`).join('');
+}
+window.rvSetStars = function(n) { rvStarVal = n; rvRenderStars(); };
+
+window.openResenaModal = function(id) {
+  const c = getClientes().find(x => String(x.id) === String(id));
+  if (!c) return;
+  rvEditId = c.id;
+  rvStarVal = c.resena === 'recibida' ? (c.calificacion || 0) : 0;
+  document.getElementById('rv-cliente').textContent = c.nombre;
+  document.getElementById('rv-comentario').value = c.resena === 'recibida' ? (c.comentario || '') : '';
+  document.getElementById('rv-quitar').style.display = c.resena === 'recibida' ? 'inline-flex' : 'none';
+  rvRenderStars();
+  document.getElementById('modal-resena').classList.add('open');
+};
+window.closeResenaModal = function() {
+  document.getElementById('modal-resena').classList.remove('open');
+  rvEditId = null;
+};
+
+async function rvRefreshAll() {
+  await fetchClientesFromDB();
+  window.renderClientesTab('local');
+  renderTable(); renderVentas();
+}
+
+window.saveResena = async function() {
+  const c = getClientes().find(x => String(x.id) === String(rvEditId));
+  if (!c) return;
+  if (!rvStarVal) { showToast('Elige la calificación (1 a 5 estrellas)', true); return; }
+  const patch = {
+    resena_estado: 'recibida',
+    resena_recibida_en: c.resena === 'recibida' && c.resenaRecibidaEn ? c.resenaRecibidaEn : new Date().toISOString(),
+    resena_calificacion: rvStarVal,
+    resena_comentario: document.getElementById('rv-comentario').value.trim() || null,
+    recompensa_estado: c.recompensa === 'entregada' ? 'entregada' : 'ganada'
+  };
+  if (await rvUpdate(c.id, patch)) {
+    window.closeResenaModal();
+    await rvRefreshAll();
+    showToast(c.recompensa === 'entregada' ? 'Reseña actualizada ✓' : 'Reseña guardada, recompensa por entregar ✓');
+  }
+};
+
+window.quitarResena = async function() {
+  const c = getClientes().find(x => String(x.id) === String(rvEditId));
+  if (!c) return;
+  const aviso = c.recompensa === 'entregada' ? ' Su recompensa ya estaba entregada.' : '';
+  if (!confirm(`¿Quitar la reseña de "${c.nombre}"?${aviso}`)) return;
+  const patch = {
+    resena_estado: (c.resenaVeces || 0) > 0 ? 'solicitada' : 'pendiente',
+    resena_recibida_en: null,
+    resena_calificacion: null,
+    resena_comentario: null,
+    recompensa_estado: 'ninguna'
+  };
+  if (await rvUpdate(c.id, patch)) {
+    window.closeResenaModal();
+    await rvRefreshAll();
+    showToast('Reseña quitada');
+  }
+};
+
+window.entregarRecompensa = async function(id) {
+  const c = getClientes().find(x => String(x.id) === String(id));
+  if (!c) return;
+  if (await rvUpdate(c.id, { recompensa_estado: 'entregada' })) {
+    await rvRefreshAll();
+    showToast(`Recompensa de ${c.nombre} entregada ✓`);
+  }
 };
 
 
@@ -6436,7 +7543,8 @@ window.saveAddCliente = async function() {
       if (error) throw error;
       await fetchClientesFromDB();
     } else {
-      await upsertCliente(nombre, wa, metodo);
+      const ok = await upsertCliente(nombre, wa, metodo);
+      if (!ok) throw new Error(window._clientesSaveError || 'no se pudo guardar');
     }
   } catch (err) {
     msg.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
@@ -6747,7 +7855,7 @@ window.resetWallpaper = function() {
 <div class="overlay" id="modal-feedback">
   <div class="mcard" style="max-width:540px">
     <div class="mhead">
-      <div class="mtitle" style="color:#25D366"><i class="fab fa-whatsapp" style="margin-right:8px"></i>Pedir Feedback</div>
+      <div class="mtitle" style="color:#25D366"><i class="fab fa-whatsapp" style="margin-right:8px"></i>Pedir reseñas</div>
       <button class="mclose" onclick="window.closeFeedbackModal()"><i class="fas fa-times"></i></button>
     </div>
     <div class="mbody">
@@ -6760,7 +7868,7 @@ window.resetWallpaper = function() {
 
       <!-- Editar mensaje -->
       <div class="fgroup">
-        <label class="flabel">Personalizar mensaje <span style="color:var(--text3);font-size:.85em">(opcional)</span></label>
+        <label class="flabel">Personalizar mensaje <span style="color:var(--text3);font-size:.85em">(usa {nombre} para poner el nombre de cada cliente)</span></label>
         <textarea class="ftarea" id="fb-msg-text" style="min-height:80px" oninput="window.fbUpdatePreview()"></textarea>
       </div>
 
@@ -6770,6 +7878,9 @@ window.resetWallpaper = function() {
         <span style="font-size:0.7em;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:600">Seleccionar destinatarios</span>
         <div style="flex:1;height:1px;background:var(--border)"></div>
       </div>
+
+      <!-- Filtro por estado de reseña -->
+      <div class="rem-chips" id="fb-filter-chips" style="margin-bottom:12px"></div>
 
       <!-- Acciones rápidas de selección -->
       <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
@@ -6791,7 +7902,7 @@ window.resetWallpaper = function() {
     </div>
     <div class="mfoot" style="flex-direction:column;gap:10px;align-items:stretch">
       <div style="font-size:0.72em;color:var(--text3);text-align:center;line-height:1.5">
-        <i class="fas fa-info-circle" style="margin-right:4px"></i>Se abrirá WhatsApp Web por cada cliente seleccionado. Tu navegador puede bloquear ventanas emergentes — permítelas si es necesario.
+        <i class="fas fa-info-circle" style="margin-right:4px"></i>Se abrirá WhatsApp por cada cliente seleccionado y quedará marcado como "reseña pedida". Si tu navegador bloquea ventanas emergentes, permítelas o usa el botón de cada fila.
       </div>
       <div style="display:flex;gap:10px;justify-content:flex-end">
         <button class="btn btn-ghost" onclick="window.closeFeedbackModal()">Cancelar</button>
@@ -6868,5 +7979,20 @@ window.resetWallpaper = function() {
   </div>
 </div>
 
+<script>
+// Efecto de onda al tocar botones, pestañas y chips
+document.addEventListener('pointerdown', function (e) {
+  var el = e.target.closest('.btn, .tab-nav-btn, .mnav-btn, .vm-tipo-chip, .vm-apago-chip, .login-btn');
+  if (!el || el.disabled) return;
+  var r = el.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2;
+  var sp = document.createElement('span');
+  sp.className = 'ux-ripple';
+  sp.style.cssText = 'width:' + d + 'px;height:' + d + 'px;left:' + (e.clientX - r.left - d / 2) + 'px;top:' + (e.clientY - r.top - d / 2) + 'px';
+  if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  el.style.overflow = 'hidden';
+  el.appendChild(sp);
+  setTimeout(function () { sp.remove(); }, 700);
+});
+</script>
 </body>
 </html>
