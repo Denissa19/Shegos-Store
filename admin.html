@@ -961,6 +961,13 @@ select option,select optgroup{background:#111;color:#fff}
 .cal-nav:hover,.cal-day:hover,.cal-month-item:hover,.mclose:hover,.group-wa:hover,
 .toggle-btn:hover,.imode:hover,.btn-add-prod:hover,.login-btn:hover,.mnav-btn:hover{transform:none !important;box-shadow:none !important}
 .btn-accent:hover{box-shadow:0 4px 16px rgba(40,254,182,.22) !important}
+
+/* ── Tarjetas clicables: sin efecto al pasar el cursor ── */
+.stat-card:hover,.acc-card:hover,.meth-card:hover,.month-chart:hover,.recovery-chart-wrap:hover,
+.rec-history-card:hover,.note-card:hover,.group-header:hover,.vm-receipt:hover{transform:none !important;box-shadow:none !important}
+.stat-card:hover,.acc-card:hover,.meth-card:hover{border-color:var(--border2) !important}
+.stat-card:hover::after{height:2px !important}
+.stat-card:hover .stat-value{text-shadow:none !important}
 </style>
 <body>
 
