@@ -1102,7 +1102,7 @@
         .stw-card.vendida { opacity: .55; }
         .stw-card.vendida:hover { transform: none; border-color: #333; box-shadow: none; }
         .stw-card-img { min-height: 120px; background: linear-gradient(160deg, #3a2154, #1c0e22); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .stw-card-img img { width: 100%; height: auto; object-fit: contain; display: block; }
+        .stw-card-img img { aspect-ratio: 16 / 10; width: 100%; height: auto; object-fit: contain; display: block; }
         .stw-card-img .stw-ph { font-size: 2.6em; color: rgba(255,255,255,.25); }
         .stw-fotos-n { position: absolute; right: 8px; bottom: 8px; background: rgba(0,0,0,.7); color: #fff; font-size: .72em; font-weight: 700; padding: 4px 9px; border-radius: 20px; }
         .stw-badge-vendida { position: absolute; left: 8px; top: 8px; background: #c0392b; color: #fff; font-size: .72em; font-weight: 800; letter-spacing: .5px; padding: 4px 10px; border-radius: 6px; }
@@ -9997,6 +9997,11 @@
         function stwEsc(t) {
             return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
+        // Miniatura optimizada (WebP redimensionado) vía proxy de imágenes; si falla, se usa la original
+        function stwThumb(u, w) {
+            if (typeof u !== 'string' || !/^https:\/\//i.test(u)) return u;
+            return 'https://wsrv.nl/?url=' + encodeURIComponent(u.replace(/^https?:\/\//i, '')) + '&w=' + w + '&output=webp&q=72';
+        }
         function stwImgOk(u) { return typeof u === 'string' && /^(https:\/\/|stock\/)/i.test(u.trim()); }
 
         const STW_MXN_POR_USD = 21, STW_PRECIO_MXN = 385, STW_PAR_MXN = 550;
@@ -10092,7 +10097,7 @@
                 return;
             }
             grid.innerHTML = '';
-            lista.forEach(c => {
+            lista.forEach((c, idxCard) => {
                 const vendida = String(c.estado || '').toLowerCase() === 'vendida';
                 const imgs = (c.imagenes || []).filter(stwImgOk);
                 const feats = stwFeats(c);
@@ -10101,7 +10106,7 @@
                 card.className = 'stw-card' + (vendida ? ' vendida' : '');
                 card.innerHTML =
                     '<div class="stw-card-img">' +
-                        (imgs[0] ? '<img loading="lazy" decoding="async" alt="' + stwEsc(c.titulo) + '" src="' + stwEsc(imgs[0]) + '">' : '<i class="fas fa-shield-halved stw-ph"></i>') +
+                        (imgs[0] ? '<img ' + (idxCard < 6 ? 'fetchpriority="high"' : 'loading="lazy"') + ' decoding="async" alt="' + stwEsc(c.titulo) + '" data-full="' + stwEsc(imgs[0]) + '" src="' + stwEsc(stwThumb(imgs[0], 640)) + '">' : '<i class="fas fa-shield-halved stw-ph"></i>') +
                         (vendida ? '<span class="stw-badge-vendida">VENDIDA</span>' : '') +
                         (imgs.length > 1 ? '<span class="stw-fotos-n"><i class="fas fa-images"></i> ' + imgs.length + '</span>' : '') +
                     '</div>' +
@@ -10112,7 +10117,7 @@
                         '<button type="button" class="btn-outline-mint">' + (vendida ? 'Ver detalles' : 'Ver detalles') + '</button>' +
                     '</div>';
                 const img = card.querySelector('.stw-card-img img');
-                if (img) img.onerror = function () { this.replaceWith(Object.assign(document.createElement('i'), { className: 'fas fa-shield-halved stw-ph' })); };
+                if (img) img.onerror = function () { if (this.dataset.full && this.src !== this.dataset.full) { this.src = this.dataset.full; return; } this.replaceWith(Object.assign(document.createElement('i'), { className: 'fas fa-shield-halved stw-ph' })); };
                 card.addEventListener('click', () => abrirDetalleSTW(c));
                 grid.appendChild(card);
             });
@@ -10132,8 +10137,8 @@
             box.innerHTML =
                 '<button type="button" class="stw-modal-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>' +
                 '<div class="stw-gal">' +
-                    '<div class="stw-gal-main">' + (imgs[0] ? '<img alt="' + stwEsc(c.titulo) + '" src="' + stwEsc(imgs[0]) + '">' : '<i class="fas fa-shield-halved stw-ph" style="font-size:3em;color:rgba(255,255,255,.2)"></i>') + '</div>' +
-                    (imgs.length > 1 ? '<div class="stw-gal-thumbs">' + imgs.map((u, i) => '<img class="' + (i === 0 ? 'activa' : '') + '" data-i="' + i + '" alt="Foto ' + (i + 1) + '" src="' + stwEsc(u) + '">').join('') + '</div>' : '') +
+                    '<div class="stw-gal-main">' + (imgs[0] ? '<img alt="' + stwEsc(c.titulo) + '" data-full="' + stwEsc(imgs[0]) + '" src="' + stwEsc(stwThumb(imgs[0], 1100)) + '" onerror="if(this.src!==this.dataset.full)this.src=this.dataset.full">' : '<i class="fas fa-shield-halved stw-ph" style="font-size:3em;color:rgba(255,255,255,.2)"></i>') + '</div>' +
+                    (imgs.length > 1 ? '<div class="stw-gal-thumbs">' + imgs.map((u, i) => '<img loading="lazy" class="' + (i === 0 ? 'activa' : '') + '" data-i="' + i + '" data-full="' + stwEsc(u) + '" alt="Foto ' + (i + 1) + '" src="' + stwEsc(stwThumb(u, 180)) + '" onerror="if(this.src!==this.dataset.full)this.src=this.dataset.full">').join('') + '</div>' : '') +
                 '</div>' +
                 '<div class="stw-info">' +
                     '<h3>' + stwEsc(c.titulo) + '</h3>' +
@@ -10168,10 +10173,10 @@
             box.querySelectorAll('.stw-gal-thumbs img').forEach(t => t.addEventListener('click', () => {
                 box.querySelectorAll('.stw-gal-thumbs img').forEach(x => x.classList.remove('activa'));
                 t.classList.add('activa');
-                if (principal) principal.src = t.src;
+                if (principal) { principal.dataset.full = t.dataset.full || t.src; principal.src = stwThumb(principal.dataset.full, 1100); }
             }));
             const contPrincipal = box.querySelector('.stw-gal-main');
-            if (contPrincipal && principal) contPrincipal.addEventListener('click', () => window.open(principal.src, '_blank', 'noopener'));
+            if (contPrincipal && principal) contPrincipal.addEventListener('click', () => window.open(principal.dataset.full || principal.src, '_blank', 'noopener'));
             box.querySelector('.stw-modal-cerrar').addEventListener('click', cerrarDetalleSTW);
 
             modal.classList.add('abierto');
@@ -10423,19 +10428,31 @@
     btn.disabled = true;
 
     try {
+        // ── Tamaño dinámico: tarjetas grandes pero con tope para que el canvas se pueda generar ──
+        const ANCHO_EXPORT = 2000, COLS_EXPORT = 6, PAD_EXPORT = 28, GAP_EXPORT = 8;
+        const ancho_card = (ANCHO_EXPORT - PAD_EXPORT * 2 - GAP_EXPORT * (COLS_EXPORT - 1)) / COLS_EXPORT;
+        const alto_card = ancho_card * 4 / 3;
+        let filasEst = 0;
+        tiendaCont.querySelectorAll('.shop-section').forEach(sec => {
+            const n = sec.querySelectorAll('.cosmetic-card').length;
+            if (n) filasEst += Math.ceil(n / COLS_EXPORT);
+        });
+        const altoEst = 300 + filasEst * (alto_card + GAP_EXPORT) + 8 * 60;
+        // Límites seguros (altura máx. ~16000 px y ~90 millones de píxeles) para que funcione también en celulares
+        const escalaExport = Math.max(0.3, Math.min(1, 16000 / altoEst, Math.sqrt(90e6 / (ANCHO_EXPORT * altoEst))));
         const canvas = await html2canvas(tiendaCont, {
             useCORS: true,
             allowTaint: false,
             backgroundColor: "#12081a",
-            scale: 1,
+            scale: escalaExport,
             logging: false,
             onclone: (clonedDoc) => {
                 const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
 
                 // ── ANCHO FIJO, ALTO AUTOMÁTICO ──────────────────────────
-                clonedTienda.style.width = "1800px";
+                clonedTienda.style.width = ANCHO_EXPORT + "px";
                 clonedTienda.style.height = "auto";
-                clonedTienda.style.padding = "36px 36px 80px 36px";
+                clonedTienda.style.padding = PAD_EXPORT + "px " + PAD_EXPORT + "px 40px " + PAD_EXPORT + "px";
                 clonedTienda.style.overflow = "visible";
                 clonedTienda.style.position = "relative";
                 clonedTienda.style.background = "#12081a";
@@ -10514,8 +10531,8 @@
                     const grid = clonedDoc.createElement('div');
                     grid.style.cssText = `
                         display: grid;
-                        grid-template-columns: repeat(6, 1fr);
-                        gap: 10px;
+                        grid-template-columns: repeat(${COLS_EXPORT}, 1fr);
+                        gap: ${GAP_EXPORT}px;
                         margin-bottom: 8px;
                     `;
 
@@ -10543,7 +10560,7 @@
                         const img = card.querySelector('.card-img');
                         if (img) {
                             img.style.filter = "brightness(1.15) contrast(1.05)";
-                            img.style.padding = "10px";
+                            img.style.padding = "6px";
                         }
 
                         // Mejorar overlay inferior
@@ -10551,13 +10568,13 @@
                         if (bottom) {
                             bottom.style.backdropFilter = "none";
                             bottom.style.background = "rgba(0,0,0,0.92)";
-                            bottom.style.padding = "8px 10px";
+                            bottom.style.padding = "10px 12px";
                         }
 
                         // Título más grande ahora que la card es más ancha
                         const title = card.querySelector('.card-title');
                         if (title) {
-                            title.style.fontSize = "15px";
+                            title.style.fontSize = "19px";
                             title.style.color = "#ffffff";
                             title.style.lineHeight = "1.25";
                             title.style.whiteSpace = "nowrap";
@@ -10568,7 +10585,7 @@
                         // Precio en vbucks
                         const vbucksEl = card.querySelector('.card-price-vbucks');
                         if (vbucksEl) {
-                            vbucksEl.style.fontSize = "14px";
+                            vbucksEl.style.fontSize = "18px";
                         }
 
                         grid.appendChild(card);
@@ -10583,15 +10600,15 @@
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    margin-top: 28px;
-                    padding-top: 18px;
+                    margin-top: 32px;
+                    padding: 26px 8px 8px 8px;
                     border-top: 1px solid #2a1430;
                 `;
                 footer.innerHTML = `
-                    <div style="font-family:'Poppins',sans-serif; font-size:13px; color:#333; font-weight:600; text-transform:uppercase; letter-spacing:2px;">
+                    <div style="font-family:'Poppins',sans-serif; font-size:22px; color:#777; font-weight:600; text-transform:uppercase; letter-spacing:3px;">
                         shegos.store
                     </div>
-                    <div style="font-family:'BurbankBigCondensed','Poppins',sans-serif; font-size:20px; font-weight:900; color:#ffffff; letter-spacing:2px;">
+                    <div style="font-family:'BurbankBigCondensed','Poppins',sans-serif; font-size:56px; font-weight:900; color:#ffffff; letter-spacing:4px;">
                         CÓDIGO: <span style="color:#00A676;">DENISSA_7U7</span>
                     </div>
                 `;
