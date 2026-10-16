@@ -6,6 +6,21 @@
          relativos (img/..., etc.) como si estuvieran dentro de esa "carpeta". Esta
          etiqueta fuerza a que siempre se resuelvan contra la raíz del sitio. -->
     <base href="/">
+    <!-- GitHub Pages no tiene archivos para /tienda, /servicios, /cuentas, etc. y responde 404.
+         El archivo 404.html guarda la ruta pedida y vuelve aquí; esto la restaura en la barra de
+         direcciones para que el enrutador de la página (ROUTE_MAP) abra la sección correcta. -->
+    <script>
+    (function () {
+        try {
+            var r = sessionStorage.getItem('spa-redirect');
+            if (r) {
+                sessionStorage.removeItem('spa-redirect');
+                r = r.replace(/\/+$/, '') || '/';   // "/servicios/" -> "/servicios"
+                history.replaceState(null, '', r);
+            }
+        } catch (e) { /* sin sessionStorage: se queda en la página de inicio */ }
+    })();
+    </script>
     <link rel="icon" type="image/png" href="img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shegos Store - Tu tienda Fortnite de Confianza</title>
@@ -1054,6 +1069,75 @@
         @media (max-width: 768px) {
             .hero-image { flex: 0 0 auto; min-height: 380px; align-self: auto; width: 100%; margin-left: 0; order: 2; }
             .hero-image img { max-height: 380px; max-width: 100%; position: relative; }
+        }
+
+        /* HERO (escritorio): skin de la cadera hacia arriba, más grande, ocupando todo el espacio de la derecha.
+           La imagen se agranda y se ancla arriba; el contenedor recorta la parte de abajo (piernas). */
+        @media (min-width: 769px) {
+            .hero-image { flex: 1 1 720px; min-width: 720px; overflow: hidden; }
+            .hero-image img {
+                height: 178%;          /* súbele/bájale: más alto = más grande y más recortado */
+                max-height: none;
+                max-width: none;
+                bottom: auto;
+                top: 24px;             /* deja espacio para el movimiento flotante sin cortar la cabeza */
+                object-position: top center;
+                -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+                mask-image: linear-gradient(to bottom, #000 80%, transparent 100%);
+            }
+        }
+
+        /* =========================================
+           CUENTAS FORTNITE STW
+           ========================================= */
+        .stw-head { text-align: center; margin-bottom: 22px; }
+        .stw-head h2 { margin: 0 0 6px; }
+        .stw-head p { color: #bbb; margin: 0; font-size: .95em; }
+        .stw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1300px; margin: 0 auto; }
+        .stw-card { background: #170a1c; border: 1px solid #333; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; cursor: pointer; transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease; position: relative; }
+        .stw-card:hover { transform: translateY(-5px); border-color: #00A676; box-shadow: 0 12px 28px rgba(0,0,0,.45); }
+        .stw-card.vendida { opacity: .55; }
+        .stw-card.vendida:hover { transform: none; border-color: #333; box-shadow: none; }
+        .stw-card-img { aspect-ratio: 16 / 10; background: linear-gradient(160deg, #3a2154, #1c0e22); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .stw-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .stw-card-img .stw-ph { font-size: 2.6em; color: rgba(255,255,255,.25); }
+        .stw-fotos-n { position: absolute; right: 8px; bottom: 8px; background: rgba(0,0,0,.7); color: #fff; font-size: .72em; font-weight: 700; padding: 4px 9px; border-radius: 20px; }
+        .stw-badge-vendida { position: absolute; left: 8px; top: 8px; background: #c0392b; color: #fff; font-size: .72em; font-weight: 800; letter-spacing: .5px; padding: 4px 10px; border-radius: 6px; }
+        .stw-card-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .stw-card-body h3 { margin: 0; font-size: 1.05em; color: #fff; line-height: 1.3; }
+        .stw-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+        .stw-chips li { background: rgba(0,166,118,.14); border: 1px solid rgba(0,166,118,.4); color: #7ff0c9; font-size: .72em; font-weight: 600; padding: 4px 9px; border-radius: 20px; }
+        .stw-chips li.mas { background: transparent; border-color: #444; color: #aaa; }
+        .stw-card-body .precio-producto { font-size: 1.25em; font-weight: 800; margin-top: auto; }
+        .stw-card-body .btn-outline-mint { width: 100%; margin: 0; }
+        .stw-vacio { text-align: center; color: #bbb; padding: 50px 10px; }
+        .stw-vacio i { font-size: 2.6em; color: #00A676; margin-bottom: 14px; display: block; }
+        .stw-modal { position: fixed; inset: 0; background: rgba(0,0,0,.78); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(4px); }
+        .stw-modal.abierto { display: flex; }
+        .stw-modal-box { background: #14091a; border: 1px solid #333; border-radius: 16px; width: 100%; max-width: 920px; max-height: 92vh; overflow-y: auto; position: relative; display: grid; grid-template-columns: 1.1fr 1fr; }
+        .stw-modal-cerrar { position: absolute; right: 12px; top: 12px; z-index: 3; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); background: rgba(0,0,0,.6); color: #fff; cursor: pointer; font-size: 1em; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0; }
+        .stw-gal { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .stw-gal-main { aspect-ratio: 16 / 10; background: #0d0612; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: zoom-in; }
+        .stw-gal-main img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .stw-gal-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .stw-gal-thumbs img { width: 70px; height: 48px; object-fit: cover; border-radius: 6px; border: 2px solid transparent; cursor: pointer; opacity: .65; flex-shrink: 0; }
+        .stw-gal-thumbs img.activa { border-color: #00A676; opacity: 1; }
+        .stw-info { padding: 22px 22px 22px 6px; display: flex; flex-direction: column; gap: 12px; }
+        .stw-info h3 { margin: 0; font-size: 1.35em; color: #fff; padding-right: 40px; }
+        .stw-info .stw-precio { font-size: 1.6em; font-weight: 800; color: #fff; }
+        .stw-desc { color: #ccc; line-height: 1.6; white-space: pre-line; font-size: .92em; }
+        .stw-feat { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+        .stw-feat li { color: #eee; font-size: .9em; display: flex; gap: 9px; align-items: flex-start; }
+        .stw-feat li i { color: #00A676; margin-top: 3px; }
+        .stw-acciones { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+        .stw-acciones .btn-outline-mint, .stw-acciones a { width: 100%; margin: 0; box-sizing: border-box; text-decoration: none; }
+        .stw-link-album { background: transparent; border: 1px solid #444; color: #ccc; padding: 10px 14px; border-radius: 9px; font-weight: 600; text-align: center; font-size: .85em; display: block; }
+        .stw-link-album:hover { border-color: #00A676; color: #00A676; }
+        @media (max-width: 760px) {
+            .stw-modal-box { grid-template-columns: 1fr; }
+            .stw-info { padding: 4px 16px 20px; }
+            .stw-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
+            .stw-card-body { padding: 12px; }
         }
 
         /* BOTONES FLOTANTES */
@@ -4339,6 +4423,7 @@
             <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
             <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
+            <button class="tab-btn" onclick="abrirPestana('cuentas-stw')"><i class="fas fa-shield-halved"></i> Cuentas STW</button>
             <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
             <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
@@ -4368,6 +4453,7 @@
                 <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
                 <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
+                <button class="tab-btn" onclick="abrirPestana('cuentas-stw')"><i class="fas fa-shield-halved"></i> Cuentas STW</button>
                 <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
             </nav>
         </div>
@@ -4821,6 +4907,18 @@
             </section>
         </div>
 
+        <div id="cuentas-stw" class="section-box pestana oculto">
+            <div class="stw-head">
+                <h2>Cuentas Fortnite Salvar el Mundo</h2>
+                <p>Cuentas STW listas para jugar. Toca una para ver todas sus fotos y características.</p>
+            </div>
+            <div id="stw-grid" class="stw-grid"></div>
+        </div>
+
+        <div id="stw-modal" class="stw-modal" onclick="if (event.target === this) cerrarDetalleSTW()">
+            <div class="stw-modal-box" id="stw-modal-box"></div>
+        </div>
+
         <div id="recargas" class="section-box pestana oculto">
             <div id="menu-servicios">
                 <h2>Servicios</h2>
@@ -4986,11 +5084,6 @@
 
                 <!-- PRECIOS (aparecen al deslizar) -->
                 <section id="club-precios" class="club-precios">
-                    <div class="club-tabs">
-                        <button id="club-tab-nuevo" class="club-tab activo" onclick="clubTab('nuevo')">Cuentas nuevas<small>Sin error</small></button>
-                        <button id="club-tab-error" class="club-tab" onclick="clubTab('error')">Cuentas viejas<small>Con error de región</small></button>
-                    </div>
-
                     <div id="club-panel-nuevo" class="club-panel activo">
                 <p class="club-panel-desc">Para cuentas que no tienen problemas de región. Se usa el método Xbox, sin pedirte datos de acceso.</p>
                 <div class="club-grid-3">
@@ -5032,51 +5125,6 @@
                     </div>
                 </div>
 
-                </div>
-                    </div>
-
-                    <div id="club-panel-error" class="club-panel">
-                <div class="alerta-warning">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Para esta opción <strong>SI</strong> se requiere acceso a la cuenta de Xbox (Correo y Contraseña).</span>
-                </div>
-                <div class="club-grid-3">
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>1 Mes de Club</strong>
-                        <span class="precio-producto" data-precio-usd="9">$9 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 1 Mes" onclick="agregarAlCarrito('Club (Con Error) - 1 Mes', '9', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>2 Meses de Club</strong>
-                        <span class="precio-producto" data-precio-usd="17">$17 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 2 Meses" onclick="agregarAlCarrito('Club (Con Error) - 2 Meses', '17', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>3 Meses de Club</strong>
-                        <span class="precio-producto" data-precio-usd="25">$25 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 3 Meses" onclick="agregarAlCarrito('Club (Con Error) - 3 Meses', '25', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>4 Meses de Club</strong>
-                        <span class="precio-producto" data-precio-usd="34">$34 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 4 Meses" onclick="agregarAlCarrito('Club (Con Error) - 4 Meses', '34', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>5 Meses de Club</strong>
-                        <span class="precio-producto" data-precio-usd="42">$42 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 5 Meses" onclick="agregarAlCarrito('Club (Con Error) - 5 Meses', '42', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
-                        <strong>6 Meses de Club</strong>
-                        <span class="precio-producto" data-precio-usd="50">$50 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 6 Meses" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '50', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
-                    </div>
                 </div>
                     </div>
                 </section>
@@ -9231,10 +9279,28 @@
             return partes.join('\n');
         }
 
+        // Al procesar una orden se lleva al cliente al GRUPO de WhatsApp (ya no al chat directo).
+        // Los enlaces de grupo no aceptan texto prellenado, por eso el mensaje del pedido se copia
+        // al portapapeles para que el cliente lo pegue en el grupo.
+        const WA_GRUPO_PEDIDOS = 'https://chat.whatsapp.com/EDAPmiC27m5ABW3DNb8EWs';
+
+        function avisoPedidoCopiado() {
+            const aviso = document.createElement('div');
+            aviso.textContent = 'Pedido copiado. P\u00e9galo en el grupo de WhatsApp.';
+            aviso.style.cssText = 'position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:100000;' +
+                'background:#00A676;color:#12081a;font-weight:700;padding:12px 20px;border-radius:10px;' +
+                'box-shadow:0 8px 24px rgba(0,0,0,.45);font-size:.9em;max-width:90%;text-align:center;';
+            document.body.appendChild(aviso);
+            setTimeout(() => aviso.remove(), 6000);
+        }
+
         function abrirWhatsAppPedido(mensaje) {
-            const url = 'https://api.whatsapp.com/send?phone=' + WA_NUMERO_TIENDA +
-                        '&text=' + encodeURIComponent(mensaje);
-            window.open(url, '_blank');
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(mensaje).then(avisoPedidoCopiado).catch(() => {});
+                }
+            } catch (e) { /* si el navegador no permite copiar, igual se abre el grupo */ }
+            window.open(WA_GRUPO_PEDIDOS, '_blank');
         }
 
         async function enviarPedidoFinal() {
@@ -9836,6 +9902,154 @@
             else document.body.classList.add('en-checkout');
         }
 
+        /* =====================================================
+           CUENTAS FORTNITE STW
+           Los datos viven en stw-cuentas.json (junto a index.html).
+           Cada cuenta: id, titulo, precio (USD), estado ("disponible" | "vendida"),
+           descripcion, caracteristicas [..], imagenes [enlaces directos de imgbb].
+           ===================================================== */
+        let stwCuentas = [];
+        let stwAlbumUrl = '';
+        let stwCargado = false;
+
+        function stwEsc(t) {
+            return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+        function stwImgOk(u) { return typeof u === 'string' && /^https:\/\//i.test(u.trim()); }
+
+        async function cargarCuentasSTW(forzar) {
+            const grid = document.getElementById('stw-grid');
+            if (!grid) return;
+            if (stwCargado && !forzar) { renderCuentasSTW(); return; }
+            grid.innerHTML = '<div class="stw-vacio"><i class="fas fa-spinner fa-spin"></i>Cargando cuentas...</div>';
+            try {
+                const res = await fetch('stw-cuentas.json?v=' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                stwCuentas = Array.isArray(data) ? data : (Array.isArray(data.cuentas) ? data.cuentas : []);
+                stwAlbumUrl = (!Array.isArray(data) && stwImgOk(data.album)) ? data.album : '';
+                stwCargado = true;
+                renderCuentasSTW();
+            } catch (err) {
+                console.error('[cuentas-stw] No se pudo cargar stw-cuentas.json:', err);
+                grid.innerHTML = '<div class="stw-vacio"><i class="fas fa-triangle-exclamation"></i>No pudimos cargar las cuentas en este momento. Intenta de nuevo en un rato.</div>';
+            }
+        }
+
+        function renderCuentasSTW() {
+            const grid = document.getElementById('stw-grid');
+            if (!grid) return;
+            // Disponibles primero, vendidas al final
+            const lista = stwCuentas.filter(c => c && c.titulo).slice().sort((a, b) => {
+                const va = String(a.estado || '').toLowerCase() === 'vendida' ? 1 : 0;
+                const vb = String(b.estado || '').toLowerCase() === 'vendida' ? 1 : 0;
+                return va - vb;
+            });
+            if (lista.length === 0) {
+                grid.innerHTML = '<div class="stw-vacio" style="grid-column:1/-1"><i class="fas fa-shield-halved"></i>Por ahora no hay cuentas STW disponibles. Vuelve pronto o escr\u00edbenos para ver qu\u00e9 tenemos.</div>';
+                return;
+            }
+            grid.innerHTML = '';
+            lista.forEach(c => {
+                const vendida = String(c.estado || '').toLowerCase() === 'vendida';
+                const imgs = (c.imagenes || []).filter(stwImgOk);
+                const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
+                const precio = parseFloat(c.precio);
+                const card = document.createElement('div');
+                card.className = 'stw-card' + (vendida ? ' vendida' : '');
+                card.innerHTML =
+                    '<div class="stw-card-img">' +
+                        (imgs[0] ? '<img loading="lazy" decoding="async" alt="' + stwEsc(c.titulo) + '" src="' + stwEsc(imgs[0]) + '">' : '<i class="fas fa-shield-halved stw-ph"></i>') +
+                        (vendida ? '<span class="stw-badge-vendida">VENDIDA</span>' : '') +
+                        (imgs.length > 1 ? '<span class="stw-fotos-n"><i class="fas fa-images"></i> ' + imgs.length + '</span>' : '') +
+                    '</div>' +
+                    '<div class="stw-card-body">' +
+                        '<h3>' + stwEsc(c.titulo) + '</h3>' +
+                        (feats.length ? '<ul class="stw-chips">' + feats.slice(0, 4).map(f => '<li>' + stwEsc(f) + '</li>').join('') + (feats.length > 4 ? '<li class="mas">+' + (feats.length - 4) + ' m\u00e1s</li>' : '') + '</ul>' : '') +
+                        (isNaN(precio) ? '' : '<span class="precio-producto" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
+                        '<button type="button" class="btn-outline-mint">' + (vendida ? 'Ver detalles' : 'Ver detalles') + '</button>' +
+                    '</div>';
+                const img = card.querySelector('.stw-card-img img');
+                if (img) img.onerror = function () { this.replaceWith(Object.assign(document.createElement('i'), { className: 'fas fa-shield-halved stw-ph' })); };
+                card.addEventListener('click', () => abrirDetalleSTW(c));
+                grid.appendChild(card);
+            });
+            if (typeof actualizarPreciosGlobales === 'function') actualizarPreciosGlobales();
+        }
+
+        function abrirDetalleSTW(c) {
+            const modal = document.getElementById('stw-modal');
+            const box = document.getElementById('stw-modal-box');
+            if (!modal || !box || !c) return;
+            const vendida = String(c.estado || '').toLowerCase() === 'vendida';
+            const imgs = (c.imagenes || []).filter(stwImgOk);
+            const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
+            const precio = parseFloat(c.precio);
+            const nombreCarrito = 'Cuenta STW: ' + c.titulo + (c.id ? ' (' + c.id + ')' : '');
+
+            box.innerHTML =
+                '<button type="button" class="stw-modal-cerrar" aria-label="Cerrar"><i class="fas fa-xmark"></i></button>' +
+                '<div class="stw-gal">' +
+                    '<div class="stw-gal-main">' + (imgs[0] ? '<img alt="' + stwEsc(c.titulo) + '" src="' + stwEsc(imgs[0]) + '">' : '<i class="fas fa-shield-halved stw-ph" style="font-size:3em;color:rgba(255,255,255,.2)"></i>') + '</div>' +
+                    (imgs.length > 1 ? '<div class="stw-gal-thumbs">' + imgs.map((u, i) => '<img class="' + (i === 0 ? 'activa' : '') + '" data-i="' + i + '" alt="Foto ' + (i + 1) + '" src="' + stwEsc(u) + '">').join('') + '</div>' : '') +
+                '</div>' +
+                '<div class="stw-info">' +
+                    '<h3>' + stwEsc(c.titulo) + '</h3>' +
+                    (isNaN(precio) ? '' : '<span class="stw-precio precio-producto" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
+                    (c.descripcion ? '<div class="stw-desc">' + stwEsc(c.descripcion) + '</div>' : '') +
+                    (feats.length ? '<ul class="stw-feat">' + feats.map(f => '<li><i class="fas fa-check"></i><span>' + stwEsc(f) + '</span></li>').join('') + '</ul>' : '') +
+                    '<div class="stw-acciones"></div>' +
+                '</div>';
+
+            const acciones = box.querySelector('.stw-acciones');
+            if (vendida) {
+                acciones.innerHTML = '<div class="stw-badge-vendida" style="position:static;text-align:center;padding:10px">ESTA CUENTA YA FUE VENDIDA</div>';
+            } else if (!isNaN(precio)) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn-outline-mint';
+                btn.setAttribute('data-item-nombre', nombreCarrito);
+                btn.innerHTML = '<i class="fas fa-cart-plus"></i> Carrito';
+                btn.addEventListener('click', ev => agregarAlCarrito(nombreCarrito, String(precio), imgs[0] || '', '0', 'cuenta-stw', ev));
+                acciones.appendChild(btn);
+            }
+            if (stwAlbumUrl) {
+                const a = document.createElement('a');
+                a.className = 'stw-link-album';
+                a.href = stwAlbumUrl; a.target = '_blank'; a.rel = 'noopener';
+                a.innerHTML = '<i class="fas fa-images"></i> Ver \u00e1lbum completo';
+                acciones.appendChild(a);
+            }
+
+            // Galer\u00eda: miniaturas cambian la foto principal; clic en la foto la abre grande
+            const principal = box.querySelector('.stw-gal-main img');
+            box.querySelectorAll('.stw-gal-thumbs img').forEach(t => t.addEventListener('click', () => {
+                box.querySelectorAll('.stw-gal-thumbs img').forEach(x => x.classList.remove('activa'));
+                t.classList.add('activa');
+                if (principal) principal.src = t.src;
+            }));
+            const contPrincipal = box.querySelector('.stw-gal-main');
+            if (contPrincipal && principal) contPrincipal.addEventListener('click', () => window.open(principal.src, '_blank', 'noopener'));
+            box.querySelector('.stw-modal-cerrar').addEventListener('click', cerrarDetalleSTW);
+
+            modal.classList.add('abierto');
+            document.body.style.overflow = 'hidden';
+            toggleFloatingButtons(false);
+            if (typeof actualizarPreciosGlobales === 'function') actualizarPreciosGlobales();
+            if (typeof sincronizarBotonesCarrito === 'function') sincronizarBotonesCarrito();
+        }
+
+        function cerrarDetalleSTW() {
+            const modal = document.getElementById('stw-modal');
+            if (modal) modal.classList.remove('abierto');
+            document.body.style.overflow = 'auto';
+            const co = document.getElementById('checkout');
+            if (co && co.classList.contains('oculto')) toggleFloatingButtons(true);
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.getElementById('stw-modal')?.classList.contains('abierto')) cerrarDetalleSTW();
+        });
+
         /* Mapa de ruta amigable → id interno de pestaña */
         var ROUTE_MAP = {
             '':           'inicio-landing',
@@ -9844,6 +10058,7 @@
             'cuentas':    'ids-regalos',
             'pedidos':    'rastreo-pedidos',
             'servicios':  'recargas',
+            'cuentas-stw': 'cuentas-stw',
             'checkout':   'checkout'
         };
         /* Inverso: id interno → ruta amigable (el inicio siempre usa "/") */
@@ -9883,6 +10098,9 @@
             // Asegurar que al entrar a Servicios se vea el menú principal
             if (id === 'recargas') mostrarSubServicio('menu');
 
+            // Cuentas Fortnite STW: leer stw-cuentas.json y pintar las tarjetas
+            if (id === 'cuentas-stw' && typeof cargarCuentasSTW === 'function') cargarCuentasSTW();
+
             // Cargar Alertas STW la primera vez que se abre la pestaña
             if (id === 'stw-alertas' && typeof cargarAlertasSTW === 'function') cargarAlertasSTW();
 
@@ -9903,6 +10121,7 @@
             var ruta = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
             if (ruta === 'login') { abrirModalAuth('login'); return; }
             if (ruta === 'sign-in') { abrirModalAuth('register'); return; }
+            if (ruta === 'tienda' && window.innerWidth <= 768) { irATienda(); return; }
             if (ruta && ROUTE_MAP.hasOwnProperty(ruta)) {
                 abrirPestana(ROUTE_MAP[ruta]);
             }
@@ -12262,9 +12481,10 @@ function mostrarModalCapturaMovil(url) {
         window.clubIrAPrecios = function () { var p = el('club-precios'); if (!p) return; bloquear(); p.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
         window.clubIrAlInicio = function () { bloquear(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
         window.clubTab = function (cual) {
-            ['nuevo', 'error'].forEach(function (k) {
-                el('club-tab-' + k).classList.toggle('activo', k === cual);
-                el('club-panel-' + k).classList.toggle('activo', k === cual);
+            ['nuevo'].forEach(function (k) {
+                var t = el('club-tab-' + k), pn = el('club-panel-' + k);
+                if (t) t.classList.toggle('activo', k === cual);
+                if (pn) pn.classList.toggle('activo', k === cual);
             });
             var p = el('club-precios'); p.classList.remove('visible'); void p.offsetWidth; p.classList.add('visible');
         };
