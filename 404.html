@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shegos Store</title>
+    <meta name="robots" content="noindex">
+    <script>
+        // GitHub Pages sirve este archivo cuando la ruta no existe (ej. /servicios, /tienda, /cuentas).
+        // Guardamos la ruta pedida y volvemos a la página principal, que la restaura y abre la sección.
+        try { sessionStorage.setItem('spa-redirect', location.pathname + location.search + location.hash); } catch (e) {}
+        location.replace('/');
+    </script>
+</head>
+<body style="background:#0a0a0a;color:#fff;font-family:sans-serif;text-align:center;padding-top:20vh">
+    <p>Cargando Shegos Store…</p>
+    <noscript><a href="/" style="color:#00A676">Ir a la página principal</a></noscript>
+</body>
+</html>
