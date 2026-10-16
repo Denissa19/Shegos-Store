@@ -947,6 +947,13 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
+        /* Club de Fortnite: fondo más translúcido para que se vea el fondo de la página */
+        #recargas.club-activo {
+            background-color: rgba(10, 10, 10, 0.35);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
         #rastreo-pedidos.section-box {
             background-color: transparent;
             backdrop-filter: none;
@@ -1969,6 +1976,21 @@
         .club-tile.t2 { background: linear-gradient(160deg, #35c2ee, #1a6fb8); }
         .club-tile.t3 { background: linear-gradient(160deg, #b34cf0, #5a1fa8); }
         .club-tile.t4 { background: linear-gradient(160deg, #2fbf71, #0d6e42); }
+        /* Fila de tarjetas del Club (imagen + etiqueta) */
+        .club-cards { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; max-width: 1320px; margin: 0 auto; width: 100%; }
+        .club-card { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; cursor: pointer; background: #160c20; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 22px rgba(0,0,0,.35); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+        .club-card:hover, .club-card:focus-visible { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,.5); border-color: rgba(245,229,10,.55); outline: none; }
+        .club-card-img { aspect-ratio: 1 / 1; overflow: hidden; background: linear-gradient(160deg, #3a2154, #1c0e22); }
+        .club-card-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .35s ease; }
+        .club-card:hover .club-card-img img { transform: scale(1.06); }
+        .club-card-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 14px; background: rgba(20,10,30,.96); font-weight: 700; font-size: .8em; color: #fff; }
+        .club-card-label span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .club-card-label i { font-size: .7em; opacity: .7; flex-shrink: 0; }
+        @media (max-width: 1100px) { .club-cards { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 700px) {
+            .club-cards { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; gap: 10px; -webkit-overflow-scrolling: touch; }
+            .club-card { flex: 0 0 150px; scroll-snap-align: start; }
+        }
         .club-scroll-arrow { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); background: rgba(18,8,26,.75); color: #fff; cursor: pointer; animation: clubRebote 1.6s ease-in-out infinite; }
         @keyframes clubRebote { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 7px); } }
         .club-precios { scroll-margin-top: 100px; padding: 30px 0 60px; min-height: 80vh; }
@@ -4923,17 +4945,41 @@
                         <div class="club-hero-text">
                             <h2 class="club-hero-title">CLUB<small>DE FORTNITE</small></h2>
                             <p class="club-hero-lema">La oferta de Fortnite definitiva</p>
-                            <p class="club-hero-desc">Suscripción a Fortnite Crew por <strong>método Xbox</strong>, sin necesidad de datos de acceso en cuentas nuevas. Obtén el pase de batalla del mes, objetos especiales y Monedas V cada mes.</p>
+                            <p class="club-hero-desc">Suscripción a Fortnite Crew por <strong>método Xbox</strong>, Obtén el pase de batalla del mes, objetos especiales y Monedas V cada mes.</p>
                             <p class="club-hero-nota">*El contenido mensual del Club de Fortnite está sujeto a cambios.</p>
                             <button class="club-hero-btn" onclick="clubIrAPrecios()">Ver precios</button>
                         </div>
-                        <div class="club-hero-img"><img decoding="async" src="fortnite-crew-cover.png" alt="Fortnite Crew"></div>
+                        <div class="club-hero-img"><img decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_42-30_October_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-01cd8fadb32647ed96d6dd9f06fd151f?resize=1&w=1280&h=720&quality=medium" alt="Fortnite Crew"></div>
                     </div>
-                    <div class="club-hero-tiles">
-                        <div class="club-tile t1"><i class="fas fa-star"></i><span>Pase de batalla</span></div>
-                        <div class="club-tile t2"><i class="fas fa-coins"></i><span>Monedas V cada mes</span></div>
-                        <div class="club-tile t3"><i class="fas fa-gift"></i><span>Objetos especiales</span></div>
-                        <div class="club-tile t4"><i class="fab fa-xbox"></i><span>Método Xbox</span></div>
+                    <div class="club-cards">
+                        <div class="club-card c1" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img id="club-card-paquete-img" loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/paquete.webp" alt="Paquete de club"></div>
+                            <div class="club-card-label"><span>Paquete de club</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c2" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-batalla.jpg" alt="Pase de batalla"></div>
+                            <div class="club-card-label"><span>Pase de batalla</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c3" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-origenes.jpg" alt="Pase de Orígenes"></div>
+                            <div class="club-card-label"><span>Pase de Orígenes</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c4" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-lego.jpg" alt="Pase de LEGO"></div>
+                            <div class="club-card-label"><span>Pase de LEGO</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c5" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-musical.jpg" alt="Pase musical"></div>
+                            <div class="club-card-label"><span>Pase musical</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c6" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/monedas-v.jpg" alt="Monedas V"></div>
+                            <div class="club-card-label"><span>Monedas V</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card c7" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/rocket-pass.jpg" alt="Rocket Pass Premium"></div>
+                            <div class="club-card-label"><span>Rocket Pass Premium</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
                     </div>
                     <button class="club-scroll-arrow" onclick="clubIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
                 </section>
@@ -9691,12 +9737,29 @@
                 .catch(() => { /* Se mantiene la imagen estática por defecto, sin errores visibles */ });
         })();
 
+        // "Paquete de club": se actualiza solo con la portada vigente del Crew (mismo endpoint de arriba).
+        // Si falla, se queda la imagen por defecto de la tarjeta.
+        (function actualizarTarjetaPaqueteClub() {
+            const API_BASE = 'https://shegos-bots-2.onrender.com';
+            fetch(API_BASE + '/api/fortnite-crew-cover')
+                .then(res => res.ok ? res.json() : Promise.reject())
+                .then(data => {
+                    if (data && data.image) {
+                        const img = document.getElementById('club-card-paquete-img');
+                        if (img) img.src = data.image;
+                    }
+                })
+                .catch(() => {});
+        })();
+
         function mostrarSubServicio(id) {
             const menu = document.getElementById('menu-servicios');
             const subs = document.querySelectorAll('.sub-seccion-servicios');
             
             // Toggles entre el menú principal y las subsecciones
             menu.style.display = (id === 'menu') ? 'block' : 'none';
+            const recargasBox = document.getElementById('recargas');
+            if (recargasBox) recargasBox.classList.toggle('club-activo', id === 'club');
             subs.forEach(s => {
                 s.style.display = (id !== 'menu' && s.id === 'sub-' + id) ? 'block' : 'none';
             });
