@@ -4684,33 +4684,6 @@
     <div class="container">
         
         <div id="inicio-landing" class="pestana">
-            <div class="hero-container">
-                <div class="hero-bg-slider" id="hero-bg-slider"></div>
-                <div class="hero-text">
-                    <span class="hero-eyebrow">Fortnite Item Shop</span>
-                    <h1><span style="color:#28feb6;">SHEGOS</span> STORE</h1>
-                    <p class="hero-fecha" id="hero-fecha"></p>
-                    <div class="hero-badges">
-                        <div class="hero-badge">
-                            <span class="hero-badge-label">Cambio de tienda en</span>
-                            <span class="hero-badge-value" id="hero-shop-timer">00:00:00</span>
-                        </div>
-                        <div class="hero-badge">
-                            <span class="hero-badge-value" id="hero-items-count">0</span>
-                            <span class="hero-badge-label">items hoy</span>
-                        </div>
-                    </div>
-                    <div class="hero-checks">
-                        <span><i class="fas fa-clock"></i> Entregas garantizadas tras 48h</span>
-                        <span><i class="fas fa-shield-alt"></i> 100% Seguro y sin riesgo de ban</span>
-                        <span><i class="fab fa-whatsapp"></i> Soporte directo por WhatsApp</span>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img id="hero-dynamic-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="opacity: 0; transition: opacity 0.5s ease;" alt="Skin Destacada de Hoy">
-                </div>
-            </div>
-
             <!-- ══════ WIDGET: ALERTAS DE PAVOS (SALVAR EL MUNDO) ══════ -->
             <section id="pavos-widget" class="pw-wrap" aria-label="Alertas de pavos en tiempo real">
                 <div class="pw-head">
@@ -4775,8 +4748,10 @@
             </style>
             <script>
             (function () {
-                var URL_API = 'https://api.miadsc.xyz/v1/stw/alertas?category=vbucks';
+                var BASE = 'https://api.miadsc.xyz/v1/stw/alertas';
+                var URL_VB = BASE + '?category=vbucks';
                 var REFRESCO_MS = 5 * 60 * 1000;
+                var cargando = false;
                 var $ = function (id) { return document.getElementById(id); };
                 function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
@@ -4787,20 +4762,32 @@
                 function tick() {
                     var el = $('pw-timer'); if (!el) return;
                     var d = resetEn - Date.now();
-                    if (d <= 0) { resetEn = proximoReset(); el.textContent = '00:00:00'; setTimeout(function () { cargar(true); }, 20000); return; }
+                    if (d <= 0) { resetEn = proximoReset(); el.textContent = '00:00:00'; setTimeout(cargar, 20000); return; }
                     el.textContent = pad(Math.floor(d / 3600000)) + ':' + pad(Math.floor(d % 3600000 / 60000)) + ':' + pad(Math.floor(d % 60000 / 1000));
                 }
                 tick(); setInterval(tick, 1000);
 
+                function esVbucks(a) { return /mtx|vbuck|v-buck|currency/i.test((a && a.name || '') + ' ' + (a && a.itemType || '')); }
+                function alertasDe(m) { return Array.isArray(m && m.alerts) ? m.alerts : []; }
                 function cantidadVbucks(m) {
-                    var al = Array.isArray(m.alerts) ? m.alerts : [];
-                    var pavos = al.filter(function (a) { return /mtx|vbuck|currency/i.test((a.name || '') + ' ' + (a.itemType || '')); });
+                    var al = alertasDe(m);
+                    var pavos = al.filter(esVbucks);
                     var lista = pavos.length ? pavos : al;
                     return lista.reduce(function (s, a) { return s + (parseInt(a.quantity, 10) || 0); }, 0);
                 }
 
-                function render(data) {
-                    var misiones = (data && data.missions || []).filter(function (m) { return m && (m.hasAlerts || (m.alerts && m.alerts.length)); });
+                // Misiones con alerta de pavos. Si la respuesta viene de ?category=vbucks
+                // basta con que tenga alertas; si viene del listado completo, exige que sean V-Bucks.
+                function seleccionar(data, desdeCategoria) {
+                    var ms = Array.isArray(data && data.missions) ? data.missions : [];
+                    return ms.filter(function (m) {
+                        if (!m) return false;
+                        var al = alertasDe(m);
+                        return desdeCategoria ? (m.hasAlerts || al.length > 0) : al.some(esVbucks);
+                    });
+                }
+
+                function render(data, misiones) {
                     var total = misiones.reduce(function (s, m) { return s + cantidadVbucks(m); }, 0);
                     $('pw-total').textContent = total.toLocaleString('es-DO');
                     $('pw-count').textContent = misiones.length;
@@ -4817,24 +4804,67 @@
                     }).join('');
                 }
 
-                function error() {
+                function error(e) {
                     var list = $('pw-list'); if (!list) return;
-                    list.innerHTML = '<div class="pw-msg"><i class="fas fa-triangle-exclamation"></i> No pudimos cargar las alertas ahora.<br><button type="button" id="pw-retry">Reintentar</button></div>';
-                    var b = $('pw-retry'); if (b) b.onclick = function () { cargar(true); };
+                    var det = e && e.message ? '<br><small style="color:#777">' + esc(e.message) + '</small>' : '';
+                    list.innerHTML = '<div class="pw-msg"><i class="fas fa-triangle-exclamation"></i> No pudimos cargar las alertas ahora.' + det + '<br><button type="button" id="pw-retry">Reintentar</button></div>';
+                    var b = $('pw-retry'); if (b) b.onclick = function () { cargar(); };
+                }
+
+                function pedir(url) {
+                    var ctrl = new AbortController(); var t = setTimeout(function () { ctrl.abort(); }, 15000);
+                    return fetch(url, { cache: 'no-store', signal: ctrl.signal })
+                        .then(function (r) { clearTimeout(t); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+                        .then(function (d) { if (!d || d.success === false) throw new Error('La API devolvió un error'); return d; })
+                        .catch(function (e) { clearTimeout(t); throw e; });
                 }
 
                 function cargar() {
-                    var ctrl = new AbortController(); var t = setTimeout(function () { ctrl.abort(); }, 15000);
-                    fetch(URL_API, { cache: 'no-store', signal: ctrl.signal })
-                        .then(function (r) { clearTimeout(t); if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-                        .then(function (d) { if (!d || d.success === false) throw new Error('API error'); render(d); })
-                        .catch(function (e) { clearTimeout(t); console.warn('[pavos-widget]', e); error(); });
+                    if (cargando) return; cargando = true;
+                    // 1) categoría de V-Bucks; 2) si falla o viene vacía, listado completo filtrado aquí
+                    pedir(URL_VB).catch(function (e) { console.warn('[pavos-widget] categoría falló:', e); return null; })
+                        .then(function (d) {
+                            var ms = d ? seleccionar(d, true) : [];
+                            if (ms.length) return { d: d, ms: ms };
+                            return pedir(BASE).then(function (d2) { return { d: d2, ms: seleccionar(d2, false) }; });
+                        })
+                        .then(function (r) { render(r.d, r.ms); })
+                        .catch(function (e) { console.warn('[pavos-widget]', e); error(e); })
+                        .then(function () { cargando = false; });
                 }
                 cargar();
                 setInterval(function () { if (document.visibilityState === 'visible') cargar(); }, REFRESCO_MS);
                 document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') cargar(); });
             })();
             </script>
+
+            <div class="hero-container">
+                <div class="hero-bg-slider" id="hero-bg-slider"></div>
+                <div class="hero-text">
+                    <span class="hero-eyebrow">Fortnite Item Shop</span>
+                    <h1><span style="color:#28feb6;">SHEGOS</span> STORE</h1>
+                    <p class="hero-fecha" id="hero-fecha"></p>
+                    <div class="hero-badges">
+                        <div class="hero-badge">
+                            <span class="hero-badge-label">Cambio de tienda en</span>
+                            <span class="hero-badge-value" id="hero-shop-timer">00:00:00</span>
+                        </div>
+                        <div class="hero-badge">
+                            <span class="hero-badge-value" id="hero-items-count">0</span>
+                            <span class="hero-badge-label">items hoy</span>
+                        </div>
+                    </div>
+                    <div class="hero-checks">
+                        <span><i class="fas fa-clock"></i> Entregas garantizadas tras 48h</span>
+                        <span><i class="fas fa-shield-alt"></i> 100% Seguro y sin riesgo de ban</span>
+                        <span><i class="fab fa-whatsapp"></i> Soporte directo por WhatsApp</span>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img id="hero-dynamic-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" style="opacity: 0; transition: opacity 0.5s ease;" alt="Skin Destacada de Hoy">
+                </div>
+            </div>
+
 
             <div class="servicios-home-grid" style="margin: 10px 0 0; padding: 0 30px;">
                 <div class="servicio-home-card" onclick="abrirPestana('ids-regalos')">
@@ -5133,7 +5163,7 @@
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" id="img-club-cover" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" id="img-club-cover" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Fortnite Crew</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pases')">
@@ -5292,40 +5322,40 @@
                 <p class="club-panel-desc">Para cuentas que no tienen problemas de región. Se usa el método Xbox, sin pedirte datos de acceso.</p>
                 <div class="club-grid-3">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="7">$7 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>2 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="13">$13 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="18">$18 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>4 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="24">$24 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>5 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="28">$28 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="33">$33 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -9996,22 +10026,6 @@
             document.getElementById('sidebar-overlay').classList.toggle('abierto');
             document.getElementById('sidebar').classList.toggle('abierto');
         }
-
-        // Intenta actualizar automáticamente la portada de Fortnite Crew
-        // usando el endpoint del backend (ver nota más abajo). Si falla o no existe,
-        // se mantiene la imagen estática "fortnite-crew-cover.png" como respaldo.
-        (function actualizarPortadaFortniteCrew() {
-            const API_BASE = 'https://shegos-bots-2.onrender.com'; // Ajusta si tu backend tiene otra URL
-            fetch(API_BASE + '/api/fortnite-crew-cover')
-                .then(res => res.ok ? res.json() : Promise.reject())
-                .then(data => {
-                    if (data && data.image) {
-                        const img = document.getElementById('img-club-cover');
-                        if (img) img.src = data.image;
-                    }
-                })
-                .catch(() => { /* Se mantiene la imagen estática por defecto, sin errores visibles */ });
-        })();
 
         // "Paquete de club": se actualiza solo con la portada vigente del Crew (mismo endpoint de arriba).
         // Si falla, se queda la imagen por defecto de la tarjeta.
