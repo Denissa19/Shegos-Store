@@ -4424,6 +4424,12 @@
 .stw-filtros input:focus-visible,.stw-filtros button:focus-visible{outline:2px solid #f6e400;outline-offset:2px}
 .stw-filtros .stw-solo{display:flex;align-items:center;gap:6px;cursor:pointer}
 .stw-filtros button{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:transparent;color:#fff;font:600 13px 'Poppins',sans-serif;cursor:pointer}
+.stw-promo{margin-top:6px;font-size:1.05em;color:#f6e400;font-family:'Poppins',sans-serif}
+.stw-promo strong{font-weight:700}
+/* separar mas el formulario (izquierda) del panel de cuentas (derecha) */
+@media(min-width:821px){
+  #shegos-bots-section{max-width:1400px;grid-template-columns:minmax(0,620px) minmax(0,540px);justify-content:space-between;column-gap:56px}
+}
 </style>
 </head>
 <body>
@@ -4971,9 +4977,10 @@
             <div class="stw-head">
                 <h2>Cuentas Fortnite Salvar el Mundo</h2>
                 <p>Cuentas STW listas para jugar. Toca una para ver todas sus fotos y características.</p>
+                <p id="stw-promo" class="stw-promo"></p>
             </div>
             <div class="stw-filtros">
-                <label>Precio (USD)</label>
+                <label id="stw-moneda-label">Precio (MXN)</label>
                 <input id="stw-min" type="number" min="0" step="1" placeholder="Mín" oninput="stwAplicarFiltro()" aria-label="Precio mínimo">
                 <input id="stw-max" type="number" min="0" step="1" placeholder="Máx" oninput="stwAplicarFiltro()" aria-label="Precio máximo">
                 <label class="stw-solo"><input id="stw-solo" type="checkbox" onchange="stwAplicarFiltro()"> Solo disponibles</label>
@@ -8781,7 +8788,7 @@
             document.querySelectorAll('.precio-producto').forEach(el => {
                 const precioBase = parseFloat(el.getAttribute('data-precio-usd'));
                 if (!isNaN(precioBase)) {
-                    const nuevoPrecio = (precioBase * tasa).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+                    const nuevoPrecio = (precioBase * (el.hasAttribute('data-stw') && divisaActual === 'MXN' ? STW_MXN_POR_USD : tasa)).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
                     el.innerText = `${simbolo}${nuevoPrecio} ${divisaActual}`;
                 }
             });
@@ -8793,6 +8800,7 @@
                     el.innerText = `${simbolo}${nuevoPrecio} ${divisaActual} PRECIO REGULAR`;
                 }
             });
+            if (typeof stwActualizarMoneda === 'function') stwActualizarMoneda();
         }
 
         // Filtra y renderiza la tienda por SECCIÓN (no por tipo de cosmético)
@@ -9020,6 +9028,7 @@
             actualizarCarrito(); 
         }
         function actualizarCarrito() {
+            recalcularPreciosSTW();
             const count = carrito.length;
             document.getElementById('cart-count').innerText = count;
             var badgeFloat = document.getElementById('cart-badge-float');
@@ -9068,7 +9077,7 @@
                         ${rarityTxt ? `<span class="cart-item-rarity">${rarityTxt}</span>` : ''}
                         <div class="cart-item-bottom-row">
                             ${vbucksNum > 0 ? `<div class="cart-item-vbucks"><img loading="lazy" decoding="async" src="https://logodix.com/logo/803916.png" alt="V-Bucks"><span>${vbucksNum.toLocaleString()}</span></div>` : '<span></span>'}
-                            <span class="cart-item-price">${simbolo}${(parseFloat(item.precio) * tasa).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
+                            <span class="cart-item-price">${simbolo}${(parseFloat(item.precio) * tasaItem(item)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</span>
                         </div>
                     </div>
                 </div>
@@ -9077,7 +9086,7 @@
 
             carrito.forEach(item => { totalV += parseInt(item.vbucks || 0); totalD += parseFloat(item.precio || 0); });
             document.getElementById('total-pavos').innerText = totalV.toLocaleString();
-            document.getElementById('total-dinero').innerText = `${simbolo}${(totalD * tasa).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} ${divisaActual}`;
+            document.getElementById('total-dinero').innerText = `${simbolo}${(totalMostrado()).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} ${divisaActual}`;
             localStorage.setItem('carrito', JSON.stringify(carrito));
             sincronizarBotonesCarrito();
         }
@@ -9405,7 +9414,7 @@
             
             let totalSum = 0;
             carrito.forEach(i => { if (i.precio !== 'Consultar') totalSum += parseFloat(i.precio); });
-            const total = Math.round(totalSum);
+            const total = Math.round(totalSum * 100) / 100;
 
             // Estado de carga
             btnFinal.disabled = true;
@@ -9562,7 +9571,7 @@
 
             let totalSum = 0;
             carrito.forEach(i => { if (i.precio !== 'Consultar') totalSum += parseFloat(i.precio); });
-            const total = Math.round(totalSum);
+            const total = Math.round(totalSum * 100) / 100;
 
             const mensaje = construirMensajePedidoWhatsApp({
                 nombre: nombre,
@@ -9644,7 +9653,7 @@
                             <span class="co-cart-name" title="${item.nombre}">${item.nombre}</span>
                             ${rarTxt ? `<span class="co-cart-rarity">${rarTxt}</span>` : ''}
                         </div>
-                        <strong class="co-cart-price">${simbolo}${(precioItem * tasa).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong>
+                        <strong class="co-cart-price">${simbolo}${(precioItem * tasaItem(item)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}</strong>
                     </div>`;
             };
 
@@ -9666,7 +9675,7 @@
             if (productosListaPaso) productosListaPaso.innerHTML = html;
             if (productosLista)     productosLista.innerHTML     = html;
 
-            const totalStr = `${simbolo}${(subtotal * tasa).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} ${divisaActual}`;
+            const totalStr = `${simbolo}${(totalMostrado()).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})} ${divisaActual}`;
             if (subtotalResumen) subtotalResumen.innerText = totalStr;
             if (totalResumen)    totalResumen.innerText    = totalStr;
             if (subtotalDinero)  subtotalDinero.innerText  = totalStr;
@@ -9984,9 +9993,39 @@
         }
         function stwImgOk(u) { return typeof u === 'string' && /^(https:\/\/|stock\/)/i.test(u.trim()); }
 
+        const STW_MXN_POR_USD = 21, STW_PRECIO_MXN = 385, STW_PAR_MXN = 550;
+        // Tasa por artículo: las cuentas STW usan 1 USD = 21 MXN; lo demás usa la tasa general
+        function tasaItem(item) { return (item && item.tipo === 'cuenta-stw' && divisaActual === 'MXN') ? STW_MXN_POR_USD : (tasas[divisaActual] || 1); }
+        function stwPrecioUSD(c) { const m = parseFloat(c.precio_mxn); return isNaN(m) ? parseFloat(c.precio) : m / STW_MXN_POR_USD; }
+        // 385 MXN cada una, 2 por 550 MXN (se reparte entre las cuentas STW del carrito)
+        function recalcularPreciosSTW() {
+            const stw = carrito.filter(i => i && i.tipo === 'cuenta-stw');
+            const enPares = Math.floor(stw.length / 2) * 2;
+            stw.forEach((it, idx) => { it.precio = String((idx < enPares ? STW_PAR_MXN / 2 : STW_PRECIO_MXN) / STW_MXN_POR_USD); });
+        }
+        function totalMostrado() { return carrito.reduce((s, i) => s + (i.precio === 'Consultar' ? 0 : parseFloat(i.precio) * tasaItem(i)), 0); }
+        let stwUltimaDivisa = null;
+        function stwFmt(usd) {
+            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
+            const t = divisaActual === 'MXN' ? STW_MXN_POR_USD : (tasas[divisaActual] || 1);
+            return simbolo + (usd * t).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 }) + ' ' + divisaActual;
+        }
+        function stwActualizarMoneda() {
+            const lbl = document.getElementById('stw-moneda-label'); if (lbl) lbl.textContent = 'Precio (' + divisaActual + ')';
+            const promo = document.getElementById('stw-promo');
+            if (promo) promo.innerHTML = '<strong>' + stwFmt(STW_PRECIO_MXN / STW_MXN_POR_USD) + '</strong> cada una &middot; <strong>2 por ' + stwFmt(STW_PAR_MXN / STW_MXN_POR_USD) + '</strong>';
+            if (stwUltimaDivisa !== null && stwUltimaDivisa !== divisaActual) {
+                stwUltimaDivisa = divisaActual;
+                ['stw-min', 'stw-max'].forEach(id => { const e = document.getElementById(id); if (e) e.value = ''; });
+                stwFiltro.min = null; stwFiltro.max = null;
+                if (stwCargado) renderCuentasSTW();
+            }
+            stwUltimaDivisa = divisaActual;
+        }
+
         let stwFiltro = { min: null, max: null, solo: false };
         function stwPasaFiltro(c) {
-            const p = parseFloat(c.precio);
+            const p = stwPrecioUSD(c) * tasaItem({ tipo: 'cuenta-stw' });
             if (stwFiltro.solo && String(c.estado || '').toLowerCase() === 'vendida') return false;
             if (stwFiltro.min != null && !(p >= stwFiltro.min)) return false;
             if (stwFiltro.max != null && !(p <= stwFiltro.max)) return false;
@@ -10008,6 +10047,7 @@
         }
 
         async function cargarCuentasSTW(forzar) {
+            stwActualizarMoneda();
             const grid = document.getElementById('stw-grid');
             if (!grid) return;
             if (stwCargado && !forzar) { renderCuentasSTW(); return; }
@@ -10048,7 +10088,7 @@
                 const vendida = String(c.estado || '').toLowerCase() === 'vendida';
                 const imgs = (c.imagenes || []).filter(stwImgOk);
                 const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
-                const precio = parseFloat(c.precio);
+                const precio = stwPrecioUSD(c);
                 const card = document.createElement('div');
                 card.className = 'stw-card' + (vendida ? ' vendida' : '');
                 card.innerHTML =
@@ -10060,7 +10100,7 @@
                     '<div class="stw-card-body">' +
                         '<h3>' + stwEsc(c.titulo) + '</h3>' +
                         (feats.length ? '<ul class="stw-chips">' + feats.slice(0, 4).map(f => '<li>' + stwEsc(f) + '</li>').join('') + (feats.length > 4 ? '<li class="mas">+' + (feats.length - 4) + ' m\u00e1s</li>' : '') + '</ul>' : '') +
-                        (isNaN(precio) ? '' : '<span class="precio-producto" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
+                        (isNaN(precio) ? '' : '<span class="precio-producto" data-stw="1" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
                         '<button type="button" class="btn-outline-mint">' + (vendida ? 'Ver detalles' : 'Ver detalles') + '</button>' +
                     '</div>';
                 const img = card.querySelector('.stw-card-img img');
@@ -10078,7 +10118,7 @@
             const vendida = String(c.estado || '').toLowerCase() === 'vendida';
             const imgs = (c.imagenes || []).filter(stwImgOk);
             const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
-            const precio = parseFloat(c.precio);
+            const precio = stwPrecioUSD(c);
             const nombreCarrito = 'Cuenta STW: ' + c.titulo + (c.id ? ' (' + c.id + ')' : '');
 
             box.innerHTML =
@@ -10089,7 +10129,7 @@
                 '</div>' +
                 '<div class="stw-info">' +
                     '<h3>' + stwEsc(c.titulo) + '</h3>' +
-                    (isNaN(precio) ? '' : '<span class="stw-precio precio-producto" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
+                    (isNaN(precio) ? '' : '<span class="stw-precio precio-producto" data-stw="1" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
                     (c.descripcion ? '<div class="stw-desc">' + stwEsc(c.descripcion) + '</div>' : '') +
                     (feats.length ? '<ul class="stw-feat">' + feats.map(f => '<li><i class="fas fa-check"></i><span>' + stwEsc(f) + '</span></li>').join('') + '</ul>' : '') +
                     '<div class="stw-acciones"></div>' +
