@@ -4409,6 +4409,16 @@
   #shegos-bots-section{grid-template-columns:minmax(0,1fr)}
   #shegos-bots-section .sb-hero,#shegos-bots-section .sb-col-form,#shegos-bots-section .sb-col-bots,#shegos-bots-section .sb-steps-inline{grid-column:1;grid-row:auto}
 }
+
+/* cuentas: filas compactas con banner de nombre */
+#shegos-bots-section .sb-bots-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+#shegos-bots-section .sb-bot-card{flex-direction:row;align-items:stretch;height:72px;border-radius:14px}
+#shegos-bots-section .sb-bot-card:hover{transform:translateX(3px)}
+#shegos-bots-section .sb-bot-icon{width:72px;height:72px;flex:none;aspect-ratio:auto;font-size:1.7em}
+#shegos-bots-section .sb-bot-info{flex:1;min-width:0;justify-content:center;padding:0 110px 0 16px;background:linear-gradient(90deg,rgba(31,209,143,.22),rgba(31,209,143,.04))}
+#shegos-bots-section .sb-bot-card.offline .sb-bot-info{background:linear-gradient(90deg,rgba(125,122,147,.22),rgba(125,122,147,.04))}
+#shegos-bots-section .sb-bot-name{font-size:1em;font-weight:700}
+#shegos-bots-section .sb-bot-badge{top:50%;left:auto;right:14px;transform:translateY(-50%)}
 </style>
 </head>
 <body>
