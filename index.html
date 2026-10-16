@@ -23,7 +23,7 @@
     <link rel="dns-prefetch" href="https://fortnite-api.com">
     <!-- Precarga la PRIMERA imagen de fondo del hero con máxima prioridad, para que
          no tarde en aparecer al refrescar (antes se cargaban 6 fondos en fila) -->
-    <link rel="preload" as="image" href="img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp" fetchpriority="high">
+    <link rel="preload" as="image" href="https://cdn1.epicgames.com/spt-assets/prod-fn/FNBR_42-30_Fortnitemares_KeyArt_Fortnitemares_EGS_Launcher_Blade_2560x1440-cj2u6.jpg?resize=1&w=1280&h=720&quality=medium" fetchpriority="high">
     <meta property="og:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
     <meta property="og:description" content="Shegos Store | Fortnite">
     <meta property="og:type" content="website">
@@ -1947,6 +1947,51 @@
         .codpoints-ahorra { display: inline-block; background: rgba(34,197,94,0.12); color: #4ade80; font-size: 0.75em; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 4px; width: fit-content; }
         .codpoints-card .btn-outline-mint { margin-top: 18px; width: 100%; }
         .club-img-16-9 { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; margin-bottom: 5px; }
+
+        /* ===== CLUB DE FORTNITE: HERO + PRECIOS AL DESLIZAR ===== */
+        .club-hero { position: relative; min-height: calc(100vh - 130px); display: flex; flex-direction: column; justify-content: center; gap: 36px; padding: 10px 0 70px; }
+        .club-hero-main { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; max-width: 1180px; margin: 0 auto; width: 100%; }
+        .club-hero-title { font-family: 'BurbankBigCondensed', 'Anton', sans-serif; font-size: clamp(4rem, 9vw, 7rem); line-height: .85; margin: 0 0 6px; letter-spacing: 2px; color: #fff; }
+        .club-hero-title small { display: block; font-size: .42em; letter-spacing: 3px; margin-top: 4px; }
+        .club-hero-lema { font-size: 1.15em; font-weight: 600; margin: 16px 0 10px; }
+        .club-hero-desc { color: #ddd; line-height: 1.7; margin: 0 0 12px; max-width: 520px; }
+        .club-hero-desc strong { color: #00A676; }
+        .club-hero-nota { font-size: .78em; font-style: italic; color: #c9a6ff; margin: 0 0 22px; }
+        .club-hero-btn { background: #f5e50a; color: #1a1a1a; border: none; padding: 15px 30px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: transform .2s ease, filter .2s ease; }
+        .club-hero-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .club-hero-img { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); background: linear-gradient(135deg, rgba(150,40,80,.5), rgba(50,25,100,.5)); }
+        .club-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; }
+        .club-hero-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1180px; margin: 0 auto; width: 100%; }
+        .club-tile { border-radius: 12px; padding: 22px 12px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,.08); }
+        .club-tile i { font-size: 2.2em; filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); }
+        .club-tile span { font-weight: 700; font-size: .85em; }
+        .club-tile.t1 { background: linear-gradient(160deg, #f4b73a, #c9741a); }
+        .club-tile.t2 { background: linear-gradient(160deg, #35c2ee, #1a6fb8); }
+        .club-tile.t3 { background: linear-gradient(160deg, #b34cf0, #5a1fa8); }
+        .club-tile.t4 { background: linear-gradient(160deg, #2fbf71, #0d6e42); }
+        .club-scroll-arrow { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 46px; height: 46px; border-radius: 50%; border: 1px solid rgba(255,255,255,.25); background: rgba(18,8,26,.75); color: #fff; cursor: pointer; animation: clubRebote 1.6s ease-in-out infinite; }
+        @keyframes clubRebote { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 7px); } }
+        .club-precios { scroll-margin-top: 100px; padding: 30px 0 60px; min-height: 80vh; }
+        .club-tabs { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+        .club-tab { background: #1c0e22; border: 1px solid #3a2545; color: #c9a6ff; border-radius: 10px; padding: 12px 22px; font-weight: 700; font-family: 'Poppins', sans-serif; cursor: pointer; text-transform: uppercase; font-size: .8em; letter-spacing: .5px; transition: background .25s, color .25s; }
+        .club-tab small { display: block; font-weight: 500; font-size: .85em; text-transform: none; opacity: .75; margin-top: 2px; }
+        .club-tab.activo { background: #00A676; border-color: #00A676; color: #12081a; }
+        .club-panel { display: none; }
+        .club-panel.activo { display: block; }
+        .club-panel-desc { text-align: center; color: #bbb; font-size: .9em; margin: 0 0 6px; }
+        .club-reveal-on .club-panel .servicio-card { opacity: 0; transform: translateY(46px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+        .club-reveal-on.visible .club-panel .servicio-card { opacity: 1; transform: none; }
+        .club-reveal-on.visible .club-panel .servicio-card:nth-child(2) { transition-delay: .08s; }
+        .club-reveal-on.visible .club-panel .servicio-card:nth-child(3) { transition-delay: .16s; }
+        .club-reveal-on.visible .club-panel .servicio-card:nth-child(4) { transition-delay: .24s; }
+        .club-reveal-on.visible .club-panel .servicio-card:nth-child(5) { transition-delay: .32s; }
+        .club-reveal-on.visible .club-panel .servicio-card:nth-child(6) { transition-delay: .40s; }
+        @media (max-width: 800px) {
+            .club-hero { min-height: auto; padding-bottom: 80px; }
+            .club-hero-main { grid-template-columns: 1fr; gap: 22px; }
+            .club-hero-img { order: -1; }
+            .club-hero-tiles { grid-template-columns: repeat(2, 1fr); }
+        }
 
         /* GRID 4 COLUMNAS - FORTNITE CREW / CLUB */
         .club-grid-3 { display: grid; grid-template-columns: repeat(4, 260px); justify-content: center; gap: 20px; margin-top: 20px; }
@@ -4227,16 +4272,15 @@
     <script>
     /* ── Rotador de fondo con crossfade (estilo Fortnite.com) ── */
     (function () {
-        // Imágenes locales del rotador de fondo. Ya no se intenta traer el
-        // arte oficial desde fortnite-api.com (esa llamada se eliminó por
-        // completo): el fondo rota únicamente entre estas imágenes locales.
+        // Imágenes del rotador de fondo (arte oficial de Epic Games, 1280x720).
+        // El fondo rota únicamente entre estas imágenes.
         const IMAGENES_RESPALDO = [
-            'img/FNECO_41-00_Unvaulted_WebCarousel_Background_1920x1080.webp',
-            'img/FNECO_41-10_ChefTarTar_WebCarousel_Background_1920x1080.webp',
-            'img/FNECO_41-10_Trolley_WebCarousel_Background_1920x1080.webp',
-            'img/FNECO_41-10_Vigor_WebCarousel_Background_1920x1080.webp',
-            'img/FNSP_41-10_PearlTaffy_VisID_2UP_WebCarousel_Background_1920x1080.webp',
-            'img/fortnite-runners-keyart-webheader.webp'
+            'https://cdn1.epicgames.com/spt-assets/prod-fn/FNBR_42-30_Fortnitemares_KeyArt_Fortnitemares_EGS_Launcher_Blade_2560x1440-cj2u6.jpg?resize=1&w=1280&h=720&quality=medium',
+            'https://cdn2.unrealengine.com/es-es-fn-og-42-10-c1sx-egs-launcher-blade-2560x1440-2560x1440-625c9a2c0bb2.jpg?resize=1&w=1280&h=720&quality=medium',
+            'https://cdn2.unrealengine.com/fnjn-33-10-stormking-egs-launcher-keyart-blade-2560x1440-2560x1440-c49d4cb08041.jpg?resize=1&w=1280&h=720&quality=medium',
+            'https://cdn2.unrealengine.com/es-es-fnbr-40-10-arenas-visid-egs-launcher-blade-2560x1440-2560x1440-d26bf2668ffb.jpg?resize=1&w=1280&h=720&quality=medium',
+            'https://cdn2.unrealengine.com/fneco-36-10-forbiddenfruit-egs-launcher-keyart-blade-2560x1440-2560x1440-5c5e029c1dcc.jpg?resize=1&w=1280&h=720&quality=medium',
+            'https://cdn1.epicgames.com/spt-assets/prod-fn/bricklife-3840x2160-3840x2160-75468b4e1f81-1coyz.jpg?resize=1&w=1280&h=720&quality=medium'
         ];
         const INTERVALO = 8000; // 8 segundos entre cambios
 
@@ -4872,11 +4916,37 @@
 
             <div id="sub-club" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <h2 style="margin-bottom: 5px;">Fortnite Crew</h2>
-                <p style="color: #00A676; font-size: 0.9em; margin-bottom: 10px; font-weight: 500;">MÉTODO XBOX · Sin necesidad de datos de acceso</p>
-                
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px;">Opción 1: Cuentas Nuevas / Sin Error</h4>
-                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Para cuentas que no tienen problemas de región.</p>
+
+                <!-- HERO DEL CLUB -->
+                <section id="club-hero" class="club-hero">
+                    <div class="club-hero-main">
+                        <div class="club-hero-text">
+                            <h2 class="club-hero-title">CLUB<small>DE FORTNITE</small></h2>
+                            <p class="club-hero-lema">La oferta de Fortnite definitiva</p>
+                            <p class="club-hero-desc">Suscripción a Fortnite Crew por <strong>método Xbox</strong>, sin necesidad de datos de acceso en cuentas nuevas. Obtén el pase de batalla del mes, objetos especiales y Monedas V cada mes.</p>
+                            <p class="club-hero-nota">*El contenido mensual del Club de Fortnite está sujeto a cambios.</p>
+                            <button class="club-hero-btn" onclick="clubIrAPrecios()">Ver precios</button>
+                        </div>
+                        <div class="club-hero-img"><img decoding="async" src="fortnite-crew-cover.png" alt="Fortnite Crew"></div>
+                    </div>
+                    <div class="club-hero-tiles">
+                        <div class="club-tile t1"><i class="fas fa-star"></i><span>Pase de batalla</span></div>
+                        <div class="club-tile t2"><i class="fas fa-coins"></i><span>Monedas V cada mes</span></div>
+                        <div class="club-tile t3"><i class="fas fa-gift"></i><span>Objetos especiales</span></div>
+                        <div class="club-tile t4"><i class="fab fa-xbox"></i><span>Método Xbox</span></div>
+                    </div>
+                    <button class="club-scroll-arrow" onclick="clubIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
+                </section>
+
+                <!-- PRECIOS (aparecen al deslizar) -->
+                <section id="club-precios" class="club-precios">
+                    <div class="club-tabs">
+                        <button id="club-tab-nuevo" class="club-tab activo" onclick="clubTab('nuevo')">Cuentas nuevas<small>Sin error</small></button>
+                        <button id="club-tab-error" class="club-tab" onclick="clubTab('error')">Cuentas viejas<small>Con error de región</small></button>
+                    </div>
+
+                    <div id="club-panel-nuevo" class="club-panel activo">
+                <p class="club-panel-desc">Para cuentas que no tienen problemas de región. Se usa el método Xbox, sin pedirte datos de acceso.</p>
                 <div class="club-grid-3">
                     <div class="servicio-card">
                         <img loading="lazy" decoding="async" src="fortnite-crew-cover.png" class="club-img-16-9">
@@ -4916,7 +4986,10 @@
                     </div>
                 </div>
 
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px;">Opción 2: Cuentas Viejas / Con Error de Región</h4>
+                </div>
+                    </div>
+
+                    <div id="club-panel-error" class="club-panel">
                 <div class="alerta-warning">
                     <i class="fas fa-exclamation-triangle"></i>
                     <span>Para esta opción <strong>SI</strong> se requiere acceso a la cuenta de Xbox (Correo y Contraseña).</span>
@@ -4959,7 +5032,9 @@
                         <button class="btn-outline-mint" data-item-nombre="Club (Con Error) - 6 Meses" onclick="agregarAlCarrito('Club (Con Error) - 6 Meses', '50', 'fortnite-crew-cover.png', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
-                </div>
+                    </div>
+                </section>
+            </div>
 
             <div id="sub-pases" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
@@ -12106,6 +12181,52 @@ function mostrarModalCapturaMovil(url) {
             if (_ruta === 'alertas-stw') cargarAlertasSTW();
             if (_ruta === 'sprites') cargarSprites();
         });
+    })();
+    </script>
+    <script>
+    /* Club de Fortnite: al bajar con la rueda / deslizar en el hero, salta a los precios */
+    (function () {
+        var lock = false, touchY = null;
+        function activo() { var c = document.getElementById('sub-club'); return !!(c && c.style.display === 'block' && c.offsetParent !== null); }
+        function el(id) { return document.getElementById(id); }
+        function enHero() { var h = el('club-hero'); if (!h) return false; var r = h.getBoundingClientRect(); return r.top > -40 && r.bottom > window.innerHeight * 0.55; }
+        function enPreciosArriba() { var p = el('club-precios'); if (!p) return false; var r = p.getBoundingClientRect(); return r.top > -20 && r.top < 180; }
+        function bloquear() { lock = true; setTimeout(function () { lock = false; }, 900); }
+        window.clubIrAPrecios = function () { var p = el('club-precios'); if (!p) return; bloquear(); p.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        window.clubIrAlInicio = function () { bloquear(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+        window.clubTab = function (cual) {
+            ['nuevo', 'error'].forEach(function (k) {
+                el('club-tab-' + k).classList.toggle('activo', k === cual);
+                el('club-panel-' + k).classList.toggle('activo', k === cual);
+            });
+            var p = el('club-precios'); p.classList.remove('visible'); void p.offsetWidth; p.classList.add('visible');
+        };
+        document.addEventListener('DOMContentLoaded', function () {
+            var p = el('club-precios'); if (!p) return;
+            p.classList.add('club-reveal-on');
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver(function (en) {
+                    en.forEach(function (x) {
+                        if (x.isIntersecting) p.classList.add('visible');
+                        else if (x.boundingClientRect.top > 0) p.classList.remove('visible');
+                    });
+                }, { threshold: 0.15 }).observe(p);
+            } else { p.classList.add('visible'); }
+        });
+        window.addEventListener('wheel', function (e) {
+            if (!activo()) return;
+            if (lock) { e.preventDefault(); return; }
+            if (e.deltaY > 10 && enHero()) { e.preventDefault(); clubIrAPrecios(); }
+            else if (e.deltaY < -10 && enPreciosArriba()) { e.preventDefault(); clubIrAlInicio(); }
+        }, { passive: false });
+        window.addEventListener('touchstart', function (e) { touchY = e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
+        window.addEventListener('touchmove', function (e) {
+            if (!activo() || touchY === null || e.touches.length !== 1) return;
+            var dy = touchY - e.touches[0].clientY;
+            if (lock) { e.preventDefault(); return; }
+            if (dy > 45 && enHero()) { e.preventDefault(); touchY = null; clubIrAPrecios(); }
+            else if (dy < -45 && enPreciosArriba()) { e.preventDefault(); touchY = null; clubIrAlInicio(); }
+        }, { passive: false });
     })();
     </script>
     <script>
