@@ -1,4 +1,205 @@
-{
-  "album": "",
-  "cuentas": []
-}
+[
+  {
+    "id": "stw-84",
+    "titulo": "Cuenta STW 84 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "84 skins",
+      "PC",
+      "OG STW",
+      "Eon",
+      "Peter Griffin",
+      "Spectra Knight",
+      "Omegarok"
+    ],
+    "imagenes": [
+      "stock/cuenta-84.png"
+    ]
+  },
+  {
+    "id": "stw-24",
+    "titulo": "Cuenta STW 24 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "24 skins",
+      "OG STW",
+      "Sin acceso a Social Club"
+    ],
+    "imagenes": [
+      "stock/cuenta-24.png"
+    ]
+  },
+  {
+    "id": "stw-45",
+    "titulo": "Cuenta STW 45 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "45 skins"
+    ],
+    "imagenes": [
+      "stock/cuenta-45.png"
+    ]
+  },
+  {
+    "id": "stw-66",
+    "titulo": "Cuenta STW 66 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "66 skins"
+    ],
+    "imagenes": [
+      "stock/cuenta-66.png"
+    ]
+  },
+  {
+    "id": "stw-67a",
+    "titulo": "Cuenta STW 67 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "67 skins"
+    ],
+    "imagenes": [
+      "stock/cuenta-67a.png"
+    ]
+  },
+  {
+    "id": "stw-87",
+    "titulo": "Cuenta STW 87 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "87 skins",
+      "Sin acceso a Social Club"
+    ],
+    "imagenes": [
+      "stock/cuenta-87.png"
+    ]
+  },
+  {
+    "id": "stw-89",
+    "titulo": "Cuenta STW 89 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "89 skins",
+      "Trailblazer",
+      "Havoc",
+      "Sub Commander",
+      "OG STW",
+      "Sin acceso a Social Club"
+    ],
+    "imagenes": [
+      "stock/cuenta-89.png"
+    ]
+  },
+  {
+    "id": "stw-115",
+    "titulo": "Cuenta STW 115 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "115 skins",
+      "Take The L",
+      "Omega (etapa 5)",
+      "Point Patroller",
+      "Sub Commander",
+      "Prodigy",
+      "Trailblazer"
+    ],
+    "imagenes": [
+      "stock/cuenta-115.png"
+    ]
+  },
+  {
+    "id": "stw-67b",
+    "titulo": "Cuenta STW 67 skins + 1.800 V-Bucks",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "67 skins",
+      "1.800 V-Bucks",
+      "Rose Team Leader",
+      "Warpaint"
+    ],
+    "imagenes": [
+      "stock/cuenta-67b.png"
+    ]
+  },
+  {
+    "id": "stw-108",
+    "titulo": "Cuenta STW 108 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "108 skins"
+    ],
+    "imagenes": [
+      "stock/cuenta-108.png"
+    ]
+  },
+  {
+    "id": "stw-26",
+    "titulo": "Cuenta STW 26 skins + 500 V-Bucks",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "26 skins",
+      "500 V-Bucks",
+      "Rose Team Leader",
+      "Warpaint",
+      "Final Fantasy VII Remake Intergrade",
+      "Sin acceso a Social Club"
+    ],
+    "imagenes": [
+      "stock/cuenta-26.png"
+    ]
+  },
+  {
+    "id": "stw-139",
+    "titulo": "Cuenta STW 139 skins + 200 V-Bucks",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "139 skins",
+      "200 V-Bucks",
+      "Rose Team Leader",
+      "Warpaint",
+      "Inactiva 329 días"
+    ],
+    "imagenes": [
+      "stock/cuenta-139.png"
+    ]
+  },
+  {
+    "id": "stw-3",
+    "titulo": "Cuenta STW OG 3 skins",
+    "precio": null,
+    "estado": "disponible",
+    "descripcion": "",
+    "caracteristicas": [
+      "3 skins",
+      "OG STW",
+      "Sin acceso a Social Club"
+    ],
+    "imagenes": [
+      "stock/cuenta-3.png"
+    ]
+  }
+]
