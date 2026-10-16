@@ -4370,6 +4370,32 @@
 }
 </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+<style id="sb-redesign">
+#shegos-bots-section .sb-badge,#shegos-bots-section .sb-col-title{display:none}
+#shegos-bots-section .sb-hero{text-align:left;max-width:1100px;margin:0 auto;padding:clamp(18px,3vh,36px) 8px 0}
+#shegos-bots-section .sb-hero::before{display:none}
+#shegos-bots-section .sb-title{font-family:'Anton','Bebas Neue',Impact,sans-serif;font-weight:400;font-size:clamp(2.6em,6vw,4.6em);line-height:.95;letter-spacing:.5px;margin-bottom:12px}
+#shegos-bots-section .sb-title span{background:none;-webkit-text-fill-color:#fff;color:#fff}
+#shegos-bots-section .sb-subtitle{margin:0 0 22px;max-width:560px;text-align:left;font-size:.95em;color:#a9a3c7}
+#shegos-bots-section .sb-two-col{grid-template-columns:1fr;gap:18px;max-width:1100px}
+#shegos-bots-section .sb-col-form{position:static}
+#shegos-bots-section .sb-card,#shegos-bots-section .sb-section{background:rgba(18,14,36,.78);border:1px solid rgba(255,255,255,.09);border-radius:20px}
+#shegos-bots-section .sb-btn{background:#f6e400;color:#16130a;border-radius:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+#shegos-bots-section .sb-btn:hover{filter:brightness(1.07)}
+#shegos-bots-section .sb-steps-inline{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+#shegos-bots-section .sb-section-title::before{display:none}
+#shegos-bots-section .sb-section-title{font-size:1.15em;font-weight:700;text-transform:none;letter-spacing:0}
+#shegos-bots-section .sb-bots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;justify-content:stretch}
+#shegos-bots-section .sb-bot-card{width:auto;align-items:stretch;gap:0;background:#15112b;border:1px solid rgba(255,255,255,.09);border-radius:16px;overflow:hidden;transition:transform .18s,border-color .18s}
+#shegos-bots-section .sb-bot-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.22)}
+#shegos-bots-section .sb-bot-icon{width:100%;height:auto;aspect-ratio:1;border:0;border-radius:0;font-size:3em;font-family:'Anton',Impact,sans-serif;background:linear-gradient(160deg,#4a2a9a,#120d28)}
+#shegos-bots-section .sb-bot-info{align-items:flex-start;padding:12px 14px;background:rgba(255,255,255,.04)}
+#shegos-bots-section .sb-bot-name{font-size:.88em;font-weight:600;text-align:left}
+#shegos-bots-section .sb-bot-badge{position:absolute;top:10px;left:10px;padding:4px 10px;border-radius:999px;background:rgba(8,6,20,.75);backdrop-filter:blur(6px);font-size:.62em}
+#shegos-bots-section .sb-bot-card.offline .sb-bot-icon{opacity:.4}
+@media(max-width:820px){#shegos-bots-section .sb-steps-inline{grid-template-columns:1fr}#shegos-bots-section .sb-bots-grid{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){#shegos-bots-section .sb-bot-card{transition:none}#shegos-bots-section .sb-bot-card:hover{transform:none}}
+</style>
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -10729,12 +10755,14 @@ function mostrarModalCapturaMovil(url) {
         sbRenderBots(BOTS,[]);
       }
       var SB_AVATAR_MAP = {
-        'denissa_7u7': 'https://image.fnbr.co/outfit/60d1c144de073f4914af137d/icon.png',
+        'shegos么1': 'https://fortnite-api.com/images/cosmetics/br/character_vibrantshell/icon.png',
+        'shegos么2': 'https://fortnite-api.com/images/cosmetics/br/character_cherryknot/icon.png',
+        'shegos么3': 'https://fortnite-api.com/images/cosmetics/br/character_rampagediva_jade/icon.png',
+        'denissa_7u7': 'https://fortnite.gg/img/items/5786/icon.jpg?9',
         'maidas-s': 'https://image.fnbr.co/outfit/5ae89ec5f3d31b2467c5b7fe/icon.png',
-        'maidas-os': 'https://image.fnbr.co/outfit/68c143214ed974745dee0627/icon.png',
-        'shegos么1': 'https://image.fnbr.co/outfit/6a05ce97774055558edead8f/icon.png',
-        'shegos么2': 'https://image.fnbr.co/outfit/67daf3c99f9a1958c127b6f7/icon.png'
+        'maidas-os': 'https://image.fnbr.co/outfit/68c143214ed974745dee0627/icon.png'
       };
+      var SB_ORDER = ['shegos么1','shegos么2','shegos么3','denissa_7u7','maidas-s','maidas-os'];
       var SB_AVATARS_FALLBACK = [
         'https://image.fnbr.co/outfit/5d8b2a91c9f11962a25197a7/icon.png',
         'https://image.fnbr.co/outfit/60d1c144de073f4914af137d/icon.png',
@@ -10748,6 +10776,7 @@ function mostrarModalCapturaMovil(url) {
         if (SB_AVATAR_MAP[key]) return SB_AVATAR_MAP[key];
         if (/shegos.*1$/.test(key)) return SB_AVATAR_MAP['shegos么1'];
         if (/shegos.*2$/.test(key)) return SB_AVATAR_MAP['shegos么2'];
+        if (/shegos.*3$/.test(key)) return SB_AVATAR_MAP['shegos么3'];
         if (/^maidas[-_]?s$/.test(key)) return SB_AVATAR_MAP['maidas-s'];
         if (/^maidas[-_]?os$/.test(key)) return SB_AVATAR_MAP['maidas-os'];
         var hash=0; for(var i=0;i<n.length;i++){ hash=(hash*31+n.charCodeAt(i))>>>0; }
@@ -10762,9 +10791,14 @@ function mostrarModalCapturaMovil(url) {
       function sbRenderBots(on,off){
         var g=document.getElementById("sb-bots-grid"); if(!g) return;
         var d=sbDedupe(on,off); on=d[0]; off=d[1];
+        var items=on.map(function(n){return {n:n,on:true};}).concat(off.map(function(n){return {n:n,on:false};}));
+        function rank(n){ var i=SB_ORDER.indexOf(n.trim().toLowerCase()); return i<0?99:i; }
+        items.sort(function(a,b){ return rank(a.n)-rank(b.n); });
         var h="";
-        on.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';p.removeAttribute(\'style\');}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge online"><span class="sb-dot online"></span> Online</span></div>'; });
-        off.forEach(function(n){ var ini=n.charAt(0).toUpperCase(); var av=sbAvatarFor(n); h+='<div class="sb-bot-card offline"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';p.removeAttribute(\'style\');}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span><span class="sb-bot-plat">Epic Games</span></div><span class="sb-bot-badge offline"><span class="sb-dot offline"></span> Offline</span></div>'; });
+        items.forEach(function(it){
+          var n=it.n, ini=n.charAt(0).toUpperCase(), av=sbAvatarFor(n), st=it.on?"online":"offline", lbl=it.on?"Online":"Offline";
+          h+='<div class="sb-bot-card'+(it.on?'':' offline')+'"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span></div><span class="sb-bot-badge '+st+'"><span class="sb-dot '+st+'"></span> '+lbl+'</span></div>';
+        });
         g.innerHTML=h;
         var pill=document.getElementById("sb-count-pill");
         if(pill && pill.style.display!=="none"){ pill.textContent=on.length+"/"+(on.length+off.length)+" ONLINE"; }
