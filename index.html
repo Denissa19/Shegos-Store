@@ -4897,7 +4897,8 @@
                       <h3 style="font-size:1.2em;font-weight:800;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px">¡Solicitud Enviada!</h3>
                       <p style="color:#666;font-size:0.82em;margin-bottom:4px">Solicitudes enviadas desde <strong id="sb-sent-count" style="color:#00A676">—</strong> cuenta(s) · Tiempo restante:</p>
                       <div class="sb-countdown" id="sb-timer">00:00:00</div>
-                      <p style="color:#555;font-size:0.75em">Acepta la solicitud en Fortnite para completar el proceso</p>
+                      <p style="color:#555;font-size:0.75em;margin-bottom:16px">Acepta la solicitud en Fortnite para completar el proceso</p>
+                      <button class="sb-btn-outline" onclick="sbReset()">Añadir otra cuenta</button>
                     </div>
 
                     <!-- YA AMIGO -->
@@ -9996,7 +9997,9 @@
         const STW_MXN_POR_USD = 21, STW_PRECIO_MXN = 385, STW_PAR_MXN = 550;
         // Tasa por artículo: las cuentas STW usan 1 USD = 21 MXN; lo demás usa la tasa general
         function tasaItem(item) { return (item && item.tipo === 'cuenta-stw' && divisaActual === 'MXN') ? STW_MXN_POR_USD : (tasas[divisaActual] || 1); }
-        function stwPrecioUSD(c) { const m = parseFloat(c.precio_mxn); return isNaN(m) ? parseFloat(c.precio) : m / STW_MXN_POR_USD; }
+        function stwPrecioUSD(c) { return STW_PRECIO_MXN / STW_MXN_POR_USD; }
+        const STW_DESCRIPCION = 'Full acceso\nPc, Xbox, NIntendo, Play\nCorreo Cambiable : No\nRecibiras tanto el acceso a epic games como el correo.\nVideo de la forma correcta de asegurar las cuentas.';
+        function stwFeats(c) { return (Array.isArray(c.caracteristicas) ? c.caracteristicas : []).filter(f => f && !/social\s*club/i.test(String(f))); }
         // 385 MXN cada una, 2 por 550 MXN (se reparte entre las cuentas STW del carrito)
         function recalcularPreciosSTW() {
             const stw = carrito.filter(i => i && i.tipo === 'cuenta-stw');
@@ -10087,7 +10090,7 @@
             lista.forEach(c => {
                 const vendida = String(c.estado || '').toLowerCase() === 'vendida';
                 const imgs = (c.imagenes || []).filter(stwImgOk);
-                const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
+                const feats = stwFeats(c);
                 const precio = stwPrecioUSD(c);
                 const card = document.createElement('div');
                 card.className = 'stw-card' + (vendida ? ' vendida' : '');
@@ -10117,7 +10120,7 @@
             if (!modal || !box || !c) return;
             const vendida = String(c.estado || '').toLowerCase() === 'vendida';
             const imgs = (c.imagenes || []).filter(stwImgOk);
-            const feats = Array.isArray(c.caracteristicas) ? c.caracteristicas.filter(Boolean) : [];
+            const feats = stwFeats(c);
             const precio = stwPrecioUSD(c);
             const nombreCarrito = 'Cuenta STW: ' + c.titulo + (c.id ? ' (' + c.id + ')' : '');
 
@@ -10130,7 +10133,7 @@
                 '<div class="stw-info">' +
                     '<h3>' + stwEsc(c.titulo) + '</h3>' +
                     (isNaN(precio) ? '' : '<span class="stw-precio precio-producto" data-stw="1" data-precio-usd="' + precio + '">$' + precio + ' USD</span>') +
-                    (c.descripcion ? '<div class="stw-desc">' + stwEsc(c.descripcion) + '</div>' : '') +
+                    '<div class="stw-desc">' + stwEsc(STW_DESCRIPCION) + '</div>' +
                     (feats.length ? '<ul class="stw-feat">' + feats.map(f => '<li><i class="fas fa-check"></i><span>' + stwEsc(f) + '</span></li>').join('') + '</ul>' : '') +
                     '<div class="stw-acciones"></div>' +
                 '</div>';
@@ -10693,29 +10696,8 @@ function mostrarModalCapturaMovil(url) {
         b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Verificando usuario...';
         var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando...'; },4000);
 
-        /* ── 1. Consultar Supabase: ¿ya fue agregado este usuario? ── */
-        try {
-          var { data: existing, error: dbErr } = await supabaseClient
-            .from('friend_requests')
-            .select('accounts_count')
-            .eq('username', username.toLowerCase())
-            .eq('platform', plataformaSeleccionada)
-            .maybeSingle();
-
-          if (!dbErr && existing) {
-            /* Ya está en la BD → mostrar "ya eres amigo" sin llamar al bot */
-            var ac=document.getElementById("sb-already-count");
-            if(ac) ac.textContent = existing.accounts_count || "nuestras";
-            clearTimeout(slowTimer);
-            b.disabled=false; b.innerHTML='Enviar solicitud';
-            sbShow("already");
-            return;
-          }
-        } catch(dbCheckErr) {
-          console.warn("No se pudo verificar BD:", dbCheckErr);
-          /* Si falla la consulta, continuar igualmente y llamar al bot */
-        }
-
+        /* El bot es la fuente de verdad: siempre se envía la solicitud (sin atajo por caché de BD) */
+        clearTimeout(slowTimer);
         b.innerHTML='<span class="sb-spin">⏳</span> Enviando solicitud...';
 
         /* ── 2. Timeout largo (45 s) para el cold-start de Render ── */
@@ -10738,13 +10720,13 @@ function mostrarModalCapturaMovil(url) {
             var sentCount=d.requests_sent||0;
             var count=alreadyCount>0?alreadyCount:sentCount;
             /* ── Guardar en Supabase para futuras consultas ── */
-            try {
+            if(count>0){ try {
               await supabaseClient.from('friend_requests').upsert({
                 username: username.toLowerCase(),
                 platform: plataformaSeleccionada,
                 accounts_count: count
               }, { onConflict: 'username,platform' });
-            } catch(saveErr){ console.warn("No se pudo guardar en BD:", saveErr); }
+            } catch(saveErr){ console.warn("No se pudo guardar en BD:", saveErr); } }
 
             if(alreadyCount>0){
               var ac=document.getElementById("sb-already-count"); if(ac) ac.textContent=alreadyCount;
@@ -10838,7 +10820,7 @@ function mostrarModalCapturaMovil(url) {
         finally{ clearTimeout(slowTimer); b.disabled=false; b.innerHTML='Enviar solicitud'; }
       };
 
-      window.sbReset=function(){ sbShow("form"); };
+      window.sbReset=function(){ if(timerId){ clearInterval(timerId); timerId=null; } try{ localStorage.removeItem("sbEnd"); localStorage.removeItem("sbCount"); }catch(_){} var e=document.getElementById("sb-error"); if(e) e.style.display="none"; sbShow("form"); var u=document.getElementById("sb-username"); if(u){ u.value=""; u.focus(); } };
       window.sbFaq=function(btn){ var body=btn.nextElementSibling; var o=body.classList.toggle("open"); btn.classList.toggle("open",o); };
 
       function sbShow(s){ ["form","countdown","already"].forEach(function(k){ var el=document.getElementById("sb-state-"+k); if(el) el.style.display=(k===s?"block":"none"); }); }
@@ -10861,7 +10843,7 @@ function mostrarModalCapturaMovil(url) {
         'shegos么1': 'https://fortnite-api.com/images/cosmetics/br/character_vibrantshell/icon.png',
         'shegos么2': 'https://fortnite-api.com/images/cosmetics/br/character_cherryknot/icon.png',
         'shegos么3': 'https://fortnite-api.com/images/cosmetics/br/character_rampagediva_jade/icon.png',
-        'denissa_7u7': 'https://fortnite.gg/img/items/5786/icon.jpg?9',
+        'denissa_7u7': 'https://image.fnbr.co/outfit/61840cb29af4f171914d8622/icon_192.png',
         'maidas-s': 'https://image.fnbr.co/outfit/5ae89ec5f3d31b2467c5b7fe/icon.png',
         'maidas-os': 'https://image.fnbr.co/outfit/68c143214ed974745dee0627/icon.png'
       };
