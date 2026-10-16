@@ -4419,6 +4419,11 @@
 #shegos-bots-section .sb-bot-card.offline .sb-bot-info{background:linear-gradient(90deg,rgba(125,122,147,.22),rgba(125,122,147,.04))}
 #shegos-bots-section .sb-bot-name{font-size:1em;font-weight:700}
 #shegos-bots-section .sb-bot-badge{top:50%;left:auto;right:14px;transform:translateY(-50%)}
+.stw-filtros{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;max-width:1300px;margin:0 auto 18px;font-family:'Poppins',sans-serif;font-size:14px;color:#fff}
+.stw-filtros input[type=number]{width:104px;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:#15112b;color:#fff;font:500 14px 'Poppins',sans-serif}
+.stw-filtros input:focus-visible,.stw-filtros button:focus-visible{outline:2px solid #f6e400;outline-offset:2px}
+.stw-filtros .stw-solo{display:flex;align-items:center;gap:6px;cursor:pointer}
+.stw-filtros button{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:transparent;color:#fff;font:600 13px 'Poppins',sans-serif;cursor:pointer}
 </style>
 </head>
 <body>
@@ -4966,6 +4971,13 @@
             <div class="stw-head">
                 <h2>Cuentas Fortnite Salvar el Mundo</h2>
                 <p>Cuentas STW listas para jugar. Toca una para ver todas sus fotos y características.</p>
+            </div>
+            <div class="stw-filtros">
+                <label>Precio (USD)</label>
+                <input id="stw-min" type="number" min="0" step="1" placeholder="Mín" oninput="stwAplicarFiltro()" aria-label="Precio mínimo">
+                <input id="stw-max" type="number" min="0" step="1" placeholder="Máx" oninput="stwAplicarFiltro()" aria-label="Precio máximo">
+                <label class="stw-solo"><input id="stw-solo" type="checkbox" onchange="stwAplicarFiltro()"> Solo disponibles</label>
+                <button type="button" onclick="stwLimpiarFiltro()">Limpiar</button>
             </div>
             <div id="stw-grid" class="stw-grid"></div>
         </div>
@@ -9970,7 +9982,30 @@
         function stwEsc(t) {
             return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
-        function stwImgOk(u) { return typeof u === 'string' && /^https:\/\//i.test(u.trim()); }
+        function stwImgOk(u) { return typeof u === 'string' && /^(https:\/\/|stock\/)/i.test(u.trim()); }
+
+        let stwFiltro = { min: null, max: null, solo: false };
+        function stwPasaFiltro(c) {
+            const p = parseFloat(c.precio);
+            if (stwFiltro.solo && String(c.estado || '').toLowerCase() === 'vendida') return false;
+            if (stwFiltro.min != null && !(p >= stwFiltro.min)) return false;
+            if (stwFiltro.max != null && !(p <= stwFiltro.max)) return false;
+            return true;
+        }
+        function stwAplicarFiltro() {
+            const mn = parseFloat(document.getElementById('stw-min').value);
+            const mx = parseFloat(document.getElementById('stw-max').value);
+            stwFiltro.min = isNaN(mn) ? null : mn;
+            stwFiltro.max = isNaN(mx) ? null : mx;
+            stwFiltro.solo = document.getElementById('stw-solo').checked;
+            renderCuentasSTW();
+        }
+        function stwLimpiarFiltro() {
+            document.getElementById('stw-min').value = '';
+            document.getElementById('stw-max').value = '';
+            document.getElementById('stw-solo').checked = false;
+            stwAplicarFiltro();
+        }
 
         async function cargarCuentasSTW(forzar) {
             const grid = document.getElementById('stw-grid');
@@ -9995,11 +10030,15 @@
             const grid = document.getElementById('stw-grid');
             if (!grid) return;
             // Disponibles primero, vendidas al final
-            const lista = stwCuentas.filter(c => c && c.titulo).slice().sort((a, b) => {
+            const lista = stwCuentas.filter(c => c && c.titulo && stwPasaFiltro(c)).slice().sort((a, b) => {
                 const va = String(a.estado || '').toLowerCase() === 'vendida' ? 1 : 0;
                 const vb = String(b.estado || '').toLowerCase() === 'vendida' ? 1 : 0;
                 return va - vb;
             });
+            if (lista.length === 0 && stwCuentas.length > 0) {
+                grid.innerHTML = '<div class="stw-vacio" style="grid-column:1/-1"><i class="fas fa-filter"></i>No hay cuentas en ese rango de precio.</div>';
+                return;
+            }
             if (lista.length === 0) {
                 grid.innerHTML = '<div class="stw-vacio" style="grid-column:1/-1"><i class="fas fa-shield-halved"></i>Por ahora no hay cuentas STW disponibles. Vuelve pronto o escr\u00edbenos para ver qu\u00e9 tenemos.</div>';
                 return;
