@@ -4395,6 +4395,20 @@
 #shegos-bots-section .sb-bot-card.offline .sb-bot-icon{opacity:.4}
 @media(max-width:820px){#shegos-bots-section .sb-steps-inline{grid-template-columns:1fr}#shegos-bots-section .sb-bots-grid{grid-template-columns:repeat(2,1fr)}}
 @media(prefers-reduced-motion:reduce){#shegos-bots-section .sb-bot-card{transition:none}#shegos-bots-section .sb-bot-card:hover{transform:none}}
+
+#shegos-bots-section{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px 36px;max-width:1180px;margin:0 auto;align-items:start}
+#shegos-bots-section .sb-hero{grid-column:1;grid-row:1;max-width:none;padding:clamp(10px,2vh,24px) 0 0}
+#shegos-bots-section .sb-title{font-size:clamp(2.3em,4.2vw,3.7em)}
+#shegos-bots-section .sb-subtitle{max-width:none;margin-bottom:0}
+#shegos-bots-section .sb-two-col{display:contents}
+#shegos-bots-section .sb-col-form{grid-column:1;grid-row:2}
+#shegos-bots-section .sb-col-bots{grid-column:2;grid-row:1 / span 2;padding-top:clamp(10px,2vh,24px)}
+#shegos-bots-section .sb-steps-inline{grid-column:1 / -1;margin:0}
+#shegos-bots-section .sb-bots-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:820px){
+  #shegos-bots-section{grid-template-columns:minmax(0,1fr)}
+  #shegos-bots-section .sb-hero,#shegos-bots-section .sb-col-form,#shegos-bots-section .sb-col-bots,#shegos-bots-section .sb-steps-inline{grid-column:1;grid-row:auto}
+}
 </style>
 </head>
 <body>
@@ -4875,8 +4889,7 @@
 
                     <!-- FORMULARIO -->
                     <div id="sb-state-form">
-                      <p style="font-size:1.15em;font-weight:800;color:#fff;margin:0 0 5px;">Agregar amigo</p>
-                      <p style="color:#666;font-size:0.82em;margin:0 0 18px;line-height:1.5;">Selecciona tu plataforma y escribe tu usuario.</p>
+                      <p style="color:#e9e6ff;font-size:0.95em;margin:0 0 18px;line-height:1.6;">Coloca tu nombre de usuario para recibir solicitud de amistad desde nuestras cuentas. Pasadas las <strong>48 horas</strong>, ¡podrás recibir regalos!</p>
                       <div class="sb-form-grid">
                         <div>
                           <label class="sb-label">Plataforma</label>
@@ -4905,7 +4918,21 @@
                 <div class="sb-col-bots">
                   <p class="sb-col-title">Paso 2 — Nuestras cuentas</p>
 
-                  <!-- Mini pasos -->
+                  <!-- Lista bots -->
+                  <div class="sb-section">
+                    <div class="sb-inner">
+                      <div class="sb-section-head">
+                        <div class="sb-section-title">Cuentas a agregar / Aceptar solicitud</div>
+                        <span id="sb-count-pill" class="sb-count-pill" style="display:none"></span>
+                      </div>
+                      <div class="sb-bots-grid" id="sb-bots-grid"></div>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /.sb-two-col -->
+
+              <!-- Mini pasos -->
                   <div class="sb-steps-inline">
                     <div class="sb-step-row">
                       <span class="sb-step-num">01</span>
@@ -4921,19 +4948,6 @@
                     </div>
                   </div>
 
-                  <!-- Lista bots -->
-                  <div class="sb-section">
-                    <div class="sb-inner">
-                      <div class="sb-section-head">
-                        <div class="sb-section-title">Cuentas a agregar / Aceptar solicitud</div>
-                        <span id="sb-count-pill" class="sb-count-pill" style="display:none"></span>
-                      </div>
-                      <div class="sb-bots-grid" id="sb-bots-grid"></div>
-                    </div>
-                  </div>
-                </div>
-
-              </div><!-- /.sb-two-col -->
 
             </section>
         </div>
