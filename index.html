@@ -1671,7 +1671,10 @@
             display: flex;
             gap: 20px;
             width: max-content;
-            animation: seVaHoyScroll 1500s linear infinite;
+            /* El movimiento (auto-desliz + arrastre manual) lo controla el JS
+               con un solo valor de posición; una animación CSS pisaría el
+               transform y haría imposible arrastrar. */
+            will-change: transform;
             cursor: grab;
             user-select: none;
             padding-bottom: 8px;
@@ -1681,14 +1684,7 @@
                debe iniciar una navegación/scroll nativo que lo bloquee. */
             touch-action: pan-y;
         }
-        .carrusel-se-va-hoy:hover {
-            animation-play-state: paused;
-        }
         .carrusel-se-va-hoy:active { cursor: grabbing; }
-        @keyframes seVaHoyScroll {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
         .carrusel-se-va-hoy .cosmetic-card {
             flex: 0 0 160px;
             width: 160px;
@@ -1741,6 +1737,7 @@
             cursor: grab;
             transition: background 0.15s, height 0.15s, top 0.15s;
             pointer-events: all;
+            touch-action: none;
         }
         .carrusel-scrollbar-thumb:hover,
         .carrusel-scrollbar-thumb.dragging {
@@ -2597,6 +2594,7 @@
             display: block;
             flex-shrink: 0;
         }
+        .footer-pay-logo.footer-pay-logo-remitly { height: 30px; max-width: 130px; }
         .footer-pay-logo-text {
             height: 20px;
             display: inline-flex;
@@ -2613,6 +2611,7 @@
             .footer-payment-section { margin: 0 0 18px 0; padding: 10px 10px; }
             .footer-payment-logos { gap: 12px 16px; flex-wrap: wrap; }
             .footer-pay-logo { height: 18px; max-width: 72px; }
+            .footer-pay-logo.footer-pay-logo-remitly { height: 24px; max-width: 100px; }
             .footer-pay-logo-text { font-size: 0.68em; }
         }
 
@@ -7354,7 +7353,7 @@
                 <img loading="lazy" decoding="async" src="https://cdn.worldvectorlogo.com/logos/spei-1.svg" alt="SPEI" class="footer-pay-logo" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/SPEI_logo.svg/320px-SPEI_logo.svg.png'">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/grvmQ5nVgoYV1IP1Mlja_Qai7_mAa-rub_dhRfby2xs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pY29u/YXBlLmNvbS93cC1j/b250ZW50L3BuZ19s/b2dvX3ZlY3Rvci9v/eHhvLWxvZ28ucG5n" alt="Oxxo" class="footer-pay-logo">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/wUxvr3KmBjwF500zcZkdDtmyfAxyieOASlxQ6ZoYjTM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93aGF0/dGhlbG9nby5jb20v/c3RvcmFnZS9sb2dv/cy9haXJ0bS01NzY5/MC5wbmc" alt="Airtm" class="footer-pay-logo">
-                <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/pY2_tBZ8Z3dADRPEdb8R-n6K46FznYThBwhC1Kji6ow/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzM2LzIvcmVtaXRs/eS1sb2dvLXBuZ19z/ZWVrbG9nby0zNjM2/MDYucG5n" alt="Remitly" class="footer-pay-logo">
+                <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/B29cKJsw4cXP1xZDi0EegLrpnVTL7RQ5MwJLT6nUpdo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/My9yZW1pdGx5LWxv/Z28tYnJhbmRsb2dv/cy5uZXRfYWhsajYt/NTEyeDEyMi5wbmc" alt="Remitly" class="footer-pay-logo footer-pay-logo-remitly">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/4AzxHI9wQvZP1ZiHLMBHFvhzTcifPysOowiIh1lVISE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly96b25h/bG9nby5jb20vYXNz/ZXRzL2J5Yml0LWxv/Z28tcG5nLXN2Zy53/ZWJwP2Fzc2V0PTQz/MDY" alt="Bybit" class="footer-pay-logo">
             </div>
         </div>
@@ -11304,220 +11303,189 @@ function mostrarModalCapturaMovil(url) {
     </script>
 
     <script>
-    // Drag-to-scroll para el carrusel "Se Va Hoy" (el auto-scroll lo maneja CSS)
+    // Carrusel "Se Va Hoy": auto-desliz continuo + arrastre manual.
+    // Todo el movimiento lo hace JS con una sola variable (pos), así el
+    // auto-desliz y el arrastre nunca se pelean entre sí:
+    //  - Mouse/lápiz/touch: se arrastra con Pointer Events (un solo código).
+    //  - Trackpad (swipe horizontal) y Shift + rueda: mueven el carrusel.
+    //  - La rueda vertical normal sigue haciendo scroll de la página.
+    //  - La barra de abajo se puede arrastrar o tocar para saltar.
+    //  - Al soltar, el carrusel sigue con la inercia y retoma el auto-desliz.
     (function() {
-        function initDragScroll(el) {
-            // El carrusel usa animación CSS (translateX). Para mover manualmente
-            // capturamos la posición real del transform y la mantenemos con style,
-            // pausando la animación solo mientras el usuario interactúa.
-            let isDown = false, startX, startTX = 0, currentTX = 0;
-            const HALF = () => el.scrollWidth / 2; // mitad = 1 copia de cards
+        const PX_POR_SEGUNDO = 3.4375; // velocidad del auto-desliz (súbela para ir más rápido)
+        const REANUDAR_MS = 1200;      // espera tras la última interacción antes de retomar
 
-            function getComputedTX() {
-                const m = new DOMMatrix(getComputedStyle(el).transform);
-                return m.m41;
-            }
-
-            function applyTX(x) {
-                // Clampar para no salir del rango de la animación
-                const half = HALF();
-                if (x > 0) x = 0;
-                if (x < -half) x = x % -half; // loop suave
-                currentTX = x;
-                el.style.transform = `translateX(${x}px)`;
-                updateThumb();
-            }
-
-            function pauseAndCapture() {
-                currentTX = getComputedTX();
-                el.style.animationPlayState = 'paused';
-                el.style.transform = `translateX(${currentTX}px)`;
-            }
-
-            function resume() {
-                // Quitar el transform inline para que retome la animación CSS
-                el.style.transform = '';
-                el.style.animationPlayState = 'running';
-            }
-
-            // ── Mouse drag ──
-            el.addEventListener('mousedown', (e) => {
-                // Ignorar clicks en botones
-                if (e.target.closest('button')) return;
-                e.preventDefault();
-                isDown = true;
-                pauseAndCapture();
-                startX = e.pageX;
-                startTX = currentTX;
-                el.style.cursor = 'grabbing';
-            });
-
-            window.addEventListener('mouseup', () => {
-                if (!isDown) return;
-                isDown = false;
-                el.style.cursor = 'grab';
-                resume();
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDown) return;
-                const delta = e.pageX - startX;
-                applyTX(startTX + delta);
-            });
-
-            // ── Rueda del mouse ──
-            el.parentElement && el.parentElement.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                pauseAndCapture();
-                applyTX(currentTX - e.deltaY * 1.2 - e.deltaX * 1.2);
-                clearTimeout(el._wheelTimer);
-                el._wheelTimer = setTimeout(resume, 1200);
-            }, { passive: false });
-
-            // ── Touch ──
-            // Antes: los listeners eran pasivos y nunca marcaban "isDown", así
-            // que 1) el navegador podía interpretar el gesto como scroll de
-            // página en vez de dejarlo mover el carrusel, y 2) el bucle que
-            // sincroniza el scrollbar (más abajo) seguía "corrigiendo" la
-            // posición mientras el usuario arrastraba, cancelando el gesto.
-            // Ahora: detectamos si el gesto es más horizontal que vertical
-            // apenas empieza a moverse; si es horizontal, tomamos el control
-            // (preventDefault) y movemos el carrusel; si es vertical, no
-            // hacemos nada y dejamos que la página haga scroll normal.
-            let touchStartX = 0, touchStartY = 0, touchStartTX = 0;
-            let arrastreHorizontal = null; // null = aún sin decidir, true/false ya decidido
-
-            el.addEventListener('touchstart', (e) => {
-                if (e.target.closest('button')) return;
-                isDown = true; // evita que syncLoop() pelee con el arrastre
-                arrastreHorizontal = null;
-                pauseAndCapture();
-                touchStartX = e.touches[0].pageX;
-                touchStartY = e.touches[0].pageY;
-                touchStartTX = currentTX;
-            }, { passive: true });
-
-            el.addEventListener('touchmove', (e) => {
-                if (!isDown) return;
-                const dx = e.touches[0].pageX - touchStartX;
-                const dy = e.touches[0].pageY - touchStartY;
-
-                if (arrastreHorizontal === null) {
-                    // Esperamos a que el movimiento sea claro (>6px) para decidir
-                    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-                    arrastreHorizontal = Math.abs(dx) > Math.abs(dy);
-                    if (!arrastreHorizontal) {
-                        // Es un scroll vertical de la página: soltamos el control
-                        isDown = false;
-                        resume();
-                        return;
-                    }
-                }
-                if (!arrastreHorizontal) return;
-                e.preventDefault(); // ya confirmado horizontal: evita que la página se mueva
-                applyTX(touchStartTX + dx);
-            }, { passive: false });
-
-            function terminarTouch() {
-                if (!isDown) return;
-                isDown = false;
-                if (arrastreHorizontal) setTimeout(resume, 800);
-                arrastreHorizontal = null;
-            }
-            el.addEventListener('touchend', terminarTouch);
-            el.addEventListener('touchcancel', terminarTouch);
-
-            // ── Scrollbar thumb ──
+        function iniciar(el) {
+            const wrap = el.parentElement;
             const track = document.getElementById('seva-scrollbar-track');
             const thumb = document.getElementById('seva-scrollbar-thumb');
-            let thumbDown = false, thumbStartX, thumbStartTX;
 
-            function updateThumb() {
-                if (!track || !thumb) return;
-                const half = HALF();
-                if (half <= 0) return;
-                const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
+            let pos = 0;            // px desplazados hacia la izquierda
+            let periodo = 0;        // ancho de UNA copia de las tarjetas (el bucle)
+            let ultimaInteraccion = -Infinity;
+            let inercia = 0;        // px/ms
+            let arrastrando = false, moviendo = false, pid = null;
+            let startX = 0, startPos = 0, lastX = 0, lastT = 0, vel = 0;
+            let bloquearClick = false;
+            let thumbDrag = false, thumbStartX = 0, thumbStartPos = 0;
+
+            const tocar = () => { ultimaInteraccion = performance.now(); };
+
+            function medir() {
+                // El HTML trae las tarjetas duplicadas (A + A): el bucle perfecto
+                // es la distancia entre la 1ª tarjeta y su copia.
+                const n = el.children.length / 2;
+                periodo = (n >= 1 && el.children[n])
+                    ? el.children[n].offsetLeft - el.children[0].offsetLeft
+                    : 0;
+            }
+            function normalizar() {
+                if (periodo > 0) pos = ((pos % periodo) + periodo) % periodo;
+            }
+            function actualizarThumb() {
+                if (!track || !thumb || periodo <= 0) return;
                 const trackW = track.clientWidth;
-                const ratio = Math.min(1, wrapW / half);
-                const thumbW = Math.max(44, trackW * ratio);
+                const thumbW = Math.max(44, trackW * Math.min(1, wrap.clientWidth / periodo));
                 thumb.style.width = thumbW + 'px';
-                // posición: cuánto hemos desplazado del total desplazable
-                const scrollable = half - wrapW;
-                const frac = scrollable > 0 ? Math.abs(currentTX) / scrollable : 0;
-                thumb.style.left = (frac * (trackW - thumbW)) + 'px';
+                thumb.style.left = ((pos / periodo) * (trackW - thumbW)) + 'px';
+            }
+            function pintar() {
+                el.style.transform = 'translate3d(' + (-pos) + 'px,0,0)';
+                actualizarThumb();
             }
 
-            if (thumb && track) {
-                thumb.addEventListener('mousedown', (e) => {
-                    e.stopPropagation();
-                    thumbDown = true;
-                    thumbStartX = e.clientX;
-                    thumbStartTX = currentTX;
-                    pauseAndCapture();
-                    thumb.classList.add('dragging');
-                });
-                track.addEventListener('click', (e) => {
-                    if (thumbDown) return;
-                    const rect = track.getBoundingClientRect();
-                    const frac = (e.clientX - rect.left) / track.clientWidth;
-                    const half = HALF();
-                    const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
-                    pauseAndCapture();
-                    applyTX(-(frac * (half - wrapW)));
-                    clearTimeout(el._wheelTimer);
-                    el._wheelTimer = setTimeout(resume, 1200);
-                });
-                window.addEventListener('mousemove', (e) => {
-                    if (!thumbDown) return;
-                    const dx = e.clientX - thumbStartX;
-                    const trackW = track.clientWidth;
-                    const thumbW = thumb.clientWidth;
-                    const half = HALF();
-                    const wrapW = el.parentElement ? el.parentElement.clientWidth : 400;
-                    const newTX = thumbStartTX - (dx / (trackW - thumbW)) * (half - wrapW);
-                    applyTX(newTX);
-                });
-                window.addEventListener('mouseup', () => {
-                    if (!thumbDown) return;
-                    thumbDown = false;
-                    thumb.classList.remove('dragging');
-                    clearTimeout(el._wheelTimer);
-                    el._wheelTimer = setTimeout(resume, 1200);
-                });
-            }
+            // ── Arrastre (mouse, lápiz y touch) ──
+            el.addEventListener('dragstart', (e) => e.preventDefault());
 
-            setTimeout(updateThumb, 500);
-            window.addEventListener('resize', updateThumb);
+            el.addEventListener('pointerdown', (e) => {
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                if (periodo <= 0) medir();
+                arrastrando = true; moviendo = false; pid = e.pointerId;
+                startX = lastX = e.clientX; startPos = pos;
+                lastT = performance.now(); vel = 0; inercia = 0;
+                tocar();
+            });
 
-            // Sincroniza el thumb con el auto-scroll CSS continuamente
-            function syncLoop() {
-                if (!isDown && !thumbDown) {
-                    currentTX = getComputedTX();
-                    updateThumb();
+            el.addEventListener('pointermove', (e) => {
+                if (!arrastrando || e.pointerId !== pid) return;
+                const dx = e.clientX - startX;
+                if (!moviendo) {
+                    // Hasta moverse >6px se considera un toque/click normal
+                    // (así los botones "Agregar" siguen funcionando).
+                    if (Math.abs(dx) < 6) return;
+                    moviendo = true;
+                    try { el.setPointerCapture(pid); } catch (_) {}
                 }
-                requestAnimationFrame(syncLoop);
+                const ahora = performance.now();
+                const dt = ahora - lastT;
+                if (dt > 0) vel = 0.6 * vel + 0.4 * ((lastX - e.clientX) / dt);
+                lastX = e.clientX; lastT = ahora;
+                pos = startPos - dx;
+                normalizar(); pintar(); tocar();
+            });
+
+            function soltar(e) {
+                if (!arrastrando || (e && e.pointerId !== pid)) return;
+                arrastrando = false;
+                if (moviendo) {
+                    // Evita que al soltar se dispare un click sobre la tarjeta
+                    bloquearClick = true;
+                    setTimeout(() => { bloquearClick = false; }, 60);
+                    // Inercia solo si el dedo/mouse seguía en movimiento al soltar
+                    inercia = (performance.now() - lastT < 80) ? vel : 0;
+                    try { el.releasePointerCapture(pid); } catch (_) {}
+                }
+                moviendo = false;
+                tocar();
             }
-            requestAnimationFrame(syncLoop);
+            el.addEventListener('pointerup', soltar);
+            el.addEventListener('pointercancel', soltar); // p. ej. el navegador toma un scroll vertical
+
+            el.addEventListener('click', (e) => {
+                if (bloquearClick) { e.stopPropagation(); e.preventDefault(); }
+            }, true);
+
+            // ── Trackpad (swipe horizontal) y Shift + rueda ──
+            wrap.addEventListener('wheel', (e) => {
+                const d = Math.abs(e.deltaX) > Math.abs(e.deltaY)
+                    ? e.deltaX
+                    : (e.shiftKey ? e.deltaY : 0);
+                if (!d) return; // rueda vertical normal: deja scrollear la página
+                e.preventDefault();
+                inercia = 0;
+                pos += d;
+                normalizar(); pintar(); tocar();
+            }, { passive: false });
+
+            // ── Barra deslizadora ──
+            if (track && thumb) {
+                thumb.addEventListener('pointerdown', (e) => {
+                    e.stopPropagation(); e.preventDefault();
+                    if (periodo <= 0) medir();
+                    thumbDrag = true; inercia = 0;
+                    thumbStartX = e.clientX; thumbStartPos = pos;
+                    try { thumb.setPointerCapture(e.pointerId); } catch (_) {}
+                    thumb.classList.add('dragging');
+                    tocar();
+                });
+                thumb.addEventListener('pointermove', (e) => {
+                    if (!thumbDrag || periodo <= 0) return;
+                    const libre = track.clientWidth - thumb.clientWidth;
+                    if (libre <= 0) return;
+                    pos = Math.max(0, Math.min(periodo, thumbStartPos + ((e.clientX - thumbStartX) / libre) * periodo));
+                    pintar(); tocar();
+                });
+                const finThumb = () => {
+                    if (!thumbDrag) return;
+                    thumbDrag = false;
+                    thumb.classList.remove('dragging');
+                    tocar();
+                };
+                thumb.addEventListener('pointerup', finThumb);
+                thumb.addEventListener('pointercancel', finThumb);
+                track.addEventListener('pointerdown', (e) => {
+                    if (e.target === thumb || track.clientWidth <= 0) return;
+                    if (periodo <= 0) medir();
+                    const r = track.getBoundingClientRect();
+                    inercia = 0;
+                    pos = ((e.clientX - r.left) / track.clientWidth) * periodo;
+                    normalizar(); pintar(); tocar();
+                });
+            }
+
+            const onResize = () => { medir(); normalizar(); pintar(); };
+            window.addEventListener('resize', onResize);
+
+            // ── Bucle: auto-desliz + inercia ──
+            let t0 = performance.now();
+            function frame(t) {
+                if (!el.isConnected) { // el carrusel se volvió a renderizar: este ya no sirve
+                    window.removeEventListener('resize', onResize);
+                    return;
+                }
+                const dt = Math.min(t - t0, 100); t0 = t;
+                if (periodo <= 0) medir();
+                if (periodo > 0 && !arrastrando && !thumbDrag) {
+                    if (Math.abs(inercia) > 0.01) {
+                        pos += inercia * dt;
+                        inercia *= Math.exp(-dt / 325);
+                        tocar();
+                    } else {
+                        inercia = 0;
+                        if (t - ultimaInteraccion > REANUDAR_MS) pos += PX_POR_SEGUNDO * dt / 1000;
+                    }
+                    normalizar(); pintar();
+                }
+                requestAnimationFrame(frame);
+            }
+            requestAnimationFrame(frame);
         }
 
         const observer = new MutationObserver(() => {
             const carousel = document.getElementById('carrusel-seva-hoy');
             if (carousel && !carousel.dataset.dragInit) {
                 carousel.dataset.dragInit = '1';
-                initDragScroll(carousel);
-                // Antes: 1500s fijos (25 minutos por vuelta completa), tan lento
-                // que se veía prácticamente estático. Ahora calculamos la
-                // duración según el ancho real de las tarjetas para que la
-                // velocidad se sienta igual sin importar cuántos cosméticos
-                // "se van hoy" haya: una velocidad constante de ~55px/seg.
-                const aplicarVelocidad = () => {
-                    const mitadAncho = carousel.scrollWidth / 2; // scrollWidth = 2 copias
-                    const PX_POR_SEGUNDO = 3.4375; // 1/4 de la velocidad anterior (13.75px/seg)
-                    const duracion = mitadAncho > 0 ? Math.max(192, mitadAncho / PX_POR_SEGUNDO) : 480;
-                    carousel.style.animationDuration = duracion + 's';
-                };
-                // Medimos tras un pequeño delay: recién insertado el layout puede no estar listo
-                setTimeout(aplicarVelocidad, 50);
+                iniciar(carousel);
             }
         });
         observer.observe(document.body, { childList: true, subtree: true });
