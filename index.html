@@ -21,10 +21,10 @@
         } catch (e) { /* sin sessionStorage: se queda en la página de inicio */ }
     })();
     </script>
-    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=2">
-    <link rel="icon" type="image/png" sizes="256x256" href="img/favicon.png?v=2">
-    <link rel="shortcut icon" href="favicon.ico?v=2">
-    <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=2">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png?v=3">
+    <link rel="icon" type="image/png" sizes="256x256" href="img/favicon.png?v=3">
+    <link rel="shortcut icon" href="favicon.ico?v=3">
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png?v=3">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shegos Store - Tu tienda Fortnite de Confianza</title>
     <link rel="preconnect" href="https://gaming-cdn.com">
@@ -967,7 +967,7 @@
 
         /* Club de Fortnite: fondo más translúcido para que se vea el fondo de la página */
         #recargas.club-activo {
-            background: linear-gradient(180deg, #6b2342 0%, #5a1f3a 40%, #3b1627 75%, #24101b 100%);
+            background: linear-gradient(180deg, rgba(8,5,16,.25) 0%, rgba(8,5,16,.55) 100%), url('img/fortnite-crew-portada.jpg') center top / cover no-repeat;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
         }
@@ -2030,10 +2030,6 @@
         .vb-cards-6 { grid-template-columns: repeat(6, 1fr); }
         @media (max-width: 1100px) { .vb-cards-6 { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 700px) { .vb-cards-6 { display: flex; } }
-        #recargas.vb-activo {
-            background: linear-gradient(180deg, #1d3a8a 0%, #231a5e 45%, #1a1040 80%, #120a2a 100%);
-            backdrop-filter: none; -webkit-backdrop-filter: none;
-        }
         .club-hero-img { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); background: linear-gradient(135deg, rgba(150,40,80,.5), rgba(50,25,100,.5)); }
         .club-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
         .club-hero-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1180px; margin: 0 auto; width: 100%; }
@@ -4515,7 +4511,7 @@
     <header>
         <div class="header-left">
             <a href="index.html" style="text-decoration: none;">
-                <img src="img/logo.png" alt="Shegos Store" class="logo-nav">
+                <img src="img/logo.png?v=3" alt="Shegos Store" class="logo-nav">
             </a>
             <nav>
                 <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
@@ -5007,7 +5003,7 @@
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">V-Bucks</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/pJ02KeNMTF9siKiJYPFNrbcBfG1EMJQfK5AynPEMB7U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2FtZXNwb3QuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy9vcmln/aW5hbC8xNzU3LzE3/NTc3NDU1LzQwOTQw/NTctZm9ydG5pdGVj/cmV3am9uaXRoZXJl/ZC5qcGc" width="1280" height="720" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
+                        <img loading="lazy" decoding="async" src="img/fortnite-crew-portada.jpg" width="1280" height="720" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Fortnite Crew</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pases')">
@@ -5161,7 +5157,7 @@
                             <p class="club-hero-nota">*El contenido mensual del Club de Fortnite está sujeto a cambios.</p>
                             <button class="club-hero-btn" onclick="clubIrAPrecios()">Ver precios</button>
                         </div>
-                        <div class="club-hero-img"><img decoding="async" src="https://imgs.search.brave.com/pJ02KeNMTF9siKiJYPFNrbcBfG1EMJQfK5AynPEMB7U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2FtZXNwb3QuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy9vcmln/aW5hbC8xNzU3LzE3/NTc3NDU1LzQwOTQw/NTctZm9ydG5pdGVj/cmV3am9uaXRoZXJl/ZC5qcGc" width="1280" height="720" alt="Fortnite Crew"></div>
+                        <div class="club-hero-img"><img decoding="async" src="img/fortnite-crew-portada.jpg" width="1280" height="720" alt="Fortnite Crew"></div>
                     </div>
                     <div class="club-cards">
                         <div class="club-card c1" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
@@ -5202,40 +5198,40 @@
                 <p class="club-panel-desc">Para cuentas que no tienen problemas de región. Se usa el método Xbox, sin pedirte datos de acceso.</p>
                 <div class="club-grid-3">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="7">$7 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>2 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="13">$13 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="18">$18 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>4 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="24">$24 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>5 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="28">$28 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="33">$33 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmun5n9vn1ube06n4pn8ccqiv', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'https://media.esports.gg/uploads/2026/06/Prisma-Fortnite-Crew-768x432.webp', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -9560,7 +9556,7 @@
             // Toggles entre el menú principal y las subsecciones
             menu.style.display = (id === 'menu') ? 'block' : 'none';
             const recargasBox = document.getElementById('recargas');
-            if (recargasBox) { recargasBox.classList.toggle('club-activo', id === 'club'); recargasBox.classList.toggle('vb-activo', id === 'pavos'); }
+            if (recargasBox) { recargasBox.classList.toggle('club-activo', id === 'club'); }
             subs.forEach(s => {
                 s.style.display = (id !== 'menu' && s.id === 'sub-' + id) ? 'block' : 'none';
             });
