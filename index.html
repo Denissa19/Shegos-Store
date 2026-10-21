@@ -2065,7 +2065,7 @@
         .vb-subtitle { color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin: 34px 0 6px; text-transform: uppercase; letter-spacing: 1px; }
         @media (max-width: 860px) { .vb-main { grid-template-columns: 1fr; } }
         /* Fila de tarjetas del Club (imagen + etiqueta) */
-        .club-cards { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; max-width: 1320px; margin: 0 auto; width: 100%; }
+        .club-cards { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; max-width: 1320px; margin: 0 auto; width: 100%; }
         .club-card { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; cursor: pointer; background: #160c20; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 22px rgba(0,0,0,.35); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
         .club-card:hover, .club-card:focus-visible { transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,.5); border-color: rgba(245,229,10,.55); outline: none; }
         .club-card-img { aspect-ratio: 1 / 1; overflow: hidden; background: linear-gradient(160deg, #3a2154, #1c0e22); }
@@ -2074,6 +2074,8 @@
         .club-card-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 14px; background: rgba(20,10,30,.96); font-weight: 700; font-size: .8em; color: #fff; }
         .club-card-label span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .club-card-label i { font-size: .7em; opacity: .7; flex-shrink: 0; }
+        .club-gamepass-info { max-width: 1320px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: 12px; background: rgba(20,10,30,.7); border: 1px solid rgba(16,124,16,.55); border-left: 4px solid #107C10; font-size: .85em; color: #ddd; line-height: 1.5; }
+        .club-gamepass-info strong { color: #fff; font-size: 1.05em; }
         @media (max-width: 1100px) { .club-cards { grid-template-columns: repeat(4, 1fr); } }
         @media (max-width: 700px) {
             .club-cards { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 8px; gap: 10px; -webkit-overflow-scrolling: touch; }
@@ -5157,7 +5159,7 @@
                             <p class="club-hero-nota">*El contenido mensual del Club de Fortnite está sujeto a cambios.</p>
                             <button class="club-hero-btn" onclick="clubIrAPrecios()">Ver precios</button>
                         </div>
-                        <div class="club-hero-img"><img decoding="async" src="img/fortnite-crew-portada.jpg" width="1280" height="720" alt="Fortnite Crew"></div>
+                        <div class="club-hero-img"><img decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmun3ri0k1ly507obhycji5ua" width="1280" height="720" alt="Fortnite Crew"></div>
                     </div>
                     <div class="club-cards">
                         <div class="club-card c1" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
@@ -5165,29 +5167,37 @@
                             <div class="club-card-label"><span>Paquete de club</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c2" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-batalla.jpg" alt="Pase de batalla"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapsvbqm434107odpf1oibuy" alt="Pase de batalla"></div>
                             <div class="club-card-label"><span>Pase de batalla</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c3" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-origenes.jpg" alt="Pase de Orígenes"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapt0yu443dt07od36wqpjwm" alt="Pase de Orígenes"></div>
                             <div class="club-card-label"><span>Pase de Orígenes</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c4" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-lego.jpg" alt="Pase de LEGO"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw49cz4skd07mtk5zabfnx" alt="Pase de LEGO"></div>
                             <div class="club-card-label"><span>Pase de LEGO</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c5" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/pase-musical.jpg" alt="Pase musical"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw59f74unv07odbxkdjz89" alt="Pase musical"></div>
                             <div class="club-card-label"><span>Pase musical</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c6" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/monedas-v.jpg" alt="Monedas V"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw6p2y4uq307odzps0ydog" alt="Monedas V"></div>
                             <div class="club-card-label"><span>Monedas V</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card c7" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://kevztore.com/crew-cards/rocket-pass.jpg" alt="Rocket Pass Premium"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmaoro6zi238b07mtmmsvnxe8" alt="Rocket Pass Premium"></div>
                             <div class="club-card-label"><span>Rocket Pass Premium</span><i class="fas fa-chevron-right"></i></div>
                         </div>
+                        <div class="club-card c8" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmhjcl6ivbzjy07o45abo9ehe" alt="Xbox Game Pass Ultimate"></div>
+                            <div class="club-card-label"><span>Game Pass Ultimate</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+                    <div class="club-gamepass-info">
+                        <strong>Únete al Club de Fortnite con Xbox Game Pass Ultimate</strong>
+                        <span>El Club de Fortnite forma parte de Xbox Game Pass Ultimate. Si tienes Xbox Game Pass Ultimate, ¡recibirás todos los beneficios actuales del Club de Fortnite!</span>
                     </div>
                     <button class="club-scroll-arrow" onclick="clubIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
                 </section>
