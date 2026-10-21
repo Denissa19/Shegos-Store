@@ -967,9 +967,9 @@
 
         /* Club de Fortnite: fondo más translúcido para que se vea el fondo de la página */
         #recargas.club-activo {
-            background-color: rgba(10, 10, 10, 0.35);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            background: linear-gradient(180deg, #6b2342 0%, #5a1f3a 40%, #3b1627 75%, #24101b 100%);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
         }
 
         #rastreo-pedidos.section-box {
@@ -2037,6 +2037,30 @@
         .club-tile.t2 { background: linear-gradient(160deg, #35c2ee, #1a6fb8); }
         .club-tile.t3 { background: linear-gradient(160deg, #b34cf0, #5a1fa8); }
         .club-tile.t4 { background: linear-gradient(160deg, #2fbf71, #0d6e42); }
+        /* ===== V-BUCKS: HERO ESTILO TIENDA (imagen grande + panel de compra) ===== */
+        .vb-hero { max-width: 1180px; margin: 0 auto 10px; }
+        .vb-hero .vb-title { font-size: clamp(3rem, 7vw, 5.2rem); }
+        .vb-main { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(280px, 1fr); gap: 28px; align-items: start; margin-top: 22px; }
+        .vb-media { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); background: #1a1022; }
+        .vb-media img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
+        .vb-panel { background: rgba(20,10,30,.92); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+        .vb-tag { align-self: flex-start; background: #00A676; color: #12081a; font-size: .7em; font-weight: 800; padding: 4px 12px; border-radius: 20px; letter-spacing: .4px; }
+        .vb-panel-title { margin: 0; font-size: 1.5em; color: #fff; }
+        .vb-price-wrap { display: flex; flex-direction: column; gap: 4px; }
+        .vb-price { font-size: 1.6em; font-weight: 800; color: #fff; }
+        .vb-price-old { font-size: .72em; color: #888; text-decoration: line-through; }
+        .vb-actions { display: flex; gap: 10px; }
+        .vb-buy { flex: 1; background: #f5e50a; color: #1a1a1a; border: none; padding: 14px 20px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; border-radius: 8px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: transform .2s ease, filter .2s ease; }
+        .vb-buy:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .vb-cart { width: 50px; background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; cursor: pointer; font-size: 1.1em; transition: background .2s ease; }
+        .vb-cart:hover { background: rgba(255,255,255,.16); }
+        .vb-info-btn { margin: 0 !important; width: 100%; }
+        .vb-info-list { list-style: none; margin: 4px 0 0; padding: 0; border-top: 1px solid rgba(255,255,255,.08); }
+        .vb-info-list li { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.08); font-size: .85em; }
+        .vb-info-list span { color: #999; }
+        .vb-info-list strong { color: #fff; text-align: right; }
+        .vb-subtitle { color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin: 34px 0 6px; text-transform: uppercase; letter-spacing: 1px; }
+        @media (max-width: 860px) { .vb-main { grid-template-columns: 1fr; } }
         /* Fila de tarjetas del Club (imagen + etiqueta) */
         .club-cards { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; max-width: 1320px; margin: 0 auto; width: 100%; }
         .club-card { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; cursor: pointer; background: #160c20; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 8px 22px rgba(0,0,0,.35); transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
@@ -4697,7 +4721,7 @@
                 </div>
                 <div class="servicio-home-card" onclick="abrirPestana('recargas'); setTimeout(function(){ mostrarSubServicio('pavos'); }, 0);">
                     <div class="servicio-home-icon"><i class="fas fa-coins"></i></div>
-                    <strong>Recargas de Pavos</strong>
+                    <strong>V-Bucks</strong>
                     <span>Desde 800 hasta 12,500V</span>
                 </div>
                 <div class="servicio-home-card" onclick="abrirPestana('recargas'); setTimeout(function(){ mostrarSubServicio('club'); }, 0);">
@@ -4973,10 +4997,10 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 30px;">
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pavos')">
                         <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw6p2y4uq307odzps0ydog" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
-                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Recargas de Pavos</strong>
+                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">V-Bucks</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img loading="lazy" decoding="async" src="img/fortnite-crew-cover.webp" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
+                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/zZ-8aUamHFhSodzPA4jNv_LyLx7UnXAv-8fyrV74Tt8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4y/LnVucmVhbGVuZ2lu/ZS5jb20vZW4tc3Vi/cy1zb3V0aHBhdzIt/Y29zbWV0aWMtMTky/MHgxMDgwLTk4NWM1/MTZjMTMyNS5qcGc" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Fortnite Crew</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pases')">
@@ -5005,9 +5029,37 @@
 
             <div id="sub-pavos" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <h2 style="margin-bottom: 5px;">Recargas de Pavos</h2>
-                <p style="color: #00ff88; font-size: 0.9em; margin-bottom: 30px; font-weight: 500;">V-BUCKS PARA FORTNITE · Se entrega una cuenta con los pavos recargados</p>
-                <!-- ── SECCIÓN 1: RECARGAS DE PAVOS ── -->
+                <section class="vb-hero">
+                    <h2 class="club-hero-title vb-title">V-BUCKS<small>DE FORTNITE</small></h2>
+                    <p class="club-hero-lema">Recarga tus pavos de forma rápida y segura</p>
+                    <p class="club-hero-desc">Se entrega <strong>una cuenta con los pavos ya recargados</strong>. Cambias los datos a los tuyos y recibes tus regalos.</p>
+                    <div class="vb-main">
+                        <div class="vb-media">
+                            <img decoding="async" src="img/vbucks-12500.webp" alt="12.500 V-Bucks de Fortnite">
+                        </div>
+                        <aside class="vb-panel">
+                            <span class="vb-tag">MÁS VENDIDO ✦✦</span>
+                            <h3 class="vb-panel-title">12.500 V-Bucks</h3>
+                            <div class="vb-price-wrap">
+                                <span class="precio-producto vb-price" data-precio-usd="65">$65 USD</span>
+                                <span class="precio-regular-producto vb-price-old" data-precio-regular-usd="89.99">$90 USD PRECIO REGULAR</span>
+                            </div>
+                            <div class="vb-actions">
+                                <button type="button" class="vb-buy" onclick="vbucksComprarAhora(event)">Comprar ahora</button>
+                                <button type="button" class="vb-cart" onclick="vbucksAgregar(event)" aria-label="Agregar al carrito"><i class="fas fa-cart-plus"></i></button>
+                            </div>
+                            <button type="button" class="btn-secundario vb-info-btn" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
+                            <ul class="vb-info-list">
+                                <li><span>Entrega</span><strong>Cuenta con pavos</strong></li>
+                                <li><span>Regalos</span><strong>Tras 48 h de agregado</strong></li>
+                                <li><span>Tipo</span><strong>Recarga de V-Bucks</strong></li>
+                            </ul>
+                        </aside>
+                    </div>
+                </section>
+
+                <h4 class="vb-subtitle">Elige tu cantidad</h4>
+                <!-- ── SECCIÓN 1: CANTIDADES DE V-BUCKS ── -->
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
                         <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
@@ -7049,7 +7101,7 @@
                 <img loading="lazy" decoding="async" src="https://cdn.worldvectorlogo.com/logos/spei-1.svg" alt="SPEI" class="footer-pay-logo" onerror="this.onerror=null;this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/SPEI_logo.svg/320px-SPEI_logo.svg.png'">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/grvmQ5nVgoYV1IP1Mlja_Qai7_mAa-rub_dhRfby2xs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pY29u/YXBlLmNvbS93cC1j/b250ZW50L3BuZ19s/b2dvX3ZlY3Rvci9v/eHhvLWxvZ28ucG5n" alt="Oxxo" class="footer-pay-logo">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/wUxvr3KmBjwF500zcZkdDtmyfAxyieOASlxQ6ZoYjTM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93aGF0/dGhlbG9nby5jb20v/c3RvcmFnZS9sb2dv/cy9haXJ0bS01NzY5/MC5wbmc" alt="Airtm" class="footer-pay-logo">
-                <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/B29cKJsw4cXP1xZDi0EegLrpnVTL7RQ5MwJLT6nUpdo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyNS8w/My9yZW1pdGx5LWxv/Z28tYnJhbmRsb2dv/cy5uZXRfYWhsajYt/NTEyeDEyMi5wbmc" alt="Remitly" class="footer-pay-logo footer-pay-logo-remitly">
+                <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/9tfW1WYJmJXBt6s8MmWKAnvF8MHnAxetOreC_BaTVd8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMuc2Vla2xvZ28u/Y29tL2xvZ28tcG5n/LzYxLzEvcmVtaXRs/eS1sb2dvLXBuZ19z/ZWVrbG9nby02MTU5/NjgucG5n" alt="Remitly" class="footer-pay-logo footer-pay-logo-remitly">
                 <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/4AzxHI9wQvZP1ZiHLMBHFvhzTcifPysOowiIh1lVISE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly96b25h/bG9nby5jb20vYXNz/ZXRzL2J5Yml0LWxv/Z28tcG5nLXN2Zy53/ZWJwP2Fzc2V0PTQz/MDY" alt="Bybit" class="footer-pay-logo">
             </div>
         </div>
@@ -9639,6 +9691,17 @@
         function cerrarInfoPavos() {
             document.getElementById('modal-info-pavos').style.display = 'none';
             document.body.style.overflow = 'auto';
+        }
+
+        // V-Bucks destacado (12.500): mismos datos que su tarjeta de abajo
+        var VB_DESTACADO = { n: 'Cuenta 12,500 V-Bucks', p: '65', i: 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', v: '12500' };
+        function vbucksAgregar(ev) {
+            agregarAlCarrito(VB_DESTACADO.n, VB_DESTACADO.p, VB_DESTACADO.i, VB_DESTACADO.v, 'cuenta', ev);
+        }
+        function vbucksComprarAhora(ev) {
+            var existe = carrito.some(function (it) { return it.nombre === VB_DESTACADO.n; });
+            if (!existe) agregarAlCarrito(VB_DESTACADO.n, VB_DESTACADO.p, VB_DESTACADO.i, VB_DESTACADO.v, 'cuenta', ev);
+            abrirCarritoLateral();
         }
 
         function abrirModalAPedido(nombreProducto) {
