@@ -2027,8 +2027,15 @@
         .club-hero-nota { font-size: .78em; font-style: italic; color: #c9a6ff; margin: 0 0 22px; }
         .club-hero-btn { background: #f5e50a; color: #1a1a1a; border: none; padding: 15px 30px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: transform .2s ease, filter .2s ease; }
         .club-hero-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+        .vb-cards-6 { grid-template-columns: repeat(6, 1fr); }
+        @media (max-width: 1100px) { .vb-cards-6 { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 700px) { .vb-cards-6 { display: flex; } }
+        #recargas.vb-activo {
+            background: linear-gradient(180deg, #1d3a8a 0%, #231a5e 45%, #1a1040 80%, #120a2a 100%);
+            backdrop-filter: none; -webkit-backdrop-filter: none;
+        }
         .club-hero-img { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); background: linear-gradient(135deg, rgba(150,40,80,.5), rgba(50,25,100,.5)); }
-        .club-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; }
+        .club-hero-img img { width: 100%; display: block; aspect-ratio: 16 / 9; object-fit: cover; }
         .club-hero-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1180px; margin: 0 auto; width: 100%; }
         .club-tile { border-radius: 12px; padding: 22px 12px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; border: 1px solid rgba(255,255,255,.08); }
         .club-tile i { font-size: 2.2em; filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); }
@@ -5000,18 +5007,13 @@
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">V-Bucks</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/zZ-8aUamHFhSodzPA4jNv_LyLx7UnXAv-8fyrV74Tt8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4y/LnVucmVhbGVuZ2lu/ZS5jb20vZW4tc3Vi/cy1zb3V0aHBhdzIt/Y29zbWV0aWMtMTky/MHgxMDgwLTk4NWM1/MTZjMTMyNS5qcGc" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
+                        <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/pJ02KeNMTF9siKiJYPFNrbcBfG1EMJQfK5AynPEMB7U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2FtZXNwb3QuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy9vcmln/aW5hbC8xNzU3LzE3/NTc3NDU1LzQwOTQw/NTctZm9ydG5pdGVj/cmV3am9uaXRoZXJl/ZC5qcGc" width="1280" height="720" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Fortnite Crew</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('pases')">
                         <img loading="lazy" decoding="async" src="https://imgs.search.brave.com/7JVEdtrRSngQi5iok2g59DWWixZMiRyHzzKDYrPRosM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9nbWVk/aWEucGxheXN0YXRp/b24uY29tL2lzL2lt/YWdlL1NJRVBEQy9G/b3J0bml0ZS1DSDct/UzMta2V5YXJ0LTAx/LTAzanVuMjYkZXMt/ZXM_JG5hdGl2ZSQ" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Pases vía Regalo</strong>
                     </div>
-                    <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('gamepass')">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain;">
-                        <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Xbox Game Pass</strong>
-                    </div>
-
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('xbox-codigos')">
                         <img loading="lazy" decoding="async" src="https://gaming-cdn.com/images/products/12266/616x353/fortnite-paquete-de-leyendas-veraniegas-xbox-series-x-s-xbox-one-juego-microsoft-store-turquia-cover.jpg?v=1741187430" class="img-servicio-premium" style="width: 100%; height: auto; object-fit: contain; border-radius: 12px;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Códigos de Xbox — Fortnite</strong>
@@ -5029,35 +5031,50 @@
 
             <div id="sub-pavos" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <section class="vb-hero">
-                    <h2 class="club-hero-title vb-title">V-BUCKS<small>DE FORTNITE</small></h2>
-                    <p class="club-hero-lema">Recarga tus pavos de forma rápida y segura</p>
-                    <p class="club-hero-desc">Se entrega <strong>una cuenta con los pavos ya recargados</strong>. Cambias los datos a los tuyos y recibes tus regalos.</p>
-                    <div class="vb-main">
-                        <div class="vb-media">
-                            <img decoding="async" src="img/vbucks-12500.webp" alt="12.500 V-Bucks de Fortnite">
+                <!-- HERO V-BUCKS (estilo Fortnite Crew) -->
+                <section id="vb-hero-sec" class="club-hero">
+                    <div class="club-hero-main">
+                        <div class="club-hero-text">
+                            <h2 class="club-hero-title">V-BUCKS<small>DE FORTNITE</small></h2>
+                            <p class="club-hero-lema">Recarga tus pavos de forma rápida y segura</p>
+                            <p class="club-hero-desc">Se entrega <strong>una cuenta con los pavos ya recargados</strong>. Cambias los datos a los tuyos y recibes tus regalos.</p>
+                            <p class="club-hero-nota">*Los regalos se pueden enviar tras 48 h de agregado.</p>
+                            <button class="club-hero-btn" onclick="vbIrAPrecios()">Ver precios</button>
                         </div>
-                        <aside class="vb-panel">
-                            <span class="vb-tag">MÁS VENDIDO ✦✦</span>
-                            <h3 class="vb-panel-title">12.500 V-Bucks</h3>
-                            <div class="vb-price-wrap">
-                                <span class="precio-producto vb-price" data-precio-usd="65">$65 USD</span>
-                                <span class="precio-regular-producto vb-price-old" data-precio-regular-usd="89.99">$90 USD PRECIO REGULAR</span>
-                            </div>
-                            <div class="vb-actions">
-                                <button type="button" class="vb-buy" onclick="vbucksComprarAhora(event)">Comprar ahora</button>
-                                <button type="button" class="vb-cart" onclick="vbucksAgregar(event)" aria-label="Agregar al carrito"><i class="fas fa-cart-plus"></i></button>
-                            </div>
-                            <button type="button" class="btn-secundario vb-info-btn" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                            <ul class="vb-info-list">
-                                <li><span>Entrega</span><strong>Cuenta con pavos</strong></li>
-                                <li><span>Regalos</span><strong>Tras 48 h de agregado</strong></li>
-                                <li><span>Tipo</span><strong>Recarga de V-Bucks</strong></li>
-                            </ul>
-                        </aside>
+                        <div class="club-hero-img"><img decoding="async" src="img/vbucks-12500.webp" width="1280" height="720" alt="V-Bucks de Fortnite"></div>
                     </div>
+                    <div class="club-cards vb-cards-6">
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" alt="2.400 V-Bucks"></div>
+                            <div class="club-card-label"><span>2.400 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" alt="4.500 V-Bucks"></div>
+                            <div class="club-card-label"><span>4.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" alt="12.500 V-Bucks"></div>
+                            <div class="club-card-label"><span>12.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="img/cuentas_pavos_12500.webp" alt="Cuenta con 12.500"></div>
+                            <div class="club-card-label"><span>Cuenta con 12.500</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="img/cuentas_pavos_25000.webp" alt="Cuenta con 25.000"></div>
+                            <div class="club-card-label"><span>Cuenta con 25.000</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="img/cuentas_pavos_50000.webp" alt="Cuenta con 50.000"></div>
+                            <div class="club-card-label"><span>Cuenta con 50.000</span><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+                    <button class="club-scroll-arrow" onclick="vbIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
                 </section>
 
+                <!-- PRECIOS (aparecen al deslizar) -->
+                <section id="vb-precios" class="club-precios">
+                    <div class="club-panel activo">
                 <h4 class="vb-subtitle">Elige tu cantidad</h4>
                 <!-- ── SECCIÓN 1: CANTIDADES DE V-BUCKS ── -->
                 <div class="servicios-flex-container">
@@ -5127,6 +5144,8 @@
                         <button class="btn-outline-mint" data-item-nombre="Cuenta Con 50000 Pavos" onclick="agregarAlCarrito('Cuenta Con 50000 Pavos', '185.39325843', 'img/cuentas_pavos_50000.webp', '50000', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
+                </div>
+                </section>
             </div>
 
             <div id="sub-club" class="sub-seccion-servicios">
@@ -5142,7 +5161,7 @@
                             <p class="club-hero-nota">*El contenido mensual del Club de Fortnite está sujeto a cambios.</p>
                             <button class="club-hero-btn" onclick="clubIrAPrecios()">Ver precios</button>
                         </div>
-                        <div class="club-hero-img"><img decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_42-30_October_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-01cd8fadb32647ed96d6dd9f06fd151f?resize=1&w=1280&h=720&quality=medium" alt="Fortnite Crew"></div>
+                        <div class="club-hero-img"><img decoding="async" src="https://imgs.search.brave.com/pJ02KeNMTF9siKiJYPFNrbcBfG1EMJQfK5AynPEMB7U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Z2FtZXNwb3QuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy9vcmln/aW5hbC8xNzU3LzE3/NTc3NDU1LzQwOTQw/NTctZm9ydG5pdGVj/cmV3am9uaXRoZXJl/ZC5qcGc" width="1280" height="720" alt="Fortnite Crew"></div>
                     </div>
                     <div class="club-cards">
                         <div class="club-card c1" role="button" tabindex="0" onclick="clubIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();clubIrAPrecios();}">
@@ -5253,107 +5272,6 @@
                         <strong>Pase Musical</strong>
                         <span class="precio-producto" data-precio-usd="8">$8 USD</span>
                         <button class="btn-outline-mint" data-item-nombre="Pase Musical" onclick="agregarAlCarrito('Pase Musical', '8', 'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmapw59f74unv07odbxkdjz89', '0', 'pases', event)">+ Carrito</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="sub-gamepass" class="sub-seccion-servicios">
-                <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <h2 style="margin-bottom: 5px;">Xbox Game Pass</h2>
-                <p style="color: #00A676; font-size: 0.9em; margin-bottom: 5px; font-weight: 500;">EN CUENTA PRINCIPAL · Por código · No requiere usar VPN</p>
-                <div class="alerta-warning" style="margin-bottom: 25px;">
-                    <i class="fas fa-check-circle"></i>
-                    <span>Se entrega <strong>por código</strong>, se activa directamente en tu cuenta principal de Xbox.</span>
-                </div>
-
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Game Pass Ultimate <span style="color:#00A676; font-weight:400;">(Incluye Club Fortnite)</span></h4>
-                <div class="grid-productos" style="grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px;">
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>1 Mes GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="21">$406 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate - 1 Mes" onclick="agregarAlCarrito('GP Ultimate - 1 Mes', '21', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>3 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="60">$1,183 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate - 3 Meses" onclick="agregarAlCarrito('GP Ultimate - 3 Meses', '60', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="border-color: #00A676; width: 100%;">
-                        <span style="background: #00A676; color: #12081a; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">POPULAR ✦</span>
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>6 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="116">$2,315 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate - 6 Meses" onclick="agregarAlCarrito('GP Ultimate - 6 Meses', '116', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>12 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="229">$4,563 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate - 12 Meses" onclick="agregarAlCarrito('GP Ultimate - 12 Meses', '229', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                </div>
-
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 40px;">Game Pass Premium</h4>
-                <div class="grid-productos" style="grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px;">
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>1 Mes GP Premium</strong>
-                        <span class="precio-producto" data-precio-usd="17">$330 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Premium - 1 Mes" onclick="agregarAlCarrito('GP Premium - 1 Mes', '17', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>3 Meses GP Premium</strong>
-                        <span class="precio-producto" data-precio-usd="49">$963 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Premium - 3 Meses" onclick="agregarAlCarrito('GP Premium - 3 Meses', '49', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                </div>
-
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 40px;">Game Pass Essential</h4>
-                <div class="grid-productos" style="grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px;">
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3" class="club-img-16-9">
-                        <strong>3 Meses GP Essential</strong>
-                        <span class="precio-producto" data-precio-usd="34">$676 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Essential - 3 Meses" onclick="agregarAlCarrito('GP Essential - 3 Meses', '34', 'https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3" class="club-img-16-9">
-                        <strong>12 Meses GP Essential</strong>
-                        <span class="precio-producto" data-precio-usd="77">$1,521 MXN</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Essential - 12 Meses" onclick="agregarAlCarrito('GP Essential - 12 Meses', '77', 'https://tse4.mm.bing.net/th/id/OIP.Msn9XPKcj50vw8pfzDsqVwHaEK?w=1280&h=720&rs=1&pid=ImgDetMain&o=7&rm=3', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                </div>
-
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 50px;">Códigos individuales para CUENTA NUEVA</h4>
-                <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">• Se puede poner la cuenta en principal •</p>
-                <div class="grid-productos" style="grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 40px;">
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>4 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="56">$56 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 4 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 4 Meses (Código)', '56', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>3 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="39">$39 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 3 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 3 Meses (Código)', '39', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>2 Meses GP Ultimate</strong>
-                        <span class="precio-producto" data-precio-usd="23">$23 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 2 Meses (Código)" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Código)', '23', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card" style="border-color: #00A676; width: 100%;">
-                        <img loading="lazy" decoding="async" src="https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg" class="club-img-16-9">
-                        <strong>2 Meses GP Ultimate (Cuenta)</strong>
-                        <span class="precio-producto" data-precio-usd="25">$25 USD</span>
-                        <p style="font-size: 0.7em; color: #aaa; margin: -10px 0 10px 0;">Se entrega CORREO Y CONTRASEÑA</p>
-                        <button class="btn-outline-mint" data-item-nombre="GP Ultimate Nueva - 2 Meses (Cuenta)" onclick="agregarAlCarrito('GP Ultimate Nueva - 2 Meses (Cuenta)', '25', 'https://tm.ibxk.com.br/2023/06/21/21143803959193.jpg', '0', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
             </div>
@@ -7169,8 +7087,7 @@
             { img: 'img/CLUB_FORTNITE.png', mensaje: 'Hola! Me interesa el Club de Fortnite Crew, ¿me das más info?' },
             { img: 'img/cuentas_con_pavos.png', mensaje: 'Hola! Me interesan las cuentas STW con V-Bucks, ¿me das más info?' },
             { img: 'img/Golden_cuadrado.png', mensaje: 'Hola! Me interesa el Golden Touch Challenge Pack, ¿me das más info?' },
-            { img: 'img/Via_regalo_cuadrado.png', mensaje: 'Hola! Me interesan las skins vía regalo, ¿me das más info?' },
-            { img: 'img/Xbox_game_pass.png', mensaje: 'Hola! Me interesa el código de Xbox Game Pass Ultimate, ¿me das más info?' }
+            { img: 'img/Via_regalo_cuadrado.png', mensaje: 'Hola! Me interesan las skins vía regalo, ¿me das más info?' }
         ];
         const PROMO_AD_WHATSAPP = '18295392881';
         const PROMO_AD_HORAS_ENTRE_MUESTRAS = 20; // cada cuántas horas puede volver a salir (aprox. "de vez en cuando")
@@ -9643,7 +9560,7 @@
             // Toggles entre el menú principal y las subsecciones
             menu.style.display = (id === 'menu') ? 'block' : 'none';
             const recargasBox = document.getElementById('recargas');
-            if (recargasBox) recargasBox.classList.toggle('club-activo', id === 'club');
+            if (recargasBox) { recargasBox.classList.toggle('club-activo', id === 'club'); recargasBox.classList.toggle('vb-activo', id === 'pavos'); }
             subs.forEach(s => {
                 s.style.display = (id !== 'menu' && s.id === 'sub-' + id) ? 'block' : 'none';
             });
@@ -12316,15 +12233,18 @@ function mostrarModalCapturaMovil(url) {
     })();
     </script>
     <script>
-    /* Club de Fortnite: al bajar con la rueda / deslizar en el hero, salta a los precios */
+    /* Club de Fortnite y V-Bucks: al bajar con la rueda / deslizar en el hero, salta a los precios */
     (function () {
         var lock = false, touchY = null;
-        function activo() { var c = document.getElementById('sub-club'); return !!(c && c.style.display === 'block' && c.offsetParent !== null); }
+        var CFG = { club: { sub: 'sub-club', hero: 'club-hero', precios: 'club-precios' }, pavos: { sub: 'sub-pavos', hero: 'vb-hero-sec', precios: 'vb-precios' } };
         function el(id) { return document.getElementById(id); }
-        function enHero() { var h = el('club-hero'); if (!h) return false; var r = h.getBoundingClientRect(); return r.top > -40 && r.bottom > window.innerHeight * 0.55; }
-        function enPreciosArriba() { var p = el('club-precios'); if (!p) return false; var r = p.getBoundingClientRect(); return r.top > -20 && r.top < 180; }
+        function cfg() { for (var k in CFG) { var c = el(CFG[k].sub); if (c && c.style.display === 'block' && c.offsetParent !== null) return CFG[k]; } return null; }
+        function enHero(c) { var h = el(c.hero); if (!h) return false; var r = h.getBoundingClientRect(); return r.top > -40 && r.bottom > window.innerHeight * 0.55; }
+        function enPreciosArriba(c) { var p = el(c.precios); if (!p) return false; var r = p.getBoundingClientRect(); return r.top > -20 && r.top < 180; }
         function bloquear() { lock = true; setTimeout(function () { lock = false; }, 900); }
-        window.clubIrAPrecios = function () { var p = el('club-precios'); if (!p) return; bloquear(); p.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+        function irPrecios(id) { var p = el(id); if (!p) return; bloquear(); p.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        window.clubIrAPrecios = function () { irPrecios('club-precios'); };
+        window.vbIrAPrecios = function () { irPrecios('vb-precios'); };
         window.clubIrAlInicio = function () { bloquear(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
         window.clubTab = function (cual) {
             ['nuevo'].forEach(function (k) {
@@ -12335,30 +12255,32 @@ function mostrarModalCapturaMovil(url) {
             var p = el('club-precios'); p.classList.remove('visible'); void p.offsetWidth; p.classList.add('visible');
         };
         document.addEventListener('DOMContentLoaded', function () {
-            var p = el('club-precios'); if (!p) return;
-            p.classList.add('club-reveal-on');
-            if ('IntersectionObserver' in window) {
-                new IntersectionObserver(function (en) {
-                    en.forEach(function (x) {
-                        if (x.isIntersecting) p.classList.add('visible');
-                        else if (x.boundingClientRect.top > 0) p.classList.remove('visible');
-                    });
-                }, { threshold: 0.15 }).observe(p);
-            } else { p.classList.add('visible'); }
+            ['club-precios', 'vb-precios'].forEach(function (id) {
+                var p = el(id); if (!p) return;
+                p.classList.add('club-reveal-on');
+                if ('IntersectionObserver' in window) {
+                    new IntersectionObserver(function (en) {
+                        en.forEach(function (x) {
+                            if (x.isIntersecting) p.classList.add('visible');
+                            else if (x.boundingClientRect.top > 0) p.classList.remove('visible');
+                        });
+                    }, { threshold: 0.15 }).observe(p);
+                } else { p.classList.add('visible'); }
+            });
         });
         window.addEventListener('wheel', function (e) {
-            if (!activo()) return;
+            var c = cfg(); if (!c) return;
             if (lock) { e.preventDefault(); return; }
-            if (e.deltaY > 10 && enHero()) { e.preventDefault(); clubIrAPrecios(); }
-            else if (e.deltaY < -10 && enPreciosArriba()) { e.preventDefault(); clubIrAlInicio(); }
+            if (e.deltaY > 10 && enHero(c)) { e.preventDefault(); irPrecios(c.precios); }
+            else if (e.deltaY < -10 && enPreciosArriba(c)) { e.preventDefault(); clubIrAlInicio(); }
         }, { passive: false });
         window.addEventListener('touchstart', function (e) { touchY = e.touches.length === 1 ? e.touches[0].clientY : null; }, { passive: true });
         window.addEventListener('touchmove', function (e) {
-            if (!activo() || touchY === null || e.touches.length !== 1) return;
+            var c = cfg(); if (!c || touchY === null || e.touches.length !== 1) return;
             var dy = touchY - e.touches[0].clientY;
             if (lock) { e.preventDefault(); return; }
-            if (dy > 45 && enHero()) { e.preventDefault(); touchY = null; clubIrAPrecios(); }
-            else if (dy < -45 && enPreciosArriba()) { e.preventDefault(); touchY = null; clubIrAlInicio(); }
+            if (dy > 45 && enHero(c)) { e.preventDefault(); touchY = null; irPrecios(c.precios); }
+            else if (dy < -45 && enPreciosArriba(c)) { e.preventDefault(); touchY = null; clubIrAlInicio(); }
         }, { passive: false });
     })();
     </script>
