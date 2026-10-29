@@ -1045,7 +1045,7 @@ select option,select optgroup{background:#111;color:#fff}
     <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
     <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
     <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
-    <button class="tab-nav-btn" id="btn-tab-xboxgames" onclick="window.switchTab('xboxgames',this)"><i class="fab fa-xbox"></i> Juegos Xbox</button>
+    
   </div>
 
   <!-- Mobile Bottom Navigation -->
@@ -1066,9 +1066,7 @@ select option,select optgroup{background:#111;color:#fff}
       <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
       </button>
-      <button class="mnav-btn" id="mnav-xboxgames" onclick="window.switchTab('xboxgames', document.getElementById('btn-tab-xboxgames')); window.setActiveMNav('xboxgames')">
-        <i class="fab fa-xbox"></i>Xbox
-      </button>
+      
     </div>
   </nav>
 
@@ -1151,7 +1149,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label>Período:</label>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" readonly onclick="window.openCal('month-sel','month')">
+            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" onclick="window.openCal('month-sel','month')" onchange="window.validateCalendarInput(this,'month')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-month-sel"></div>
@@ -1332,14 +1330,14 @@ select option,select optgroup{background:#111;color:#fff}
         </select>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-from" title="Desde" placeholder="Desde" readonly onclick="window.openCal('vc-date-from','date')">
+            <input type="text" class="month-input" id="vc-date-from" title="Desde" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-from"></div>
         </div>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-to" title="Hasta" placeholder="Hasta" readonly onclick="window.openCal('vc-date-to','date')">
+            <input type="text" class="month-input" id="vc-date-to" title="Hasta" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-to"></div>
@@ -1527,32 +1525,7 @@ select option,select optgroup{background:#111;color:#fff}
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
-    <div class="tab-panel" id="tab-xboxgames">
-      <div style="background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.35);border-radius:10px;padding:14px 16px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start">
-        <i class="fas fa-triangle-exclamation" style="color:#ff9f0a;font-size:1.2em;margin-top:2px"></i>
-        <div style="font-size:0.8em;color:var(--text2);line-height:1.5">
-          <strong style="color:#ff9f0a">Los precios de estos juegos cambian continuamente.</strong>
-          Por eso el precio siempre se muestra como <strong>"Consultar"</strong> — confirma el costo actual antes de cerrar la venta.
-        </div>
-      </div>
-
-      <div class="toolbar" style="margin-bottom:18px">
-        <div class="search-wrap">
-          <i class="fas fa-search"></i>
-          <input class="search-input" id="xbox-games-search" placeholder="Buscar juego de Xbox..." oninput="window.renderXboxGamesList()">
-        </div>
-        <button class="btn btn-accent" onclick="window.cargarCatalogoXboxGames()"><i class="fas fa-cloud-download-alt"></i> Cargar catálogo de juegos</button>
-        <button class="btn btn-ghost" onclick="window.openCatalogoModal()"><i class="fas fa-box"></i> Gestionar catálogo</button>
-      </div>
-
-      <div class="sec-title">
-        <h3><i class="fab fa-xbox" style="margin-right:8px"></i>Juegos Xbox</h3>
-        <div class="sec-line"></div>
-        <span id="xbox-games-count-badge" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span>
-      </div>
-
-      <div id="xbox-games-list-area"></div>
-    </div>
+    
 
   </div></div>
 
@@ -1638,7 +1611,7 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Fecha</label>
           <div class="date-picker-wrap">
             <div class="date-picker-input-row">
-              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('f-date','datetime')">
+              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('f-date','datetime')" onchange="window.validateCalendarInput(this,'datetime')">
               <i class="fas fa-calendar-alt date-picker-icon"></i>
             </div>
             <div class="cal-popup" id="cal-f-date"></div>
@@ -1988,7 +1961,7 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Fecha de Recuperación *</label>
           <div class="date-picker-wrap">
             <div class="date-picker-input-row">
-              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" readonly onclick="window.openCal('rec-f-fecha','date')">
+              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" onclick="window.openCal('rec-f-fecha','date')" onchange="window.validateCalendarInput(this,'date')">
               <i class="fas fa-calendar-alt date-picker-icon"></i>
             </div>
             <div class="cal-popup" id="cal-rec-f-fecha"></div>
@@ -2083,7 +2056,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label class="flabel">Fecha</label>
         <div class="date-picker-wrap">
           <div class="date-picker-input-row">
-            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('vc-f-fecha','datetime')">
+            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('vc-f-fecha','datetime')" onchange="window.validateCalendarInput(this,'datetime')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-f-fecha"></div>
@@ -2628,25 +2601,8 @@ let toastTimer;
 let catalogoProductos = [];   // Catálogo manual de productos (Supabase: tabla catalogo_productos)
 let editingCatalogoId = null; // Id del producto de catálogo en edición (null = nuevo)
 
-// Categoría reservada para los juegos de Xbox: el precio real fluctúa seguido,
-// así que en la UI siempre se muestra "Consultar" en vez del precio_usd guardado.
+// Categoría retirada del catálogo visible; se conservan los registros históricos.
 const XBOX_GAMES_CATEGORIA = 'Juegos Xbox';
-const XBOX_GAMES_SEED = [
-  'Assassin\'s Creed Chronicles','Assassin\'s Creed III Remastered','Assassin\'s Creed Mirage',
-  'Assassin\'s Creed Odyssey','Assassin\'s Creed Origins','Assassin\'s Creed Rogue Remastered',
-  'Assassin\'s Creed Shadows','Assassin\'s Creed Syndicate','Assassin\'s Creed The Ezio Collection',
-  'Assassin\'s Creed Unity','Battlefield 4','Battlefield 4 Premium Edition','Battlefield 6',
-  'Battlefield 2042 (EA Play)','Battlefield 2042 Cross-Gen Bundle','Battlefield 2042 Elite Edition',
-  'Borderlands 3','Borderlands 3 Season Pass Bundle','Borderlands 3 Super Deluxe Edition',
-  'Borderlands 4','Borderlands 4 Super Deluxe Edition','Borderlands Collection: Pandora\'s Box',
-  'Call of Duty Black Ops','Call of Duty Black Ops II','Call of Duty Black Ops 4 Digital Deluxe',
-  'Call of Duty Modern Warfare','Dead Cells','Dead Island 2','Dragon Ball FighterZ',
-  'Dragon Ball Xenoverse','Dragon Ball Xenoverse 2','Dragon Ball Z Kakarot','Dragon Ball: The Breakers',
-  'Dying Light: The Beast','Fallout 76','Far Cry 6','Far Cry Classic','Far Cry Primal',
-  'Helldivers 2','Lego Star Wars: The Complete Saga','Microsoft Flight Simulator (Premium Deluxe)',
-  'NHL 26','Red Dead Redemption 2','Resident Evil (Requiem)','Sea of Thieves (Premium Edition)',
-  'Tainted Grail: The Fall of Avalon','The Outer Worlds 2','Voice of Cards: The Beasts of Burden'
-];
 let tiendaHoyItems = [];      // Rotación diaria de la tienda de Fortnite (vía fortnite-api.com, en vivo)
 let tiendaHoyLoaded = false;
 let tiendaHoyLoading = false;
@@ -3102,7 +3058,7 @@ async function fetchCatalogo() {
       .order('categoria', { ascending: true })
       .order('nombre', { ascending: true });
     if (error) throw error;
-    catalogoProductos = data || [];
+    catalogoProductos = (data || []).filter(p => p.categoria !== XBOX_GAMES_CATEGORIA);
   } catch (err) {
     console.error('Error cargando catálogo:', err);
     catalogoProductos = [];
@@ -3417,85 +3373,6 @@ async function eliminarProductoCatalogo(id) {
   } catch (err) {
     showToast('Error: ' + err.message, true);
   }
-}
-
-// ═══════════════════════════════════════════════
-// SECCIÓN JUEGOS XBOX (categoría "Juegos Xbox" en catalogo_productos).
-// El precio real cambia seguido, así que se guarda en 0 y la UI siempre
-// muestra "Consultar" en vez del precio_usd.
-// ═══════════════════════════════════════════════
-
-// Inserta en Supabase los juegos de XBOX_GAMES_SEED que todavía no existan
-// en el catálogo (evita duplicados comparando por nombre, sin importar mayúsculas).
-async function cargarCatalogoXboxGames() {
-  const existentes = new Set(
-    catalogoProductos
-      .filter(p => p.categoria === XBOX_GAMES_CATEGORIA)
-      .map(p => p.nombre.trim().toLowerCase())
-  );
-  const faltantes = XBOX_GAMES_SEED.filter(nombre => !existentes.has(nombre.trim().toLowerCase()));
-
-  if (faltantes.length === 0) {
-    showToast('Ya están todos los juegos en el catálogo');
-    return;
-  }
-
-  try {
-    const filas = faltantes.map(nombre => ({
-      categoria: XBOX_GAMES_CATEGORIA,
-      nombre,
-      precio_usd: 0
-    }));
-    const { error } = await supabase.from('catalogo_productos').insert(filas);
-    if (error) throw error;
-    showToast(`${faltantes.length} juego${faltantes.length !== 1 ? 's' : ''} agregado${faltantes.length !== 1 ? 's' : ''} al catálogo`);
-    await fetchCatalogo();
-    renderXboxGamesList();
-  } catch (err) {
-    showToast('Error: ' + err.message, true);
-  }
-}
-
-function renderXboxGamesList() {
-  const area = document.getElementById('xbox-games-list-area');
-  if (!area) return;
-
-  const juegos = catalogoProductos.filter(p => p.categoria === XBOX_GAMES_CATEGORIA);
-  const badge = document.getElementById('xbox-games-count-badge');
-
-  if (juegos.length === 0) {
-    if (badge) badge.textContent = '';
-    area.innerHTML = `<div class="empty"><i class="fab fa-xbox"></i><p>Aún no has cargado los juegos de Xbox. Usa "Cargar catálogo de juegos".</p></div>`;
-    return;
-  }
-
-  const q = (document.getElementById('xbox-games-search')?.value || '').toLowerCase();
-  const filtrados = juegos
-    .filter(p => !q || p.nombre.toLowerCase().includes(q))
-    .sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-  if (badge) badge.textContent = `${juegos.length} juego${juegos.length !== 1 ? 's' : ''}`;
-
-  if (filtrados.length === 0) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-search"></i><p>Sin resultados para tu búsqueda</p></div>`;
-    return;
-  }
-
-  let html = `<div class="table-wrap"><table><thead><tr><th>Juego</th><th>Precio</th><th style="text-align:right">Acciones</th></tr></thead><tbody>`;
-  filtrados.forEach(p => {
-    html += `<tr>
-      <td class="td-name"><i class="fab fa-xbox" style="color:#107C10;margin-right:8px"></i>${p.nombre}</td>
-      <td><span style="color:#ff9f0a;font-weight:700">Consultar</span></td>
-      <td style="text-align:right">
-        <div class="td-act" style="justify-content:flex-end">
-          <button class="ibtn" onclick="window.editarProductoCatalogo('${p.id}')" title="Editar"><i class="fas fa-pen"></i></button>
-          <button class="ibtn del" onclick="window.eliminarProductoCatalogo('${p.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-        </div>
-      </td>
-    </tr>`;
-  });
-  html += `</tbody></table></div>`;
-  area.innerHTML = html;
 }
 
 async function saveOrder() {
@@ -4461,9 +4338,6 @@ function switchTab(tab, btn) {
   // renderAccounting() internamente).
   if (tab === 'contabilidad') {
     renderAccounting();
-  }
-  if (tab === 'xboxgames') {
-    renderXboxGamesList();
   }
 }
 
@@ -6177,6 +6051,65 @@ window.doConfirmAction = async function() {
 // CUSTOM CALENDAR DATE PICKER
 // ═══════════════════════════════════════════════
 const calState = {};
+
+window.validateCalendarInput = function(input, mode) {
+  const value = input.value.trim();
+  input.setCustomValidity('');
+  if (!value) {
+    input.dataset.lastValidValue = '';
+    if (input.id === 'month-sel') renderAccounting();
+    if (input.id === 'vc-date-from' || input.id === 'vc-date-to') {
+      const quick = document.getElementById('vc-range-quick');
+      if (quick) quick.value = '';
+      renderVentas();
+    }
+    return true;
+  }
+  let match;
+  if (mode === 'month') {
+    match = /^(\d{4})-(\d{2})$/.exec(value);
+    if (match) {
+      const year = Number(match[1]), month = Number(match[2]);
+      if (year >= 1900 && month >= 1 && month <= 12) {
+        input.dataset.lastValidValue = value;
+        renderAccounting();
+        return true;
+      }
+    }
+  } else if (mode === 'datetime') {
+    match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
+    if (match) {
+      const [, y, mo, day, hour, minute] = match.map(Number);
+      const date = new Date(y, mo - 1, day);
+      if (y >= 1900 && date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === day && hour < 24 && minute < 60) {
+        input.dataset.lastValidValue = value;
+        return true;
+      }
+    }
+  } else {
+    match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (match) {
+      const [, y, mo, day] = match.map(Number);
+      const date = new Date(y, mo - 1, day);
+      if (y >= 1900 && date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === day) {
+        input.dataset.lastValidValue = value;
+        if (input.id === 'vc-date-from' || input.id === 'vc-date-to') {
+          const quick = document.getElementById('vc-range-quick');
+          if (quick) quick.value = '';
+          renderVentas();
+        }
+        return true;
+      }
+    }
+  }
+  input.setCustomValidity(mode === 'month'
+    ? 'Escribe el mes con el formato AAAA-MM.'
+    : mode === 'datetime'
+      ? 'Escribe fecha y hora con el formato AAAA-MM-DDTHH:mm.'
+      : 'Escribe la fecha con el formato AAAA-MM-DD.');
+  input.reportValidity();
+  return false;
+};
 
 window.openCal = function(inputId, mode) {
   // Close any other open pickers
