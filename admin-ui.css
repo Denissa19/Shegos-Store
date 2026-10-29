@@ -322,3 +322,37 @@ td { padding: 13px 15px; }
   .change-password-actions { padding: 12px 19px 19px; }
   .change-password-actions .btn { padding: 9px 11px; }
 }
+
+/* Payment method identity */
+.meth-identity { display: inline-flex; align-items: center; gap: 10px; min-width: 0; color: var(--meth-color, var(--text)); }
+.meth-logo { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--meth-color, var(--accent)) 28%, transparent); border-radius: 9px; background: color-mix(in srgb, var(--meth-color, var(--accent)) 10%, transparent); color: var(--meth-color, var(--accent)); }
+.meth-logo-img { display: block; width: 18px; height: 18px; object-fit: contain; }
+.meth-logo i { font-size: 14px; }
+.meth-name { color: inherit; font-size: .8em; font-weight: 650; letter-spacing: .2px; text-transform: none; }
+.meth-card { gap: 12px; }
+#saldo-metodo-grid .meth-identity { color: var(--meth-color); }
+#btn-nueva-venta { white-space: nowrap; }
+
+@media (max-width: 768px) {
+  html, body { width: 100%; overflow-x: clip; }
+  .main, .tab-panel, .toolbar, .sec-title { min-width: 0; }
+  .toolbar { flex-wrap: wrap; }
+  .toolbar > * { max-width: 100%; }
+  .toolbar .search-wrap { flex: 1 1 100%; width: 100%; }
+  .toolbar .search-input, .toolbar .filter-sel, .toolbar .month-input { min-width: 0; max-width: 100%; }
+  #btn-nueva-venta { flex: 1 1 100%; min-height: 46px; justify-content: center; }
+  .sec-title { flex-wrap: wrap; }
+  .sec-title .sec-line { min-width: 24px; }
+  tbody tr { padding: 12px 14px !important; }
+  tbody td:not([data-label])::before, tbody td[data-label=""]::before { display: none !important; }
+  .td-act { position: static !important; display: flex !important; flex-direction: row !important; flex-wrap: wrap; justify-content: flex-start; gap: 8px; margin-top: 8px; }
+  input, select, textarea, button { font-size: max(16px, 1em); }
+  .mnav-items { overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; }
+  .mnav-items::-webkit-scrollbar { display: none; }
+  .mnav-btn { flex: 0 0 auto; min-width: 60px; }
+  .overlay { align-items: flex-end; padding: 0; }
+  .mcard { width: 100%; max-height: min(92dvh, 900px); display: flex; flex-direction: column; border-radius: 18px 18px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+  .mhead { flex: 0 0 auto; }
+  .mbody { min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  .mfoot { flex: 0 0 auto; }
+}
