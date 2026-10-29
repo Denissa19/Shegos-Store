@@ -564,3 +564,98 @@ td { padding: 13px 15px; }
 @media (max-width: 390px) {
   #tab-cuentas > .stats-row { grid-template-columns: 1fr !important; }
 }
+
+/* SHEGOS STORE neon gamer identity */
+:root {
+  --bg: #050705 !important;
+  --surface: rgba(8, 11, 8, .97) !important;
+  --surface2: rgba(14, 18, 14, .96) !important;
+  --border: #1b2719 !important;
+  --border2: #2a3b27 !important;
+  --accent: #62ff00 !important;
+  --accent-dim: rgba(98,255,0,.13) !important;
+  --red: #ff456a !important;
+  --gold: #eaff00 !important;
+  --blue: #38cfff !important;
+  --text: #f5f7f2 !important;
+  --text2: #a7b1a3 !important;
+  --text3: #71806c !important;
+}
+body, body.role-ceo {
+  background:
+    radial-gradient(ellipse at 88% 2%, rgba(98,255,0,.085), transparent 31rem),
+    radial-gradient(ellipse at 8% 62%, rgba(39,119,24,.075), transparent 30rem),
+    repeating-linear-gradient(135deg, transparent 0 180px, rgba(98,255,0,.014) 181px, transparent 183px 360px),
+    #050705 !important;
+  background-attachment: fixed !important;
+}
+.topbar {
+  background: rgba(4,7,4,.96) !important;
+  border-bottom-color: rgba(98,255,0,.22) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.42), 0 1px 0 rgba(98,255,0,.07);
+}
+#admin-sidebar.tabs-nav {
+  background: linear-gradient(180deg, rgba(7,10,7,.99), rgba(5,8,5,.98)) !important;
+  border-right-color: rgba(98,255,0,.2) !important;
+  box-shadow: 10px 0 42px rgba(0,0,0,.36);
+}
+.sidebar-brand { border-bottom-color: rgba(98,255,0,.14); }
+#admin-sidebar .tab-nav-btn.active {
+  color: #eaffdf;
+  background: linear-gradient(100deg, rgba(98,255,0,.17), rgba(98,255,0,.035));
+  border-color: rgba(98,255,0,.34);
+  box-shadow: inset 3px 0 #62ff00, 0 0 22px rgba(98,255,0,.07);
+}
+#admin-sidebar .tab-nav-btn.active i,
+.sidebar-footnote i { color: #62ff00; filter: drop-shadow(0 0 5px rgba(98,255,0,.45)); }
+.dash-welcome {
+  border-color: rgba(98,255,0,.24);
+  background:
+    linear-gradient(135deg, rgba(98,255,0,.055) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 92% 18%, rgba(98,255,0,.11), transparent 17rem),
+    linear-gradient(115deg, rgba(18,26,17,.98), rgba(11,15,11,.98));
+  box-shadow: 0 18px 52px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.025);
+}
+.dash-eyebrow, .dash-eyebrow::before { color: var(--accent); }
+.stat-card, .acc-card, .meth-card, .month-chart, .table-wrap {
+  background-color: rgba(12,16,12,.97);
+  border-color: rgba(107,133,99,.22);
+  box-shadow: 0 12px 32px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.025);
+}
+.stat-card::after { box-shadow: 0 0 12px color-mix(in srgb, var(--accent-c, var(--accent)) 65%, transparent); }
+#tab-cuentas > .stats-row > .stat-card {
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent-c, var(--accent)) 12%, transparent), transparent 9rem),
+    linear-gradient(145deg, rgba(15,20,14,.99), rgba(7,10,7,.99));
+}
+#tab-cuentas > .stats-row > .stat-card::after { height: 2px; opacity: 1; }
+.btn-accent {
+  background: var(--accent) !important;
+  color: #071004 !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 18px rgba(98,255,0,.13);
+}
+.btn-accent:hover { box-shadow: 0 0 24px rgba(98,255,0,.28) !important; }
+.btn-outline { border-color: rgba(98,255,0,.7); color: var(--accent); }
+.btn-outline:hover, .btn-ghost:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 16px rgba(98,255,0,.11);
+}
+.search-input:focus, .filter-sel:focus, .month-input:focus,
+.finput:focus, .fsel:focus, .ftarea:focus, .status-sel:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(98,255,0,.09);
+}
+.overlay { background: rgba(0,3,0,.84); }
+.mcard { background: #0d120d; border-color: rgba(98,255,0,.22); box-shadow: 0 24px 90px rgba(0,0,0,.65); }
+.mcard::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+.badge { border-radius: 6px; }
+.chart-title, .sec-title h3 { text-shadow: 0 0 18px rgba(98,255,0,.08); }
+.topbar-brand { color: #dfe8db !important; }
+.empty { border-color: rgba(98,255,0,.16); background: rgba(7,10,7,.65); }
+@media (max-width: 768px) {
+  #admin-sidebar.tabs-nav {
+    background: linear-gradient(180deg, #080c08, #050705) !important;
+    border-right-color: rgba(98,255,0,.25) !important;
+  }
+}
