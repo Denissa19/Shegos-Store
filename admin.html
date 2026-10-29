@@ -3594,6 +3594,7 @@ function enhancePaymentPickers() {
     trigger.setAttribute('aria-haspopup','listbox'); trigger.setAttribute('aria-expanded','false');
     trigger.innerHTML='<span class="payment-picker-current-logo"></span><span class="payment-picker-label"></span><i class="fas fa-chevron-down"></i>';
     const menu = document.createElement('div'); menu.className='payment-picker-menu'; menu.setAttribute('role','listbox');
+    menu.hidden = true;
     PAYMENT_METHODS.forEach(item => {
       const option=document.createElement('button'); option.type='button'; option.className='payment-picker-option'; option.setAttribute('role','option');
       option.innerHTML=paymentLogoMarkup(item)+'<span>'+item.label+'</span>';
