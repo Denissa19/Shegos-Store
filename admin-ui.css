@@ -365,7 +365,51 @@ body:not(.role-ceo) #modal-catalogo-cuenta .sec-ceo-only { display:none !importa
 .meth-identity { display: inline-flex; align-items: center; gap: 10px; min-width: 0; color: var(--meth-color, var(--text)); }
 .meth-logo { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--meth-color, var(--accent)) 28%, transparent); border-radius: 9px; background: color-mix(in srgb, var(--meth-color, var(--accent)) 10%, transparent); color: var(--meth-color, var(--accent)); }
 .meth-logo-img { display: block; width: 18px; height: 18px; object-fit: contain; }
+.meth-logo-img[hidden], .pay-logo-img[hidden] { display: none !important; }
 .meth-logo i { font-size: 14px; }
+.pay-logo { position:relative; width:30px; height:30px; flex:0 0 30px; display:grid; place-items:center; border:1px solid color-mix(in srgb,var(--pay-color,var(--accent)) 34%,transparent); border-radius:9px; background:color-mix(in srgb,var(--pay-color,var(--accent)) 12%,transparent); color:var(--pay-color,var(--accent)); overflow:hidden; }
+.pay-logo-img { width:18px; height:18px; object-fit:contain; position:relative; z-index:1; }
+.pay-logo-fallback { position:absolute; inset:0; display:grid; place-items:center; font-size:.72rem; font-weight:900; letter-spacing:-.04em; }
+.pay-logo-img:not([hidden]) + .pay-logo-fallback { visibility:hidden; }
+.payment-picker { position:relative; width:100%; }
+.payment-native-select { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; opacity:0!important; pointer-events:none!important; overflow:hidden!important; }
+.payment-picker-trigger { width:100%; min-height:42px; display:flex; align-items:center; gap:10px; text-align:left; padding:7px 11px; color:var(--text); background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm,8px); cursor:pointer; font:inherit; }
+.payment-picker-trigger:hover,.payment-picker-trigger[aria-expanded="true"] { border-color:var(--accent); box-shadow:0 0 0 2px rgba(98,255,0,.08); }
+.payment-picker-current-logo { display:flex; }
+.payment-picker-label { flex:1; font-size:.84rem; }
+.payment-picker-trigger > .fa-chevron-down { font-size:.72rem; color:var(--text3); }
+.payment-picker-menu { position:absolute; z-index:5000; inset:auto 0 0; transform:translateY(calc(100% + 5px)); max-height:260px; overflow:auto; padding:5px; border:1px solid var(--border2); border-radius:10px; background:#101610; box-shadow:0 16px 40px rgba(0,0,0,.6); }
+.payment-picker-menu[hidden] { display:none; }
+.payment-picker-option { display:flex; align-items:center; gap:10px; width:100%; padding:7px 9px; border:0; border-radius:7px; color:var(--text); background:transparent; text-align:left; cursor:pointer; font:inherit; }
+.payment-picker-option:hover,.payment-picker-option:focus-visible { background:rgba(98,255,0,.1); outline:none; }
+.pay-logo-empty { background:transparent; }
+.sales-insights { margin:0 0 22px; padding:22px; border:1px solid rgba(98,255,0,.22); border-radius:18px; background:linear-gradient(135deg,rgba(18,28,16,.96),rgba(9,14,10,.98)); }
+.sales-insights-heading { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:18px; }
+.sales-insights-heading h2 { margin:5px 0; font-size:1.3rem; color:var(--text); }
+.sales-insights-heading p { margin:0; color:var(--text2); font-size:.84rem; }
+.sales-insights-period { color:var(--accent); font-size:.78rem; text-transform:capitalize; }
+.sales-insights-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:12px; }
+.sales-insight-metric,.sales-chart-card { padding:15px; border:1px solid rgba(160,185,150,.15); border-radius:12px; background:rgba(5,9,6,.55); min-width:0; }
+.sales-insight-metric span,.sales-insight-metric small { display:block; color:var(--text2); font-size:.75rem; }
+.sales-insight-metric strong { display:block; margin:6px 0 3px; font-size:1.65rem; color:var(--accent); }
+.sales-insights-charts { display:grid; grid-template-columns:1.15fr 1fr 1fr; gap:12px; }
+.sales-chart-title { display:flex; align-items:center; justify-content:space-between; color:var(--accent); margin-bottom:12px; }
+.sales-chart-title strong,.sales-chart-title span { display:block; }
+.sales-chart-title strong { color:var(--text); font-size:.88rem; }
+.sales-chart-title span { margin-top:3px; color:var(--text2); font-size:.7rem; }
+.sales-bars { height:132px; display:flex; align-items:flex-end; justify-content:space-around; gap:8px; padding-top:12px; }
+.sales-bar-col { height:100%; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px; color:var(--text2); font-size:.7rem; }
+.sales-bar-col i { display:block; width:min(30px,75%); min-height:4px; border-radius:6px 6px 2px 2px; background:linear-gradient(180deg,#adff42,#39c900); box-shadow:0 0 14px rgba(98,255,0,.18); }
+.sales-bar-col small { text-transform:capitalize; }
+.sales-rank-list { display:grid; gap:10px; }
+.sales-rank-row { display:grid; grid-template-columns:minmax(75px,1fr) 2fr 22px; align-items:center; gap:8px; font-size:.74rem; }
+.sales-rank-name { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; color:var(--text2); }
+.sales-rank-track { height:7px; border-radius:9px; background:rgba(255,255,255,.07); overflow:hidden; }
+.sales-rank-track i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#41dc00,#b6ff59); }
+.sales-rank-row b { text-align:right; color:var(--text); }
+.sales-chart-empty { margin:6px 0; color:var(--text3); font-size:.78rem; }
+@media(max-width:900px) { .sales-insights-charts { grid-template-columns:1fr 1fr; } .sales-chart-month { grid-column:1/-1; } }
+@media(max-width:620px) { .sales-insights { padding:14px; } .sales-insights-heading h2 { font-size:1.1rem; } .sales-insights-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .sales-insight-metric:last-child { grid-column:1/-1; } .sales-insights-charts { grid-template-columns:1fr; } .sales-chart-month { grid-column:auto; } }
 .meth-name { color: inherit; font-size: .8em; font-weight: 650; letter-spacing: .2px; text-transform: none; }
 .meth-card { gap: 12px; }
 #saldo-metodo-grid .meth-identity { color: var(--meth-color); }
@@ -710,3 +754,4 @@ body, body.role-ceo {
     border-right-color: rgba(98,255,0,.25) !important;
   }
 }
+
