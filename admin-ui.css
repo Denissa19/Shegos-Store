@@ -296,3 +296,29 @@ td { padding: 13px 15px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+
+/* Change-password flow */
+.btn-change-password { border-color: rgba(195,238,114,.32); color: var(--accent); }
+.btn-change-password:hover { background: rgba(195,238,114,.09); border-color: var(--accent); color: var(--accent); }
+.change-password-card { max-width: 480px; }
+.change-password-card .mhead { align-items: center; }
+.change-password-card .mtitle { display: flex; align-items: center; gap: 10px; font: 700 1.08rem/1.3 var(--font-body); text-transform: none; letter-spacing: -.2px; color: var(--text); }
+.change-password-card .mtitle i { color: var(--accent); }
+.change-password-intro { margin-bottom: 20px; color: var(--text2); font-size: .86rem; line-height: 1.65; }
+.change-password-card .fgroup { margin-bottom: 14px; }
+.change-password-card .finput { min-height: 44px; letter-spacing: 0; text-align: left; }
+.change-password-hint { display: block; margin-top: 6px; color: var(--text3); font-size: .72rem; line-height: 1.5; }
+.change-password-message { margin-top: 14px; padding: 11px 13px; border: 1px solid var(--border2); border-radius: 10px; font-size: .8rem; line-height: 1.5; }
+.change-password-message.is-error { color: #ffc0c4; border-color: rgba(255,115,128,.3); background: rgba(255,115,128,.08); }
+.change-password-message.is-success { color: var(--accent); border-color: rgba(195,238,114,.25); background: rgba(195,238,114,.08); }
+.change-password-actions { justify-content: space-between; }
+.change-password-actions .btn-accent { margin-left: auto; }
+#cp-current:disabled { opacity: .55; cursor: not-allowed; }
+@media (max-width: 768px) {
+  .btn-change-password span { display: none; }
+  .btn-change-password { width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+  .change-password-card .mbody { padding: 19px; }
+  .change-password-actions { padding: 12px 19px 19px; }
+  .change-password-actions .btn { padding: 9px 11px; }
+}
