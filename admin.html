@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="shortcut icon" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 @font-face {
@@ -1208,6 +1208,11 @@ select option,select optgroup{background:#111;color:#fff}
           <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Productos más vendidos</strong><span>Por número de ventas</span></div><i class="fas fa-trophy"></i></div><div id="sales-products-chart" class="sales-rank-list"></div></article>
           <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Tipos de venta</strong><span>Distribución del mes actual</span></div><i class="fas fa-layer-group"></i></div><div id="sales-types-chart" class="sales-rank-list"></div></article>
         </div>
+        <article class="purchase-pattern-card" aria-labelledby="purchase-pattern-title">
+          <div class="sales-chart-title"><div><strong id="purchase-pattern-title">Análisis inteligente de compras</strong><span>Media de compras por día de la semana en el período seleccionado</span></div><i class="fas fa-wand-magic-sparkles"></i></div>
+          <div id="purchase-pattern-summary" class="purchase-pattern-summary">Selecciona un rango o espera a que carguen las ventas.</div>
+          <div id="purchase-weekday-chart" class="purchase-weekday-chart"></div>
+        </article>
       </section>
 
       <!-- Tarjetas por tipo — solo contador visible para ADMIN, $ solo CEO -->
@@ -1330,8 +1335,7 @@ select option,select optgroup{background:#111;color:#fff}
         </select>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
         <button type="button" class="btn btn-accent" id="btn-nueva-venta" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
-        <button class="btn btn-ghost sec-ceo-only" onclick="window.openRetiroModal()" style="border-color:#f97316;color:#f97316"><i class="fas fa-wallet"></i> Registrar Retiro</button>
-        <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
+        <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
       </div>
 
       <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div><span id="vc-count-info" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span></div>
@@ -1393,6 +1397,12 @@ select option,select optgroup{background:#111;color:#fff}
       </div>
 
       <div id="cli-table-area"></div>
+
+      <section class="gift-clients-section" aria-labelledby="gift-clients-title">
+        <div class="sec-title"><h3 id="gift-clients-title"><i class="fas fa-gift" style="margin-right:8px;color:#ec4899"></i>Clientes de compras vía regalo</h3><div class="sec-line"></div><span id="gift-client-count" class="gift-client-count">0</span></div>
+        <p class="gift-clients-note">Guarda juntos sus IDs de Epic y Discord y su WhatsApp para agilizar la entrega de regalos y cosméticos.</p>
+        <div id="gift-customer-area"></div>
+      </section>
     </div>
 
     <!-- ── TAB NOTAS / BORRADORES ─────────────── -->
@@ -1481,10 +1491,11 @@ select option,select optgroup{background:#111;color:#fff}
             <option value="">— Seleccionar —</option>
             <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
             <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-            <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+            <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
             <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
             <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
           </select>
+          <small id="f-payment-fee-note" class="payment-fee-note"></small>
         </div>
       </div>
       <div class="fgroup">
@@ -1953,10 +1964,11 @@ select option,select optgroup{background:#111;color:#fff}
               <option value="">— Seleccionar —</option>
               <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
               <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-              <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+              <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
               <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
               <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
             </select>
+            <small id="vc-payment-fee-note" class="payment-fee-note"></small>
           </div>
         </div>
       </div>
@@ -2486,6 +2498,9 @@ function setupEventListeners() {
   document.getElementById('vc-date-from')?.addEventListener('change', renderVentas);
   document.getElementById('vc-date-to')?.addEventListener('change', renderVentas);
   document.getElementById('vc-tipo-filter')?.addEventListener('change', renderVentas); // Bug 11 fix
+  document.getElementById('vc-f-metodo')?.addEventListener('change', () => window.calcVentaMargen());
+  document.getElementById('f-payment')?.addEventListener('change', updateOrderFeeNote);
+  document.getElementById('f-total')?.addEventListener('input', updateOrderFeeNote);
 
   document.getElementById('vc-f-cliente')?.addEventListener('input', (e) => {
     const val = e.target.value;
@@ -2538,11 +2553,18 @@ async function fetchOrders() {
     if (error) throw error;
     
     // Ordenar: primero por fecha del pedido, si no existe usar created_at
-    currentOrders = (data || []).sort((a, b) => {
-      const da = a.fecha || a.created_at || '';
-      const db = b.fecha || b.created_at || '';
-      return db.localeCompare(da);
-    });
+    currentOrders = (data || []).map(o => ({
+      ...o,
+      id: o.id_pedido || o.id,
+      id_pedido: o.id_pedido || o.id,
+      telefono_cliente: o.telefono_cliente || o.telefono || '',
+      fecha: o.fecha || o.creado_en || o.completado_en || o.created_at || '',
+      created_at: o.created_at || o.creado_en || o.fecha || '',
+      comprobante: o.comprobante || o.comprobante_url || null,
+      notas: o.notas || o.notes || '',
+      metodo_pago: paymentMethodFromDb(o.metodo_pago),
+      cuentas_agregadas: o.cuentas_agregadas || []
+    })).sort((a, b) => (b.fecha || b.created_at || '').localeCompare(a.fecha || a.created_at || ''));
     renderTable();
     renderAccounting();
     updateStats();
@@ -3227,19 +3249,22 @@ async function saveOrder() {
     if (!isNaN(parsed.getTime())) fechaOrderISO = parsed.toISOString();
   }
 
+  const paymentMethod = document.getElementById('f-payment').value;
+  const orderFee = paymentMethod === 'transferencia_mx' ? Math.round(total * 0.001 * 100) / 100 : 0;
   const orderData = {
-    id_pedido: editingOrderId ? undefined : (idField || 'SHG-' + Math.floor(1000 + Math.random() * 9000)),
     estado: document.getElementById('f-status').value,
     nombre_cliente: name,
-    telefono_cliente: phone,
+    telefono: phone,
     epic_id_cliente: document.getElementById('f-epic').value.trim(),
-    metodo_pago: document.getElementById('f-payment').value,
+    metodo_pago: paymentMethodToDb(paymentMethod),
     cuentas_agregadas: currentTags,
-    productos: products,
+    productos,
     total_usd: total,
-    fecha: fechaOrderISO,
-    notes: document.getElementById('f-notes').value.trim(),
-    comprobante: document.getElementById('f-receipt-base64').value || null
+    monto_recibido: Math.max(0,total-orderFee),
+    comision: orderFee,
+    creado_en: fechaOrderISO,
+    notas: document.getElementById('f-notes').value.trim(),
+    comprobante_url: document.getElementById('f-receipt-base64').value || null
   };
   // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
   // así guardar un pedido normal sigue funcionando aunque falten las columnas.
@@ -3254,7 +3279,9 @@ async function saveOrder() {
       // UPDATE: remove auto/pk fields from body
       const updateData = { ...orderData };
       delete updateData.id_pedido;
-      const { error: err } = await supabase.from('pedidos').update(updateData).eq('id', editingOrderId);
+      delete updateData.id;
+      delete updateData.id_pedido;
+      const { error: err } = await supabase.from('pedidos').update(updateData).eq('id_pedido', editingOrderId);
       if (err) throw err;
     } else {
       // INSERT
@@ -3283,7 +3310,7 @@ async function deleteOrder(id) {
       const { error } = await supabase
         .from('pedidos')
         .delete()
-        .eq('id', id);
+        .eq('id_pedido', id);
       if (error) throw error;
       showToast('Pedido eliminado de la nube');
       fetchOrders();
@@ -3298,8 +3325,8 @@ async function updateOrderStatus(id, newStatus) {
   try {
     const { error } = await supabase
       .from('pedidos')
-      .update({ status: newStatus })
-      .eq('id', id);
+      .update({ estado: newStatus })
+      .eq('id_pedido', id);
 
     if (error) throw error;
 
@@ -3474,9 +3501,9 @@ function calcularPanelLocal(period) {
   const sumVen = vensPer.reduce((s, v) => s + num(v.ingreso), 0);
   const addM = (obj, k, v) => { k = k || 'sin_metodo'; obj[k] = (obj[k] || 0) + v; };
   const metodos = {}, metodosTotal = {}, metodosCount = {}, dist = {};
-  currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.total_usd)));
+  currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.monto_recibido ?? o.total_usd)));
   currentVentas.forEach(v => addM(metodosTotal, v.metodo_pago, num(v.ingreso)));
-  compl.forEach(o => addM(metodos, o.metodo_pago, num(o.total_usd)));
+  compl.forEach(o => addM(metodos, o.metodo_pago, num(o.monto_recibido ?? o.total_usd)));
   vensPer.forEach(v => addM(metodos, v.metodo_pago, num(v.ingreso)));
   compl.forEach(o => { const k=o.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
   vensPer.forEach(v => { const k=v.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
@@ -3556,6 +3583,7 @@ const PAYMENT_METHODS = [
   {value:'remitly',label:'Remitly',logo:'https://cdn.simpleicons.org/remitly/2f6bed',fallback:'R',color:'#2f6bed'},
   {value:'bybit',label:'Bybit',logo:'https://cdn.simpleicons.org/bybit/f7a600',fallback:'B',color:'#f7a600'},
   {value:'airtm',label:'Airtm',logo:'https://cdn.simpleicons.org/airtm/0067ff',fallback:'A',color:'#1685ff'},
+  {value:'transferencia_mx',label:'Transferencia MX',fallback:'MX',color:'#38bdf8'},
   {value:'spei',label:'SPEI',fallback:'S',color:'#61a5ff'},
   {value:'oxxo',label:'OXXO',logo:'https://cdn.simpleicons.org/oxxogas/e31837',fallback:'O',color:'#e31837'},
   {value:'mercado_pago',label:'Mercado Pago',logo:'https://cdn.simpleicons.org/mercadopago/00a0e3',fallback:'MP',color:'#00a0e3'},
@@ -3566,6 +3594,24 @@ const LEGACY_PAYMENT_METHODS = {
   popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
   binance_pay:{label:'Binance Pay',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'}
 };
+function paymentMethodToDb(method) {
+  const labels={binance:'Binance',binance_giftcard:'Binance Giftcard',xbox_giftcard:'Xbox Giftcard',remitly:'Remitly',bybit:'Bybit',airtm:'Airtm',transferencia_mx:'Transferencia MX',spei:'SPEI',oxxo:'OXXO',mercado_pago:'Mercado Pago',cripto:'Cripto',paypal:'PayPal',popular:'Banco Popular'};
+  return labels[method] || method || 'Otro';
+}
+function paymentMethodFromDb(method) {
+  const s=String(method||'').trim();
+  const found=PAYMENT_METHODS.find(x=>x.value===s||x.label.toLowerCase()===s.toLowerCase());
+  if(found)return found.value;
+  const old={ 'PayPal':'paypal','Banco Popular':'popular','Transfer MX':'transferencia_mx','Transferencia MX':'transferencia_mx','Binance Pay':'binance' };
+  return old[s] || s.toLowerCase().replaceAll(' ','_');
+}
+function updateOrderFeeNote() {
+  const method=document.getElementById('f-payment')?.value||'', total=parseFloat(document.getElementById('f-total')?.value)||0;
+  const fee=method==='transferencia_mx'?Math.round(total*.001*100)/100:0, note=document.getElementById('f-payment-fee-note');
+  if(!note)return;
+  note.textContent=method==='transferencia_mx'?`Comisión automática 0.1%: $${fee.toFixed(2)} · Se recibirán $${Math.max(0,total-fee).toFixed(2)}.`:'';
+  note.style.display=method==='transferencia_mx'?'block':'none';
+}
 function paymentLogoMarkup(item, cls='pay-logo-img') {
   const image = item.logo ? `<img class="${cls}" src="${item.logo}" alt="" loading="lazy" decoding="async" onerror="this.hidden=true">` : '';
   return `<span class="pay-logo meth-logo" style="--pay-color:${item.color}">${image}<span class="pay-logo-fallback">${item.fallback || '•'}</span></span>`;
@@ -3583,7 +3629,7 @@ function syncPaymentPicker(id) {
   if (logo) logo.innerHTML = item ? paymentLogoMarkup(item) : '<span class="pay-logo pay-logo-empty"><i class="fas fa-credit-card"></i></span>';
 }
 function enhancePaymentPickers() {
-  ['f-payment','vc-f-metodo','ac-metodo','ret-metodo'].forEach(id => {
+  ['f-payment','vc-f-metodo','ac-metodo'].forEach(id => {
     const select = document.getElementById(id);
     if (!select || select.dataset.logoPicker) return;
     select.dataset.logoPicker = '1';
@@ -4898,6 +4944,7 @@ function renderVentas() {
   });
 
   updateVentasStats(filtered);
+  renderPurchasePatterns(currentVentas.filter(v=>{const d=vcLocalDay(v.created_at);return (!from||!d||d>=from)&&(!to||!d||d<=to);}));
   const countInfo = document.getElementById('vc-count-info');
   if (countInfo) countInfo.textContent = `${filtered.length} de ${currentVentas.length} venta${currentVentas.length !== 1 ? 's' : ''}`;
 
@@ -5138,13 +5185,24 @@ window.calcVentaMargen = function() {
   // Monto Recibido = lo que realmente entra después de comisiones (PayPal, Binance, etc).
   // Si se deja vacío, se asume que no hubo comisión (monto recibido = precio de venta).
   const montoRecibidoEl = document.getElementById('vc-f-monto-recibido');
+  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
+  const feeNote = document.getElementById('vc-payment-fee-note');
+  const autoFee = paymentMethod === 'transferencia_mx' ? Math.round(total * .001 * 100) / 100 : 0;
+  if (paymentMethod === 'transferencia_mx') {
+    if (montoRecibidoEl) { montoRecibidoEl.value = Math.max(0,total-autoFee).toFixed(2); montoRecibidoEl.readOnly = true; }
+    if (montoRecibidoEl) montoRecibidoEl.dataset.autoFee='true';
+    if (feeNote) { feeNote.textContent = `Comisión automática 0.1%: $${autoFee.toFixed(2)} · Recibido: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
+  } else {
+    if (montoRecibidoEl?.dataset.autoFee==='true') { montoRecibidoEl.value=''; montoRecibidoEl.dataset.autoFee='false'; }
+    if (montoRecibidoEl) montoRecibidoEl.readOnly = false;
+    if (feeNote) { feeNote.textContent=''; feeNote.style.display='none'; }
+  }
   const montoRecibidoRaw = montoRecibidoEl?.value;
-  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
-    ? (parseFloat(montoRecibidoRaw) || 0)
-    : total;
+  const montoRecibido = paymentMethod === 'transferencia_mx' ? Math.max(0,total-autoFee) :
+    (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? (parseFloat(montoRecibidoRaw) || 0) : total);
 
   // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
-  const comision = total - montoRecibido;
+  const comision = paymentMethod === 'transferencia_mx' ? autoFee : total - montoRecibido;
   const comisionEl = document.getElementById('vc-f-comision-ceo');
   if (comisionEl) comisionEl.value = comision.toFixed(2);
 
@@ -5262,7 +5320,7 @@ async function cargarSugerenciasClientes() {
   try {
     const { data, error } = await supabase
       .from('pedidos')
-      .select('nombre_cliente, telefono_cliente')
+      .select('nombre_cliente, telefono')
       .limit(200);
 
     // Si hay error de Supabase, ignorar silenciosamente (tabla vacía o sin permisos aún)
@@ -5272,7 +5330,7 @@ async function cargarSugerenciasClientes() {
     const clientesUnicos = {};
     data.forEach(p => {
       if (p.nombre_cliente && !clientesUnicos[p.nombre_cliente]) {
-        clientesUnicos[p.nombre_cliente] = p.telefono_cliente || '';
+        clientesUnicos[p.nombre_cliente] = p.telefono || '';
       }
     });
 
@@ -5305,13 +5363,16 @@ window.saveVenta = async function() {
   const interesPct    = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
+  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
+  const autoFee = paymentMethod === 'transferencia_mx' ? Math.round(totalVenta * .001 * 100) / 100 : 0;
   const costoReal     = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
   const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
-  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
+  const montoRecibido = paymentMethod === 'transferencia_mx' ? Math.max(0,totalVenta-autoFee) :
+    ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
     ? (parseFloat(montoRecibidoRaw) || 0)
-    : totalVenta;
-  const comision      = parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido);
-  const ganancia      = parseFloat(document.getElementById('vc-f-neta-ceo')?.value) || (montoRecibido - costoReal);
+    : totalVenta);
+  const comision      = paymentMethod === 'transferencia_mx' ? autoFee : (parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido));
+  const ganancia      = montoRecibido - costoReal;
 
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
@@ -5334,7 +5395,7 @@ window.saveVenta = async function() {
     id_pedido:           document.getElementById('vc-f-id')?.value               || '',
     estado:              document.getElementById('vc-f-status')?.value            || '',
     whatsapp:            document.getElementById('vc-f-wa')?.value                || '',
-    metodo_pago:         document.getElementById('vc-f-metodo')?.value            || '',
+    metodo_pago:         paymentMethod,
     producto:            document.getElementById('vc-f-producto')?.value          || '',
     comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
     pago_parcial:        parseFloat(document.getElementById('vc-f-pago-parcial')?.value)     || 0,
@@ -5442,6 +5503,26 @@ function vcQuickRange(days) {
   renderVentas();
 }
 
+function renderPurchasePatterns(rows) {
+  const chart=document.getElementById('purchase-weekday-chart'), summary=document.getElementById('purchase-pattern-summary');
+  if(!chart||!summary)return null;
+  const records=rows||[];
+  if(!records.length){summary.textContent='Todavía no hay ventas suficientes para detectar un patrón.';chart.innerHTML='';return null;}
+  const fromVal=document.getElementById('vc-date-from')?.value||'',toVal=document.getElementById('vc-date-to')?.value||'';
+  const days=records.map(v=>vcLocalDay(v.created_at)).filter(Boolean).sort();
+  const start=new Date((fromVal||days[0])+'T00:00:00'), end=new Date((toVal||days[days.length-1])+'T00:00:00');
+  if(isNaN(start)||isNaN(end)||end<start){summary.textContent='Revisa las fechas seleccionadas para calcular el patrón.';chart.innerHTML='';return null;}
+  const counts=Array(7).fill(0), occurrences=Array(7).fill(0), labels=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  records.forEach(v=>{const d=new Date(vcLocalDay(v.created_at)+'T00:00:00');if(!isNaN(d))counts[d.getDay()]++;});
+  const cursor=new Date(start); while(cursor<=end){occurrences[cursor.getDay()]++;cursor.setDate(cursor.getDate()+1);}
+  const averages=labels.map((label,i)=>({label,count:counts[i],days:occurrences[i],average:occurrences[i]?counts[i]/occurrences[i]:0}));
+  const observed=averages.filter(x=>x.days>0), ranked=[...observed].sort((a,b)=>b.average-a.average), best=ranked[0], slow=ranked[ranked.length-1];
+  summary.innerHTML=`En este rango, el promedio más alto es <strong>${best.label}</strong> (${best.average.toFixed(2)} ventas por ${best.label.toLowerCase()}), y el más bajo es <strong>${slow.label}</strong> (${slow.average.toFixed(2)}). Cálculo estadístico automático a partir de las fechas registradas.`;
+  const max=Math.max(0.01,...averages.map(x=>x.average));
+  chart.innerHTML=averages.map(x=>`<div class="purchase-weekday-row"><span>${x.label}</span><span class="purchase-weekday-track"><i style="width:${Math.max(2,x.average/max*100)}%"></i></span><b>${x.average.toFixed(2)}</b><small>${x.count} ventas · ${x.days} días</small></div>`).join('');
+  return {averages,best,slow,start,end};
+}
+
 function exportVentasCSV() {
   if (currentVentas.length === 0) { showToast('No hay ventas para exportar', true); return; }
   const isCEO = currentRole === 'CEO';
@@ -5458,6 +5539,30 @@ function exportVentasCSV() {
   a.download = `Ventas_${new Date().toISOString().substring(0,10)}.csv`;
   a.click();
 }
+
+window.exportVentasPDF = function() {
+  const from=document.getElementById('vc-date-from')?.value||'',to=document.getElementById('vc-date-to')?.value||'';
+  const day=v=>vcLocalDay(v.created_at);
+  const rows=currentVentas.filter(v=>(!from||day(v)>=from)&&(!to||day(v)<=to)).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));
+  if(!rows.length){showToast('No hay ventas dentro del rango seleccionado',true);return;}
+  const popup=window.open('','_blank');
+  if(!popup){showToast('El navegador bloqueó el PDF. Permite ventanas emergentes e inténtalo de nuevo.',true);return;}
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const gross=rows.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0), net=rows.reduce((s,v)=>s+(parseFloat(v.monto_recibido??v.ingreso)||0),0), fees=rows.reduce((s,v)=>s+(parseFloat(v.comision)||0),0);
+  const analysis=renderPurchasePatterns(rows);
+  const range=`${from||'Inicio del historial'} — ${to||'Hoy'}`;
+  const isCEO=currentRole==='CEO';
+  const tableRows=rows.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(vcLocalDateTime(v.created_at))}</td><td>${esc(v.tipo)}</td><td>${esc(v.producto)}</td><td>${esc(v.cliente)}</td><td>${esc(paymentMethodIdentityLabel(v.metodo_pago))}</td><td class="num">$${(parseFloat(v.ingreso)||0).toFixed(2)}</td>${isCEO?`<td class="num">$${(parseFloat(v.comision)||0).toFixed(2)}</td><td class="num">$${(parseFloat(v.monto_recibido??v.ingreso)||0).toFixed(2)}</td>`:''}</tr>`).join('');
+  const pattern=analysis?`<section><h2>Patrones de compra por día</h2><p>Mayor promedio: <b>${esc(analysis.best.label)}</b> (${analysis.best.average.toFixed(2)} ventas por ocurrencia). Menor promedio: <b>${esc(analysis.slow.label)}</b> (${analysis.slow.average.toFixed(2)}).</p><div class="weekdays">${analysis.averages.map(x=>`<span>${esc(x.label)}<b>${x.average.toFixed(2)}</b></span>`).join('')}</div></section>`:'';
+  popup.document.open();
+  popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(range)}</title><style>
+    @page{size:A4 landscape;margin:14mm}*{box-sizing:border-box}body{font:12px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #62ff00;padding-bottom:12px;margin-bottom:18px}h1{font-size:22px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}p{margin:3px 0;color:#536052}.brand{font-weight:900;letter-spacing:2px;color:#286f0b}.summary{display:flex;gap:12px;margin:12px 0 20px}.metric{flex:1;padding:11px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:10px;text-transform:uppercase;letter-spacing:.7px}.metric strong{font-size:18px;display:block;margin-top:5px}section{margin:16px 0}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:8px;border-radius:6px;background:#f2f7ef;text-align:center}.weekdays b{display:block;color:#2d8209;font-size:14px}table{width:100%;border-collapse:collapse;font-size:10px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:7px}td{padding:6px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body><header><div><div class="brand">SHEGOS STORE</div><h1>Registro de ventas</h1><p>Período: ${esc(range)}</p></div><div><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
+  <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>${pattern}
+  <section><h2>Detalle del registro</h2><table><thead><tr><th>#</th><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cliente</th><th>Método</th><th>Ingreso</th>${isCEO?'<th>Comisión</th><th>Recibido</th>':''}</tr></thead><tbody>${tableRows}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`);
+  popup.document.close();
+};
+function paymentMethodIdentityLabel(method){const item=PAYMENT_METHODS.find(x=>x.value===method)||LEGACY_PAYMENT_METHODS[method];return item?.label||String(method||'—').replaceAll('_',' ');}
 
 
 function toggleDiscord() {
@@ -6323,7 +6428,7 @@ window.calConfirm = function(inputId) {
       case 'modal-confirm':     window.closeConfirmModal?.(); break;
       case 'modal-add-cliente': window.closeAddClienteModal?.(); break;
       case 'modal-feedback':    window.closeFeedbackModal?.(); break;
-      case 'modal-retiro':      window.closeRetiroModal?.(); break;
+      case 'modal-review-single': window.closeReviewMessage?.(); break;
       default:
         // Generic fallback: just remove 'open'
         document.getElementById(id)?.classList.remove('open');
@@ -6368,8 +6473,6 @@ window.openWA = openWA;
 window.aplicarRestriccionesRol = aplicarRestriccionesRol;
 window.handleReceiptUpload = handleReceiptUpload;
 window.orderHandleDrop = window.orderHandleDrop;
-window.toggleVentaFields = toggleVentaFields;
-window.handleVentaReceipt = handleVentaReceipt;
 window.renderTable = renderTable;
 window.fetchOrders = fetchOrders;
 window.fetchCatalogo = fetchCatalogo;
@@ -6390,7 +6493,6 @@ window.openVentaModal = openVentaModal;
 window.closeVentaModal = closeVentaModal;
 window.editVenta = editVenta;
 window.deleteVenta = deleteVenta;
-window.saveVenta = saveVenta;
 window.parseVentaAutomatica = parseVentaAutomatica;
 window.vcClearDates = vcClearDates;
 window.vcQuickRange = vcQuickRange;
@@ -6425,10 +6527,13 @@ window.closeImageViewer = function() {
 };
 
 window.openImageNewTab = async function() {
+  const tab = window.open('about:blank', '_blank');
+  if (!tab) { showToast('El navegador bloqueó la nueva pestaña. Permite ventanas emergentes e inténtalo otra vez.', true); return; }
   try {
     const blob = await _srcToBlob(_imgViewerSrc);
-    window.open(URL.createObjectURL(blob), '_blank');
-  } catch (e) { showToast('No se pudo abrir la imagen', true); }
+    const url=URL.createObjectURL(blob); tab.location.href=url;
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  } catch (e) { tab.close(); showToast('No se pudo abrir la imagen', true); }
 };
 
 window.downloadViewerImage = async function() {
@@ -6735,7 +6840,6 @@ window.clearOrderProd = function() {
   if (fi) fi.value = '';
 };
 window.exportVentasCSV = exportVentasCSV;
-window.updateInterestPct = updateInterestPct;
 window.vmSelectTipo = window.vmSelectTipo;
 window.vmToggleParse = window.vmToggleParse;
 window.vmUpdateTotal = window.vmUpdateTotal;
@@ -6763,6 +6867,10 @@ async function fetchClientesFromDB() {
       nombre: c.nombre,
       wa: c.wa || '',
       metodo: c.metodo || '',
+      epicId: c.epic_id || '',
+      discordId: c.discord_id || '',
+      regalo: !!c.compra_regalo,
+      cosmeticosRegalo: !!c.compra_cosmeticos_regalo,
       updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now(),
       resena: c.resena_estado || 'pendiente',
       resenaSolicitadaEn: c.resena_solicitada_en || null,
@@ -6785,7 +6893,7 @@ function getClientes() {
   return clientesCache;
 }
 
-async function upsertCliente(nombre, wa, metodo) {
+async function upsertCliente(nombre, wa, metodo, extra = {}) {
   if (!nombre) return;
   // Refrescamos la caché antes de decidir insert vs update, para evitar
   // fallos silenciosos por restricción única cuando la caché local está desactualizada
@@ -6797,10 +6905,14 @@ async function upsertCliente(nombre, wa, metodo) {
       const patch = { updated_at: new Date().toISOString() };
       if (wa) patch.wa = wa;
       if (metodo) patch.metodo = metodo;
+      if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
+      if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
+      if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
+      if (extra.compra_cosmeticos_regalo !== undefined) patch.compra_cosmeticos_regalo = !!extra.compra_cosmeticos_regalo;
       const { error } = await supabase.from('clientes').update(patch).eq('id', existing.id);
       if (error) throw error;
     } else {
-      const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '' }]);
+      const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '', ...extra }]);
       if (error) {
         // Código 23505 = violación de restricción única (el cliente ya existe en la DB
         // aunque no estuviera en la caché local). En ese caso, intentamos actualizar en vez de fallar.
@@ -6808,6 +6920,10 @@ async function upsertCliente(nombre, wa, metodo) {
           const patch = { updated_at: new Date().toISOString() };
           if (wa) patch.wa = wa;
           if (metodo) patch.metodo = metodo;
+          if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
+          if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
+          if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
+          if (extra.compra_cosmeticos_regalo !== undefined) patch.compra_cosmeticos_regalo = !!extra.compra_cosmeticos_regalo;
           const { error: updErr } = await supabase.from('clientes').update(patch).ilike('nombre', nombre);
           if (updErr) throw updErr;
         } else {
@@ -6914,7 +7030,11 @@ window.saveVenta = async function() {
   const nombre = document.getElementById('vc-f-cliente')?.value?.trim();
   const wa = document.getElementById('vc-f-wa')?.value?.trim();
   const metodo = document.getElementById('vc-f-metodo')?.value?.trim();
-  if (nombre) await upsertCliente(nombre, wa, metodo);
+  const tipo=document.getElementById('vc-f-tipo')?.value||'', product=document.getElementById('vc-f-producto')?.value||'';
+  if (nombre) await upsertCliente(nombre, wa, metodo, {
+    ...(tipo==='Venta via regalo'?{compra_regalo:true}:{}),
+    ...(tipo==='Venta via regalo'&&/(skin|cosm[eé]tic|gesto|pico|envoltura|emote)/i.test(product)?{compra_cosmeticos_regalo:true}:{})
+  });
   return _origSaveVenta?.apply(this, arguments);
 };
 
@@ -6939,6 +7059,7 @@ window.renderClientesTab = async function(mode) {
 
   const all = getClientes();
   rvRenderPanel(all);
+  renderGiftCustomers(all);
 
   const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
   const rvF = document.getElementById('cli-rv-filter')?.value || '';
@@ -7042,6 +7163,15 @@ window.renderClientesTab = async function(mode) {
   `;
 };
 
+function renderGiftCustomers(list=getClientes()) {
+  const area=document.getElementById('gift-customer-area'), count=document.getElementById('gift-client-count');
+  if(!area)return;
+  const clients=list.filter(c=>c.regalo||c.cosmeticosRegalo);
+  if(count)count.textContent=String(clients.length);
+  if(!clients.length){area.innerHTML='<div class="gift-clients-empty"><i class="fas fa-address-card"></i><span>Aún no hay clientes clasificados por compras vía regalo.</span></div>';return;}
+  area.innerHTML=`<div class="table-wrap gift-client-table"><table><thead><tr><th>Cliente</th><th>Tipo de compra</th><th>Epic Games ID</th><th>Discord ID</th><th>WhatsApp</th><th>Acción</th></tr></thead><tbody>${clients.map(c=>`<tr><td data-label="Cliente"><strong>${rvEsc(c.nombre)}</strong></td><td data-label="Tipo"><div class="gift-client-tags">${c.regalo?'<span>Regalo</span>':''}${c.cosmeticosRegalo?'<span>Cosméticos</span>':''}</div></td><td data-label="Epic ID">${rvEsc(c.epicId)||'—'}</td><td data-label="Discord ID">${rvEsc(c.discordId)||'—'}</td><td data-label="WhatsApp">${c.wa?`<a href="https://wa.me/${String(c.wa).replace(/\D/g,'')}" target="_blank" rel="noopener">${rvEsc(c.wa)}</a>`:'—'}</td><td data-label="Acción"><button class="ibtn" type="button" title="Editar cliente" onclick="window.editClienteModal('${c.id}')"><i class="fas fa-pen"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+}
+
 window.editClienteModal = function(id) {
   const c = clientesCache.find(cl => String(cl.id) === String(id));
   if (!c) return;
@@ -7050,6 +7180,10 @@ window.editClienteModal = function(id) {
   document.getElementById('ac-wa').value = c.wa || '';
   document.getElementById('ac-metodo').value = c.metodo || '';
   syncPaymentPicker('ac-metodo');
+  document.getElementById('ac-epic-id').value=c.epicId||'';
+  document.getElementById('ac-discord-id').value=c.discordId||'';
+  document.getElementById('ac-regalo').checked=!!c.regalo;
+  document.getElementById('ac-cosmeticos-regalo').checked=!!c.cosmeticosRegalo;
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   // Store real id for editing
@@ -7169,7 +7303,7 @@ function rvBtn(kind, rec) {
   return `<button class="ibtn" title="${title}" style="color:${color};border-color:${border}" onclick="window.pedirResenaDeRegistro('${kind}','${rec.id}')"><i class="${done || asked ? 'fas' : 'far'} fa-star"></i></button>`;
 }
 
-window.pedirResenaDeRegistro = async function(kind, id) {
+window.pedirResenaDeRegistro = function(kind, id) {
   const rec = (kind === 'venta' ? currentVentas : currentOrders).find(x => String(x.id) === String(id));
   if (!rec) return;
   const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
@@ -7177,29 +7311,39 @@ window.pedirResenaDeRegistro = async function(kind, id) {
   if (!wa) { showToast('Este registro no tiene WhatsApp', true); return; }
   const c = rvFindCliente(nombre, wa);
   if (c && c.resena === 'recibida') { showToast(`${c.nombre} ya dejó su reseña ✓`); return; }
-  window.open(rvWaUrl(c || { nombre, wa }), '_blank');
-  if (c && await rvMarkAsked(c)) {
-    await fetchClientesFromDB();
-    renderTable(); renderVentas();
-    window.renderClientesTab('local');
-  }
+  window.openReviewMessage(c || { nombre, wa });
 };
 
-window.pedirResenaA = async function(id) {
+window.pedirResenaA = function(id) {
   const c = getClientes().find(x => String(x.id) === String(id));
   if (!c) return;
   if (!c.wa) { showToast('Este cliente no tiene WhatsApp', true); return; }
-  const modalOpen = document.getElementById('modal-feedback').classList.contains('open');
-  const tplEl = document.getElementById('fb-msg-text');
-  const tpl = modalOpen && tplEl && tplEl.value.trim() ? tplEl.value.trim() : FB_DEFAULT_MSG;
-  window.open(rvWaUrl(c, tpl), '_blank');
-  fbSelected.delete(String(c.id));
-  if (c.resena !== 'recibida' && await rvMarkAsked(c)) {
+  window.openReviewMessage(c);
+};
+
+let singleReviewClient = null;
+window.openReviewMessage = function(client) {
+  if (!client?.wa) { showToast('Este cliente no tiene WhatsApp', true); return; }
+  singleReviewClient = client;
+  document.getElementById('review-single-name').textContent = client.nombre || 'Cliente';
+  document.getElementById('review-single-contact').textContent = client.wa;
+  document.getElementById('review-single-text').value = FB_DEFAULT_MSG.replace(/\{nombre\}/gi, rvFirstName(client.nombre));
+  document.getElementById('modal-review-single').classList.add('open');
+};
+window.closeReviewMessage = function() { document.getElementById('modal-review-single').classList.remove('open'); singleReviewClient = null; };
+window.sendReviewMessage = async function() {
+  const client = singleReviewClient;
+  if (!client?.wa) { showToast('No se encontró el contacto', true); return; }
+  const text = document.getElementById('review-single-text').value.trim();
+  const popup = window.open(rvWaUrl(client, text), '_blank');
+  if (!popup) { showToast('El navegador bloqueó WhatsApp; permite ventanas emergentes e inténtalo otra vez.', true); return; }
+  const saved = rvFindCliente(client.nombre, client.wa);
+  if (saved && saved.resena !== 'recibida' && await rvMarkAsked(saved, true)) {
     await fetchClientesFromDB();
-    window.renderClientesTab('local');
     renderTable(); renderVentas();
+    window.renderClientesTab('local');
   }
-  if (modalOpen) window.fbRenderClientsList();
+  window.closeReviewMessage();
 };
 
 // ── Modal "Pedir reseñas" (envío a varios clientes) ──
@@ -7454,6 +7598,8 @@ window.openAddClienteModal = function() {
   document.getElementById('ac-wa').value = '';
   document.getElementById('ac-metodo').value = '';
   syncPaymentPicker('ac-metodo');
+  document.getElementById('ac-epic-id').value=''; document.getElementById('ac-discord-id').value='';
+  document.getElementById('ac-regalo').checked=false; document.getElementById('ac-cosmeticos-regalo').checked=false;
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   delete document.getElementById('modal-add-cliente').dataset.editId;
@@ -7470,6 +7616,12 @@ window.saveAddCliente = async function() {
   const nombre = document.getElementById('ac-nombre').value.trim();
   const wa = document.getElementById('ac-wa').value.trim();
   const metodo = document.getElementById('ac-metodo').value;
+  const extra = {
+    epic_id: document.getElementById('ac-epic-id').value.trim(),
+    discord_id: document.getElementById('ac-discord-id').value.trim(),
+    compra_regalo: document.getElementById('ac-regalo').checked,
+    compra_cosmeticos_regalo: document.getElementById('ac-cosmeticos-regalo').checked
+  };
   const msg = document.getElementById('ac-msg');
   if (!nombre) {
     msg.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
@@ -7481,14 +7633,14 @@ window.saveAddCliente = async function() {
   try {
     if (editId) {
       // Edit mode: update record directly by id
-      const patch = { nombre, updated_at: new Date().toISOString() };
+      const patch = { nombre, updated_at: new Date().toISOString(), ...extra };
       if (wa) patch.wa = wa;
       if (metodo) patch.metodo = metodo;
       const { error } = await supabase.from('clientes').update(patch).eq('id', editId);
       if (error) throw error;
       await fetchClientesFromDB();
     } else {
-      const ok = await upsertCliente(nombre, wa, metodo);
+      const ok = await upsertCliente(nombre, wa, metodo, extra);
       if (!ok) throw new Error(window._clientesSaveError || 'no se pudo guardar');
     }
   } catch (err) {
@@ -7520,49 +7672,6 @@ async function cargarRetiros() {
   }
   return _retirosCache;
 }
-
-window.openRetiroModal = function() {
-  document.getElementById('ret-monto').value = '';
-  document.getElementById('ret-metodo').value = '';
-  syncPaymentPicker('ret-metodo');
-  document.getElementById('ret-tipo').value = '';
-  document.getElementById('ret-notas').value = '';
-  document.querySelectorAll('[data-ret]').forEach(c => c.classList.remove('active'));
-  const now = new Date();
-  document.getElementById('ret-fecha').value = now.toISOString().substring(0,10);
-  document.getElementById('modal-retiro').classList.add('open');
-};
-
-window.closeRetiroModal = function() {
-  document.getElementById('modal-retiro').classList.remove('open');
-};
-
-window.selectRetiroTipo = function(chip) {
-  document.querySelectorAll('[data-ret]').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  document.getElementById('ret-tipo').value = chip.dataset.ret;
-};
-
-window.saveRetiro = async function() {
-  const monto = parseFloat(document.getElementById('ret-monto').value) || 0;
-  const metodo = document.getElementById('ret-metodo').value;
-  const tipo = document.getElementById('ret-tipo').value;
-  const notas = document.getElementById('ret-notas').value.trim();
-  if (!monto || monto <= 0 || !metodo || !tipo) {
-    showToast('Monto, método y tipo son obligatorios', true);
-    return;
-  }
-  try {
-    const { error: errR } = await supabase.from('retiros').insert([{ monto, metodo_pago: metodo, motivo: tipo + (notas ? ' — ' + notas : '') }]);
-    if (errR) throw errR;
-    window.closeRetiroModal();
-    showToast(`Retiro de $${monto.toFixed(2)} registrado ✓`);
-    await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos_total || {});
-    await renderRetirosSection();
-  } catch (e) {
-    showToast('Error registrando retiro: ' + e.message, true);
-  }
-};
 
 async function renderSaldoMetodo(ingresosPorMetodo) {
   const grid = document.getElementById('saldo-metodo-grid');
@@ -7780,10 +7889,18 @@ window.resetWallpaper = function() {
           <option value="">— Seleccionar —</option>
           <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
           <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-          <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+          <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
           <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
           <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
         </select>
+      </div>
+      <div class="frow gift-client-fields">
+        <div class="fgroup"><label class="flabel" for="ac-epic-id">ID de Epic Games</label><input class="finput" id="ac-epic-id" placeholder="Epic ID del cliente"></div>
+        <div class="fgroup"><label class="flabel" for="ac-discord-id">ID de Discord</label><input class="finput" id="ac-discord-id" placeholder="Usuario o ID de Discord"></div>
+      </div>
+      <div class="gift-client-flags">
+        <label><input type="checkbox" id="ac-regalo"> Compra mediante regalo</label>
+        <label><input type="checkbox" id="ac-cosmeticos-regalo"> Compra cosméticos vía regalo</label>
       </div>
       <div id="ac-msg" style="display:none;font-size:0.78em;margin-top:10px;padding:10px 13px;border-radius:4px;font-weight:500"></div>
     </div>
@@ -7797,6 +7914,18 @@ window.resetWallpaper = function() {
 </div>
 
 <!-- ── MODAL FEEDBACK WHATSAPP ──────────── -->
+<div class="overlay" id="modal-review-single">
+  <div class="mcard review-single-card">
+    <div class="mhead"><div class="mtitle"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px"></i>Solicitar reseña</div><button class="mclose" onclick="window.closeReviewMessage()"><i class="fas fa-times"></i></button></div>
+    <div class="mbody">
+      <div class="review-single-contact"><strong id="review-single-name">Cliente</strong><span id="review-single-contact"></span></div>
+      <label class="flabel" for="review-single-text">Mensaje para WhatsApp</label>
+      <textarea class="ftarea" id="review-single-text" style="min-height:150px"></textarea>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" onclick="window.closeReviewMessage()">Cancelar</button><button class="btn btn-accent" onclick="window.sendReviewMessage()" style="background:#25D366;color:#04130b"><i class="fab fa-whatsapp"></i> Abrir WhatsApp</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="modal-feedback">
   <div class="mcard" style="max-width:540px">
     <div class="mhead">
@@ -7855,70 +7984,6 @@ window.resetWallpaper = function() {
           <i class="fab fa-whatsapp"></i> Enviar a seleccionados
         </button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── MODAL REGISTRAR RETIRO ──────────── -->
-<div class="overlay" id="modal-retiro">
-  <div class="mcard" style="max-width:460px">
-    <div class="mhead">
-      <div class="mtitle" style="color:#f97316"><i class="fas fa-wallet" style="margin-right:8px"></i>Registrar Retiro</div>
-      <button class="mclose" onclick="window.closeRetiroModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="mbody">
-      <p style="font-size:0.8em;color:var(--text2);margin-bottom:16px;line-height:1.6">
-        Registra un retiro de fondos hacia banco o de ganancias. Esto se descontará del saldo esperado por método de pago.
-      </p>
-      <div class="frow">
-        <div class="fgroup">
-          <label class="flabel">Monto (USD) *</label>
-          <div style="position:relative">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-weight:700">$</span>
-            <input class="finput" id="ret-monto" type="number" step="0.01" min="0.01" placeholder="0.00" style="padding-left:24px;border-color:rgba(249,115,22,.4)">
-          </div>
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Método de Pago *</label>
-          <select class="fsel" id="ret-metodo" style="border-color:rgba(249,115,22,.4)">
-            <option value="">— Seleccionar —</option>
-            <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
-            <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-            <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
-            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
-            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
-          </select>
-        </div>
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Tipo de Retiro *</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="vm-apago-chip" data-ret="banco" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-building-columns"></i>Retiro a Banco
-          </button>
-          <button type="button" class="vm-apago-chip" data-ret="ganancias" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-coins"></i>Retiro de Ganancias
-          </button>
-          <button type="button" class="vm-apago-chip" data-ret="otro" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-ellipsis-h"></i>Otro
-          </button>
-        </div>
-        <input type="hidden" id="ret-tipo">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Fecha</label>
-        <input class="finput" id="ret-fecha" type="date">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Notas</label>
-        <textarea class="ftarea" id="ret-notas" placeholder="Descripción del retiro, destino..." style="min-height:56px"></textarea>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn btn-ghost" onclick="window.closeRetiroModal()">Cancelar</button>
-      <button class="btn btn-accent" onclick="window.saveRetiro()" style="background:#f97316;color:#000">
-        <i class="fas fa-wallet"></i> Registrar Retiro
-      </button>
     </div>
   </div>
 </div>
