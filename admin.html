@@ -608,80 +608,7 @@ td{padding:12px 14px;vertical-align:middle}
   #tab-cuentas .toolbar .search-wrap { width: 100%; }
   #tab-cuentas .toolbar .month-input { flex: 1; min-width: 100px; }
 
-  /* Recovery tab */
-  #tab-recovery .stats-row { grid-template-columns: 1fr 1fr !important; }
-  #rec-charts-row { grid-template-columns: 1fr !important; }
-  .rec-donut-wrap { gap: 16px; }
-  .rec-donut-svg { width: 80px; height: 80px; }
-}
-
-/* ── RECOVERY TAB STYLES ─────────────────── */
-.recovery-chart-wrap {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 22px;
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
-}
-.recovery-chart-title {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--text2);
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.rec-donut-wrap {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-.rec-donut-svg { flex-shrink: 0; }
-.rec-legend { display: flex; flex-direction: column; gap: 10px; }
-.rec-legend-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 0.8em; font-weight: 600; color: var(--text);
-}
-.rec-legend-dot {
-  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-}
-.rec-legend-val { color: var(--text2); font-weight: 500; margin-left: auto; padding-left: 16px; }
-
-.rec-history-card {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  transition: border-color .2s;
-}
-.rec-history-card:hover { border-color: var(--accent); }
-.rec-status-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  flex-shrink: 0; margin-top: 4px;
-}
-.rec-history-info { flex: 1; min-width: 0; }
-.rec-history-email {
-  font-size: 0.82em; font-weight: 700; color: var(--accent);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rec-history-meta {
-  font-size: 0.68em; color: var(--text2); margin-top: 3px; font-weight: 500;
-}
-.rec-history-badge {
-  font-size: 0.62em; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
-  flex-shrink: 0; align-self: flex-start;
-}
-.rbadge-si { background: rgba(40,254,182,.12); color: var(--accent); border: 1px solid rgba(40,254,182,.3); }
-.rbadge-no { background: rgba(255,77,109,.12); color: var(--red); border: 1px solid rgba(255,77,109,.3); }
-
-/* ── TOGGLE SWITCH ────────────────────────── */
+  /* ── TOGGLE SWITCH ────────────────────────── */
 .toggle-wrap { display: flex; gap: 6px; }
 .toggle-btn {
   flex: 1; padding: 10px 8px; border-radius: 6px;
@@ -1042,8 +969,7 @@ select option,select optgroup{background:#111;color:#fff}
     <button class="tab-nav-btn active" id="btn-tab-pedidos" onclick="window.switchTab('pedidos',this)"><i class="fas fa-list-ul"></i> Pedidos</button>
     <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)"><i class="fas fa-chart-bar"></i> Contabilidad</button>
     <button class="tab-nav-btn" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)" style="display:none"><i class="fas fa-coins"></i> Cuentas</button>
-    <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
-    <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
+<button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
     <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
     
   </div>
@@ -1060,10 +986,7 @@ select option,select optgroup{background:#111;color:#fff}
       <button class="mnav-btn" id="mnav-cuentas" onclick="window.switchTab('cuentas', document.getElementById('btn-tab-cuentas')); window.setActiveMNav('cuentas')">
         <i class="fas fa-coins"></i>Cuentas
       </button>
-      <button class="mnav-btn" id="mnav-recovery" onclick="window.switchTab('recovery', document.getElementById('btn-tab-recovery')); window.setActiveMNav('recovery')">
-        <i class="fas fa-shield-alt"></i>Recup.
-      </button>
-      <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
+<button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
       </button>
       
@@ -1355,7 +1278,7 @@ select option,select optgroup{background:#111;color:#fff}
           <option value="365">Último año</option>
         </select>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
-        <button class="btn btn-accent" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
+        <button type="button" class="btn btn-accent" id="btn-nueva-venta" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
         <button class="btn btn-ghost sec-ceo-only" onclick="window.openRetiroModal()" style="border-color:#f97316;color:#f97316"><i class="fas fa-wallet"></i> Registrar Retiro</button>
         <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
       </div>
@@ -1365,95 +1288,7 @@ select option,select optgroup{background:#111;color:#fff}
     </div>
 
     <!-- ── TAB RECUPERACIÓN ─────────────────── -->
-    <div class="tab-panel" id="tab-recovery">
-
-      <!-- Stat cards -->
-      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-        <div class="stat-card" style="--accent-c:var(--accent)">
-          <div class="stat-label"><i class="fas fa-shield-check"></i> Total Recuperadas</div>
-          <div class="stat-value green" id="rec-s-total">0</div>
-          <div class="stat-sub">registros totales</div>
-        </div>
-        <div class="stat-card" style="--accent-c:#a855f7">
-          <div class="stat-label"><i class="fas fa-lock"></i> Inactividad Prom.</div>
-          <div class="stat-value" style="color:#a855f7;font-size:1.8em" id="rec-s-inac">—</div>
-          <div class="stat-sub">días sin uso</div>
-        </div>
-        <div class="stat-card" style="--accent-c:var(--accent)">
-          <div class="stat-label"><i class="fas fa-check-double"></i> Aseguradas Bien</div>
-          <div class="stat-value green" id="rec-s-si">0</div>
-          <div class="stat-sub">cuenta segura</div>
-        </div>
-        <div class="stat-card" style="--accent-c:var(--red)">
-          <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Sin Asegurar</div>
-          <div class="stat-value" style="color:var(--red)" id="rec-s-no">0</div>
-          <div class="stat-sub">requieren atención</div>
-        </div>
-      </div>
-
-      <!-- Charts row -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px" id="rec-charts-row">
-        <!-- Donut chart -->
-        <div class="recovery-chart-wrap">
-          <div class="recovery-chart-title">ESTADO DE SEGURIDAD</div>
-          <div class="rec-donut-wrap">
-            <svg class="rec-donut-svg" id="rec-donut" width="100" height="100" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--border2)" stroke-width="3.2"/>
-              <circle id="rec-donut-si" cx="18" cy="18" r="15.9" fill="none" stroke="#28feb6" stroke-width="3.2"
-                stroke-dasharray="100 0" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray .6s ease"/>
-              <circle id="rec-donut-no" cx="18" cy="18" r="15.9" fill="none" stroke="#ff4d6d" stroke-width="3.2"
-                stroke-dasharray="0 100" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray .6s ease;transform:rotate(0deg);transform-origin:center"/>
-              <text x="18" y="20.5" text-anchor="middle" font-size="6" fill="var(--text)" font-family="Poppins,sans-serif" font-weight="700" id="rec-donut-pct">0%</text>
-            </svg>
-            <div class="rec-legend">
-              <div class="rec-legend-item">
-                <div class="rec-legend-dot" style="background:var(--accent)"></div>
-                Aseguradas bien
-                <span class="rec-legend-val" id="rec-leg-si">0</span>
-              </div>
-              <div class="rec-legend-item">
-                <div class="rec-legend-dot" style="background:var(--red)"></div>
-                Sin asegurar
-                <span class="rec-legend-val" id="rec-leg-no">0</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monthly bar chart -->
-        <div class="recovery-chart-wrap">
-          <div class="recovery-chart-title">RECUPERACIONES POR MES</div>
-          <div class="bar-chart" id="rec-bar-chart" style="height:100px"></div>
-        </div>
-      </div>
-
-      <!-- Revert rate card -->
-      <div class="acc-card" style="--tc:#f97316;margin-bottom:20px">
-        <div class="acc-label"><i class="fas fa-undo" style="margin-right:6px"></i>Tasa de Revert</div>
-        <div class="acc-val" id="rec-s-revert">0%</div>
-        <div class="acc-sub" id="rec-s-revert-sub">cuentas sin asegurar bien / total</div>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="search-wrap">
-          <i class="fas fa-search"></i>
-          <input class="search-input" id="rec-search" placeholder="Buscar por correo, notas...">
-        </div>
-        <select class="filter-sel" id="rec-filter-asegurada">
-          <option value="">Todas</option>
-          <option value="si">Aseguradas</option>
-          <option value="no">Sin Asegurar</option>
-        </select>
-        <button class="btn btn-ghost" id="rec-clear-filter" onclick="window.recClearFilter()"><i class="fas fa-times"></i> Limpiar</button>
-        <button class="btn btn-accent" onclick="window.openRecoveryModal()"><i class="fas fa-plus"></i> Registrar Recuperación</button>
-        <button class="btn btn-outline" onclick="window.exportRecoveryCSV()"><i class="fas fa-download"></i> CSV</button>
-      </div>
-
-      <div class="sec-title"><h3>Historial de Recuperaciones</h3><div class="sec-line"></div></div>
-      <div id="rec-list-area"></div>
-
-    </div>
+    
 
     <!-- ── TAB CLIENTES ─────────────────────────── -->
     <div class="tab-panel" id="tab-clientes">
@@ -1941,56 +1776,7 @@ select option,select optgroup{background:#111;color:#fff}
 </div>
 
 <!-- ── MODAL RECUPERACIÓN DE CUENTA ──────── -->
-<div class="overlay" id="modal-recovery">
-  <div class="mcard" style="max-width:520px">
-    <div class="mhead">
-      <div class="mtitle" id="rec-m-title" style="color:var(--accent)">Registrar Recuperación</div>
-      <button class="mclose" onclick="window.closeRecoveryModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="mbody">
-      <div class="fgroup">
-        <label class="flabel">Correo de la Cuenta *</label>
-        <input class="finput" id="rec-f-email" type="email" placeholder="cuenta@ejemplo.com" autocomplete="off">
-      </div>
-      <div class="frow">
-        <div class="fgroup">
-          <label class="flabel">Días de Inactividad</label>
-          <input class="finput" id="rec-f-inactividad" type="number" min="0" placeholder="ej. 30">
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Fecha de Recuperación *</label>
-          <div class="date-picker-wrap">
-            <div class="date-picker-input-row">
-              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" onclick="window.openCal('rec-f-fecha','date')" onchange="window.validateCalendarInput(this,'date')" title="También puedes escribir la fecha con formato AAAA-MM-DD.">
-              <i class="fas fa-calendar-alt date-picker-icon"></i>
-            </div>
-            <div class="cal-popup" id="cal-rec-f-fecha"></div>
-          </div>
-        </div>
-      </div>
-      <div class="fgroup">
-        <label class="flabel">¿Se aseguró la cuenta bien? *</label>
-        <div class="toggle-wrap">
-          <button type="button" class="toggle-btn" id="rec-toggle-si" onclick="window.recToggleAsegurada('si')">
-            <i class="fas fa-check" style="margin-right:6px"></i>Sí
-          </button>
-          <button type="button" class="toggle-btn" id="rec-toggle-no" onclick="window.recToggleAsegurada('no')">
-            <i class="fas fa-times" style="margin-right:6px"></i>No
-          </button>
-        </div>
-        <input type="hidden" id="rec-f-asegurada">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Notas adicionales</label>
-        <textarea class="ftarea" id="rec-f-notas" placeholder="Observaciones, tipo de revert, detalles..."></textarea>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn btn-ghost" onclick="window.closeRecoveryModal()">Cancelar</button>
-      <button class="btn btn-accent" onclick="window.saveRecovery()"><i class="fas fa-save"></i> Guardar</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- ── MODAL NUEVA VENTA (REDISEÑO COMPLETO) ───── -->
 
@@ -2672,8 +2458,6 @@ function setupEventListeners() {
   document.getElementById('vc-date-from')?.addEventListener('change', renderVentas);
   document.getElementById('vc-date-to')?.addEventListener('change', renderVentas);
   document.getElementById('vc-tipo-filter')?.addEventListener('change', renderVentas); // Bug 11 fix
-  document.getElementById('rec-search')?.addEventListener('input', renderRecoveries);
-  document.getElementById('rec-filter-asegurada')?.addEventListener('change', renderRecoveries);
 
   document.getElementById('vc-f-cliente')?.addEventListener('input', (e) => {
     const val = e.target.value;
@@ -3730,6 +3514,20 @@ async function renderAccounting() {
   document.getElementById('acc-total-sub').textContent = period ? `Período ${period} (pedidos + ventas)` : 'Todos los registros';
   document.getElementById('acc-cnt-sub').textContent = `${panel.pedidos_completados || 0} pedidos + ${panel.ventas_manuales_count || 0} ventas`;
 
+function paymentMethodIdentity(method) {
+  const methods = {
+    link: { label: 'Link de Pago', icon: 'fa-link', color: '#5865f2' },
+    paypal: { label: 'PayPal', logo: 'https://cdn.simpleicons.org/paypal/009cde', icon: 'fa-brands fa-paypal', color: '#0070ba' },
+    popular: { label: 'Banco Popular', icon: 'fa-building-columns', color: '#e63946' },
+    binance: { label: 'Binance Pay', logo: 'https://cdn.simpleicons.org/binance/f0b90b', icon: 'fa-coins', color: '#f0b90b' },
+    remitly: { label: 'Remitly', logo: 'https://cdn.simpleicons.org/remitly/2f6bed', icon: 'fa-money-bill-transfer', color: '#2f6bed' },
+    transferencia_mx: { label: 'Transfer MX', icon: 'fa-building-columns', color: '#a855f7' }
+  };
+  const item = methods[method] || { label: String(method || 'Otro').replaceAll('_', ' '), icon: 'fa-credit-card', color: 'var(--accent)' };
+  const fallback = '<i class="fas ' + item.icon + '" aria-hidden="true" ' + (item.logo ? 'hidden' : '') + '></i>';
+  const logo = item.logo ? '<img class="meth-logo-img" src="' + item.logo + '" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' + fallback : fallback;
+  return '<span class="meth-identity" style="--meth-color:' + item.color + '"><span class="meth-logo">' + logo + '</span><span class="meth-name">' + item.label + '</span></span>';
+}
   // Render métodos de pago
   const breakArea = document.getElementById('method-breakdown');
   const metodos = panel.metodos || {};
@@ -3738,7 +3536,7 @@ async function renderAccounting() {
   } else {
     let mHtml = '';
     for (let m in metodos) {
-      mHtml += `<div class="meth-card"><span class="meth-name">${m.replace('_',' ')}</span><span class="meth-val">$${(parseFloat(metodos[m]) || 0).toFixed(2)}</span></div>`;
+      mHtml += `<div class="meth-card">${paymentMethodIdentity(m)}<span class="meth-val">${(parseFloat(metodos[m]) || 0).toFixed(2)}</span></div>`;
     }
     breakArea.innerHTML = mHtml;
   }
@@ -4581,7 +4379,6 @@ function aplicarRestriccionesRol(role) {
   currentRole = role;
   const accountingTab = document.getElementById('btn-tab-contabilidad');
   const cuentasTab = document.getElementById('btn-tab-cuentas');
-  const recoveryTab = document.getElementById('btn-tab-recovery');
   const body = document.getElementById('app');
 
   // Restricciones estrictas para campos financieros en el modal de ventas
@@ -4593,7 +4390,6 @@ function aplicarRestriccionesRol(role) {
   if (role === 'CEO') {
     if (accountingTab) accountingTab.style.display = '';
     if (cuentasTab) cuentasTab.style.display = '';
-    if (recoveryTab) recoveryTab.style.display = '';
     if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.add('role-ceo');
     document.body.classList.add('role-ceo');
@@ -4603,12 +4399,10 @@ function aplicarRestriccionesRol(role) {
     const mnavConta = document.getElementById('mnav-contabilidad');
     if (mnavConta) mnavConta.classList.remove('hidden');
     fetchVentas();
-    fetchRecoveries();
   } else {
-    // ADMIN: can access Cuentas, Recovery and Clientes but NOT Contabilidad
+    // ADMIN: puede acceder a Cuentas y Clientes, sin Contabilidad
     if (accountingTab) accountingTab.style.display = 'none';
     if (cuentasTab) cuentasTab.style.display = '';
-    if (recoveryTab) recoveryTab.style.display = '';
     if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.remove('role-ceo');
     document.body.classList.remove('role-ceo');
@@ -4628,7 +4422,6 @@ function aplicarRestriccionesRol(role) {
       switchTab('pedidos', document.getElementById('btn-tab-pedidos'));
     }
     fetchVentas();
-    fetchRecoveries();
   }
 
   // Sincronizar visibilidad financiera en el modal de ventas de forma inmediata
@@ -4918,6 +4711,9 @@ function renderVentas() {
 }
 
 function openVentaModal() {
+  const ventaModal = document.getElementById('modal-venta');
+  if (!ventaModal) { showToast('No se encontró el formulario de venta', true); return; }
+  ventaModal.classList.add('open');
   window.editingVentaId = null;
   document.getElementById('vc-m-title').textContent = 'Nueva Venta';
   document.getElementById('vc-f-parse').value = '';
@@ -4968,7 +4764,7 @@ function openVentaModal() {
   const isoStr = now.toISOString().slice(0,16);
   document.getElementById('vc-f-fecha').value = isoStr;
   window.vmUpdateTotal();
-  document.getElementById('modal-venta').classList.add('open');
+  ventaModal.classList.add('open');
 }
 
 window.editVenta = function(id) {
@@ -5501,243 +5297,6 @@ function parseDiscordText() {
 }
 
 // ── FIN SECCIÓN CUENTAS ─────────────────────────
-
-// ═══════════════════════════════════════════════
-// SECCIÓN RECUPERACIÓN DE CUENTAS
-// ═══════════════════════════════════════════════
-let currentRecoveries = [];
-let editingRecoveryId = null;
-let recAseguradaSelected = '';
-
-async function fetchRecoveries() {
-  const area = document.getElementById('rec-list-area');
-  if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando recuperaciones...</p></div>`;
-  try {
-    const { data, error } = await supabase.from('recuperaciones').select('*');
-    if (error) throw error;
-    currentRecoveries = (data || []).sort((a,b) => (b.fecha_recuperacion||b.created_at||'').localeCompare(a.fecha_recuperacion||a.created_at||''));
-    renderRecoveries();
-    updateRecoveryStats();
-  } catch(err) {
-    console.error(err);
-    if (area) area.innerHTML = `
-      <div class="empty">
-        <i class="fas fa-cloud-slash" style="color:var(--red)"></i>
-        <p style="color:var(--red);margin-bottom:8px">No se pudo cargar la tabla recuperaciones</p>
-        <p style="font-size:0.75em;color:var(--text3);margin-bottom:16px">${err?.message||''}</p>
-        <p style="font-size:0.7em;color:var(--text3)">Asegúrate de crear la tabla <strong style="color:var(--accent)">recuperaciones</strong> en Supabase</p>
-        <button class="btn btn-outline" style="margin-top:12px" onclick="window.fetchRecoveries()"><i class="fas fa-rotate-right"></i> Reintentar</button>
-      </div>`;
-  }
-}
-
-function updateRecoveryStats() {
-  const total = currentRecoveries.length;
-  const si = currentRecoveries.filter(r => r.asegurada_bien === 'si' || r.asegurada_bien === true).length;
-  const no = total - si;
-  const inacVals = currentRecoveries.map(r => parseInt(r.inactividad)||0).filter(v => v > 0);
-  const inacProm = inacVals.length ? Math.round(inacVals.reduce((a,b)=>a+b,0)/inacVals.length) : null;
-  const revertPct = total > 0 ? ((no/total)*100).toFixed(0) : 0;
-
-  const setTxt = (id, v) => { const el=document.getElementById(id); if(el) el.textContent = v; };
-  setTxt('rec-s-total', total);
-  setTxt('rec-s-inac', inacProm !== null ? inacProm : '—');
-  setTxt('rec-s-si', si);
-  setTxt('rec-s-no', no);
-  setTxt('rec-s-revert', revertPct + '%');
-  setTxt('rec-leg-si', si);
-  setTxt('rec-leg-no', no);
-
-  // Donut chart
-  const circle = document.getElementById('rec-donut-si');
-  const circleNo = document.getElementById('rec-donut-no');
-  const pctEl = document.getElementById('rec-donut-pct');
-  if (circle && circleNo && pctEl) {
-    const pctSi = total > 0 ? (si/total)*100 : 0;
-    const pctNo = 100 - pctSi;
-    circle.setAttribute('stroke-dasharray', `${pctSi.toFixed(1)} ${(100-pctSi).toFixed(1)}`);
-    circleNo.setAttribute('stroke-dasharray', `${pctNo.toFixed(1)} ${(100-pctNo).toFixed(1)}`);
-    // offset no circle to start after si
-    const offset = 25 - pctSi;
-    circleNo.setAttribute('stroke-dashoffset', offset.toFixed(1));
-    pctEl.textContent = total > 0 ? `${Math.round(pctSi)}%` : '0%';
-  }
-
-  // Monthly bar chart
-  const chartContainer = document.getElementById('rec-bar-chart');
-  if (chartContainer) {
-    let monthlyData = {};
-    const now = new Date();
-    for (let i=5;i>=0;i--) {
-      let d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-      let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      monthlyData[key] = { label: d.toLocaleString('es',{month:'short'}).toUpperCase(), val: 0 };
-    }
-    currentRecoveries.forEach(r => {
-      const k = (r.fecha_recuperacion||r.created_at||'').substring(0,7);
-      if (monthlyData[k]) monthlyData[k].val++;
-    });
-    const maxVal = Math.max(...Object.values(monthlyData).map(m=>m.val),1);
-    chartContainer.innerHTML = Object.values(monthlyData).map(m=>`
-      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">
-        <div style="font-size:0.58em;color:var(--accent);font-weight:700">${m.val||''}</div>
-        <div style="width:100%;background:linear-gradient(180deg,var(--accent),rgba(40,254,182,.3));border-radius:3px 3px 0 0;min-height:2px;height:${Math.max((m.val/maxVal)*88,2)}px;transition:height .4s ease"></div>
-        <div style="font-size:0.58em;color:var(--text2);font-weight:600">${m.label}</div>
-      </div>`).join('');
-  }
-}
-
-function renderRecoveries() {
-  const area = document.getElementById('rec-list-area');
-  if (!area) return;
-  const query = (document.getElementById('rec-search')?.value||'').toLowerCase();
-  const filtroAseg = document.getElementById('rec-filter-asegurada')?.value||'';
-
-  let filtered = currentRecoveries.filter(r => {
-    if (filtroAseg && r.asegurada_bien !== filtroAseg && !(filtroAseg==='si' && r.asegurada_bien===true) && !(filtroAseg==='no' && r.asegurada_bien===false)) return false;
-    if (query) return (r.correo||'').toLowerCase().includes(query) || (r.notas||'').toLowerCase().includes(query);
-    return true;
-  });
-
-  if (filtered.length === 0) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-shield-alt"></i><p>No hay recuperaciones registradas</p></div>`;
-    return;
-  }
-
-  area.innerHTML = filtered.map(r => {
-    const aseg = r.asegurada_bien === 'si' || r.asegurada_bien === true;
-    const dotColor = aseg ? 'var(--accent)' : 'var(--red)';
-    const badgeCls = aseg ? 'rbadge-si' : 'rbadge-no';
-    const badgeText = aseg ? 'Asegurada ✓' : 'Sin Asegurar ✗';
-    const fecha = r.fecha_recuperacion ? r.fecha_recuperacion.substring(0,10) : (r.created_at||'').substring(0,10);
-    const inac = r.inactividad ? `${r.inactividad} días inactiva` : '';
-    return `<div class="rec-history-card">
-      <div class="rec-status-dot" style="background:${dotColor}"></div>
-      <div class="rec-history-info">
-        <div class="rec-history-email">${r.correo || '—'}</div>
-        <div class="rec-history-meta">${fecha}${inac ? ' · ' + inac : ''}${r.notas ? ' · ' + r.notas.substring(0,60) : ''}</div>
-      </div>
-      <span class="rec-history-badge ${badgeCls}">${badgeText}</span>
-      <div style="display:flex;gap:4px;margin-left:8px">
-        <button class="ibtn" onclick="window.editRecovery('${r.id}')" title="Editar"><i class="fas fa-pen"></i></button>
-        <button class="ibtn del" onclick="window.deleteRecovery('${r.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openRecoveryModal() {
-  editingRecoveryId = null;
-  recAseguradaSelected = '';
-  document.getElementById('rec-m-title').textContent = 'Registrar Recuperación';
-  document.getElementById('rec-f-email').value = '';
-  document.getElementById('rec-f-inactividad').value = '';
-  document.getElementById('rec-f-notas').value = '';
-  document.getElementById('rec-f-asegurada').value = '';
-  const now = new Date();
-  document.getElementById('rec-f-fecha').value = now.toISOString().substring(0,10);
-  document.getElementById('rec-toggle-si').className = 'toggle-btn';
-  document.getElementById('rec-toggle-no').className = 'toggle-btn';
-  document.getElementById('modal-recovery').classList.add('open');
-}
-
-function editRecovery(id) {
-  const r = currentRecoveries.find(x => x.id === id);
-  if (!r) return;
-  editingRecoveryId = id;
-  document.getElementById('rec-m-title').textContent = 'Editar Recuperación';
-  document.getElementById('rec-f-email').value = r.correo || '';
-  document.getElementById('rec-f-inactividad').value = r.inactividad || '';
-  document.getElementById('rec-f-notas').value = r.notas || '';
-  document.getElementById('rec-f-fecha').value = (r.fecha_recuperacion||r.created_at||'').substring(0,10);
-  recAseguradaSelected = (r.asegurada_bien === 'si' || r.asegurada_bien === true) ? 'si' : 'no';
-  document.getElementById('rec-f-asegurada').value = recAseguradaSelected;
-  document.getElementById('rec-toggle-si').className = 'toggle-btn' + (recAseguradaSelected==='si' ? ' active-si' : '');
-  document.getElementById('rec-toggle-no').className = 'toggle-btn' + (recAseguradaSelected==='no' ? ' active-no' : '');
-  document.getElementById('modal-recovery').classList.add('open');
-}
-
-function closeRecoveryModal() {
-  document.getElementById('modal-recovery').classList.remove('open');
-}
-
-window.recToggleAsegurada = function(val) {
-  recAseguradaSelected = val;
-  document.getElementById('rec-f-asegurada').value = val;
-  document.getElementById('rec-toggle-si').className = 'toggle-btn' + (val==='si' ? ' active-si' : '');
-  document.getElementById('rec-toggle-no').className = 'toggle-btn' + (val==='no' ? ' active-no' : '');
-};
-
-async function saveRecovery() {
-  const correo = document.getElementById('rec-f-email').value.trim();
-  const asegurada = document.getElementById('rec-f-asegurada').value;
-  const fecha = document.getElementById('rec-f-fecha').value;
-  if (!correo || !asegurada || !fecha) {
-    showToast('Correo, fecha y estado de seguridad son obligatorios', true);
-    return;
-  }
-  const recoveryDateInput = document.getElementById('rec-f-fecha');
-  if (!window.validateCalendarInput(recoveryDateInput, 'date')) {
-    showToast('Corrige la fecha de recuperación antes de guardar.', true);
-    return;
-  }
-  const record = {
-    correo,
-    inactividad: parseInt(document.getElementById('rec-f-inactividad').value)||null,
-    fecha_recuperacion: fecha,
-    asegurada_bien: asegurada,
-    notas: document.getElementById('rec-f-notas').value.trim()||null
-  };
-  if (editingRecoveryId) record.id = editingRecoveryId;
-  try {
-    let error;
-    if (editingRecoveryId) {
-      const { error: err } = await supabase.from('recuperaciones').update(record).eq('id', editingRecoveryId);
-      error = err;
-    } else {
-      const { error: err } = await supabase.from('recuperaciones').insert([record]);
-      error = err;
-    }
-    if (error) throw error;
-    showToast(editingRecoveryId ? 'Recuperación actualizada' : 'Recuperación guardada');
-    closeRecoveryModal();
-    fetchRecoveries();
-  } catch(err) {
-    showToast('Error al guardar: ' + (err?.message||''), true);
-    console.error(err);
-  }
-}
-
-async function deleteRecovery(id) {
-  window.openConfirmModal('Eliminar Registro', '¿Eliminar este registro de recuperación permanentemente?', async function() {
-    try {
-      const { error } = await supabase.from('recuperaciones').delete().eq('id', id);
-      if (error) throw error;
-      showToast('Registro eliminado');
-      fetchRecoveries();
-    } catch(err) {
-      showToast('Error al eliminar', true);
-    }
-  });
-}
-
-function recClearFilter() {
-  document.getElementById('rec-search').value = '';
-  document.getElementById('rec-filter-asegurada').value = '';
-  renderRecoveries();
-}
-
-function exportRecoveryCSV() {
-  if (currentRecoveries.length === 0) { showToast('No hay recuperaciones para exportar', true); return; }
-  let csv = 'ID,Correo,Inactividad (días),Fecha Recuperación,Asegurada Bien,Notas\n';
-  currentRecoveries.forEach(r => {
-    csv += `"${r.id||''}","${r.correo||''}",${r.inactividad||''},"${r.fecha_recuperacion||''}","${r.asegurada_bien||''}","${(r.notas||'').replace(/"/g,"'")}"\n`;
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = `Recuperaciones_${new Date().toISOString().substring(0,10)}.csv`;
-  a.click();
-}
 
 // Mobile nav helper
 window.setActiveMNav = function(tab) {
@@ -6515,7 +6074,6 @@ window.calConfirm = function(inputId) {
     switch(id) {
       case 'modal-order':       window.closeModal?.(); break;
       case 'modal-venta':       window.closeVentaModal?.(); break;
-      case 'modal-recovery':    window.closeRecoveryModal?.(); break;
       case 'modal-import':      window.closeImport?.(); break;
       case 'modal-detail':      window.closeDetail?.(); break;
       case 'modal-parse':       window.closeParseModal?.(); break;
@@ -6938,14 +6496,6 @@ window.vmUpdateTotal = window.vmUpdateTotal;
 window.vmHandleDrop = window.vmHandleDrop;
 window.vmClearReceipt = window.vmClearReceipt;
 window.setupRealtime = setupRealtime;
-window.fetchRecoveries = fetchRecoveries;
-window.openRecoveryModal = openRecoveryModal;
-window.editRecovery = editRecovery;
-window.closeRecoveryModal = closeRecoveryModal;
-window.saveRecovery = saveRecovery;
-window.deleteRecovery = deleteRecovery;
-window.recClearFilter = recClearFilter;
-window.exportRecoveryCSV = exportRecoveryCSV;
 window.loadNotes = loadNotes;
 window.renderNotesList = renderNotesList;
 
@@ -7771,7 +7321,6 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
   if (!grid) return;
 
   const ingresos = ingresosPorMetodo || {};
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
 
   const retiros = await cargarRetiros();
   const retirosPorMetodo = {};
@@ -7797,7 +7346,7 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
     gridHtml += `
       <div class="meth-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-top:2px solid ${color}">
         <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
-          <span class="meth-name" style="color:${color}">${METODO_LABELS[met]||met.replace('_',' ')}</span>
+          ${paymentMethodIdentity(met)}
           <span class="meth-val" style="color:${saldo>=0?color:'var(--red)'}">$${saldo.toFixed(2)}</span>
         </div>
         <div style="font-size:0.68em;color:var(--text3);display:flex;gap:10px">
