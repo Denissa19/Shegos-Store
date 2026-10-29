@@ -1330,14 +1330,14 @@ select option,select optgroup{background:#111;color:#fff}
         </select>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-from" title="Desde" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
+            <input type="text" class="month-input" id="vc-date-from" title="Desde · formato AAAA-MM-DD" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-from"></div>
         </div>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-to" title="Hasta" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
+            <input type="text" class="month-input" id="vc-date-to" title="Hasta · formato AAAA-MM-DD" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-to"></div>
@@ -3385,6 +3385,11 @@ async function saveOrder() {
     showToast('Por favor completa los campos obligatorios (*)', true);
     return;
   }
+  const orderDateInput = document.getElementById('f-date');
+  if (orderDateInput.value && !window.validateCalendarInput(orderDateInput, 'datetime')) {
+    showToast('Corrige la fecha y hora del pedido antes de guardar.', true);
+    return;
+  }
   window.RemEd.ord.flush(); // incluye el remark que quedó escrito sin pulsar "Agregar"
 
   const saveBtn = document.querySelector('#modal-order .btn-accent[onclick*="saveOrder"]');
@@ -5251,6 +5256,11 @@ window.saveVenta = async function() {
   const ingresoBase = parseFloat(document.getElementById('vc-f-ingreso')?.value || 0);
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
+  const saleDateInput = document.getElementById('vc-f-fecha');
+  if (saleDateInput.value && !window.validateCalendarInput(saleDateInput, 'datetime')) {
+    showToast('Corrige la fecha y hora de la venta antes de guardar.', true);
+    return;
+  }
 
   const saveBtn = document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
@@ -5664,6 +5674,11 @@ async function saveRecovery() {
   const fecha = document.getElementById('rec-f-fecha').value;
   if (!correo || !asegurada || !fecha) {
     showToast('Correo, fecha y estado de seguridad son obligatorios', true);
+    return;
+  }
+  const recoveryDateInput = document.getElementById('rec-f-fecha');
+  if (!window.validateCalendarInput(recoveryDateInput, 'date')) {
+    showToast('Corrige la fecha de recuperación antes de guardar.', true);
     return;
   }
   const record = {
