@@ -608,6 +608,8 @@ td{padding:12px 14px;vertical-align:middle}
   #tab-cuentas .toolbar .search-wrap { width: 100%; }
   #tab-cuentas .toolbar .month-input { flex: 1; min-width: 100px; }
 
+}
+
   /* ── TOGGLE SWITCH ────────────────────────── */
 .toggle-wrap { display: flex; gap: 6px; }
 .toggle-btn {
@@ -746,6 +748,7 @@ td{padding:12px 14px;vertical-align:middle}
 .cal-month-item { text-align: center; padding: 8px 4px; font-size: .75em; font-weight: 700; cursor: pointer; border-radius: 5px; color: var(--text2); transition: all .15s; text-transform: uppercase; letter-spacing: .5px; border: 1px solid transparent; }
 .cal-month-item:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(40,254,182,.3); }
 .cal-month-item.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+</style>
 <style id="ux-polish">
 /* ── PULIDO UX: movimiento, profundidad y feedback ── */
 :root{--ease:cubic-bezier(.2,.8,.2,1)}
@@ -3668,6 +3671,9 @@ function renderChart(serieMensual) {
 
 // --- MODALES Y ACCIONES ---
 function openModal() {
+  const orderModal = document.getElementById('modal-order');
+  if (!orderModal) { showToast('No se encontró el formulario del pedido', true); return; }
+  orderModal.classList.add('open');
   editingOrderId = null;
   document.getElementById('m-title').textContent = 'Nuevo Pedido';
   document.getElementById('f-id').value = '';
@@ -3689,10 +3695,8 @@ function openModal() {
   document.getElementById('prod-list').innerHTML = '';
   addProdRow();
   clearReceipt();
-  window.clearOrderProd();
-  window.RemEd.ord.load([]);
-
-  document.getElementById('modal-order').classList.add('open');
+  window.clearOrderProd?.();
+  window.RemEd?.ord?.load?.([]);
 }
 
 function editOrder(id) {
@@ -3757,6 +3761,7 @@ function closeModal() {
 function viewDetail(id) {
   const o = currentOrders.find(item => item.id === id);
   if (!o) return;
+  document.getElementById('modal-detail')?.classList.add('open');
 
   document.getElementById('det-id').textContent = `Detalle del Pedido ${o.id}`;
   const accountsStr = (o.cuentas_agregadas || []).map(a => `<span class="badge b-proc" style="margin-right:4px">${a}</span>`).join('') || 'Ninguna';
@@ -3806,7 +3811,6 @@ function viewDetail(id) {
   </div>`;
 
   document.getElementById('det-body').innerHTML = html;
-  document.getElementById('modal-detail').classList.add('open');
 }
 
 function closeDetail() {
