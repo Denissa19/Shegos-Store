@@ -3699,6 +3699,8 @@ function openModal() {
   window.RemEd?.ord?.load?.([]);
 }
 
+window.openModal = openModal;
+
 function editOrder(id) {
   const o = currentOrders.find(item => item.id === id);
   if (!o) return;
@@ -4793,6 +4795,8 @@ function openVentaModal() {
   window.vmUpdateTotal();
   ventaModal.classList.add('open');
 }
+
+window.openVentaModal = openVentaModal;
 
 window.editVenta = function(id) {
   const v = currentVentas.find(x => String(x.id) === String(id));
