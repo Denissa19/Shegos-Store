@@ -3524,7 +3524,7 @@ function paymentMethodIdentity(method) {
     transferencia_mx: { label: 'Transfer MX', icon: 'fa-building-columns', color: '#a855f7' }
   };
   const item = methods[method] || { label: String(method || 'Otro').replaceAll('_', ' '), icon: 'fa-credit-card', color: 'var(--accent)' };
-  const fallback = '<i class="fas ' + item.icon + '" aria-hidden="true" ' + (item.logo ? 'hidden' : '') + '></i>';
+  const fallback = '<i class="' + (item.icon.indexOf('fa-brands') === 0 ? '' : 'fas ') + item.icon + '" aria-hidden="true" ' + (item.logo ? 'hidden' : '') + '></i>';
   const logo = item.logo ? '<img class="meth-logo-img" src="' + item.logo + '" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' + fallback : fallback;
   return '<span class="meth-identity" style="--meth-color:' + item.color + '"><span class="meth-logo">' + logo + '</span><span class="meth-name">' + item.label + '</span></span>';
 }
