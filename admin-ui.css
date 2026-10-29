@@ -46,20 +46,7 @@ body.role-ceo { background:
   font-size: 1.55em;
   letter-spacing: 1.2px;
 }
-.topbar-brand::before {
-  content: "S";
-  width: 34px;
-  height: 34px;
-  display: grid;
-  place-items: center;
-  border-radius: 11px;
-  background: var(--accent);
-  color: #172012;
-  font: 800 17px/1 var(--font-body);
-  font-style: normal;
-  letter-spacing: 0;
-  box-shadow: 0 5px 18px rgba(195,238,114,.16);
-}
+.topbar-brand::before { content: none; display: none; }
 .topbar-brand span { color: var(--accent); }
 .topbar-right { gap: 12px; }
 .topbar-revenue { color: var(--text2); }
@@ -513,4 +500,67 @@ td { padding: 13px 15px; }
 #app .cal-month-grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 6px !important; }
 @media (max-width: 520px) {
   #app .cal-popup { position: fixed !important; left: 12px !important; right: 12px !important; top: auto !important; bottom: max(12px, env(safe-area-inset-bottom)) !important; width: auto !important; max-width: none !important; }
+}
+
+/* Keep the sidebar logo as the brand mark; remove the temporary S tile. */
+.topbar-brand::before { content: none !important; display: none !important; }
+
+/* Compact, stable navigation and product-type cards */
+#admin-sidebar .tab-nav-btn { flex: 0 0 44px !important; height: 44px !important; min-height: 44px !important; max-height: 48px !important; }
+#admin-sidebar .sidebar-section { flex: 0 0 auto !important; }
+#tab-cuentas > .stats-row {
+  grid-template-columns: repeat(7, minmax(125px, 1fr)) !important;
+  align-items: stretch;
+  gap: 12px;
+  margin: 10px 0 20px !important;
+}
+#tab-cuentas > .stats-row > .stat-card {
+  min-width: 0;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 16px 17px;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--accent-c, var(--accent)) 13%, transparent), transparent 9rem),
+    linear-gradient(145deg, rgba(31,37,33,.98), rgba(20,25,22,.98));
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+#tab-cuentas > .stats-row > .stat-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent-c, var(--accent)) 55%, var(--border));
+  box-shadow: 0 12px 26px rgba(0,0,0,.22);
+}
+#tab-cuentas > .stats-row .stat-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .66rem;
+  line-height: 1.35;
+  letter-spacing: .8px;
+}
+#tab-cuentas > .stats-row .stat-label i {
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  display: grid;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent-c, var(--accent)) 24%, transparent);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--accent-c, var(--accent)) 10%, transparent);
+  font-size: 12px;
+}
+#tab-cuentas > .stats-row .stat-value { line-height: 1; font-size: 2rem !important; }
+#tab-cuentas > .stats-row .stat-sub { margin-top: auto; font-size: .72rem; }
+@media (max-width: 1200px) {
+  #tab-cuentas > .stats-row { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+}
+@media (max-width: 760px) {
+  #tab-cuentas > .stats-row { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 9px; }
+  #tab-cuentas > .stats-row > .stat-card { min-height: 116px; padding: 14px; }
+}
+@media (max-width: 390px) {
+  #tab-cuentas > .stats-row { grid-template-columns: 1fr !important; }
 }
