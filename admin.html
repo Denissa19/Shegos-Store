@@ -4430,6 +4430,90 @@ async function doLogout() {
   location.reload();
 }
 
+let passwordChangeNeedsNonce = false;
+
+window.openChangePassword = function() {
+  passwordChangeNeedsNonce = false;
+  const form = document.getElementById('change-password-form');
+  form.reset();
+  document.getElementById('cp-current').disabled = false;
+  document.getElementById('change-pwd-msg').hidden = true;
+  document.getElementById('cp-nonce-group').hidden = true;
+  document.getElementById('modal-change-password').classList.add('open');
+  setTimeout(() => document.getElementById('cp-current').focus(), 80);
+};
+
+window.closeChangePassword = function() {
+  document.getElementById('modal-change-password').classList.remove('open');
+  document.getElementById('change-password-form').reset();
+  document.getElementById('cp-current').disabled = false;
+  document.getElementById('change-pwd-msg').hidden = true;
+  document.getElementById('cp-nonce-group').hidden = true;
+  passwordChangeNeedsNonce = false;
+};
+
+window.submitChangePassword = async function(event) {
+  event.preventDefault();
+  const currentPassword = document.getElementById('cp-current').value;
+  const newPassword = document.getElementById('cp-new').value;
+  const confirmation = document.getElementById('cp-confirm').value;
+  const nonce = document.getElementById('cp-nonce').value.trim();
+  const button = document.getElementById('change-pwd-submit');
+  const message = document.getElementById('change-pwd-msg');
+  const showMessage = (text, isError) => {
+    message.textContent = text;
+    message.className = 'change-password-message ' + (isError ? 'is-error' : 'is-success');
+    message.hidden = false;
+  };
+
+  if (!passwordChangeNeedsNonce && !currentPassword) { showMessage('Escribe tu contraseña actual.', true); return; }
+  if (newPassword.length < 8) { showMessage('La nueva contraseña debe tener al menos 8 caracteres.', true); return; }
+  if (newPassword !== confirmation) { showMessage('Las nuevas contraseñas no coinciden.', true); return; }
+  if (!passwordChangeNeedsNonce && newPassword === currentPassword) { showMessage('Elige una contraseña diferente a la actual.', true); return; }
+  if (passwordChangeNeedsNonce && !nonce) { showMessage('Escribe el código de verificación que recibiste.', true); return; }
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando…';
+  message.hidden = true;
+  let updated = false;
+  try {
+    const attributes = passwordChangeNeedsNonce
+      ? { password: newPassword, nonce }
+      : { password: newPassword, current_password: currentPassword };
+    const { error } = await supabase.auth.updateUser(attributes);
+    if (error && error.code === 'reauthentication_needed' && !passwordChangeNeedsNonce) {
+      const { error: reauthError } = await supabase.auth.reauthenticate();
+      if (reauthError) throw reauthError;
+      passwordChangeNeedsNonce = true;
+      document.getElementById('cp-nonce-group').hidden = false;
+      document.getElementById('cp-current').disabled = true;
+      document.getElementById('cp-nonce').focus();
+      showMessage('Supabase requiere una verificación adicional. Te enviamos un código para continuar.', false);
+      return;
+    }
+    if (error) throw error;
+    updated = true;
+    showMessage('Contraseña actualizada correctamente.', false);
+    showToast('Contraseña actualizada');
+    button.innerHTML = '<i class="fas fa-check"></i> Contraseña actualizada';
+    setTimeout(() => window.closeChangePassword(), 1500);
+  } catch (error) {
+    console.error('[change-password] No se pudo actualizar la contraseña:', error);
+    const code = error.code || '';
+    const detail = error.message || '';
+    let text = 'No se pudo cambiar la contraseña. Inténtalo de nuevo.';
+    if (code === 'same_password') text = 'Elige una contraseña diferente a la actual.';
+    else if (code === 'weak_password' || /weak password/i.test(detail)) text = 'La contraseña no cumple los requisitos de seguridad de tu cuenta.';
+    else if (code === 'invalid_credentials' || /current password|invalid login credentials/i.test(detail)) text = 'La contraseña actual no es correcta.';
+    else if (code === 'reauthentication_not_valid') text = 'El código no es válido. Revisa el código recibido e inténtalo otra vez.';
+    showMessage(text, true);
+  } finally {
+    if (!updated) { button.disabled = false; button.innerHTML = '<i class="fas fa-check"></i> Actualizar contraseña'; }
+  }
+};
+
+
+
 // --- OJITO CONTRASEÑA ---
 window.togglePwd = function() {
   const input = document.getElementById('pwd-input');
@@ -6321,7 +6405,10 @@ window.calSelectMonth = function(inputId, monthIdx) {
   if (!s) return;
   s.selected = new Date(s.year, monthIdx, 1);
   const val = `${s.year}-${String(monthIdx+1).padStart(2,'0')}`;
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   // Trigger change for accounting
   if (inputId === 'month-sel') renderAccounting();
@@ -6354,7 +6441,10 @@ window.calMonthToday = function(inputId) {
 };
 
 window.calClear = function(inputId) {
-  document.getElementById(inputId).value = '';
+  const target = document.getElementById(inputId);
+  target.value = '';
+  target.dataset.lastValidValue = '';
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   if (inputId === 'month-sel') renderAccounting();
 };
