@@ -273,6 +273,57 @@ td { padding: 13px 15px; }
   }
   td { border-bottom-color: rgba(255,255,255,.045); }
 }
+
+/* Catálogo operativo de cuentas */
+.account-catalog-hero { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:clamp(20px,3vw,34px); margin-bottom:18px; border:1px solid rgba(195,238,114,.22); border-radius:18px; background:radial-gradient(ellipse at 88% 20%,rgba(195,238,114,.12),transparent 38%),linear-gradient(140deg,rgba(27,35,29,.97),rgba(14,18,15,.98)); }
+.account-catalog-hero h1 { margin:9px 0 5px; font-size:clamp(1.45rem,2.5vw,2rem); letter-spacing:-.04em; }
+.account-catalog-hero p { margin:0; color:var(--text2); font-size:.9rem; }
+.account-catalog-hero .btn { flex:0 0 auto; }
+.account-catalog-filters { display:grid; grid-template-columns:minmax(210px,2fr) repeat(3,minmax(130px,1fr)); gap:10px; align-items:center; padding:14px; border:1px solid var(--border); border-radius:16px; background:rgba(14,18,15,.82); }
+.account-catalog-filters .search-wrap { min-width:0; }
+.account-catalog-filters .filter-sel { min-width:0; width:100%; height:42px; }
+.account-catalog-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:14px 2px; color:var(--text2); font-size:.82rem; }
+.account-catalog-summary .btn { padding:8px 12px; }
+.account-catalog-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr)); gap:14px; }
+.account-catalog-card { min-width:0; padding:18px; border:1px solid rgba(150,174,148,.2); border-radius:16px; background:linear-gradient(145deg,rgba(28,35,30,.97),rgba(14,18,15,.98)); box-shadow:0 12px 28px rgba(0,0,0,.18); transition:transform .18s,border-color .18s,box-shadow .18s; }
+.account-catalog-card:hover { transform:translateY(-2px); border-color:rgba(195,238,114,.48); box-shadow:0 16px 36px rgba(0,0,0,.28); }
+.account-card-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.account-state { border:1px solid rgba(195,238,114,.25); color:var(--accent); background:rgba(195,238,114,.08); padding:5px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.08em; font-size:.62rem; font-weight:800; }
+.account-state.state-reservada { color:var(--gold); border-color:rgba(242,196,109,.3); background:rgba(242,196,109,.08); }
+.account-state.state-vendida { color:var(--text3); border-color:var(--border2); background:rgba(127,138,128,.08); }
+.account-price { color:var(--accent); font-size:1.25rem; white-space:nowrap; }
+.account-price small { color:var(--text3); font-size:.58rem; letter-spacing:.1em; }
+.account-catalog-card h2 { margin:16px 0 13px; font-size:1.12rem; line-height:1.3; }
+.account-card-stats { display:grid; grid-template-columns:1fr 1fr; gap:9px; color:var(--text2); font-size:.76rem; }
+.account-card-stats span { display:flex; align-items:center; gap:6px; min-width:0; }
+.account-card-stats span:first-child { grid-column:1/-1; }
+.account-card-stats i { width:15px; color:var(--accent); text-align:center; }
+.account-card-stats b { color:var(--text); }
+.account-skin-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+.account-skin-tag { padding:5px 8px; color:#d7e8c7; border-radius:999px; background:rgba(195,238,114,.09); border:1px solid rgba(195,238,114,.14); font-size:.68rem; }
+.account-card-description { margin:14px 0 0; color:var(--text2); font-size:.78rem; line-height:1.55; white-space:pre-wrap; overflow-wrap:anywhere; }
+.account-card-actions { display:flex; justify-content:flex-end; margin-top:14px; }
+.account-edit-btn { padding:7px 11px; font-size:.72rem; }
+.account-catalog-empty { grid-column:1/-1; }
+.catalog-form-error { padding:10px 12px; border:1px solid rgba(255,115,128,.32); border-radius:10px; color:var(--red); background:rgba(255,115,128,.08); font-size:.8rem; }
+#modal-catalogo-cuenta .mcard { max-width:720px; }
+#modal-catalogo-cuenta .mbody { max-height:68vh; overflow:auto; }
+#modal-catalogo-cuenta .sec-ceo-only { display:block; }
+body:not(.role-ceo) #modal-catalogo-cuenta .sec-ceo-only { display:none !important; }
+@media (max-width:900px) {
+  .account-catalog-filters { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .account-catalog-filters .search-wrap { grid-column:1/-1; }
+}
+@media (max-width:560px) {
+  .account-catalog-hero { align-items:flex-start; flex-direction:column; gap:14px; border-radius:14px; }
+  .account-catalog-hero .btn { width:100%; justify-content:center; }
+  .account-catalog-filters { padding:10px; gap:8px; }
+  .account-catalog-filters .filter-sel { font-size:.72rem; padding:8px; }
+  .account-catalog-grid { grid-template-columns:1fr; }
+  #modal-catalogo-cuenta .mcard { max-height:calc(100dvh - 24px); }
+  #modal-catalogo-cuenta .mbody { max-height:calc(100dvh - 180px); }
+  #modal-catalogo-cuenta .mfoot { position:sticky; bottom:0; background:var(--surface2); }
+}
 @media (max-width: 420px) {
   .dash-welcome { align-items: center; gap: 10px; padding: 17px 15px; }
   .dash-welcome p { font-size: .8rem; }
