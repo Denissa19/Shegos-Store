@@ -408,6 +408,41 @@ body:not(.role-ceo) #modal-catalogo-cuenta .sec-ceo-only { display:none !importa
 .sales-rank-track i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#41dc00,#b6ff59); }
 .sales-rank-row b { text-align:right; color:var(--text); }
 .sales-chart-empty { margin:6px 0; color:var(--text3); font-size:.78rem; }
+.purchase-pattern-card { margin-top:12px; padding:16px; border:1px solid rgba(98,255,0,.17); border-radius:12px; background:linear-gradient(130deg,rgba(15,22,13,.9),rgba(7,11,8,.97)); }
+.purchase-pattern-card .sales-chart-title { margin-bottom:10px; }
+.purchase-pattern-summary { margin:0 0 12px; color:var(--text2); font-size:.77rem; line-height:1.55; }
+.purchase-pattern-summary strong { color:var(--accent); }
+.purchase-weekday-chart { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 16px; }
+.purchase-weekday-row { display:grid; grid-template-columns:82px minmax(45px,1fr) 34px; align-items:center; gap:8px; color:var(--text2); font-size:.72rem; }
+.purchase-weekday-track { height:7px; border-radius:8px; background:rgba(255,255,255,.07); overflow:hidden; }
+.purchase-weekday-track i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#39d900,#bbff6b); }
+.purchase-weekday-row b { text-align:right; color:var(--text); font-family:'Space Grotesk',sans-serif; }
+.purchase-weekday-row small { grid-column:2/4; margin-top:-5px; color:var(--text3); font-size:.65rem; }
+.payment-fee-note { display:none; margin-top:7px; color:var(--accent); font-size:.7rem; line-height:1.4; }
+.gift-clients-section { margin-top:32px; padding:20px; border:1px solid rgba(236,72,153,.23); border-radius:16px; background:linear-gradient(135deg,rgba(29,15,25,.45),rgba(8,12,9,.9)); }
+.gift-clients-note { margin:-4px 0 14px; color:var(--text2); font-size:.8rem; }
+.gift-client-count { padding:4px 9px; border:1px solid rgba(236,72,153,.3); border-radius:20px; color:#ff8ac2; font-size:.72rem; }
+.gift-client-table { border-color:rgba(236,72,153,.15); }
+.gift-client-table td { font-size:.78rem; }
+.gift-client-table a { color:#55d883; text-decoration:none; }
+.gift-client-tags { display:flex; flex-wrap:wrap; gap:5px; }
+.gift-client-tags span { padding:4px 7px; color:#ff8ac2; background:rgba(236,72,153,.1); border:1px solid rgba(236,72,153,.22); border-radius:99px; font-size:.66rem; }
+.gift-clients-empty { display:flex; align-items:center; gap:10px; padding:16px; border:1px dashed rgba(236,72,153,.2); border-radius:10px; color:var(--text3); font-size:.8rem; }
+.gift-clients-empty i { color:#ff8ac2; }
+.gift-client-fields .fgroup { margin-bottom:10px; }
+.gift-client-flags { display:flex; flex-wrap:wrap; gap:8px 16px; margin:0 0 16px; }
+.gift-client-flags label { display:flex; align-items:center; gap:7px; color:var(--text2); font-size:.76rem; }
+.gift-client-flags input { accent-color:#ff54aa; width:16px; height:16px; }
+.review-single-card { max-width:560px; }
+.review-single-contact { display:flex; justify-content:space-between; gap:12px; margin-bottom:16px; padding:12px; border:1px solid rgba(37,211,102,.2); border-radius:10px; background:rgba(37,211,102,.06); }
+.review-single-contact span { color:#50df88; font-size:.82rem; }
+#tab-cuentas > .stats-row { grid-template-columns:repeat(auto-fit,minmax(150px,1fr)) !important; gap:12px; margin:12px 0 18px !important; }
+#tab-cuentas > .stats-row > .stat-card { min-height:124px; padding:17px; border-radius:16px; background:radial-gradient(circle at 100% 0%,color-mix(in srgb,var(--accent-c,var(--accent)) 15%,transparent),transparent 9rem),linear-gradient(145deg,#121812,#080b08); border-color:color-mix(in srgb,var(--accent-c,var(--accent)) 26%,var(--border)); transition:transform .18s ease,box-shadow .18s ease; }
+#tab-cuentas > .stats-row > .stat-card:hover { transform:translateY(-3px); box-shadow:0 16px 32px rgba(0,0,0,.26),0 0 20px color-mix(in srgb,var(--accent-c,var(--accent)) 10%,transparent); }
+#tab-cuentas > .stats-row .stat-value { font-family:'Space Grotesk',sans-serif !important; font-style:normal !important; font-weight:600; letter-spacing:-.04em; }
+#vc-s-total,#vc-s-ganancia,#vc-s-margen { font-family:'Space Grotesk',sans-serif !important; font-style:normal !important; font-weight:700; letter-spacing:-.055em; }
+#vc-s-count { font-family:'Space Grotesk',sans-serif; }
+@media(max-width:620px) { .purchase-weekday-chart { grid-template-columns:1fr; } .gift-clients-section { padding:14px; } .gift-client-fields { grid-template-columns:1fr !important; } .review-single-contact { flex-direction:column; } }
 @media(max-width:900px) { .sales-insights-charts { grid-template-columns:1fr 1fr; } .sales-chart-month { grid-column:1/-1; } }
 @media(max-width:620px) { .sales-insights { padding:14px; } .sales-insights-heading h2 { font-size:1.1rem; } .sales-insights-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .sales-insight-metric:last-child { grid-column:1/-1; } .sales-insights-charts { grid-template-columns:1fr; } .sales-chart-month { grid-column:auto; } }
 .meth-name { color: inherit; font-size: .8em; font-weight: 650; letter-spacing: .2px; text-transform: none; }
