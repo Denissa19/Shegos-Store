@@ -952,6 +952,25 @@ select option,select optgroup{background:#111;color:#fff}
   </div>
 </div>
 
+<div class="overlay" id="modal-catalogo-cuenta" onclick="if(event.target===this)window.cerrarEditorCuentaCatalogo()">
+  <div class="mcard">
+    <div class="mhead"><div class="mtitle" id="cc-modal-title">Agregar cuenta</div><button class="mclose" type="button" onclick="window.cerrarEditorCuentaCatalogo()" aria-label="Cerrar"><i class="fas fa-times"></i></button></div>
+    <form onsubmit="window.guardarCuentaCatalogo(event)">
+      <div class="mbody">
+        <input id="cc-id" type="hidden">
+        <div class="fgroup"><label class="flabel" for="cc-title">Nombre interno visible en el catálogo</label><input class="finput" id="cc-title" required maxlength="100" placeholder="Ej. Cuenta legendaria"></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-skin-count">Cantidad de skins</label><input class="finput" id="cc-skin-count" type="number" min="0" required value="0"></div><div class="fgroup"><label class="flabel" for="cc-idle-days">Días de inactividad</label><input class="finput" id="cc-idle-days" type="number" min="0" required value="0"></div></div>
+        <div class="fgroup"><label class="flabel" for="cc-skin-tags">Skins destacadas · separadas por coma</label><input class="finput" id="cc-skin-tags" placeholder="Renegade Raider, Black Knight"></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-has-stw">Salvar el mundo</label><select class="fsel" id="cc-has-stw"><option value="true">Sí, incluye STW</option><option value="false">No incluye STW</option></select></div><div class="fgroup"><label class="flabel" for="cc-price">Precio de venta (USD)</label><input class="finput" id="cc-price" type="number" min="0" step="0.01" required></div></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-status-edit">Estado</label><select class="fsel" id="cc-status-edit"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select></div><div class="fgroup"><label class="flabel" for="cc-reference">Referencia interna</label><input class="finput" id="cc-reference" placeholder="Solo visible para CEO"></div></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-cost">Costo de adquisición (USD)</label><input class="finput" id="cc-cost" type="number" min="0" step="0.01"></div><div class="fgroup"><label class="flabel" for="cc-internal-notes">Notas internas</label><input class="finput" id="cc-internal-notes" placeholder="Privadas para CEO"></div></div>
+        <div class="fgroup"><label class="flabel" for="cc-description">Descripción para el equipo</label><textarea class="ftarea" id="cc-description" maxlength="500" placeholder="Detalles útiles para ofrecer esta cuenta"></textarea></div>
+        <div id="cc-form-error" class="catalog-form-error" hidden></div>
+      </div>
+      <div class="mfoot"><button class="btn btn-ghost" type="button" onclick="window.cerrarEditorCuentaCatalogo()">Cancelar</button><button class="btn btn-accent" id="cc-save" type="submit"><i class="fas fa-floppy-disk"></i> Guardar cuenta</button></div>
+    </form>
+  </div>
+</div>
 
 <div id="app">
   <div class="topbar">
@@ -974,6 +993,7 @@ select option,select optgroup{background:#111;color:#fff}
       <div class="sidebar-section-label">Operación diaria</div>
       <button class="tab-nav-btn active" id="btn-tab-pedidos" onclick="window.switchTab('pedidos',this)"><i class="fas fa-list-ul"></i><span>Pedidos</span></button>
       <button class="tab-nav-btn" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)" style="display:none"><i class="fas fa-coins"></i><span>Cuentas</span></button>
+      <button class="tab-nav-btn" id="btn-tab-catalogo-cuentas" onclick="window.switchTab('catalogo-cuentas',this)"><i class="fas fa-gamepad"></i><span>Catálogo de cuentas</span></button>
       <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i><span>Clientes</span></button>
     </div>
     <div class="sidebar-section">
@@ -999,6 +1019,9 @@ select option,select optgroup{background:#111;color:#fff}
       </button>
       <button class="mnav-btn" id="mnav-cuentas" onclick="window.switchTab('cuentas', document.getElementById('btn-tab-cuentas')); window.setActiveMNav('cuentas')">
         <i class="fas fa-coins"></i>Cuentas
+      </button>
+      <button class="mnav-btn" id="mnav-catalogo-cuentas" onclick="window.switchTab('catalogo-cuentas', document.getElementById('btn-tab-catalogo-cuentas')); window.setActiveMNav('catalogo-cuentas')">
+        <i class="fas fa-gamepad"></i>Catálogo
       </button>
 <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
@@ -1305,6 +1328,24 @@ select option,select optgroup{background:#111;color:#fff}
     
 
     <!-- ── TAB CLIENTES ─────────────────────────── -->
+    <div class="tab-panel" id="tab-catalogo-cuentas">
+      <section class="account-catalog-hero">
+        <div><span class="dash-eyebrow">Inventario · Shegos Store</span><h1>Catálogo de cuentas</h1><p>Encuentra una cuenta disponible y consulta sus detalles y precio.</p></div>
+        <button class="btn btn-accent sec-ceo-only" type="button" onclick="window.abrirEditorCuentaCatalogo()"><i class="fas fa-plus"></i> Agregar cuenta</button>
+      </section>
+      <div class="account-catalog-filters">
+        <label class="search-wrap"><i class="fas fa-search"></i><input class="search-input" id="cc-search" placeholder="Buscar cuenta o skin..." oninput="window.renderCatalogoCuentas()"></label>
+        <select class="filter-sel" id="cc-stw" onchange="window.renderCatalogoCuentas()"><option value="">STW: cualquiera</option><option value="true">Con STW</option><option value="false">Sin STW</option></select>
+        <input class="filter-sel" id="cc-skins-min" type="number" min="0" placeholder="Skins desde" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-skins-max" type="number" min="0" placeholder="Skins hasta" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-idle-max" type="number" min="0" placeholder="Inactividad máx. (días)" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-price-max" type="number" min="0" step="0.01" placeholder="Precio máx. (USD)" oninput="window.renderCatalogoCuentas()">
+        <select class="filter-sel sec-ceo-only" id="cc-state" onchange="window.renderCatalogoCuentas()"><option value="">Todos los estados</option><option value="disponible">Disponibles</option><option value="reservada">Reservadas</option><option value="vendida">Vendidas</option></select>
+      </div>
+      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div>
+      <div class="account-catalog-grid" id="cc-grid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div></div>
+    </div>
+
     <div class="tab-panel" id="tab-clientes">
       <div class="toolbar" style="margin-bottom:20px">
         <div class="search-wrap">
@@ -4135,6 +4176,126 @@ function exportAccounting() {
   dl.click();
 }
 
+// --- CATÁLOGO DE CUENTAS DISPONIBLES ---
+let catalogoCuentas = [];
+const escaparCatalogo = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+async function cargarCatalogoCuentas() {
+  const grid = document.getElementById('cc-grid');
+  const count = document.getElementById('cc-count');
+  if (!grid) return;
+  grid.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div>';
+  try {
+    const { data, error } = await supabase.from('catalogo_cuentas').select('id,titulo,cantidad_skins,skins_destacadas,tiene_stw,dias_inactividad,precio_usd,descripcion,estado,creado_en').order('precio_usd');
+    if (error) throw error;
+    catalogoCuentas = data || [];
+    renderCatalogoCuentas();
+  } catch (err) {
+    if (count) count.textContent = 'No se pudo cargar el catálogo';
+    grid.innerHTML = `<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>${escaparCatalogo(err.message || 'Revisa tu conexión e inténtalo de nuevo.')}</p></div>`;
+  }
+}
+
+function renderCatalogoCuentas() {
+  const grid = document.getElementById('cc-grid');
+  if (!grid) return;
+  const value = id => document.getElementById(id)?.value ?? '';
+  const search = value('cc-search').trim().toLocaleLowerCase();
+  const stw = value('cc-stw');
+  const minSkins = Number(value('cc-skins-min')) || 0;
+  const maxSkins = value('cc-skins-max') === '' ? Infinity : Number(value('cc-skins-max'));
+  const maxIdle = value('cc-idle-max') === '' ? Infinity : Number(value('cc-idle-max'));
+  const maxPrice = value('cc-price-max') === '' ? Infinity : Number(value('cc-price-max'));
+  const state = currentRole === 'CEO' ? value('cc-state') : 'disponible';
+  const rows = catalogoCuentas.filter(row => {
+    const text = [row.titulo, row.descripcion, ...(row.skins_destacadas || [])].join(' ').toLocaleLowerCase();
+    return (!search || text.includes(search)) && (stw === '' || String(row.tiene_stw) === stw) &&
+      row.cantidad_skins >= minSkins && row.cantidad_skins <= maxSkins &&
+      row.dias_inactividad <= maxIdle && Number(row.precio_usd) <= maxPrice && (!state || row.estado === state);
+  });
+  const count = document.getElementById('cc-count');
+  if (count) count.textContent = `${rows.length} ${rows.length === 1 ? 'cuenta disponible' : 'cuentas encontradas'}`;
+  if (!rows.length) {
+    grid.innerHTML = `<div class="empty account-catalog-empty"><i class="fas fa-gamepad"></i><p>${catalogoCuentas.length ? 'No hay cuentas que coincidan con esos filtros.' : (currentRole === 'CEO' ? 'Aún no has agregado cuentas. Usa “Agregar cuenta” para empezar.' : 'No hay cuentas disponibles en este momento.')}</p></div>`;
+    return;
+  }
+  grid.innerHTML = rows.map(row => {
+    const tags = (row.skins_destacadas || []).filter(Boolean).map(tag => `<span class="account-skin-tag">${escaparCatalogo(tag)}</span>`).join('');
+    const estado = row.estado === 'disponible' ? 'Disponible' : row.estado === 'reservada' ? 'Reservada' : 'Vendida';
+    const edit = currentRole === 'CEO' ? `<button class="btn btn-ghost account-edit-btn" type="button" onclick="window.abrirEditorCuentaCatalogo('${escaparCatalogo(row.id)}')"><i class="fas fa-pen"></i> Editar</button>` : '';
+    return `<article class="account-catalog-card"><div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
+  }).join('');
+}
+
+function abrirEditorCuentaCatalogo(id = '') {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede administrar el catálogo.', true);
+  const form = document.querySelector('#modal-catalogo-cuenta form');
+  form?.reset();
+  document.getElementById('cc-form-error').hidden = true;
+  document.getElementById('cc-id').value = id;
+  document.getElementById('cc-modal-title').textContent = id ? 'Editar cuenta' : 'Agregar cuenta';
+  document.getElementById('cc-skin-count').value = '0';
+  document.getElementById('cc-idle-days').value = '0';
+  document.getElementById('cc-status-edit').value = 'disponible';
+  if (id) {
+    const row = catalogoCuentas.find(item => item.id === id);
+    if (!row) return showToast('No se encontró la cuenta.', true);
+    document.getElementById('cc-title').value = row.titulo || '';
+    document.getElementById('cc-skin-count').value = row.cantidad_skins ?? 0;
+    document.getElementById('cc-idle-days').value = row.dias_inactividad ?? 0;
+    document.getElementById('cc-skin-tags').value = (row.skins_destacadas || []).join(', ');
+    document.getElementById('cc-has-stw').value = String(!!row.tiene_stw);
+    document.getElementById('cc-price').value = row.precio_usd ?? '';
+    document.getElementById('cc-status-edit').value = row.estado || 'disponible';
+    document.getElementById('cc-description').value = row.descripcion || '';
+    supabase.rpc('leer_detalle_catalogo_cuenta', { p_id: id }).then(({data,error}) => {
+      if (error) return showToast('No se pudo cargar la información privada.', true);
+      const detail = Array.isArray(data) ? data[0] : data;
+      if (!detail) return;
+      document.getElementById('cc-reference').value = detail.referencia_interna || '';
+      document.getElementById('cc-cost').value = detail.costo_adquisicion_usd ?? '';
+      document.getElementById('cc-internal-notes').value = detail.notas_internas || '';
+    });
+  }
+  document.getElementById('modal-catalogo-cuenta').classList.add('open');
+}
+
+function cerrarEditorCuentaCatalogo() { document.getElementById('modal-catalogo-cuenta')?.classList.remove('open'); }
+
+async function guardarCuentaCatalogo(event) {
+  event.preventDefault();
+  if (currentRole !== 'CEO') return;
+  const btn = document.getElementById('cc-save');
+  const errorBox = document.getElementById('cc-form-error');
+  const rawCost = document.getElementById('cc-cost').value;
+  btn.disabled = true;
+  errorBox.hidden = true;
+  try {
+    const args = {
+      p_id: document.getElementById('cc-id').value || null,
+      p_titulo: document.getElementById('cc-title').value.trim(),
+      p_cantidad_skins: Number(document.getElementById('cc-skin-count').value),
+      p_skins_destacadas: document.getElementById('cc-skin-tags').value.split(',').map(x => x.trim()).filter(Boolean),
+      p_tiene_stw: document.getElementById('cc-has-stw').value === 'true',
+      p_dias_inactividad: Number(document.getElementById('cc-idle-days').value),
+      p_precio_usd: Number(document.getElementById('cc-price').value),
+      p_descripcion: document.getElementById('cc-description').value.trim(),
+      p_estado: document.getElementById('cc-status-edit').value,
+      p_referencia_interna: document.getElementById('cc-reference').value.trim(),
+      p_costo_adquisicion_usd: rawCost === '' ? null : Number(rawCost),
+      p_notas_internas: document.getElementById('cc-internal-notes').value.trim()
+    };
+    const { error } = await supabase.rpc('guardar_cuenta_catalogo', args);
+    if (error) throw error;
+    cerrarEditorCuentaCatalogo();
+    showToast('Cuenta guardada correctamente.');
+    await cargarCatalogoCuentas();
+  } catch (err) {
+    errorBox.textContent = err.message || 'No se pudo guardar la cuenta.';
+    errorBox.hidden = false;
+  } finally { btn.disabled = false; }
+}
+
 // --- NAVEGACIÓN GENERAL ---
 function switchTab(tab, btn) {
   activeTab = tab;
@@ -4156,6 +4317,7 @@ function switchTab(tab, btn) {
   if (tab === 'clientes') {
     window.renderClientesTab();
   }
+  if (tab === 'catalogo-cuentas') cargarCatalogoCuentas();
   // Al entrar a Contabilidad, recarga todo desde el backend (incluye
   // saldo por método y retiros si el usuario es CEO — eso ya lo hace
   // renderAccounting() internamente).
@@ -6125,6 +6287,11 @@ window.calConfirm = function(inputId) {
 window.doLogin = doLogin;
 window.doLogout = doLogout;
 window.switchTab = switchTab;
+window.cargarCatalogoCuentas = cargarCatalogoCuentas;
+window.renderCatalogoCuentas = renderCatalogoCuentas;
+window.abrirEditorCuentaCatalogo = abrirEditorCuentaCatalogo;
+window.cerrarEditorCuentaCatalogo = cerrarEditorCuentaCatalogo;
+window.guardarCuentaCatalogo = guardarCuentaCatalogo;
 window.filterByStatus = filterByStatus;
 window.openParseModal = openParseModal;
 window.closeParseModal = closeParseModal;
