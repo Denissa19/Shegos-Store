@@ -454,3 +454,63 @@ td { padding: 13px 15px; }
 @media (prefers-reduced-motion: reduce) {
   #admin-sidebar.tabs-nav { transition: none !important; }
 }
+
+/* Fix sidebar sizing, overlay stacking and calendar grid */
+#admin-sidebar .tab-nav-btn,
+#admin-sidebar .sidebar-section > button {
+  flex: 0 0 auto !important;
+  align-self: stretch !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 48px !important;
+}
+#admin-sidebar .tab-nav-btn.active {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+#app .overlay.open {
+  display: flex !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#app .overlay.open .mcard { visibility: visible !important; opacity: 1 !important; }
+#app .cal-popup {
+  width: min(300px, calc(100vw - 24px)) !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 24px) !important;
+  max-height: calc(100dvh - 24px) !important;
+  overflow: auto !important;
+  z-index: 100000 !important;
+}
+#app .cal-grid {
+  display: grid !important;
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  grid-auto-rows: minmax(34px, auto) !important;
+  width: 100% !important;
+  gap: 3px !important;
+}
+#app .cal-grid > .cal-day,
+#app .cal-grid > .cal-dow {
+  display: grid !important;
+  place-items: center !important;
+  min-width: 0 !important;
+  height: 34px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+#app .cal-header {
+  display: grid !important;
+  grid-template-columns: 74px minmax(0, 1fr) 74px !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+#app .cal-header > div { display: flex; gap: 2px; }
+#app .cal-month-label { min-width: 0; text-align: center; white-space: nowrap; font-size: .74em !important; }
+#app .cal-nav { min-width: 26px; padding: 6px 4px !important; }
+#app .cal-month-grid { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 6px !important; }
+@media (max-width: 520px) {
+  #app .cal-popup { position: fixed !important; left: 12px !important; right: 12px !important; top: auto !important; bottom: max(12px, env(safe-area-inset-bottom)) !important; width: auto !important; max-width: none !important; }
+}
