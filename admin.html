@@ -1149,7 +1149,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label>Período:</label>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" onclick="window.openCal('month-sel','month')" onchange="window.validateCalendarInput(this,'month')">
+            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" onclick="window.openCal('month-sel','month')" onchange="window.validateCalendarInput(this,'month')" title="También puedes escribir el mes con formato AAAA-MM.">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-month-sel"></div>
@@ -1611,7 +1611,7 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Fecha</label>
           <div class="date-picker-wrap">
             <div class="date-picker-input-row">
-              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('f-date','datetime')" onchange="window.validateCalendarInput(this,'datetime')">
+              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('f-date','datetime')" onchange="window.validateCalendarInput(this,'datetime')" title="También puedes escribir fecha y hora con formato AAAA-MM-DDTHH:mm.">
               <i class="fas fa-calendar-alt date-picker-icon"></i>
             </div>
             <div class="cal-popup" id="cal-f-date"></div>
@@ -1961,7 +1961,7 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Fecha de Recuperación *</label>
           <div class="date-picker-wrap">
             <div class="date-picker-input-row">
-              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" onclick="window.openCal('rec-f-fecha','date')" onchange="window.validateCalendarInput(this,'date')">
+              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" onclick="window.openCal('rec-f-fecha','date')" onchange="window.validateCalendarInput(this,'date')" title="También puedes escribir la fecha con formato AAAA-MM-DD.">
               <i class="fas fa-calendar-alt date-picker-icon"></i>
             </div>
             <div class="cal-popup" id="cal-rec-f-fecha"></div>
@@ -2056,7 +2056,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label class="flabel">Fecha</label>
         <div class="date-picker-wrap">
           <div class="date-picker-input-row">
-            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('vc-f-fecha','datetime')" onchange="window.validateCalendarInput(this,'datetime')">
+            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('vc-f-fecha','datetime')" onchange="window.validateCalendarInput(this,'datetime')" title="También puedes escribir fecha y hora con formato AAAA-MM-DDTHH:mm.">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-f-fecha"></div>
@@ -6435,7 +6435,10 @@ window.calMonthToday = function(inputId) {
   if (!s) return;
   const now = new Date();
   const val = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   if (inputId === 'month-sel') renderAccounting();
 };
@@ -6463,7 +6466,10 @@ window.calConfirm = function(inputId) {
   } else {
     val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   // Trigger dependent filters
   if (inputId === 'vc-date-from' || inputId === 'vc-date-to') {
