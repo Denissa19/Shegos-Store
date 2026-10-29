@@ -1032,6 +1032,7 @@ select option,select optgroup{background:#111;color:#fff}
       <button class="btn-logout" onclick="window.openWallpaperPicker()" title="Cambiar fondo" style="border-color:var(--border2);margin-right:4px">
         <i class="fas fa-image"></i>
       </button>
+      <button class="btn-logout btn-change-password" onclick="window.openChangePassword()" title="Cambiar contraseña" aria-label="Cambiar contraseña"><i class="fas fa-key"></i><span>Cambiar contraseña</span></button>
       <button class="btn-logout" onclick="window.doLogout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
     </div>
   </div>
@@ -1917,6 +1918,43 @@ select option,select optgroup{background:#111;color:#fff}
 
 
 <!-- ── MODAL CONFIRMACIÓN PERSONALIZADO ──────────── -->
+<div class="overlay" id="modal-change-password" onclick="if(event.target===this) window.closeChangePassword()">
+  <div class="mcard change-password-card" role="dialog" aria-modal="true" aria-labelledby="change-password-title">
+    <div class="mhead">
+      <div class="mtitle" id="change-password-title"><i class="fas fa-key" aria-hidden="true"></i> Cambiar contraseña</div>
+      <button class="mclose" type="button" onclick="window.closeChangePassword()" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="change-password-form" onsubmit="window.submitChangePassword(event)">
+      <div class="mbody">
+        <p class="change-password-intro">Confirma tu contraseña actual y elige una nueva para proteger tu cuenta.</p>
+        <div class="fgroup">
+          <label class="flabel" for="cp-current">Contraseña actual</label>
+          <input class="finput" id="cp-current" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="fgroup">
+          <label class="flabel" for="cp-new">Nueva contraseña</label>
+          <input class="finput" id="cp-new" type="password" autocomplete="new-password" minlength="8" required aria-describedby="cp-password-hint">
+          <small id="cp-password-hint" class="change-password-hint">Usa al menos 8 caracteres.</small>
+        </div>
+        <div class="fgroup">
+          <label class="flabel" for="cp-confirm">Repite la nueva contraseña</label>
+          <input class="finput" id="cp-confirm" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div class="fgroup" id="cp-nonce-group" hidden>
+          <label class="flabel" for="cp-nonce">Código de verificación</label>
+          <input class="finput" id="cp-nonce" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" aria-describedby="cp-nonce-hint">
+          <small id="cp-nonce-hint" class="change-password-hint">Escribe el código que te enviamos por correo o teléfono.</small>
+        </div>
+        <div id="change-pwd-msg" class="change-password-message" role="status" aria-live="polite" hidden></div>
+      </div>
+      <div class="mfoot change-password-actions">
+        <button class="btn btn-ghost" type="button" onclick="window.closeChangePassword()">Cancelar</button>
+        <button class="btn btn-accent" type="submit" id="change-pwd-submit"><i class="fas fa-check"></i> Actualizar contraseña</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="overlay" id="modal-confirm">
   <div class="confirm-card">
     <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
