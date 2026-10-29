@@ -1196,6 +1196,20 @@ select option,select optgroup{background:#111;color:#fff}
     <!-- ── TAB CUENTAS ─────────────────────────── -->
     <div class="tab-panel" id="tab-cuentas">
 
+      <section class="sales-insights" aria-labelledby="sales-insights-title">
+        <div class="sales-insights-heading"><div><span class="dash-eyebrow">Ventas · Tendencia</span><h2 id="sales-insights-title">Así se mueve la tienda</h2><p>Compara el mes actual con el anterior y encuentra tus productos más vendidos.</p></div><span class="sales-insights-period" id="sales-insights-period"></span></div>
+        <div class="sales-insights-metrics">
+          <article class="sales-insight-metric"><span>Ventas este mes</span><strong id="sales-month-count">0</strong><small id="sales-month-change">Sin comparación</small></article>
+          <article class="sales-insight-metric"><span>Mes anterior</span><strong id="sales-prev-count">0</strong><small id="sales-prev-label">—</small></article>
+          <article class="sales-insight-metric sec-ceo-only"><span>Ingresos este mes</span><strong id="sales-month-revenue">$0.00</strong><small id="sales-revenue-change">Comparado con el mes anterior</small></article>
+        </div>
+        <div class="sales-insights-charts">
+          <article class="sales-chart-card sales-chart-month"><div class="sales-chart-title"><div><strong>Ventas por mes</strong><span>Últimos 6 meses</span></div><i class="fas fa-chart-column"></i></div><div id="sales-monthly-chart" class="sales-bars" role="img" aria-label="Cantidad de ventas por mes"></div></article>
+          <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Productos más vendidos</strong><span>Por número de ventas</span></div><i class="fas fa-trophy"></i></div><div id="sales-products-chart" class="sales-rank-list"></div></article>
+          <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Tipos de venta</strong><span>Distribución del mes actual</span></div><i class="fas fa-layer-group"></i></div><div id="sales-types-chart" class="sales-rank-list"></div></article>
+        </div>
+      </section>
+
       <!-- Tarjetas por tipo — solo contador visible para ADMIN, $ solo CEO -->
       <div class="stats-row" style="grid-template-columns:repeat(7,1fr);margin-bottom:14px">
         <div class="stat-card" style="--accent-c:#a855f7">
@@ -1465,12 +1479,11 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Método de Pago</label>
           <select class="fsel" id="f-payment">
             <option value="">— Seleccionar —</option>
-            <option value="link">Link de Pago</option>
-            <option value="paypal">PayPal</option>
-            <option value="popular">Banco Popular</option>
-            <option value="binance">Binance Pay</option>
-            <option value="remitly">Remitly</option>
-            <option value="transferencia_mx">Transferencia MX</option>
+            <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+            <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+            <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
           </select>
         </div>
       </div>
@@ -1875,17 +1888,8 @@ select option,select optgroup{background:#111;color:#fff}
           <button type="button" class="vm-tipo-chip" data-tipo="Recarga de pavos" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-coins"></i>Pavos
           </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Packs" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-box"></i>Packs
-          </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Streaming" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-tv"></i>Streaming
-          </button>
           <button type="button" class="vm-tipo-chip" data-tipo="Venta via regalo" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-gift"></i>Regalo
-          </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Apartar cuentas" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-bookmark"></i>Financiar/Apartar
           </button>
         </div>
         <!-- Hidden real select for compatibility -->
@@ -1947,45 +1951,13 @@ select option,select optgroup{background:#111;color:#fff}
             <label class="flabel">Método de Pago</label>
             <select class="fsel" id="vc-f-metodo">
               <option value="">— Seleccionar —</option>
-              <option value="link">Link de Pago</option>
-              <option value="paypal">PayPal</option>
-              <option value="popular">Banco Popular</option>
-              <option value="binance">Binance Pay</option>
-              <option value="remitly">Remitly</option>
-              <option value="transferencia_mx">Transferencia MX</option>
+              <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+              <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+              <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+              <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+              <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
             </select>
           </div>
-        </div>
-        <div class="frow">
-          <div class="fgroup">
-            <label class="flabel">Plazo / Cuotas</label>
-            <select class="fsel" id="vc-f-plazo" onchange="window.updateInterestPct()">
-              <option value="0">Contado (0%)</option>
-              <option value="2.5">7 Días (2.5%)</option>
-              <option value="5">15 Días (5%)</option>
-              <option value="10">30 Días (10%)</option>
-              <option value="15">45 Días (15%)</option>
-              <option value="custom">Personalizado</option>
-            </select>
-          </div>
-          <div class="fgroup">
-            <label class="flabel">Interés (%)</label>
-            <input class="finput" id="vc-f-interes-pct" type="number" step="0.1" placeholder="0" oninput="window.calcVentaMargen()">
-          </div>
-        </div>
-        <div class="frow">
-          <div class="fgroup">
-            <label class="flabel">Pago Parcial (USD)</label>
-            <input class="finput" id="vc-f-pago-parcial" type="number" step="0.01" placeholder="0.00" oninput="window.calcVentaMargen()">
-          </div>
-          <div class="fgroup">
-            <label class="flabel">Pago Pendiente (USD)</label>
-            <input class="finput" id="vc-f-pago-pendiente" type="number" step="0.01" placeholder="0.00" readonly style="background:var(--surface2); opacity: 0.8">
-          </div>
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Cuota Adicional / Interés (USD)</label>
-          <input class="finput" id="vc-f-cuota-adicional" type="number" step="0.01" readonly style="background:var(--surface2); opacity: 0.8">
         </div>
       </div>
 
@@ -2183,8 +2155,8 @@ select option,select optgroup{background:#111;color:#fff}
 
       <!-- Nombre producto / cuenta (siempre visible) -->
       <div class="fgroup">
-        <label class="flabel" id="label-vc-f-producto">Producto</label>
-        <input class="finput" id="vc-f-producto" placeholder="Nombre del producto o cuenta...">
+            <label class="flabel" id="label-vc-f-producto">Producto / detalle</label>
+        <input class="finput" id="vc-f-producto" placeholder="Cuenta de Fortnite — agrega skins u otro detalle">
       </div>
 
       <!-- Precio de venta -->
@@ -2454,6 +2426,7 @@ let serviciosSyncIntervalId = null;
 // --- INICIALIZACIÓN ---
 window.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
+  enhancePaymentPickers();
   renderQuickTags();
 
   // Manejar recuperación de contraseña vía enlace de email
@@ -3500,11 +3473,13 @@ function calcularPanelLocal(period) {
   const sumPed = compl.reduce((s, o) => s + num(o.total_usd), 0);
   const sumVen = vensPer.reduce((s, v) => s + num(v.ingreso), 0);
   const addM = (obj, k, v) => { k = k || 'sin_metodo'; obj[k] = (obj[k] || 0) + v; };
-  const metodos = {}, metodosTotal = {}, dist = {};
+  const metodos = {}, metodosTotal = {}, metodosCount = {}, dist = {};
   currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.total_usd)));
   currentVentas.forEach(v => addM(metodosTotal, v.metodo_pago, num(v.ingreso)));
   compl.forEach(o => addM(metodos, o.metodo_pago, num(o.total_usd)));
   vensPer.forEach(v => addM(metodos, v.metodo_pago, num(v.ingreso)));
+  compl.forEach(o => { const k=o.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
+  vensPer.forEach(v => { const k=v.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
   if (sumPed > 0) dist['Pedido'] = sumPed;
   vensPer.forEach(v => { const t = v.tipo || 'Otro'; dist[t] = (dist[t] || 0) + num(v.ingreso); });
   const serie = [], hoy = new Date();
@@ -3527,7 +3502,7 @@ function calcularPanelLocal(period) {
     pendiente_cobro: pendPed + pendVen,
     costo_total: vensPer.reduce((s, v) => s + (num(v.costo_real) || num(v.costo)), 0),
     ganancia_neta: vensPer.reduce((s, v) => s + num(v.ganancia_neta), 0),
-    metodos, metodos_total: metodosTotal, distribucion_tipo: dist, serie_mensual: serie,
+    metodos, metodos_count: metodosCount, metodos_total: metodosTotal, distribucion_tipo: dist, serie_mensual: serie,
     registros: [
       ...pedsPer.map(o => ({ id: o.id_pedido, fuente: 'Pedido', cliente: o.nombre_cliente, metodo: o.metodo_pago, total: num(o.total_usd), estado: o.estado })),
       ...vensPer.map(v => ({ id: v.id_pedido || v.id, fuente: 'Venta', cliente: v.cliente, metodo: v.metodo_pago, total: num(v.ingreso), estado: v.estado || 'Completado' }))
@@ -3570,29 +3545,76 @@ async function renderAccounting() {
   document.getElementById('acc-cnt-sub').textContent = `${panel.pedidos_completados || 0} pedidos + ${panel.ventas_manuales_count || 0} ventas`;
 
 function paymentMethodIdentity(method) {
-  const methods = {
-    link: { label: 'Link de Pago', icon: 'fa-link', color: '#5865f2' },
-    paypal: { label: 'PayPal', logo: 'https://cdn.simpleicons.org/paypal/009cde', icon: 'fa-brands fa-paypal', color: '#0070ba' },
-    popular: { label: 'Banco Popular', icon: 'fa-building-columns', color: '#e63946' },
-    binance: { label: 'Binance Pay', logo: 'https://cdn.simpleicons.org/binance/f0b90b', icon: 'fa-coins', color: '#f0b90b' },
-    remitly: { label: 'Remitly', logo: 'https://cdn.simpleicons.org/remitly/2f6bed', icon: 'fa-money-bill-transfer', color: '#2f6bed' },
-    transferencia_mx: { label: 'Transfer MX', icon: 'fa-building-columns', color: '#a855f7' }
-  };
-  const item = methods[method] || { label: String(method || 'Otro').replaceAll('_', ' '), icon: 'fa-credit-card', color: 'var(--accent)' };
-  const fallback = '<i class="' + (item.icon.indexOf('fa-brands') === 0 ? '' : 'fas ') + item.icon + '" aria-hidden="true" ' + (item.logo ? 'hidden' : '') + '></i>';
-  const logo = item.logo ? '<img class="meth-logo-img" src="' + item.logo + '" alt="" loading="lazy" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false">' + fallback : fallback;
-  return '<span class="meth-identity" style="--meth-color:' + item.color + '"><span class="meth-logo">' + logo + '</span><span class="meth-name">' + item.label + '</span></span>';
+  const item = PAYMENT_METHODS.find(x => x.value === method) || LEGACY_PAYMENT_METHODS[method] || { label: String(method || 'Otro').replaceAll('_', ' '), fallback: '•', color: '#9aa3a0' };
+  return '<span class="meth-identity" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '<span class="meth-name">' + item.label + '</span></span>';
+}
+
+const PAYMENT_METHODS = [
+  {value:'binance',label:'Binance',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
+  {value:'binance_giftcard',label:'Binance Giftcard',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
+  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:'https://cdn.simpleicons.org/xbox/107c10',fallback:'X',color:'#107c10'},
+  {value:'remitly',label:'Remitly',logo:'https://cdn.simpleicons.org/remitly/2f6bed',fallback:'R',color:'#2f6bed'},
+  {value:'bybit',label:'Bybit',logo:'https://cdn.simpleicons.org/bybit/f7a600',fallback:'B',color:'#f7a600'},
+  {value:'airtm',label:'Airtm',logo:'https://cdn.simpleicons.org/airtm/0067ff',fallback:'A',color:'#1685ff'},
+  {value:'spei',label:'SPEI',fallback:'S',color:'#61a5ff'},
+  {value:'oxxo',label:'OXXO',logo:'https://cdn.simpleicons.org/oxxogas/e31837',fallback:'O',color:'#e31837'},
+  {value:'mercado_pago',label:'Mercado Pago',logo:'https://cdn.simpleicons.org/mercadopago/00a0e3',fallback:'MP',color:'#00a0e3'},
+  {value:'cripto',label:'Cripto',logo:'https://cdn.simpleicons.org/bitcoin/f7931a',fallback:'₿',color:'#f7931a'}
+];
+const LEGACY_PAYMENT_METHODS = {
+  link:{label:'Link de Pago (histórico)',fallback:'↗',color:'#77808a'}, paypal:{label:'PayPal (histórico)',fallback:'P',color:'#0070ba'},
+  popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
+  binance_pay:{label:'Binance Pay',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'}
+};
+function paymentLogoMarkup(item, cls='pay-logo-img') {
+  const image = item.logo ? `<img class="${cls}" src="${item.logo}" alt="" loading="lazy" decoding="async" onerror="this.hidden=true">` : '';
+  return `<span class="pay-logo meth-logo" style="--pay-color:${item.color}">${image}<span class="pay-logo-fallback">${item.fallback || '•'}</span></span>`;
+}
+function syncPaymentPicker(id) {
+  const select = document.getElementById(id), root = select?.closest('.payment-picker');
+  if (!select || !root) return;
+  if (select.value && !Array.from(select.options).some(o=>o.value===select.value)) {
+    const legacy=LEGACY_PAYMENT_METHODS[select.value];
+    if (legacy) select.add(new Option(legacy.label, select.value));
+  }
+  const item = PAYMENT_METHODS.find(x => x.value === select.value) || LEGACY_PAYMENT_METHODS[select.value];
+  const label = root.querySelector('.payment-picker-label'), logo = root.querySelector('.payment-picker-current-logo');
+  if (label) label.textContent = item?.label || '— Seleccionar —';
+  if (logo) logo.innerHTML = item ? paymentLogoMarkup(item) : '<span class="pay-logo pay-logo-empty"><i class="fas fa-credit-card"></i></span>';
+}
+function enhancePaymentPickers() {
+  ['f-payment','vc-f-metodo','ac-metodo','ret-metodo'].forEach(id => {
+    const select = document.getElementById(id);
+    if (!select || select.dataset.logoPicker) return;
+    select.dataset.logoPicker = '1';
+    select.classList.add('payment-native-select');
+    const wrap = document.createElement('div'); wrap.className = 'payment-picker';
+    select.parentNode.insertBefore(wrap, select); wrap.appendChild(select);
+    const trigger = document.createElement('button'); trigger.type='button'; trigger.className='payment-picker-trigger';
+    trigger.setAttribute('aria-haspopup','listbox'); trigger.setAttribute('aria-expanded','false');
+    trigger.innerHTML='<span class="payment-picker-current-logo"></span><span class="payment-picker-label"></span><i class="fas fa-chevron-down"></i>';
+    const menu = document.createElement('div'); menu.className='payment-picker-menu'; menu.setAttribute('role','listbox');
+    PAYMENT_METHODS.forEach(item => {
+      const option=document.createElement('button'); option.type='button'; option.className='payment-picker-option'; option.setAttribute('role','option');
+      option.innerHTML=paymentLogoMarkup(item)+'<span>'+item.label+'</span>';
+      option.addEventListener('click',()=>{select.value=item.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncPaymentPicker(id);menu.hidden=true;trigger.setAttribute('aria-expanded','false');});
+      menu.appendChild(option);
+    });
+    trigger.addEventListener('click',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden));});
+    document.addEventListener('click',e=>{if(!wrap.contains(e.target)){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}});
+    select.addEventListener('change',()=>syncPaymentPicker(id));
+    wrap.insertBefore(trigger,select); wrap.appendChild(menu); syncPaymentPicker(id);
+  });
 }
   // Render métodos de pago
   const breakArea = document.getElementById('method-breakdown');
   const metodos = panel.metodos || {};
-  if (Object.keys(metodos).length === 0) {
+  const topMetodos = Object.entries(metodos).sort((a,b)=>(panel.metodos_count?.[b[0]]||0)-(panel.metodos_count?.[a[0]]||0)).slice(0,4);
+  if (topMetodos.length === 0) {
     breakArea.innerHTML = `<div style="font-size:0.8em;color:var(--text3)">No hay ingresos registrados por métodos de pago en este período.</div>`;
   } else {
     let mHtml = '';
-    for (let m in metodos) {
-      mHtml += `<div class="meth-card">${paymentMethodIdentity(m)}<span class="meth-val">${(parseFloat(metodos[m]) || 0).toFixed(2)}</span></div>`;
-    }
+    for (const [m,total] of topMetodos) mHtml += `<div class="meth-card">${paymentMethodIdentity(m)}<span class="meth-val">${(parseFloat(total) || 0).toFixed(2)}</span></div>`;
     breakArea.innerHTML = mHtml;
   }
 
@@ -3755,6 +3777,7 @@ function editOrder(id) {
   document.getElementById('f-phone').value = o.telefono_cliente || '';
   document.getElementById('f-epic').value = o.epic_id_cliente || '';
   document.getElementById('f-payment').value = o.metodo_pago || '';
+  syncPaymentPicker('f-payment');
   document.getElementById('f-total').value = o.total_usd || '';
   document.getElementById('f-notes').value = o.notes || '';
   
@@ -4043,6 +4066,7 @@ function processOrderText() {
   document.getElementById('f-phone').value = phone;
   document.getElementById('f-epic').value = epic;
   document.getElementById('f-payment').value = payment;
+  syncPaymentPicker('f-payment');
   document.getElementById('f-total').value = total;
   document.getElementById('f-notes').value = 'Extraído automáticamente de texto.';
 
@@ -4726,6 +4750,33 @@ function updateVentasStats(filtered) {
 
   // Gráfica ganancia por tipo (CEO only)
   renderGananciaChart(sumGanancia);
+  renderSalesInsights();
+}
+
+function renderSalesInsights() {
+  const now = new Date(), currentKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const prevDate = new Date(now.getFullYear(), now.getMonth()-1, 1), prevKey = `${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
+  const monthOf = v => vcLocalDay(v.created_at || '').slice(0,7);
+  const current = currentVentas.filter(v => monthOf(v) === currentKey), previous = currentVentas.filter(v => monthOf(v) === prevKey);
+  const setText = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  setText('sales-month-count', current.length); setText('sales-prev-count', previous.length);
+  setText('sales-prev-label', prevDate.toLocaleDateString('es-DO',{month:'long',year:'numeric'}));
+  const delta=current.length-previous.length, pct=previous.length ? Math.round(delta/previous.length*100) : (current.length ? 100 : 0);
+  setText('sales-month-change', `${delta>=0?'+':''}${delta} ventas (${pct>=0?'+':''}${pct}%) frente al mes anterior`);
+  setText('sales-insights-period', now.toLocaleDateString('es-DO',{month:'long',year:'numeric'}));
+  const revenue=current.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0), prevRevenue=previous.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0);
+  setText('sales-month-revenue', `$${revenue.toFixed(2)}`);
+  setText('sales-revenue-change', `Mes anterior: $${prevRevenue.toFixed(2)}`);
+  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const monthly=document.getElementById('sales-monthly-chart');
+  if(monthly){
+    const values=[]; for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1),key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; values.push({key,label:d.toLocaleDateString('es-DO',{month:'short'}),count:currentVentas.filter(v=>monthOf(v)===key).length});}
+    const max=Math.max(1,...values.map(x=>x.count)); monthly.innerHTML=values.map(x=>`<div class="sales-bar-col" title="${x.count} ventas"><span>${x.count}</span><i style="height:${Math.max(4,x.count/max*100)}%"></i><small>${esc(x.label)}</small></div>`).join('');
+  }
+  const renderRank=(id,entries)=>{const el=document.getElementById(id);if(!el)return;const max=Math.max(1,...entries.map(x=>x.count));el.innerHTML=entries.length?entries.slice(0,5).map(x=>`<div class="sales-rank-row"><span class="sales-rank-name" title="${esc(x.name)}">${esc(x.name)}</span><span class="sales-rank-track"><i style="width:${Math.max(4,x.count/max*100)}%"></i></span><b>${x.count}</b></div>`).join(''):'<p class="sales-chart-empty">Aún no hay ventas este mes.</p>';};
+  const group=key=>{const m=new Map();current.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';m.set(name,(m.get(name)||0)+1);});return [...m].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);};
+  renderRank('sales-products-chart',group('producto'));
+  renderRank('sales-types-chart',group('tipo'));
 }
 
 function renderGananciaChart(sumGanancia) {
@@ -4929,6 +4980,7 @@ function openVentaModal() {
   if (statusEl) statusEl.value = 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
+  syncPaymentPicker('vc-f-metodo');
   const hintEl = document.getElementById('vc-cliente-hint');
   if (hintEl) hintEl.style.display = 'none';
   const plazoEl = document.getElementById('vc-f-plazo');
@@ -4988,6 +5040,7 @@ window.editVenta = function(id) {
   if (statusEl) statusEl.value = v.estado || 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = v.metodo_pago || '';
+  syncPaymentPicker('vc-f-metodo');
   const crEl = document.getElementById('vc-f-costo-real');
   if (crEl) crEl.value = v.costo_real || '';
   const mrEl = document.getElementById('vc-f-monto-recibido');
@@ -5054,8 +5107,10 @@ function closeVentaModal() {
 }
 
 window.updateInterestPct = function() {
-  const plazo = document.getElementById('vc-f-plazo').value;
+  const plazoEl = document.getElementById('vc-f-plazo');
   const interesInput = document.getElementById('vc-f-interes-pct');
+  if (!plazoEl || !interesInput) return;
+  const plazo = plazoEl.value;
   if (plazo !== 'custom') {
     interesInput.value = plazo;
     interesInput.readOnly = true;
@@ -5132,27 +5187,19 @@ window.vmToggleParse = function() {
 window.toggleVentaFields = function() {
   const tipo = document.getElementById('vc-f-tipo').value;
   const isCuenta = tipo === 'Cuenta de fortnite';
-  const isApartar = tipo === 'Apartar cuentas';
-  const isStreaming = tipo === 'Streaming';
   const cuentaBlock = document.getElementById('vm-cuenta-fields');
   const apartarBlock = document.getElementById('vm-apartar-fields');
   const streamingBlock = document.getElementById('vm-streaming-fields');
   if (cuentaBlock) cuentaBlock.style.display = isCuenta ? 'block' : 'none';
-  if (apartarBlock) apartarBlock.style.display = isApartar ? 'block' : 'none';
-  if (streamingBlock) {
-    streamingBlock.style.display = isStreaming ? 'block' : 'none';
-    if (isStreaming) populateStreamingSelect();
-  }
+  if (apartarBlock) apartarBlock.style.display = 'none';
+  if (streamingBlock) streamingBlock.style.display = 'none';
   const labelProd = document.getElementById('label-vc-f-producto');
-  if (labelProd) {
-    if (isCuenta) labelProd.textContent = 'Nombre de la Cuenta';
-    else if (isApartar) labelProd.textContent = 'Nombre / Referencia de la Cuenta';
-    else if (isStreaming) labelProd.textContent = 'Plataforma / Plan';
-    else labelProd.textContent = 'Nombre del Producto';
-  }
+  if (labelProd) labelProd.textContent = isCuenta ? 'Cuenta / detalle editable' : 'Nombre del Producto';
+  const product = document.getElementById('vc-f-producto');
+  if (isCuenta && product && (!product.value.trim() || product.value === 'Cuenta de Fortnite')) product.value = 'Cuenta de Fortnite';
   // Auto-generate ID for cuentas
   const idInp = document.getElementById('vc-f-id');
-  if ((isCuenta || isApartar) && idInp && !idInp.value) {
+  if (isCuenta && idInp && !idInp.value) {
     idInp.value = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
   }
 };
@@ -6813,7 +6860,7 @@ window.orderClientSearch = function(val) {
   renderClienteDropdown(dropEl, suggestions, (c) => {
     document.getElementById('f-name').value = c.nombre;
     if (c.wa) document.getElementById('f-phone').value = c.wa;
-    if (c.metodo) document.getElementById('f-payment').value = c.metodo;
+    if (c.metodo) { document.getElementById('f-payment').value = c.metodo; syncPaymentPicker('f-payment'); }
     dropEl.style.display = 'none';
   });
 };
@@ -6827,7 +6874,7 @@ window.ventaClientSearch = function(val) {
     renderClienteDropdown(dropEl, suggestions, (c) => {
       document.getElementById('vc-f-cliente').value = c.nombre;
       if (c.wa) { const el = document.getElementById('vc-f-wa'); if(el) el.value = c.wa; }
-      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; }
+      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; syncPaymentPicker('vc-f-metodo'); }
       dropEl.style.display = 'none';
       window.ventaClientSearch(c.nombre);
     });
@@ -6913,7 +6960,7 @@ window.renderClientesTab = async function(mode) {
     return;
   }
 
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
 
   const resenaCell = c => {
     const st = RV_ESTADOS[c.resena] || RV_ESTADOS.pendiente;
@@ -7001,6 +7048,7 @@ window.editClienteModal = function(id) {
   document.getElementById('ac-nombre').value = c.nombre;
   document.getElementById('ac-wa').value = c.wa || '';
   document.getElementById('ac-metodo').value = c.metodo || '';
+  syncPaymentPicker('ac-metodo');
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   // Store real id for editing
@@ -7028,7 +7076,7 @@ window.deleteCliente = async function(id) {
 window.exportClientesCSV = function() {
   const clientes = getClientes();
   if (!clientes.length) { showToast('No hay clientes para exportar', true); return; }
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
   const RV_LABEL = { pendiente: 'Sin pedir', solicitada: 'Pedida', recibida: 'Recibida' };
   const PREMIO_LABEL = { ninguna: '', ganada: 'Por entregar', entregada: 'Entregada' };
   const rows = [['Nombre','WhatsApp','Método de Pago','Último Registro','Reseña','Calificación','Comentario','Recompensa']];
@@ -7404,6 +7452,7 @@ window.openAddClienteModal = function() {
   document.getElementById('ac-nombre').value = '';
   document.getElementById('ac-wa').value = '';
   document.getElementById('ac-metodo').value = '';
+  syncPaymentPicker('ac-metodo');
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   delete document.getElementById('modal-add-cliente').dataset.editId;
@@ -7474,6 +7523,7 @@ async function cargarRetiros() {
 window.openRetiroModal = function() {
   document.getElementById('ret-monto').value = '';
   document.getElementById('ret-metodo').value = '';
+  syncPaymentPicker('ret-metodo');
   document.getElementById('ret-tipo').value = '';
   document.getElementById('ret-notas').value = '';
   document.querySelectorAll('[data-ret]').forEach(c => c.classList.remove('active'));
@@ -7596,7 +7646,7 @@ window.deleteRetiro = function(id) {
 // ─── GRÁFICA + TABLA COMPLETA DE RETIROS ────────────────────────────────────
 async function renderRetirosSection() {
   const retiros = _retirosCache.length ? _retirosCache : await cargarRetiros();
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
   const COLORS_MAP = { link:'#5865F2', paypal:'#0070ba', popular:'#ff4d6d', binance:'#f0b90b', remitly:'#00b2a0', transferencia_mx:'#a855f7' };
   const FALLBACK_COLORS = ['#f97316','#28feb6','#ec4899','#14b8a6','#facc15'];
 
@@ -7727,12 +7777,11 @@ window.resetWallpaper = function() {
         <label class="flabel">Método de Pago Preferido</label>
         <select class="fsel" id="ac-metodo">
           <option value="">— Seleccionar —</option>
-          <option value="link">Link de Pago</option>
-          <option value="paypal">PayPal</option>
-          <option value="popular">Banco Popular</option>
-          <option value="binance">Binance Pay</option>
-          <option value="remitly">Remitly</option>
-          <option value="transferencia_mx">Transferencia MX</option>
+          <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+          <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+          <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+          <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+          <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
         </select>
       </div>
       <div id="ac-msg" style="display:none;font-size:0.78em;margin-top:10px;padding:10px 13px;border-radius:4px;font-weight:500"></div>
@@ -7832,12 +7881,11 @@ window.resetWallpaper = function() {
           <label class="flabel">Método de Pago *</label>
           <select class="fsel" id="ret-metodo" style="border-color:rgba(249,115,22,.4)">
             <option value="">— Seleccionar —</option>
-            <option value="link">Link de Pago</option>
-            <option value="paypal">PayPal</option>
-            <option value="popular">Banco Popular</option>
-            <option value="binance">Binance Pay</option>
-            <option value="remitly">Remitly</option>
-            <option value="transferencia_mx">Transferencia MX</option>
+            <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+            <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+            <option value="bybit">Bybit</option><option value="airtm">Airtm</option>
+            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
           </select>
         </div>
       </div>
@@ -7891,3 +7939,4 @@ document.addEventListener('pointerdown', function (e) {
 </script>
 </body>
 </html>
+
