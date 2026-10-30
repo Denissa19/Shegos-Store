@@ -2665,7 +2665,14 @@ body, body.role-ceo {
       <!-- Fecha -->
       <div class="fgroup">
         <label class="flabel">Fecha</label>
-        <input class="finput" id="vc-f-fecha" type="date" required>
+        <div class="date-picker-wrap sale-date-picker">
+          <div class="date-picker-input-row">
+            <input class="finput" id="vc-f-fecha" type="text" inputmode="numeric" autocomplete="off" placeholder="AAAA-MM-DD" required
+              onclick="window.openCal('vc-f-fecha','date')" onchange="window.validateCalendarInput(this,'date')" aria-label="Fecha de la venta">
+            <i class="fas fa-calendar-alt date-picker-icon"></i>
+          </div>
+          <div class="cal-popup" id="cal-vc-f-fecha"></div>
+        </div>
       </div>
 
       <!-- Datos de venta y cliente -->
@@ -2930,7 +2937,7 @@ body, body.role-ceo {
             <option value="MXN" selected>MXN</option>
             <option value="USD">USD</option>
           </select>
-          <input class="finput" id="vc-f-ingreso" type="number" step="0.01" min="0" placeholder="0.00" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
+          <input class="finput" id="vc-f-ingreso" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
         </div>
         <small class="venta-conversion-note" id="vc-f-conversion-note">Se convertirá automáticamente a USD. Tasa: 1 USD = 18.67 MXN.</small>
       </div>
@@ -2943,12 +2950,12 @@ body, body.role-ceo {
           <div class="frow">
             <div class="fgroup" style="margin-bottom:0">
               <label class="flabel" style="color:var(--red)">Costo (USD)</label>
-              <input class="finput" id="vc-f-costo-real" type="number" step="0.01" placeholder="0.00"
+              <input class="finput" id="vc-f-costo-real" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
                 oninput="window.calcVentaMargen()" style="border-color:rgba(255,77,109,.3)">
             </div>
             <div class="fgroup" style="margin-bottom:0">
               <label class="flabel" style="color:#f97316">Monto Recibido (USD)</label>
-              <input class="finput" id="vc-f-monto-recibido" type="number" step="0.01" placeholder="0.00"
+              <input class="finput" id="vc-f-monto-recibido" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
                 oninput="window.calcVentaMargen()" style="border-color:rgba(249,115,22,.3)"
                 title="Monto neto que realmente entró luego de comisiones (PayPal, Binance, etc). Déjalo vacío si es igual al precio de venta.">
             </div>
@@ -3265,6 +3272,12 @@ function setupEventListeners() {
   document.getElementById('vc-date-to')?.addEventListener('change', renderVentas);
   document.getElementById('vc-tipo-filter')?.addEventListener('change', renderVentas); // Bug 11 fix
   document.getElementById('vc-f-metodo')?.addEventListener('change', () => window.calcVentaMargen());
+  ['vc-f-ingreso','vc-f-costo-real','vc-f-monto-recibido','vc-f-pago-parcial','vc-f-interes-pct'].forEach(id => {
+    const field = document.getElementById(id);
+    field?.addEventListener('input', () => { window.calcVentaMargen(); window.vmUpdateTotal(); });
+    field?.addEventListener('change', () => { window.calcVentaMargen(); window.vmUpdateTotal(); });
+  });
+  document.getElementById('vc-f-moneda')?.addEventListener('change', () => { window.calcVentaMargen(); window.vmUpdateTotal(); });
   document.getElementById('f-payment')?.addEventListener('change', updateOrderFeeNote);
   document.getElementById('f-total')?.addEventListener('input', updateOrderFeeNote);
 
@@ -5804,12 +5817,26 @@ function renderVentas() {
 }
 
 const VENTA_USD_MXN_RATE = 18.67;
+function parseVentaNumber(value) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  let text = String(value ?? '').trim().replace(/[^\d,.-]/g, '');
+  if (!text) return 0;
+  const comma = text.lastIndexOf(','), dot = text.lastIndexOf('.');
+  if (comma !== -1 && dot !== -1) {
+    text = comma > dot ? text.replace(/\./g, '').replace(',', '.') : text.replace(/,/g, '');
+  } else if (comma !== -1) {
+    text = text.replace(',', '.');
+  }
+  const number = Number(text);
+  return Number.isFinite(number) ? number : 0;
+}
+function ventaNumber(id) { return parseVentaNumber(document.getElementById(id)?.value); }
 function ventaIngresoUsd() {
-  const value=parseFloat(document.getElementById('vc-f-ingreso')?.value)||0;
+  const value=ventaNumber('vc-f-ingreso');
   return (document.getElementById('vc-f-moneda')?.value||'MXN')==='MXN' ? value/VENTA_USD_MXN_RATE : value;
 }
 function updateVentaConversionNote() {
-  const note=document.getElementById('vc-f-conversion-note'), value=parseFloat(document.getElementById('vc-f-ingreso')?.value)||0;
+  const note=document.getElementById('vc-f-conversion-note'), value=ventaNumber('vc-f-ingreso');
   if(!note)return;
   const moneda=document.getElementById('vc-f-moneda')?.value||'MXN';
   const usd=moneda==='MXN'?value/VENTA_USD_MXN_RATE:value;
@@ -5999,7 +6026,7 @@ window.updateInterestPct = function() {
 window.calcVentaMargen = function() {
   const ingreso    = ventaIngresoUsd();
   updateVentaConversionNote();
-  const interesPct = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
+  const interesPct = ventaNumber('vc-f-interes-pct');
   const cuota      = ingreso * (interesPct / 100);
   const total      = ingreso + cuota;
 
@@ -6007,7 +6034,7 @@ window.calcVentaMargen = function() {
   if (cuotaEl) cuotaEl.value = cuota.toFixed(2);
 
   // Costo real de obtención del producto
-  const costo = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+  const costo = ventaNumber('vc-f-costo-real');
 
   // Monto Recibido = lo que realmente entra después de comisiones (PayPal, Binance, etc).
   // Si se deja vacío, se asume que no hubo comisión (monto recibido = precio de venta).
@@ -6029,7 +6056,7 @@ window.calcVentaMargen = function() {
   }
   const montoRecibidoRaw = montoRecibidoEl?.value;
   const montoRecibido = isTransferPayment(paymentMethod) ? Math.max(0,total-autoFee) :
-    (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? (parseFloat(montoRecibidoRaw) || 0) : total);
+    (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? parseVentaNumber(montoRecibidoRaw) : total);
 
   // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
   const comision = isTransferPayment(paymentMethod) ? autoFee : total - montoRecibido;
@@ -6045,7 +6072,7 @@ window.calcVentaMargen = function() {
     netaEl.style.color = ganancia >= 0 ? 'var(--gold)' : 'var(--red)';
   }
 
-  const parcial     = parseFloat(document.getElementById('vc-f-pago-parcial')?.value) || 0;
+  const parcial     = ventaNumber('vc-f-pago-parcial');
   const pendienteEl = document.getElementById('vc-f-pago-pendiente');
   if (pendienteEl) pendienteEl.value = Math.max(0, total - parcial).toFixed(2);
 
@@ -6179,6 +6206,7 @@ async function cargarSugerenciasClientes() {
 
 // Bug 4 fix: save the date from the form field
 window.saveVenta = async function() {
+  window._ventaSaveSucceeded = false;
   const ingresoBase = ventaIngresoUsd();
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
@@ -6191,16 +6219,16 @@ window.saveVenta = async function() {
   const saveBtn = document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
 
-  const interesPct    = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
+  const interesPct    = ventaNumber('vc-f-interes-pct');
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
   const autoFee = isTransferPayment(paymentMethod) ? Math.round(totalVenta * .001 * 100) / 100 : 0;
-  const costoReal     = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
+  const costoReal     = ventaNumber('vc-f-costo-real');
   const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
   const montoRecibido = isTransferPayment(paymentMethod) ? Math.max(0,totalVenta-autoFee) :
     ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
-    ? (parseFloat(montoRecibidoRaw) || 0)
+    ? parseVentaNumber(montoRecibidoRaw)
     : totalVenta);
   const comision      = isTransferPayment(paymentMethod) ? autoFee : (parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido));
   const ganancia      = montoRecibido - costoReal;
@@ -6234,12 +6262,12 @@ window.saveVenta = async function() {
     cuota_adicional:     parseFloat(document.getElementById('vc-f-cuota-adicional')?.value)  || 0,
     interes_porcentaje:  parseFloat(document.getElementById('vc-f-interes-pct')?.value)      || 0,
     tipo_pago_apartar:   document.getElementById('vc-f-apartarpago')?.value       || null,
-    apartado_anticipo:   parseFloat(document.getElementById('fin-anticipo-usd')?.value)      || null,
-    apartado_total:      parseFloat(document.getElementById('fin-total-con-interes')?.value) || null,
-    apartado_pendiente:  parseFloat(document.getElementById('fin-pendiente')?.value)         || null,
+    apartado_anticipo:   parseVentaNumber(document.getElementById('fin-anticipo-usd')?.value)      || null,
+    apartado_total:      parseVentaNumber(document.getElementById('fin-total-con-interes')?.value) || null,
+    apartado_pendiente:  parseVentaNumber(document.getElementById('fin-pendiente')?.value)         || null,
     fin_plazo:           document.getElementById('fin-plazo')?.value              || null,
-    fin_cuota:           parseFloat(document.getElementById('fin-monto-cuota')?.value)       || null,
-    fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value)          || null,
+    fin_cuota:           parseVentaNumber(document.getElementById('fin-monto-cuota')?.value)       || null,
+    fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value, 10)          || null,
     created_at:          fechaISO
   };
   if ((document.getElementById('vm-rem-text')?.value || '').trim()) window.vmAddRemark(); // no perder un remark sin "Agregar"
@@ -6266,6 +6294,8 @@ window.saveVenta = async function() {
     window.editingVentaId = null;
     closeVentaModal();
     await fetchVentas();
+    window._ventaSaveSucceeded = true;
+    return true;
   } catch (err) {
     console.error('saveVenta error:', err);
     if (err?.message?.includes('column') || err?.code === '42703') {
@@ -6273,6 +6303,8 @@ window.saveVenta = async function() {
     } else {
       showToast('Error: ' + (err?.message || JSON.stringify(err)), true);
     }
+    window._ventaSaveSucceeded = false;
+    return false;
   } finally {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Venta'; }
   }
@@ -7335,6 +7367,8 @@ window.calMonthToday = function(inputId) {
   target.dataset.lastValidValue = val;
   target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
+  target.dispatchEvent(new Event('input', { bubbles: true }));
+  target.dispatchEvent(new Event('change', { bubbles: true }));
   if (inputId === 'month-sel') renderAccounting();
 };
 
@@ -8051,13 +8085,25 @@ window.saveVenta = async function() {
   const discordId = document.getElementById('vc-f-discord')?.value?.trim();
   const metodo = document.getElementById('vc-f-metodo')?.value?.trim();
   const tipo=document.getElementById('vc-f-tipo')?.value||'', product=document.getElementById('vc-f-producto')?.value||'';
-  if (nombre) await upsertCliente(nombre, wa, metodo, {
-    ...(epicId ? { epic_id: epicId } : {}),
-    ...(discordId ? { discord_id: discordId } : {}),
-    ...(tipo==='Venta via regalo'?{compra_regalo:true}:{}),
-    ...(tipo==='Venta via regalo'&&/(skin|cosm[eé]tic|gesto|pico|envoltura|emote)/i.test(product)?{compra_cosmeticos_regalo:true}:{})
-  });
-  return _origSaveVenta?.apply(this, arguments);
+  const saved = await _origSaveVenta?.apply(this, arguments);
+  if (saved && nombre) {
+    const extra = {
+      ...(epicId ? { epic_id: epicId } : {}),
+      ...(discordId ? { discord_id: discordId } : {}),
+      ...(tipo==='Venta via regalo'?{compra_regalo:true}:{}),
+      ...(tipo==='Venta via regalo'&&/(skin|cosm[eé]tic|gesto|pico|envoltura|emote)/i.test(product)?{compra_cosmeticos_regalo:true}:{})
+    };
+    // La venta se registra primero: un fallo al sincronizar el cliente no debe
+    // bloquear ni dar la impresión de que la venta no se guardó.
+    upsertCliente(nombre, wa, metodo, extra).then(ok => {
+      if (!ok) showToast('La venta se guardó; no se pudo actualizar el cliente.', true);
+      else if (activeTab === 'clientes') window.renderClientesTab();
+    }).catch(error => {
+      console.error('La venta se guardó, pero falló la actualización del cliente:', error);
+      showToast('La venta se guardó; revisa los datos del cliente.', true);
+    });
+  }
+  return saved;
 };
 
 // ═══════════════════════════════════════════════
@@ -8714,6 +8760,10 @@ window.saveAddCliente = async function() {
     msg.textContent = 'El nombre es obligatorio.';
     return;
   }
+  const saveBtn = document.querySelector('#modal-add-cliente .mfoot .btn-accent');
+  const saveBtnLabel = saveBtn?.innerHTML;
+  if (saveBtn?.disabled) return;
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando cliente…'; }
   try {
     if (editId) {
       // Edit mode: update record directly by id
@@ -8734,6 +8784,8 @@ window.saveAddCliente = async function() {
       : 'Error al guardar: ' + (err?.message || 'desconocido');
     console.error(err);
     return;
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = saveBtnLabel || '<i class="fas fa-save"></i> Guardar Cliente'; }
   }
   msg.style.cssText = 'display:block;background:rgba(40,254,182,.08);color:var(--accent);border:1px solid rgba(40,254,182,.25)';
   msg.textContent = `✓ Cliente "${nombre}" guardado correctamente.`;
