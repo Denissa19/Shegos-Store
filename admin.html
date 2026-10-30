@@ -8000,8 +8000,9 @@ function renderClienteDropdown(dropEl, suggestions, onSelect) {
     `<div data-idx="${i}" style="padding:9px 13px;cursor:pointer;font-size:0.82em;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:background .15s"
       onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background=''"
       onmousedown="event.preventDefault()">
-      <div>
-        <span style="font-weight:600;color:var(--text)">${c.nombre}</span>
+      <div style="display:flex;align-items:center;gap:9px;min-width:0">
+        <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:rgba(98,255,0,.1);border:1px solid rgba(98,255,0,.28);color:var(--accent)"><i class="fas fa-user"></i></span>
+        <span style="font-weight:600;color:var(--text);min-width:0;overflow-wrap:anywhere">${rvEsc(c.nombre)}</span>
         ${c.wa ? `<span style="color:var(--text3);font-size:0.85em;margin-left:8px"><i class="fab fa-whatsapp" style="color:#25D366"></i> ${c.wa}</span>` : ''}
       </div>
       ${c.metodo ? `<span style="font-size:0.7em;color:var(--accent);text-transform:uppercase;letter-spacing:.5px">${c.metodo.replace('_',' ')}</span>` : ''}
