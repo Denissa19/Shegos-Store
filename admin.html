@@ -806,6 +806,7 @@ td{padding:12px 14px;vertical-align:middle}
 .sales-insight-metric,.sales-chart-card{background:rgba(5,9,6,var(--panel-card-opacity)) !important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
 .group-header{background:rgba(14,18,14,var(--panel-card-opacity)) !important}
 .gift-clients-empty{background:rgba(8,12,9,var(--panel-card-opacity)) !important}
+.expense-type-chart{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));align-items:end;gap:18px;padding:22px 8px 8px;min-height:310px}.expense-type-item{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px;height:270px}.expense-type-value{font:700 1rem/1.1 'Space Grotesk',sans-serif;white-space:nowrap}.expense-type-track{width:min(76%,88px);height:195px;display:flex;align-items:flex-end;overflow:hidden;border-radius:9px 9px 3px 3px;background:rgba(180,195,180,.08);border:1px solid rgba(180,195,180,.1)}.expense-type-bar{width:100%;min-height:5px;border-radius:8px 8px 2px 2px;background:linear-gradient(180deg,color-mix(in srgb,var(--bar-color) 78%,white),var(--bar-color));box-shadow:0 0 18px color-mix(in srgb,var(--bar-color) 28%,transparent);transition:height .35s ease}.expense-type-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;color:var(--text2);font-size:.82rem;font-weight:700}.expense-type-share{color:var(--text3);font-size:.76rem}@media(max-width:620px){.expense-type-chart{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px 2px 4px}.expense-type-item{height:235px}.expense-type-track{height:158px;width:min(76%,82px)}.expense-type-value{font-size:.95rem}.expense-type-label{font-size:.78rem}}
 </style>
 <style id="ux-polish">
 /* ── PULIDO UX: movimiento, profundidad y feedback ── */
@@ -4485,50 +4486,26 @@ function enhancePaymentPickers() {
 function renderDistribucionChart(distribucionTipo) {
   const container = document.getElementById('distribucion-ventas-chart-acc');
   if (!container) return;
-
   const COLORS = {
-    'Ventas anteriores': 'var(--accent)',
-    'Cuenta de fortnite': '#60a5fa',
-    'Club de fortnite': '#c084fc',
-    'Recarga de pavos': '#fbbf24',
-    'Packs': '#2dd4bf',
-    'Streaming': '#4ade80',
-    'Venta via regalo': '#fb7185',
-    'Apartar cuentas': '#fdba74',
-    'Otro': 'var(--text2)',
+    'Ventas anteriores': '#38feb6', 'Cuenta de fortnite': '#60a5fa',
+    'Club de fortnite': '#c084fc', 'Recarga de pavos': '#fbbf24',
+    'Packs': '#2dd4bf', 'Streaming': '#4ade80', 'Venta via regalo': '#fb7185',
+    'Apartar cuentas': '#fdba74', 'Otro': '#a7b1a3'
   };
-
-  const entradas = Object.entries(distribucionTipo).filter(([, v]) => v > 0);
-
-  if (entradas.length === 0) {
-    container.innerHTML = `<div style="font-size:0.8em;color:var(--text3);padding:20px">Sin datos para mostrar en este período.</div>`;
-    return;
-  }
-
-  const maxVal = Math.max(...entradas.map(([, v]) => v), 1);
-  const total = entradas.reduce((s, [, v]) => s + v, 0);
-
-  let html = `
-    <div class="chart-title">DISTRIBUCIÓN COMPARATIVA DE INGRESOS</div>
-    <div style="display:flex;gap:12px;align-items:flex-end;height:130px;margin-bottom:12px">
-  `;
-  for (const [name, val] of entradas) {
-    const color = COLORS[name] || 'var(--text2)';
-    const pct = (val / maxVal) * 100;
-    const shortName = name.replace('Cuenta de fortnite','Cta FN').replace('Club de fortnite','Club FN').replace('Recarga de pavos','Pavos').replace('Venta via regalo','Regalo').replace('Apartar cuentas','Apartar');
-    html += `
-      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">
-        <div style="font-size:0.62em;color:${color};font-weight:700">$${val.toFixed(0)}</div>
-        <div style="width:100%;background:linear-gradient(180deg,${color},${color}55);border-radius:3px 3px 0 0;min-height:2px;height:${Math.max(pct,2)}%;transition:height .4s ease"></div>
-        <div style="font-size:0.6em;color:var(--text2);font-weight:600;text-align:center;white-space:nowrap">${shortName}</div>
-        <div style="font-size:0.55em;color:var(--text3)">${total > 0 ? ((val/total)*100).toFixed(1) : 0}%</div>
-      </div>
-    `;
-  }
-  html += `</div>`;
-  container.innerHTML = html;
+  const entradas = Object.entries(distribucionTipo || {}).map(([name,value]) => [String(name), Number(value)])
+    .filter(([,value]) => Number.isFinite(value) && value > 0).sort((a,b) => b[1] - a[1]);
+  if (!entradas.length) { container.innerHTML = '<div class="empty">Sin datos para mostrar en este período.</div>'; return; }
+  const maxVal = Math.max(...entradas.map(([,value]) => value));
+  const total = entradas.reduce((sum,[,value]) => sum + value, 0);
+  const shortLabel = name => name.replace('Cuenta de fortnite','Cuenta FN').replace('Club de fortnite','Club FN').replace('Recarga de pavos','Pavos').replace('Venta via regalo','Regalo').replace('Apartar cuentas','Apartar');
+  container.innerHTML = '<div class="chart-title">DISTRIBUCIÓN COMPARATIVA DE INGRESOS</div><div class="expense-type-chart">' + entradas.map(([name,value]) => {
+    const color=COLORS[name]||'#a7b1a3', pct=value/maxVal*100, share=value/total*100, label=shortLabel(name);
+    return '<div class="expense-type-item" title="'+label+' · $'+value.toFixed(2)+' · '+share.toFixed(1)+'%">'+
+      '<div class="expense-type-value" style="color:'+color+'">$'+value.toFixed(0)+'</div>'+ 
+      '<div class="expense-type-track"><div class="expense-type-bar" style="height:'+Math.max(pct,3)+'%;--bar-color:'+color+'"></div></div>'+ 
+      '<div class="expense-type-label">'+label+'</div><div class="expense-type-share">'+share.toFixed(1)+'%</div></div>';
+  }).join('')+'</div>';
 }
-
 const MONTH_CHART_TYPES = [
   {id:'bar',label:'Gráfico de barras',icon:'<path d="M4 19V9h4v10M10 19V4h4v15M16 19v-7h4v7M3 20h18"/>'},
   {id:'line',label:'Gráfico de líneas',icon:'<path d="M3 18 9 12l4 3 8-9M3 20h18M9 12l-2-2m6 5 2 2"/><circle cx="9" cy="12" r="1.5"/><circle cx="13" cy="15" r="1.5"/><circle cx="21" cy="6" r="1.5"/>'},
@@ -7849,10 +7826,13 @@ async function fetchClientesFromDB() {
   if (clientesFetchPromise) return clientesFetchPromise;
   clientesFetchPromise = (async () => {
   try {
-    const { data, error } = await supabase
-      .from('clientes')
-      .select('*')
-      .order('updated_at', { ascending: false });
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    let data, error;
+    try {
+      const result = await supabase.from('clientes').select('*').order('updated_at', { ascending: false }).abortSignal(controller.signal);
+      data = result.data; error = result.error;
+    } finally { clearTimeout(timeoutId); }
     if (error) throw error;
     window._clientesLoadError = null;
     clientesCache = (data || []).map(c => ({
@@ -8088,6 +8068,8 @@ window.renderClientesTab = async function(mode) {
   const badge = document.getElementById('cli-count-badge');
   if (!area) return;
 
+  try {
+
   // mode === 'local' repinta con lo que ya está en memoria (sin volver a pedirlo a Supabase)
   if (mode !== 'local') {
     area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando clientes...</p></div>`;
@@ -8095,11 +8077,10 @@ window.renderClientesTab = async function(mode) {
   }
 
   if (window._clientesLoadError) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-cloud-slash" style="color:var(--red)"></i><p style="color:var(--red)">No se pudo leer la tabla clientes</p><p style="font-size:0.75em;color:var(--text3);margin-top:8px">${window._clientesLoadError}</p></div>`;
+    area.innerHTML = '<div class="empty"><i class="fas fa-cloud-slash" style="color:var(--red)"></i><p style="color:var(--red)">No se pudieron cargar los clientes</p><button type="button" class="btn btn-outline" style="margin-top:12px" onclick="window.renderClientesTab()"><i class="fas fa-rotate-right"></i> Reintentar</button></div>';
     return;
   }
 
-  try {
   const all = getClientes();
   const referralCounts = countClientReferrals(all);
   const totalReferrals = Object.values(referralCounts).reduce((sum,count)=>sum+count,0);
