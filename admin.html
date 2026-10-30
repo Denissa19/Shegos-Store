@@ -1759,7 +1759,7 @@ body, body.role-ceo {
 
 <div id="login-screen">
   <div class="login-card">
-    <img class="login-logo-image" src="assets/logo-shegos.png" alt="Shegos Store">
+    <img class="login-logo-image" src="assets/logo-shegos.svg" alt="Shegos Store">
     <div class="login-sub">Panel de Gestión</div>
     <form id="login-form" onsubmit="event.preventDefault(); window.doLogin();" autocomplete="on">
     <input class="login-input" id="email-input" name="username" type="email" placeholder="Correo" autocomplete="username">
@@ -6409,7 +6409,7 @@ window.exportVentasPDF = function() {
   const pattern=analysis?`<section class="section"><h2>Patrones de compra por día</h2><p>Mayor promedio: <b>${esc(analysis.best.label)}</b> (${analysis.best.average.toFixed(2)} ventas por ocurrencia). Menor promedio: <b>${esc(analysis.slow.label)}</b> (${analysis.slow.average.toFixed(2)}).</p><div class="weekdays">${analysis.averages.map(x=>`<span>${esc(x.label)}<b>${x.average.toFixed(2)}</b><small>${x.count} ventas · ${x.days} días</small></span>`).join('')}</div></section>`:'';
   const rankChart=(title,key)=>{const counts=new Map();rows.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';counts.set(name,(counts.get(name)||0)+1);});const items=[...counts].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count).slice(0,5),max=Math.max(1,...items.map(x=>x.count));return `<div class="rank-chart"><h3>${title}</h3>${items.length?items.map(x=>`<div class="rank-row"><span title="${esc(x.name)}">${esc(x.name)}</span><i><b style="width:${Math.max(3,x.count/max*100)}%"></b></i><strong>${x.count}</strong></div>`).join(''):'<p>Sin datos en el período.</p>'}</div>`;};
   const rankings=`<section class="section ranking-grid"><h2>Productos y tipos más vendidos del período</h2>${rankChart('Productos','producto')}${rankChart('Tipos de venta','tipo')}</section>`;
-  const logoUrl=new URL('assets/logo-shegos.png',window.location.href).href;
+  const logoUrl=new URL('assets/logo-shegos.svg',window.location.href).href;
   popup.document.open();
   popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(reportRange)}</title><style>
     @page{size:A4 landscape;margin:13mm}*{box-sizing:border-box}body{font:11px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #62ff00;padding-bottom:10px;margin-bottom:14px}.logo{width:185px;height:auto;max-height:95px;object-fit:contain}h1{font-size:21px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}h3{font-size:12px;margin:0 0 8px}p{margin:3px 0;color:#536052}.summary{display:flex;gap:10px;margin:12px 0}.metric{flex:1;padding:9px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:9px;text-transform:uppercase;letter-spacing:.6px}.metric strong{font-size:17px;display:block;margin-top:4px}.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}.compare-chart{padding:10px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:100px 1fr 65px;align-items:center;gap:7px;margin:8px 0;font-size:9px}.compare-row i,.rank-row i{height:10px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:15px 0;break-inside:avoid}.ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ranking-grid h2{grid-column:1/-1}.rank-chart{padding:9px;border:1px solid #d8e2d4;border-radius:8px}.rank-row{display:grid;grid-template-columns:150px 1fr 25px;align-items:center;gap:7px;margin:7px 0;font-size:9px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:7px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:9px}.weekdays b{display:block;color:#2d8209;font-size:13px}.weekdays small{display:block;color:#586157}table{width:100%;border-collapse:collapse;font-size:9px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:6px}td{padding:5px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -8637,26 +8637,46 @@ window.openAddClienteModal = async function() {
   const modal = document.getElementById('modal-add-cliente');
   if (!modal) return;
   modal.classList.add('open');
-  try {
-  document.getElementById('ac-nombre').value = '';
-  document.getElementById('ac-referido-por').value = '';
-  syncClientReferrerOptions();
-  document.getElementById('ac-wa').value = '';
-  document.getElementById('ac-metodo').value = '';
-  renderClientPaymentGrid();
-  document.getElementById('ac-epic-id').value=''; document.getElementById('ac-discord-id').value='';
-  document.getElementById('ac-regalo').checked=false; document.getElementById('ac-cosmeticos-regalo').checked=false;
+
+  // Mantener el formulario utilizable incluso si falla una pieza secundaria
+  // (por ejemplo, el selector gráfico de métodos de pago).
+  const resetValue = (id, value = '') => {
+    const field = document.getElementById(id);
+    if (field) field.value = value;
+    else console.warn(`No se encontró el campo #${id} al abrir el formulario de cliente.`);
+  };
+  const resetChecked = (id, value = false) => {
+    const field = document.getElementById(id);
+    if (field) field.checked = value;
+    else console.warn(`No se encontró la opción #${id} al abrir el formulario de cliente.`);
+  };
+
+  resetValue('ac-nombre');
+  resetValue('ac-referido-por');
+  resetValue('ac-wa');
+  resetValue('ac-metodo');
+  resetValue('ac-epic-id');
+  resetValue('ac-discord-id');
+  resetChecked('ac-regalo');
+  resetChecked('ac-cosmeticos-regalo');
   const msg = document.getElementById('ac-msg');
   if (msg) msg.style.display = 'none';
   delete modal.dataset.editId;
   const title = modal.querySelector('.mtitle');
   if (title) title.innerHTML = '<i class="fas fa-user-plus" style="margin-right:8px"></i>Agregar Cliente';
-  setTimeout(() => document.getElementById('ac-nombre').focus(), 100);
-  if (!clientesCache.length) fetchClientesFromDB().then(() => syncClientReferrerOptions()).catch(() => {});
-  } catch (error) {
-    console.error('No se pudo preparar el formulario de cliente:', error);
-    showToast('El formulario está abierto, pero algunos datos no pudieron cargarse.', true);
+
+  try { syncClientReferrerOptions(); }
+  catch (error) { console.error('No se pudieron actualizar las opciones de referido:', error); }
+  try { renderClientPaymentGrid(); }
+  catch (error) {
+    console.error('No se pudo mostrar el selector visual de métodos de pago:', error);
+    const select = document.getElementById('ac-metodo');
+    if (select) { select.classList.remove('payment-native-select'); select.removeAttribute('aria-hidden'); select.tabIndex = 0; }
   }
+  setTimeout(() => document.getElementById('ac-nombre')?.focus(), 100);
+  if (!clientesCache.length) fetchClientesFromDB()
+    .then(() => syncClientReferrerOptions())
+    .catch(error => console.error('No se pudieron cargar los clientes para sugerencias:', error));
 };
 
 window.closeAddClienteModal = function() {
