@@ -203,8 +203,10 @@ async function importAgentyRows(supabase: ReturnType<typeof createClient>, rows:
     const skinNames = Array.isArray(skinsRaw)
       ? skinsRaw.map(item => typeof item === "string" ? item : (item && typeof item === "object" ? String((item as Record<string, unknown>).name || "") : "")).filter(Boolean).slice(0, 12)
       : typeof skinsRaw === "string" ? skinsRaw.split(/[,;|]/).map(item => item.trim()).filter(Boolean).slice(0, 12) : [];
+    const rawTitle = field(record, ["title", "name", "nombre", "publication_title", "listing_title", "titulo"]);
     const rawCount = field(record, ["skin_count", "skins_count", "cantidad_skins", "skins_total", "number_of_skins"]);
-    const countValue = Number(String(rawCount ?? "").match(/\d+/)?.[0]) || skinNames.length;
+    const countFromTitle = Number(String(rawTitle ?? "").match(/(\d{1,5})\s*skins?\b/i)?.[1]) || 0;
+    const countValue = Number(String(rawCount ?? "").match(/\d+/)?.[0]) || countFromTitle || skinNames.length;
     const rawDescription = field(record, ["description", "details", "descripcion", "detalles", "published_details"]);
     const description = String(rawDescription ?? "").replace(/https?:\/\/(?:www\.)?lzt\.market\/\S*/gi, "").replace(/\s+/g, " ").trim().slice(0, 1200);
     const rawStw = field(record, ["has_stw", "tiene_stw", "stw", "save_the_world"]);
@@ -212,7 +214,6 @@ async function importAgentyRows(supabase: ReturnType<typeof createClient>, rows:
     const rawIdle = field(record, ["idle_days", "days_inactive", "dias_inactividad", "inactivity_days"]);
     const idleValue = Number(String(rawIdle ?? "").match(/\d+/)?.[0]);
     const idleDays = Number.isFinite(idleValue) ? Math.max(0, Math.min(3650, idleValue)) : 90;
-    const rawTitle = field(record, ["title", "name", "nombre", "publication_title", "listing_title", "titulo"]);
     const title = String(rawTitle ?? `Cuenta Fortnite · ${countValue} skins`).replace(/\s+/g, " ").trim().slice(0, 120);
     const rawImage = field(record, ["account_image_url", "generated_image_url", "cover_image_url", "account_photo_url", "imagen_cuenta", "foto_cuenta", "image_url", "image"]);
     const imageSource = listImageValues(rawImage)[0];
@@ -300,26 +301,31 @@ Deno.serve(async (req) => {
       const featured = detailHtml ? parseFeaturedSkins(detailHtml) : [];
       const detailText = cleanText(detailHtml);
       const hasStw = /Deluxe\s+STW|Save the World|Salvar el mundo|Salvar el Mundo/i.test(detailText);
+      const paidSkins = Number(detailText.match(/(\d{1,4})\s+paid\b/i)?.[1]) || 0;
+      const vbuckAmount = detailText.match(/(?:≈|~)?\s*([\d,]+)\s*V[-\s]?Bucks?/i)?.[1]?.replace(/,/g, "") || "";
       const idleDays = getIdleDays(card.text);
       const imagePaths: string[] = [];
       const storedSkinNames: string[] = [];
 
-      for (const skin of featured) {
-        try {
-          const imageResponse = await fetch(skin.url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; StoreCatalog/1.0)", "Accept": "image/avif,image/webp,image/png,image/*" } });
-          if (!imageResponse.ok) continue;
-          const contentType = imageResponse.headers.get("content-type");
-          if (!contentType?.startsWith("image/")) continue;
-          const bytes = new Uint8Array(await imageResponse.arrayBuffer());
-          if (!bytes.length || bytes.length > 2_000_000) continue;
-          const path = `cosmetics/${await sha256(skin.url)}.${extensionFor(contentType, skin.url)}`;
-          const { error: uploadError } = await supabase.storage.from("catalogo-skins").upload(path, bytes, { contentType, upsert: true, cacheControl: "31536000" });
-          if (!uploadError) { imagePaths.push(path); storedSkinNames.push(skin.name); totalImages++; }
-        } catch { /* Keep the account even if one cosmetic icon cannot be copied. */ }
+      for (let start = 0; start < featured.length; start += 4) {
+        const uploaded = await Promise.all(featured.slice(start, start + 4).map(async skin => {
+          try {
+            const imageResponse = await fetch(skin.url, { headers: { "User-Agent": "Mozilla/5.0 (compatible; StoreCatalog/1.0)", "Accept": "image/avif,image/webp,image/png,image/*" } });
+            if (!imageResponse.ok) return null;
+            const contentType = imageResponse.headers.get("content-type");
+            if (!contentType?.startsWith("image/")) return null;
+            const bytes = new Uint8Array(await imageResponse.arrayBuffer());
+            if (!bytes.length || bytes.length > 2_000_000) return null;
+            const path = `cosmetics/${await sha256(skin.url)}.${extensionFor(contentType, skin.url)}`;
+            const { error: uploadError } = await supabase.storage.from("catalogo-skins").upload(path, bytes, { contentType, upsert: true, cacheControl: "31536000" });
+            return uploadError ? null : { path, name: skin.name };
+          } catch { return null; }
+        }));
+        uploaded.filter(Boolean).forEach(item => { imagePaths.push(item!.path); storedSkinNames.push(item!.name); totalImages++; });
       }
 
       const title = card.title.replace(/\s*\|\s*\d+\s*skins?\s*$/i, "").trim() || `Cuenta Fortnite · ${card.skins} skins`;
-      const description = `${card.skins} skins · Inactividad aproximada: ${idleDays} días${hasStw ? " · Incluye Salvar el mundo" : ""}`;
+      const description = `${card.skins} skins${paidSkins ? ` · ${paidSkins} paid` : ""}${vbuckAmount ? ` · ${vbuckAmount} V-Bucks` : ""} · Inactividad aproximada: ${idleDays} días${hasStw ? " · Incluye Salvar el mundo" : ""}`;
       const { error: saveError } = await supabase.rpc("catalogo_lzt_upsert_account", {
         p_listing_id: card.id,
         p_source_url: card.url,
