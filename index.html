@@ -4509,7 +4509,7 @@
 </style>
 <style id="shegos-brand-refresh">
 :root { color-scheme: dark; --shegos-neon: #70ff00; --primary-color: #70ff00; }
-html, body { background-color: transparent !important; }
+html { background-color: #070907 !important; } body { background-color: transparent !important; isolation: isolate; }
 .section-box, .producto, .servicio-home-card, .sb-card, .co-pay-option, .co-cart-item, .co-field-card, .order-card, .card {
   background-color: rgba(5, 7, 5, .58) !important;
   backdrop-filter: blur(10px);
@@ -4610,6 +4610,23 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media(prefers-reduced-motion:reduce){.site-footer-socials a{transition:none}}
 </style>
 
+
+<style id="shegos-background-and-vbucks-layout">
+html { background-color: #070907 !important; }
+body { background-color: transparent !important; isolation: isolate; }
+.hero-bg-rotator { z-index: 0 !important; }
+.hero-bg-rotator .bg-slide.bg-slide-active { opacity: .44 !important; }
+.container { position: relative; z-index: 1; }
+#vb-hero-sec .club-hero-btn { background: #70ff00 !important; border-color: #70ff00 !important; color: #071000 !important; }
+#vb-precios .servicios-flex-container { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: stretch; }
+#vb-precios .servicio-card { width: 100%; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 18px !important; border: 1px solid rgba(112,255,0,.22); border-radius: 16px; background: rgba(8,12,8,.88); }
+#vb-precios .servicio-card > img { width: min(100%, 170px) !important; max-width: 170px; height: 150px; aspect-ratio: 1 / 1 !important; object-fit: contain !important; padding: 18px; border: 1px solid rgba(112,255,0,.18); border-radius: 14px !important; background: rgba(112,255,0,.06); }
+#vb-precios .servicio-card > strong { margin-top: 10px !important; }
+#vb-precios .servicio-card > .btn-secundario, #vb-precios .servicio-card > .btn-outline-mint { width: 100%; max-width: 270px; margin-top: auto !important; }
+#vb-precios .servicio-card > .btn-outline-mint { margin-top: 8px !important; }
+@media (max-width: 760px) { #vb-precios .servicios-flex-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } #vb-precios .servicio-card { padding: 13px !important; } #vb-precios .servicio-card > img { height: 125px; padding: 13px; } }
+@media (max-width: 430px) { #vb-precios .servicios-flex-container { grid-template-columns: 1fr; } #vb-precios .servicio-card { max-width: 360px; margin-inline: auto; } }
+</style>
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -5035,32 +5052,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                         </div>
                         <div class="club-hero-img"><img decoding="async" src="https://cdn1.epicgames.com/offer/fn/ES-ES_FNECO_41-00_RMT_CoreV-BucksPacks_12500_EGS_Landscape_2560x1440_2560x1440-976a2331205244ee8adc362d37ef53bb?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" width="1280" height="720" alt="V-Bucks de Fortnite"></div>
                     </div>
-                    <div class="club-cards vb-cards-6">
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" alt="2.400 V-Bucks"></div>
-                            <div class="club-card-label"><span>2.400 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" alt="4.500 V-Bucks"></div>
-                            <div class="club-card-label"><span>4.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" alt="12.500 V-Bucks"></div>
-                            <div class="club-card-label"><span>12.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 12.500"></div>
-                            <div class="club-card-label"><span>Cuenta con 12.500</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 25.000"></div>
-                            <div class="club-card-label"><span>Cuenta con 25.000</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 50.000"></div>
-                            <div class="club-card-label"><span>Cuenta con 50.000</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                    </div>
                     <button class="club-scroll-arrow" onclick="vbIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
                 </section>
 
@@ -5071,7 +5062,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 <!-- ── SECCIÓN 1: CANTIDADES DE V-BUCKS ── -->
                 <div class="servicios-flex-container">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Pavos de Fortnite">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="21">$21 USD</span>
@@ -5082,7 +5073,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                         <button class="btn-outline-mint" data-item-nombre="Cuenta 2,400 V-Bucks" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '21', 'https://fortnite-api.com/images/vbuck.png', '2400', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Pavos de Fortnite">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="30">$30 USD</span>
@@ -5094,7 +5085,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                     </div>
                     <div class="servicio-card" style="border-color: #70ff00;">
                         <span style="background: #70ff00; color: #070907; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">MÁS VENDIDO✦✦</span>
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Pavos de Fortnite">
                         <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
                         <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
                         <span class="precio-producto" data-precio-usd="65">$65 USD</span>
