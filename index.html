@@ -4561,27 +4561,6 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .site-footer-socials a{display:grid;place-items:center;width:42px;height:42px;border:1px solid rgba(112,255,0,.28);border-radius:50%;background:rgba(112,255,0,.06);color:#eaffdf;text-decoration:none;transition:.2s}
 .site-footer-socials a:hover{background:#70ff00;color:#071000;transform:translateY(-3px)}
 .site-footer-bottom{display:flex;justify-content:space-between;gap:12px;max-width:1320px;margin:0 auto;padding-top:18px;border-top:1px solid rgba(255,255,255,.09);color:#7e887a;font-size:.82rem}
-.faq-chat-widget{position:fixed;z-index:12000;left:24px;bottom:24px;display:flex;flex-direction:column;align-items:flex-start;gap:12px;font-family:'Poppins',sans-serif}
-.faq-chat-toggle{display:flex;align-items:center;gap:10px;padding:13px 17px;border:1px solid rgba(112,255,0,.6);border-radius:999px;background:#70ff00;color:#071000;font-weight:800;box-shadow:0 10px 32px rgba(0,0,0,.45);cursor:pointer}
-.faq-chat-toggle i{font-size:1.15rem}
-.faq-chat-panel{display:none;box-sizing:border-box;width:min(370px,calc(100vw - 28px));height:min(520px,calc(100dvh - 115px));min-height:0;overflow:hidden;flex-direction:column;border:1px solid rgba(112,255,0,.32);border-radius:20px;background:#0c100c;box-shadow:0 24px 70px rgba(0,0,0,.65)}
-.faq-chat-panel.open{display:flex;animation:faqChatIn .2s ease-out}
-@keyframes faqChatIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
-.faq-chat-head{display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;padding:15px 17px;background:linear-gradient(100deg,#13200f,#0c100c);border-bottom:1px solid rgba(255,255,255,.08)}
-.faq-chat-head strong,.faq-chat-head span{display:block}
-.faq-chat-head strong{color:#fff;font-size:.98rem}
-.faq-chat-head span{margin-top:3px;color:#8e9a88;font-size:.75rem}
-.faq-chat-head button{width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.07);color:#fff;cursor:pointer}
-.faq-chat-messages{display:flex;flex:1 1 0;min-height:0;flex-direction:column;gap:10px;overflow-y:auto;padding:16px;overscroll-behavior:contain}
-.faq-chat-bubble{max-width:88%;padding:11px 13px;border-radius:14px;color:#e9eee6;font-size:.88rem;line-height:1.5;white-space:pre-wrap}
-.faq-chat-bubble.bot{align-self:flex-start;background:#191f19;border:1px solid rgba(255,255,255,.06);border-bottom-left-radius:4px}
-.faq-chat-bubble.user{align-self:flex-end;background:rgba(112,255,0,.16);border:1px solid rgba(112,255,0,.24);border-bottom-right-radius:4px}
-.faq-chat-prompts{display:flex;flex:0 0 auto;flex-wrap:wrap;gap:7px;padding:0 14px 12px}
-.faq-chat-prompts button{border:1px solid rgba(112,255,0,.28);border-radius:999px;padding:7px 10px;background:rgba(112,255,0,.06);color:#dff7d2;font-size:.72rem;cursor:pointer}
-.faq-chat-form{display:flex;flex:0 0 auto;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.08)}
-.faq-chat-form input{min-width:0;flex:1;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:11px 12px;background:#151a15;color:#fff;font:inherit;font-size:.85rem}
-.faq-chat-form input:focus{outline:2px solid rgba(112,255,0,.45)}
-.faq-chat-form button{width:42px;border:0;border-radius:11px;background:#70ff00;color:#071000;cursor:pointer}
 @media(max-width:850px){
  .hero-container{min-height:auto;padding:32px 20px 20px;flex-direction:column;align-items:stretch;gap:0}
  .hero-text{max-width:100%;width:100%}
@@ -4625,11 +4604,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  .site-footer-brand{grid-column:1/-1}
  .site-footer-brand img{width:210px}
  .site-footer-bottom{flex-direction:column;font-size:.75rem}
- .faq-chat-widget{left:12px;bottom:calc(12px + env(safe-area-inset-bottom))}
- .faq-chat-toggle{padding:12px 14px}
- .faq-chat-toggle span{font-size:.82rem}
 }
-@media(prefers-reduced-motion:reduce){.faq-chat-panel.open{animation:none}.site-footer-socials a{transition:none}}
+@media(prefers-reduced-motion:reduce){.site-footer-socials a{transition:none}}
 </style>
 
 </head>
@@ -5770,24 +5746,14 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 <h2>Comunidad</h2>
                 <p>¿Tienes dudas sobre una compra o entrega? Escríbenos y te ayudamos.</p>
                 <div class="site-footer-socials">
-                    <a href="https://chat.whatsapp.com/DJM0mEoYaDrLHDyUBMBcHL" target="_blank" rel="noopener noreferrer" aria-label="Grupo de WhatsApp" title="Grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" rel="noopener noreferrer" aria-label="Discord" title="Discord"><i class="fab fa-discord"></i></a>
-                    <a href="https://wa.me/18295392881" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp"><i class="fas fa-headset"></i></a>
+                    <a href="https://www.instagram.com/shegosstore/?hl=en" target="_blank" rel="noopener noreferrer" aria-label="Instagram de Shegos Store" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/profile.php?id=61595760368767" target="_blank" rel="noopener noreferrer" aria-label="Facebook de Shegos Store" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://chat.whatsapp.com/EDAPmiC27m5ABW3DNb8EWs" target="_blank" rel="noopener noreferrer" aria-label="Comunidad de WhatsApp" title="Comunidad de WhatsApp"><i class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
         </div>
         <div class="site-footer-bottom"><span>© <span id="footer-year">2026</span> SHEGOS STORE. Todos los derechos reservados.</span><span>Atención segura · Soporte directo</span></div>
     </footer>
-
-    <div class="faq-chat-widget" id="faq-chat-widget">
-        <section class="faq-chat-panel" id="faq-chat-panel" aria-label="Asistente Shegos Store" aria-hidden="true">
-            <header class="faq-chat-head"><div><strong>Asistente Shegos</strong><span>Respuestas rápidas</span></div><button type="button" id="faq-chat-close" aria-label="Cerrar chat"><i class="fas fa-xmark"></i></button></header>
-            <div class="faq-chat-messages" id="faq-chat-messages" aria-live="polite"><div class="faq-chat-bubble bot">¡Hola! Puedo ayudarte con compras, pagos, regalos y seguimiento de pedidos.</div></div>
-            <div class="faq-chat-prompts" id="faq-chat-prompts"><button type="button" data-faq="comprar">¿Cómo compro?</button><button type="button" data-faq="regalo">¿Cómo funciona un regalo?</button><button type="button" data-faq="pedido">Seguir mi pedido</button></div>
-            <form class="faq-chat-form" id="faq-chat-form"><label class="sr-only" for="faq-chat-input">Escribe tu pregunta</label><input id="faq-chat-input" type="text" maxlength="180" placeholder="Escribe tu pregunta…" autocomplete="off"><button type="submit" aria-label="Enviar pregunta"><i class="fas fa-paper-plane"></i></button></form>
-        </section>
-        <button class="faq-chat-toggle" id="faq-chat-toggle" type="button" aria-expanded="false" aria-controls="faq-chat-panel"><i class="fas fa-comment-dots"></i><span>¿Necesitas ayuda?</span></button>
-    </div>
 
     <div class="floating-container">
         <button id="btn-carrito-float" class="float-btn float-cart" type="button" onclick="abrirCarritoLateral()" title="Abrir carrito" aria-label="Abrir carrito de compras">
@@ -8774,7 +8740,7 @@ function mostrarModalCapturaMovil(url) {
 }
 
     (function(){
-      var API="https://shegos-bots-2.onrender.com",KEY="";
+      var API="https://shegos-bots-2.onrender.com";
       var BOTS=["Shegos么1","Shegos么2","Shegos么3","Shegos么4","Denissa_7u7","Maidas-OS","Maidas-S"];
       var timerId=null;
 
@@ -8787,7 +8753,6 @@ function mostrarModalCapturaMovil(url) {
       window.sbEnviar=async function(){
         var u=document.getElementById("sb-username"),b=document.getElementById("sb-btn");
         var username=u?u.value.trim():""; if(!username) return;
-        if(!KEY){ sbErr("La solicitud automática no está disponible temporalmente. Contáctanos por WhatsApp para continuar."); return; }
         document.getElementById("sb-error").style.display="none";
         b.disabled=true; b.innerHTML='<span class="sb-spin">⏳</span> Verificando usuario...';
         var slowTimer=setTimeout(function(){ if(b.disabled) b.innerHTML='<span class="sb-spin">⏳</span> Procesando...'; },4000);
@@ -8803,7 +8768,7 @@ function mostrarModalCapturaMovil(url) {
         try{
           var r=await fetch(API+"/friend-request",{
             method:"POST",
-            headers:{"Content-Type":"application/json","X-Api-Key":KEY},
+            headers:{"Content-Type":"application/json"},
             body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada}),
             signal:controller.signal
           });
@@ -8847,7 +8812,7 @@ function mostrarModalCapturaMovil(url) {
             sbShow("already");
           }
           else if(r.status===503){ sbErr("🔴 Bots fuera de línea. Agrega las cuentas manualmente."); }
-          else if(r.status===401 || r.status===403){ sbErr("🔒 El servidor rechazó la solicitud (código "+r.status+"). Es un problema de configuración del backend (API key), no de tu conexión."); }
+          else if(r.status===401 || r.status===403){ sbErr("🔒 El servidor rechazó la solicitud. Contacta al equipo para revisar el servicio de cuentas."); }
           else if(r.status===422){ sbErr("⚠️ "+(typeof d.detail==="string"?d.detail:(Array.isArray(d.detail)?d.detail[0].msg:"Datos inválidos."))); }
           else{ sbErr("⚠️ Código "+r.status+": "+(d.detail||d.message||d.error||"Ocurrió un error. Inténtalo de nuevo.")); }
 
@@ -8864,7 +8829,7 @@ function mostrarModalCapturaMovil(url) {
               try{
                 var r2=await fetch(API+"/friend-request",{
                   method:"POST",
-                  headers:{"Content-Type":"application/json","X-Api-Key":KEY},
+                  headers:{"Content-Type":"application/json"},
                   body:JSON.stringify({epic_username:username,platform:plataformaSeleccionada}),
                   signal:controller2.signal
                 });
@@ -8887,7 +8852,7 @@ function mostrarModalCapturaMovil(url) {
                   var ac5=document.getElementById("sb-already-count"); if(ac5) ac5.textContent=d2.requests_sent||d2.sent||"nuestras";
                   sbShow("already");
                 } else if(r2.status===401 || r2.status===403){
-                  sbErr("🔒 El servidor rechazó la solicitud (código "+r2.status+"). Es un problema de configuración del backend (API key), no de tu conexión.");
+                  sbErr("🔒 El servidor rechazó la solicitud. Contacta al equipo para revisar el servicio de cuentas.");
                 } else {
                   sbErr("⚠️ Código "+r2.status+": "+(d2.detail||d2.message||d2.error||"Ocurrió un error. Inténtalo de nuevo."));
                 }
@@ -10685,74 +10650,7 @@ function mostrarModalCapturaMovil(url) {
     })();
     </script>
 
-<script id="shegos-faq-assistant">
-(function(){
-  function iniciarAsistente(){
-    var panel=document.getElementById('faq-chat-panel');
-    var toggle=document.getElementById('faq-chat-toggle');
-    var close=document.getElementById('faq-chat-close');
-    var form=document.getElementById('faq-chat-form');
-    var input=document.getElementById('faq-chat-input');
-    var messages=document.getElementById('faq-chat-messages');
-    if(!panel||!toggle||!form||!input||!messages)return;
-
-    var panelAbierto=false;
-    function alternar(abrir){
-      panelAbierto=typeof abrir==='boolean'?abrir:!panelAbierto;
-      panel.classList.toggle('open',panelAbierto);
-      panel.setAttribute('aria-hidden',String(!panelAbierto));
-      toggle.setAttribute('aria-expanded',String(panelAbierto));
-      if(panelAbierto) setTimeout(function(){input.focus();},80);
-    }
-    function burbuja(texto,tipo){
-      var el=document.createElement('div');
-      el.className='faq-chat-bubble '+tipo;
-      el.textContent=texto;
-      messages.appendChild(el);
-      messages.scrollTop=messages.scrollHeight;
-    }
-    function normalizar(texto){
-      return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    }
-    function responder(pregunta){
-      var q=normalizar(pregunta);
-      if(q.includes('regalo')||q.includes('gift')||q.includes('48 horas')||q.includes('amigo')){
-        return 'Para recibir una skin por regalo, agrega nuestra cuenta en Fortnite y espera el periodo de amistad requerido por Epic (48 horas). Después completa la compra y envíanos tu Epic ID si el formulario lo solicita.';
-      }
-      if(q.includes('pedido')||q.includes('seguimiento')||q.includes('rastrea')||q.includes('orden')){
-        return 'Abre “Mis pedidos” en el menú, escribe el ID del pedido y el mismo WhatsApp o correo usado al comprar para consultar el estado.';
-      }
-      if(q.includes('pago')||q.includes('transfer')||q.includes('comprobante')||q.includes('deposito')){
-        return 'En el checkout puedes elegir el método de pago disponible. Si pagas por transferencia, sigue los datos que aparecen allí y carga el comprobante antes de continuar.';
-      }
-      if(q.includes('vbucks')||q.includes('v-bucks')||q.includes('pavos')||q.includes('recarga')){
-        return 'Entra en “Servicios” y elige V-Bucks para ver los paquetes disponibles. Selecciona el que necesitas y continúa al checkout.';
-      }
-      if(q.includes('entrega')||q.includes('cuanto tarda')||q.includes('tiempo')){
-        return 'El tiempo depende del producto y del método de entrega. En compras vía regalo se requiere el periodo de amistad de Fortnite; para una fecha concreta, escríbenos por WhatsApp con tu número de pedido.';
-      }
-      if(q.includes('comprar')||q.includes('carrito')||q.includes('compra')){
-        return 'Agrega los artículos al carrito, elige “Ir a pagar” y pulsa “Continuar”. Completa tus datos, selecciona el pago y sigue las instrucciones del checkout.';
-      }
-      return 'No encontré una respuesta precisa. Puedes contactar directamente al equipo desde el botón de WhatsApp del pie de página o de la pantalla.';
-    }
-    function enviar(texto){
-      var pregunta=String(texto||'').trim();
-      if(!pregunta)return;
-      burbuja(pregunta,'user');
-      setTimeout(function(){burbuja(responder(pregunta),'bot');},220);
-    }
-    toggle.addEventListener('click',function(){alternar();});
-    if(close)close.addEventListener('click',function(){alternar(false);});
-    form.addEventListener('submit',function(e){e.preventDefault();var q=input.value;input.value='';enviar(q);});
-    var prompts=document.getElementById('faq-chat-prompts');
-    if(prompts)prompts.addEventListener('click',function(e){var b=e.target.closest('[data-faq]');if(!b)return;var q={comprar:'¿Cómo compro?',regalo:'¿Cómo funciona un regalo?',pedido:'¿Cómo puedo seguir mi pedido?'}[b.dataset.faq];enviar(q);});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&panelAbierto)alternar(false);});
-    var year=document.getElementById('footer-year');if(year)year.textContent=new Date().getFullYear();
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciarAsistente);else iniciarAsistente();
-})();
-</script>
+<script>document.addEventListener("DOMContentLoaded",function(){var y=document.getElementById("footer-year");if(y)y.textContent=new Date().getFullYear();});</script>
 
 </body>
 </html>
