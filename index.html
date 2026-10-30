@@ -6334,10 +6334,13 @@ body { background-color: transparent !important; isolation: isolate; }
                 // eso en móvil usamos menos columnas y tarjetas más pequeñas: el
                 // canvas final queda muy por debajo de esos límites y la imagen se
                 // genera de forma confiable también en celulares de gama baja.
-                const numCols = 7;
+                // En escritorio usamos menos columnas y tarjetas más anchas para que
+                // cada cosmético se distinga en la imagen completa. En móviles mantenemos
+                // el formato compacto para respetar los límites de memoria del dispositivo.
+                const numCols = esMobile ? 7 : 9;
                 const margin = 40;
                 const gapX = 14, gapY = 16;
-                const cardW = esMobile ? 250 : 400;
+                const cardW = esMobile ? 250 : 560;
                 const W = margin * 2 + numCols * cardW + (numCols - 1) * gapX;
 
                 // Factor de escala del encabezado/pie: en móvil el canvas es mucho
