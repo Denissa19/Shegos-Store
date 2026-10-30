@@ -6079,6 +6079,61 @@ window.calcVentaMargen = function() {
   window.vmUpdateTotal(total);
 };
 
+// Listener delegado como respaldo: sigue recalculando aunque el formulario
+// vuelva a renderizarse o el dispositivo no ejecute el atributo inline.
+document.addEventListener('input', event => {
+  if (!event.target?.matches?.('#vc-f-ingreso,#vc-f-costo-real,#vc-f-monto-recibido,#vc-f-pago-parcial,#vc-f-interes-pct')) return;
+  try { recalculateVentaFinancialFields(); }
+  catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
+}, true);
+document.addEventListener('change', event => {
+  if (event.target?.id === 'vc-f-moneda' || event.target?.id === 'vc-f-metodo') {
+    try { recalculateVentaFinancialFields(); }
+    catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
+  }
+}, true);
+
+function recalculateVentaFinancialFields() {
+  const precio = ventaIngresoUsd();
+  const interestPct = ventaNumber('vc-f-interes-pct');
+  const total = precio * (1 + interestPct / 100);
+  const method = document.getElementById('vc-f-metodo')?.value || '';
+  const isTransfer = isTransferPayment(method);
+  const fee = isTransfer ? Math.round(total * 0.001 * 100) / 100 : 0;
+  const receivedField = document.getElementById('vc-f-monto-recibido');
+  if (isTransfer && receivedField) {
+    receivedField.value = Math.max(0, total - fee).toFixed(2);
+    receivedField.readOnly = true;
+  } else if (receivedField) {
+    receivedField.readOnly = false;
+  }
+  const rawReceived = receivedField?.value?.trim() || '';
+  const received = isTransfer ? Math.max(0, total - fee) : (rawReceived ? parseVentaNumber(rawReceived) : total);
+  const cost = ventaNumber('vc-f-costo-real');
+  const commission = isTransfer ? fee : Math.max(0, total - received);
+  const feeNote = document.getElementById('vc-payment-fee-note');
+  if (feeNote) {
+    feeNote.textContent = isTransfer
+      ? `Comisión automática 0.1%: $${fee.toFixed(2)} · Recibido: $${received.toFixed(2)}`
+      : (method ? 'Comisión manual según la tarifa del método; se refleja en el monto recibido.' : '');
+    feeNote.style.display = method ? 'block' : 'none';
+  }
+  const commissionField = document.getElementById('vc-f-comision-ceo');
+  if (commissionField) commissionField.value = commission.toFixed(2);
+  const profitField = document.getElementById('vc-f-neta-ceo');
+  if (profitField) {
+    const profit = received - cost;
+    profitField.value = profit.toFixed(2);
+    profitField.style.color = profit >= 0 ? 'var(--gold)' : 'var(--red)';
+  }
+  const extraFee = document.getElementById('vc-f-cuota-adicional');
+  if (extraFee) extraFee.value = (total - precio).toFixed(2);
+  const pending = document.getElementById('vc-f-pago-pendiente');
+  if (pending) pending.value = Math.max(0, total - ventaNumber('vc-f-pago-parcial')).toFixed(2);
+  updateVentaConversionNote();
+  window.vmUpdateTotal(total);
+}
+
 window.vmUpdateTotal = function(val) {
   const ingreso = val !== undefined ? val : ventaIngresoUsd();
   const disp = document.getElementById('vm-total-display');
@@ -6279,26 +6334,33 @@ window.saveVenta = async function() {
   if (vmRemarks.length || (Array.isArray(origVenta?.remarks) && origVenta.remarks.length)) record.remarks = vmRemarks;
   if (window.editingVentaId) record.id = window.editingVentaId;
 
+  let saveTimeoutId;
   try {
+    const saveController = new AbortController();
+    saveTimeoutId = setTimeout(() => saveController.abort(), 30000);
     if (window.editingVentaId) {
       const updateRecord = { ...record };
       delete updateRecord.id;
       delete updateRecord.created_at;
-      const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId);
+      const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId).abortSignal(saveController.signal);
       if (err) throw err;
     } else {
-      const { error: err } = await supabase.from('ventas').insert([record]);
+      const { error: err } = await supabase.from('ventas').insert([record]).abortSignal(saveController.signal);
       if (err) throw err;
     }
     showToast(window.editingVentaId ? 'Venta actualizada ✓' : 'Venta guardada ✓');
     window.editingVentaId = null;
     closeVentaModal();
-    await fetchVentas();
     window._ventaSaveSucceeded = true;
+    // El guardado ya terminó en Supabase; no dejar el botón girando por una
+    // recarga lenta o caída de la consulta del historial.
+    Promise.resolve().then(() => fetchVentas()).catch(error => console.error('Venta guardada; no se pudo actualizar la lista:', error));
     return true;
   } catch (err) {
     console.error('saveVenta error:', err);
-    if (err?.message?.includes('column') || err?.code === '42703') {
+    if (err?.name === 'AbortError') {
+      showToast('Supabase tardó más de 30 segundos. Revisa la lista antes de volver a intentar para evitar duplicar la venta.', true, 7000);
+    } else if (err?.message?.includes('column') || err?.code === '42703') {
       showToast('Faltan columnas en Supabase (remarks / foto_producto) — corre el SQL de actualización', true);
     } else {
       showToast('Error: ' + (err?.message || JSON.stringify(err)), true);
@@ -6306,6 +6368,7 @@ window.saveVenta = async function() {
     window._ventaSaveSucceeded = false;
     return false;
   } finally {
+    clearTimeout(saveTimeoutId);
     if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Venta'; }
   }
 };
