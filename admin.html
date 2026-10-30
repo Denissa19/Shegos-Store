@@ -257,7 +257,7 @@ td{padding:12px 14px;vertical-align:middle}
 .sec-line{flex:1;height:1px;background:var(--border)}
 
 /* ── TOAST ──────────────────────────────── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--accent);padding:13px 18px;font-size:0.78em;color:var(--text);z-index:9000;transform:translateY(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:300px;border-radius:4px;font-weight:500}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--accent);padding:13px 18px;font-size:0.78em;color:var(--text);z-index:9000;transform:translateY(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:300px;border-radius:4px;font-weight:500;pointer-events:none}
 .toast.show{transform:translateY(0)}
 .toast.err{border-left-color:var(--red)}
 
@@ -572,7 +572,7 @@ td{padding:12px 14px;vertical-align:middle}
   }
 
   /* Toast bottom offset for bottom nav */
-  .toast { bottom: 80px; right: 14px; left: 14px; max-width: none; }
+  .toast { bottom: calc(14px + env(safe-area-inset-bottom)); right: 14px; left: 14px; max-width: none; }
 
   /* Sec title */
   .sec-title h3 { font-size: 1.05em; }
@@ -4469,13 +4469,13 @@ function openWA(num) {
   window.open(`https://wa.me/${clean}`, '_blank');
 }
 
-function showToast(msg, isErr = false) {
+function showToast(msg, isErr = false, duration = 3500) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
   t.className = 'toast show' + (isErr ? ' err' : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
 // --- AUTH CON SUPABASE ---
@@ -4534,7 +4534,8 @@ async function doLogin() {
   sessionStorage.setItem('shegos_role', role);
   sessionStorage.setItem('shegos_email', email);
   mostrarPanel(email, role);
-  showToast(`Bienvenido/a ${role === 'CEO' ? 'CEO 👑' : 'Admin'}`);
+  const welcomeDuration = window.matchMedia('(max-width: 768px)').matches ? 1400 : 3500;
+  showToast(`Bienvenido/a ${role === 'CEO' ? 'CEO 👑' : 'Admin'}`, false, welcomeDuration);
 }
 
 async function doLogout() {
