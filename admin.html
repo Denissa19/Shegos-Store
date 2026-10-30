@@ -1,4 +1,3 @@
-Warning: fs was declared with const; use let for reassignable variables.
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -2499,6 +2498,16 @@ body, body.role-ceo {
         <input type="range" id="wp-opacity" min="40" max="92" value="75" step="1"
           oninput="window.updateWpOpacity(this.value)"
           style="width:100%;accent-color:var(--accent);cursor:pointer">
+      </div>
+
+      <!-- Transparencia de tarjetas oscuras -->
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:10px">
+          <span style="font-size:0.7em;letter-spacing:1.3px;text-transform:uppercase;color:var(--text2);font-weight:700"><i class="fas fa-layer-group" style="margin-right:6px;color:var(--accent)"></i>Opacidad de los cuadros</span>
+          <span style="font-size:0.82em;color:var(--accent);font-weight:700" id="wp-card-opacity-val">88%</span>
+        </div>
+        <input type="range" id="wp-card-opacity" min="25" max="100" value="88" step="1" oninput="window.updateCardOpacity(this.value)" aria-label="Opacidad de las tarjetas oscuras" style="width:100%;accent-color:var(--accent);cursor:pointer;touch-action:pan-x">
+        <div style="font-size:0.7em;color:var(--text3);margin-top:5px">Baja la opacidad para que se vea más la imagen de fondo detrás de las tarjetas.</div>
       </div>
 
       <!-- Reset button -->
