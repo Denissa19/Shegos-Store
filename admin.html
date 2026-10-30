@@ -2726,7 +2726,7 @@ body, body.role-ceo {
             <input class="finput" id="vc-f-cliente"
               placeholder="Buscar por nombre, WhatsApp, Discord o Epic..." autocomplete="off"
               oninput="window.ventaClientSearch(this.value)"
-              onblur="setTimeout(()=>{ const d=document.getElementById('vc-cliente-dropdown'); if(d && !d.contains(document.activeElement)) d.classList.remove('open'); },220)"
+              onblur="setTimeout(()=>{ const d=document.getElementById('vc-cliente-dropdown'); if(d && !d.contains(document.activeElement)) d.classList.remove('open'); },650)"
               style="padding-right:36px">
             <i class="fas fa-search vm-client-icon"></i>
             <div id="vc-cliente-dropdown" class="client-suggestion-list" role="listbox" aria-label="Clientes encontrados"></div>
@@ -6066,9 +6066,9 @@ window.calcVentaMargen = function() {
   const feeNote = document.getElementById('vc-payment-fee-note');
   const autoFee = isTransferPayment(paymentMethod) ? Math.round(total * .0001 * 100) / 100 : 0;
   if (isTransferPayment(paymentMethod)) {
-    if (montoRecibidoEl) { montoRecibidoEl.value = Math.max(0,total-autoFee).toFixed(2); montoRecibidoEl.readOnly = true; }
+    if (montoRecibidoEl) { montoRecibidoEl.value = total.toFixed(2); montoRecibidoEl.readOnly = true; }
     if (montoRecibidoEl) montoRecibidoEl.dataset.autoFee='true';
-    if (feeNote) { feeNote.textContent = `Comisión automática 0.01%: $${autoFee.toFixed(2)} · Recibido: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
+    if (feeNote) { feeNote.textContent = `Comisión automática 0.01%: $${autoFee.toFixed(2)} · Neto después de comisión: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
   } else {
     if (montoRecibidoEl?.dataset.autoFee==='true') { montoRecibidoEl.value=''; montoRecibidoEl.dataset.autoFee='false'; }
     if (montoRecibidoEl) montoRecibidoEl.readOnly = false;
@@ -6078,7 +6078,7 @@ window.calcVentaMargen = function() {
     }
   }
   const montoRecibidoRaw = montoRecibidoEl?.value;
-  const montoRecibido = isTransferPayment(paymentMethod) ? Math.max(0,total-autoFee) :
+  const montoRecibido = isTransferPayment(paymentMethod) ? total :
     (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? parseVentaNumber(montoRecibidoRaw) : total);
 
   // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
@@ -6087,7 +6087,7 @@ window.calcVentaMargen = function() {
   if (comisionEl) comisionEl.value = comision.toFixed(2);
 
   // FÓRMULA: Ganancia Neta = Monto Recibido − Costo
-  const ganancia = montoRecibido - costo;
+  const ganancia = montoRecibido - (isTransferPayment(paymentMethod)?autoFee:0) - costo;
 
   const netaEl = document.getElementById('vc-f-neta-ceo');
   if (netaEl) {
@@ -6143,19 +6143,21 @@ function recalculateVentaFinancialFields() {
   const fee = isTransfer ? Math.round(total * 0.0001 * 100) / 100 : 0;
   const receivedField = document.getElementById('vc-f-monto-recibido');
   if (isTransfer && receivedField) {
-    receivedField.value = Math.max(0, total - fee).toFixed(2);
+    receivedField.value = total.toFixed(2);
     receivedField.readOnly = true;
   } else if (receivedField) {
     receivedField.readOnly = false;
   }
   const rawReceived = receivedField?.value?.trim() || '';
-  const received = isTransfer ? Math.max(0, total - fee) : (rawReceived ? parseVentaNumber(rawReceived) : total);
+  const received = isTransfer ? total : (rawReceived ? parseVentaNumber(rawReceived) : total);
   const cost = ventaNumber('vc-f-costo-real');
   const commission = isTransfer ? fee : Math.max(0, total - received);
   const feeNote = document.getElementById('vc-payment-fee-note');
+  const receivedLabel=document.getElementById('vc-f-recibido-label');
+  if(receivedLabel)receivedLabel.textContent=`Monto Recibido (${document.getElementById('vc-f-moneda')?.value||'MXN'}${isTransfer?', antes de comisión':''})`;
   if (feeNote) {
     feeNote.textContent = isTransfer
-      ? `Comisión automática 0.01%: $${fee.toFixed(2)} · Recibido: $${received.toFixed(2)}`
+      ? `Comisión automática 0.01%: $${fee.toFixed(2)} · Neto después de comisión: $${Math.max(0,received-fee).toFixed(2)}`
       : (method ? 'Comisión manual según la tarifa del método; se refleja en el monto recibido.' : '');
     feeNote.style.display = method ? 'block' : 'none';
   }
@@ -6163,7 +6165,7 @@ function recalculateVentaFinancialFields() {
   if (commissionField) commissionField.value = commission.toFixed(2);
   const profitField = document.getElementById('vc-f-neta-ceo');
   if (profitField) {
-    const profit = received - cost;
+    const profit = received - (isTransfer?fee:0) - cost;
     profitField.value = profit.toFixed(2);
     profitField.style.color = profit >= 0 ? 'var(--gold)' : 'var(--red)';
   }
@@ -8123,8 +8125,6 @@ function renderClienteDropdown(dropEl, suggestions, onSelect) {
     </button>`;
   }).join('');
   dropEl.querySelectorAll('button[data-idx]').forEach((button, i) => {
-    button.addEventListener('pointerdown',event=>event.preventDefault());
-    button.addEventListener('mousedown',event=>event.preventDefault());
     button.addEventListener('click',()=>{
       dropEl.querySelectorAll('.client-suggestion').forEach(item=>{item.classList.remove('selected');item.setAttribute('aria-selected','false');});
       button.classList.add('selected');button.setAttribute('aria-selected','true');
