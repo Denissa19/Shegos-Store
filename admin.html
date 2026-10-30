@@ -1360,7 +1360,8 @@ select option,select optgroup{background:#111;color:#fff}
         <input class="filter-sel" id="cc-price-max" type="number" min="0" step="0.01" placeholder="Precio máx. (USD)" oninput="window.renderCatalogoCuentas()">
         <select class="filter-sel sec-ceo-only" id="cc-state" onchange="window.renderCatalogoCuentas()"><option value="">Todos los estados</option><option value="disponible">Disponibles</option><option value="reservada">Reservadas</option><option value="vendida">Vendidas</option></select>
       </div>
-      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><div class="account-catalog-tools"><button class="btn btn-ghost sec-ceo-only" id="cc-import" type="button" onclick="window.importCatalogoCuentas()"><i class="fas fa-cloud-arrow-down"></i> Importar cuentas</button><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div></div>
+      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><div class="account-catalog-tools"><button class="btn btn-ghost sec-ceo-only" id="cc-agenty-trigger" type="button" onclick="document.getElementById('cc-agenty-file').click()"><i class="fas fa-file-import"></i> Importar JSON</button><input id="cc-agenty-file" class="sec-ceo-only" type="file" accept=".json,application/json" style="display:none!important" onchange="window.importarCatalogoAgenty(this.files?.[0],this)"><button class="btn btn-ghost sec-ceo-only" id="cc-import" type="button" onclick="window.importCatalogoCuentas()"><i class="fas fa-cloud-arrow-down"></i> Importar cuentas</button><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div></div>
+      <details class="account-import-help sec-ceo-only"><summary>Campos para exportar desde Agenty</summary><p>Exporta JSON con una publicación por elemento y estos campos: <code>listing_id</code>, <code>title</code>, <code>price_usd</code>, <code>description</code>, <code>skin_count</code>, <code>skins</code>, <code>account_image_url</code> y <code>listing_url</code>. En <code>account_image_url</code> coloca únicamente la imagen generada con el botón dentro del anuncio. El ID mantiene unidos la portada y sus datos.</p></details>
       <div class="account-catalog-grid" id="cc-grid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div></div>
     </div>
 
@@ -4300,18 +4301,51 @@ function renderCatalogoCuentas() {
   }
   grid.innerHTML = rows.map(row => {
     const tags = (row.skins_destacadas || []).filter(Boolean).map(tag => `<span class="account-skin-tag">${escaparCatalogo(tag)}</span>`).join('');
-    const skinImages = (Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).slice(0, 6).map((path, index) => {
+    const skinImages = (Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).slice(0, 24).map((path, index) => {
       const imageUrl = catalogoSkinSignedUrls.get(path);
       if (!imageUrl) return '';
       const name = row.skins_destacadas?.[index] || `Skin ${index + 1}`;
       return `<div class="account-skin-image"><img src="${escaparCatalogo(imageUrl)}" alt="${escaparCatalogo(name)}" loading="lazy"><span>${escaparCatalogo(name)}</span></div>`;
     }).join('');
-    const gallery = skinImages ? `<div class="account-skin-gallery">${skinImages}</div>` : '';
+    const imageCount = (row.imagenes_skins || []).length;
+    const singleGeneratedCover = imageCount === 1;
+    const gallery = skinImages ? `<div class="account-cover${singleGeneratedCover ? ' account-cover-single' : ''}">${singleGeneratedCover ? '' : `<div class="account-cover-header"><span><i class="fas fa-shirt"></i> ${Number(row.cantidad_skins)||0} skins</span><small>${Math.min(24,imageCount)} destacadas</small></div>`}<div class="account-skin-gallery${singleGeneratedCover ? ' account-skin-gallery-single' : ''}">${skinImages}</div></div>` : `<div class="account-cover-empty"><i class="fas fa-images"></i><span>Vista de cuenta pendiente</span></div>`;
     const estado = row.estado === 'disponible' ? 'Disponible' : row.estado === 'reservada' ? 'Reservada' : 'Vendida';
     const edit = currentRole === 'CEO' ? `<button class="btn btn-ghost account-edit-btn" type="button" onclick="window.abrirEditorCuentaCatalogo('${escaparCatalogo(row.id)}')"><i class="fas fa-pen"></i> Editar</button>` : '';
     return `<article class="account-catalog-card">${gallery}<div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
   }).join('');
 }
+
+window.importarCatalogoAgenty = async function(file, input) {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede importar cuentas.', true);
+  if (!file) return;
+  const button = document.getElementById('cc-agenty-trigger');
+  let imported = 0, images = 0;
+  try {
+    const payload = JSON.parse(await file.text());
+    const rows = Array.isArray(payload) ? payload : [payload?.records, payload?.results, payload?.items, payload?.rows, payload?.data].find(Array.isArray);
+    if (!Array.isArray(rows) || !rows.length) throw new Error('El JSON no contiene una lista de publicaciones.');
+    if (rows.some(row => !row || typeof row !== 'object' || Array.isArray(row))) throw new Error('El archivo debe tener una publicación por fila.');
+    if (button) { button.disabled = true; button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando…'; }
+    for (let i = 0; i < rows.length; i += 8) {
+      const batch = rows.slice(i, i + 8);
+      if (button) button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Importando ${Math.min(i + batch.length, rows.length)} / ${rows.length}`;
+      const { data, error } = await supabase.functions.invoke('catalogo-importar', { body: { mode: 'agenty', records: batch } });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      imported += Number(data?.imported) || 0;
+      images += Number(data?.images) || 0;
+    }
+    await cargarCatalogoCuentas();
+    showToast(`Importación terminada: ${imported} cuentas y ${images} imágenes.`, false, 5000);
+  } catch (err) {
+    if (imported) await cargarCatalogoCuentas();
+    showToast(`${err?.message || 'No se pudo importar el archivo.'}${imported ? ` Se guardaron ${imported} cuentas antes del error.` : ''}`, true, 6000);
+  } finally {
+    if (button) { button.disabled = false; button.innerHTML = '<i class="fas fa-file-import"></i> Importar JSON'; }
+    if (input) input.value = '';
+  }
+};
 
 window.importCatalogoCuentas = async function(reset = false) {
   if (currentRole !== 'CEO') return showToast('Solo el CEO puede actualizar el catálogo.', true);
