@@ -284,9 +284,14 @@ td { padding: 13px 15px; }
 .account-catalog-filters .filter-sel { min-width:0; width:100%; height:42px; }
 .account-catalog-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:14px 2px; color:var(--text2); font-size:.82rem; }
 .account-catalog-summary .btn { padding:8px 12px; }
+.account-catalog-tools { display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap; }
 .account-catalog-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr)); gap:14px; }
 .account-catalog-card { min-width:0; padding:18px; border:1px solid rgba(150,174,148,.2); border-radius:16px; background:linear-gradient(145deg,rgba(28,35,30,.97),rgba(14,18,15,.98)); box-shadow:0 12px 28px rgba(0,0,0,.18); transition:transform .18s,border-color .18s,box-shadow .18s; }
 .account-catalog-card:hover { transform:translateY(-2px); border-color:rgba(195,238,114,.48); box-shadow:0 16px 36px rgba(0,0,0,.28); }
+.account-skin-gallery { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:-3px -3px 15px; }
+.account-skin-image { min-width:0; overflow:hidden; position:relative; aspect-ratio:1.15; border-radius:10px; border:1px solid rgba(155,255,64,.14); background:radial-gradient(circle at 50% 35%,rgba(73,255,18,.11),transparent 70%),#090d09; }
+.account-skin-image img { width:100%; height:100%; object-fit:contain; padding:5px; filter:drop-shadow(0 5px 9px rgba(0,0,0,.5)); }
+.account-skin-image span { position:absolute; inset:auto 0 0; padding:12px 5px 4px; background:linear-gradient(transparent,rgba(0,0,0,.9)); color:#e8f1e3; font-size:.57rem; line-height:1.1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center; }
 .account-card-top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .account-state { border:1px solid rgba(195,238,114,.25); color:var(--accent); background:rgba(195,238,114,.08); padding:5px 9px; border-radius:999px; text-transform:uppercase; letter-spacing:.08em; font-size:.62rem; font-weight:800; }
 .account-state.state-reservada { color:var(--gold); border-color:rgba(242,196,109,.3); background:rgba(242,196,109,.08); }
@@ -317,6 +322,9 @@ body:not(.role-ceo) #modal-catalogo-cuenta .sec-ceo-only { display:none !importa
 @media (max-width:560px) {
   .account-catalog-hero { align-items:flex-start; flex-direction:column; gap:14px; border-radius:14px; }
   .account-catalog-hero .btn { width:100%; justify-content:center; }
+  .account-catalog-summary { align-items:flex-start; flex-direction:column; }
+  .account-catalog-tools { width:100%; justify-content:stretch; }
+  .account-catalog-tools .btn { flex:1; justify-content:center; }
   .account-catalog-filters { padding:10px; gap:8px; }
   .account-catalog-filters .filter-sel { font-size:.72rem; padding:8px; }
   .account-catalog-grid { grid-template-columns:1fr; }
