@@ -164,7 +164,7 @@
         }
         /* Opacidad del fondo (punto medio: visible pero sin competir con el texto) */
         .hero-bg-rotator .bg-slide.bg-slide-active {
-            opacity: 0.32;
+            opacity: 0.24;
         }
         
         /* BANNER CÓDIGO FIJADO */
@@ -4509,9 +4509,9 @@
 </style>
 <style id="shegos-brand-refresh">
 :root { color-scheme: dark; --shegos-neon: #70ff00; }
-body { background-color: #030403; }
+html, body { background-color: transparent !important; }
 .section-box, .producto, .servicio-home-card, .sb-card, .co-pay-option, .co-cart-item, .co-field-card, .order-card, .card {
-  background-color: rgba(5, 7, 5, .78) !important;
+  background-color: rgba(5, 7, 5, .58) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-color: rgba(112, 255, 0, .22);
@@ -4621,7 +4621,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
         // Imagen de fondo de Fortnite Salvar el Mundo elegida para el sitio.
         // Se mantiene fija para conservar la imagen seleccionada.
         const IMAGENES_RESPALDO = [
-            'https://preview.redd.it/this-is-the-background-of-the-fortnite-stw-image-does-v0-epyhr6hf4n091.png?width=1080&crop=smart&auto=webp&s=e2757e4865b70ff4cd058c502418b20914637768'
+            'https://preview.redd.it/this-is-the-background-of-the-fortnite-stw-image-does-v0-epyhr6hf4n091.png?width=1080&crop=smart&auto=webp&s=e2757e4865b70ff4cd058c502418b20914637768',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvl21dty0ahe06muhoa1yiia',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvs7mfaz8fs006oac87zda69',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvgj943o081806ob23a73859',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvl26htt0ay707mwkkvdnkck',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvkzx5dm4cnc07mpl9lueu8v',
+            'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvgt2bsj1t8908n0j3pf0w1l'
         ];
         const INTERVALO = 8000; // 8 segundos entre cambios
 
