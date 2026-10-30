@@ -4627,6 +4627,34 @@ body { background-color: transparent !important; isolation: isolate; }
 @media (max-width: 760px) { #vb-precios .servicios-flex-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } #vb-precios .servicio-card { padding: 13px !important; } #vb-precios .servicio-card > img { height: 125px; padding: 13px; } }
 @media (max-width: 430px) { #vb-precios .servicios-flex-container { grid-template-columns: 1fr; } #vb-precios .servicio-card { max-width: 360px; margin-inline: auto; } }
 </style>
+
+<style id="shegos-terms-page">
+#terminos.terms-page { display:block; }
+#terminos .terms-page { max-width:1180px; margin:40px auto 72px; padding:clamp(20px,4vw,48px); color:#f4f7f2; }
+#terminos .terms-heading { text-align:center; margin:0 auto 28px; max-width:820px; }
+#terminos .terms-eyebrow { color:#70ff00; font-size:.76rem; font-weight:800; letter-spacing:.18em; }
+#terminos .terms-heading h1 { margin:10px 0; font:900 clamp(2.1rem,5vw,3.5rem) 'Poppins',sans-serif; }
+#terminos .terms-heading p { color:#c3c9bf; line-height:1.7; margin:0 auto 10px; }
+#terminos .terms-updated { color:#a5ad9e; font-size:.82rem; }
+#terminos .terms-toc { padding:26px clamp(20px,3vw,34px); margin:0 auto 34px; border:1px solid rgba(112,255,0,.2); border-radius:24px; background:rgba(15,14,22,.92); box-shadow:0 16px 44px rgba(0,0,0,.24); }
+#terminos .terms-toc h2 { color:#a7ff6a; margin:0 0 18px; font-size:.9rem; letter-spacing:.1em; text-transform:uppercase; }
+#terminos .terms-toc ol { list-style:none; counter-reset:terms; margin:0; padding:0; display:grid; grid-auto-flow:column; grid-template-rows:repeat(8,auto); grid-template-columns:1fr 1fr; column-gap:36px; row-gap:10px; }
+#terminos .terms-toc li { counter-increment:terms; min-width:0; }
+#terminos .terms-toc a { color:#eef2ed; text-decoration:none; display:flex; gap:8px; line-height:1.5; padding:3px 0; transition:color .18s ease; }
+#terminos .terms-toc a::before { content:counter(terms) "."; color:#70ff00; font-weight:700; flex:0 0 22px; }
+#terminos .terms-toc a:hover { color:#70ff00; }
+#terminos .terms-content { max-width:900px; margin:auto; }
+#terminos .terms-content section { scroll-margin-top:120px; padding:22px 0; border-bottom:1px solid rgba(255,255,255,.1); }
+#terminos .terms-content h2 { color:#f7fff4; font-size:1.2rem; margin:0 0 12px; }
+#terminos .terms-content p,#terminos .terms-content li { color:#c5cbc2; line-height:1.75; font-size:.96rem; }
+#terminos .terms-content p { margin:8px 0; }
+#terminos .terms-content ul { padding-left:22px; display:grid; gap:8px; }
+#terminos .terms-content a { color:#70ff00; }
+#terminos .terms-legal-note { max-width:900px; margin:26px auto; color:#98a091; font-size:.83rem; line-height:1.65; }
+#terminos .terms-back { display:block; width:max-content; margin:0 auto; padding:10px 18px; border:1px solid rgba(112,255,0,.4); color:#70ff00; border-radius:999px; text-decoration:none; }
+@media(max-width:650px) { #terminos .terms-page { margin:18px auto 44px; padding:16px; } #terminos .terms-toc { padding:20px; border-radius:18px; } #terminos .terms-toc ol { grid-auto-flow:row; grid-template-columns:1fr; grid-template-rows:none; row-gap:6px; } #terminos .terms-content section { scroll-margin-top:90px; padding:18px 0; } }
+</style>
+
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -5715,6 +5743,57 @@ body { background-color: transparent !important; isolation: isolate; }
         </div>
     </div>
 
+
+        <div id="terminos" class="pestana oculto">
+            <main class="terms-page">
+                <header class="terms-heading">
+                    <span class="terms-eyebrow">SHEGOS STORE · INFORMACIÓN LEGAL</span>
+                    <h1>Términos y condiciones</h1>
+                    <p>Lee las condiciones aplicables a las compras y entregas digitales de Shegos Store.</p>
+                    <span class="terms-updated">Última actualización: 30 de octubre de 2026</span>
+                </header>
+                <nav class="terms-toc" aria-label="Contenido de los términos y condiciones">
+                    <h2>Contenido</h2>
+                    <ol>
+                        <li><a href="#terminos-1">El servicio</a></li>
+                        <li><a href="#terminos-2">Cómo funciona la compra</a></li>
+                        <li><a href="#terminos-3">Datos y cuenta</a></li>
+                        <li><a href="#terminos-4">Pagos y monedas</a></li>
+                        <li><a href="#terminos-5">Entrega y tiempos</a></li>
+                        <li><a href="#terminos-6">Códigos de regalo</a></li>
+                        <li><a href="#terminos-7">Servicios personalizados</a></li>
+                        <li><a href="#terminos-8">Reembolsos</a></li>
+                        <li><a href="#terminos-9">Pagos fuera de plazo</a></li>
+                        <li><a href="#terminos-10">EpicRewards y código de creador</a></li>
+                        <li><a href="#terminos-11">Recargas y regalos de juegos de Epic Games</a></li>
+                        <li><a href="#terminos-12">Saldos y premios de sorteos</a></li>
+                        <li><a href="#terminos-13">Conducta</a></li>
+                        <li><a href="#terminos-14">Cambios en los términos</a></li>
+                        <li><a href="#terminos-15">Responsable y contacto</a></li>
+                    </ol>
+                </nav>
+                <article class="terms-content">
+                    <section id="terminos-1"><h2>1. El servicio</h2><p>Shegos Store es una tienda de productos digitales para gamers: V-Bucks, skins, packs, suscripciones, tarjetas de regalo y servicios relacionados. No se envían artículos físicos. La entrega se realiza en formato digital según el producto.</p></section>
+                    <section id="terminos-2"><h2>2. Cómo funciona la compra</h2><p>Eliges un producto, lo agregas al carrito y pagas con uno de los métodos disponibles para tu país. Durante el proceso de compra subes el comprobante. Una vez confirmado el pago, coordinamos o realizamos la entrega según el producto:</p><ul><li>Nick o usuario del juego: indicas el nombre de usuario al que se acreditará el producto.</li><li>Acceso a una cuenta: algunos productos requieren acceso a tu cuenta del juego para completar la entrega; se te indicará cuando corresponda.</li><li>Cuenta de Epic: para ciertos juegos de Epic Games distintos de Fortnite, puede solicitarse acceso a tu cuenta de Epic y datos de la plataforma que utilizas.</li><li>Correo de contacto: algunos productos solo requieren un correo para coordinar la entrega.</li><li>Entrega al correo del pedido: determinados servicios y códigos se envían o coordinan mediante el correo que registraste en Shegos Store.</li></ul></section>
+                    <section id="terminos-3"><h2>3. Datos y cuenta</h2><p>Es tu responsabilidad proporcionar correctamente el nick, la plataforma, el correo y cualquier otro dato solicitado para tu pedido. Los errores u omisiones pueden retrasar o impedir la entrega. Si un producto requiere acceso a una cuenta, sigue únicamente las instrucciones indicadas para ese producto y entrega los datos necesarios para completar la compra.</p></section>
+                    <section id="terminos-4"><h2>4. Pagos y monedas</h2><p>Aceptamos métodos de pago locales e internacionales según el país, incluidos transferencias, billeteras digitales, criptomonedas, tarjeta y otros medios habilitados en el checkout. Los precios se muestran en la moneda seleccionada, que puede incluir MXN, COP, ARS, CLP, PEN, EUR, USD o USDT. El total y cualquier descuento por cupón se confirman al momento de pagar. Un pedido se considera pagado cuando Shegos Store confirma la recepción del pago.</p></section>
+                    <section id="terminos-5"><h2>5. Entrega y tiempos</h2><p>Procesamos las entregas lo antes posible. Por lo general, se completan en menos de una hora después de confirmar el pago; los productos con código automático se entregan tras la aprobación. El plazo puede variar por disponibilidad, verificación del pago, horario o factores del juego o la plataforma.</p></section>
+                    <section id="terminos-6"><h2>6. Códigos de regalo</h2><p>Los códigos entregados, incluidos los códigos de V-Bucks, deben canjearse dentro de los cinco días posteriores a su entrega. Después de ese plazo, el código puede expirar y no será reemplazable por Shegos Store.</p></section>
+                    <section id="terminos-7"><h2>7. Servicios personalizados</h2><p>Algunos servicios, como los relacionados con cuentas de Salvar el Mundo (STW), se coordinan directamente por Discord o WhatsApp. Escríbenos para confirmar disponibilidad, alcance y condiciones antes de realizar el pago.</p></section>
+                    <section id="terminos-8"><h2>8. Reembolsos</h2><p>Al tratarse de productos digitales, una vez completada la entrega de un acceso, código o recarga no se ofrecen reembolsos, salvo cuando la normativa aplicable establezca un derecho que no pueda excluirse.</p><ul><li>Fortnite y otros juegos: si no es posible completar el pedido, se ofrecerá el importe pagado como saldo en el sistema automático de Fortnite de Shegos Store.</li><li>Otros servicios que no sean de juegos: el plazo de entrega puede ser de hasta siete días. Si transcurre ese plazo sin entrega, puedes solicitar un reembolso completo. Si pides cancelar antes de que venza el plazo, se aplicará un cargo de gestión del 10%, salvo que la ley aplicable disponga otra cosa.</li><li>Si el pedido no puede entregarse por causas atribuibles a Shegos Store, podrás elegir entre el reembolso total o un producto equivalente.</li></ul><p>Si tienes un problema con tu pedido, contáctanos para que podamos ayudarte.</p></section>
+                    <section id="terminos-9"><h2>9. Pagos fuera de plazo</h2><p>Si realizas el pago después del plazo indicado para tu pedido, contáctanos antes de pagarlo para confirmar nuevamente el precio y la disponibilidad. El pedido queda sujeto a confirmación de Shegos Store hasta que el pago sea verificado.</p></section>
+                    <section id="terminos-10"><h2>10. EpicRewards y código de creador</h2><p>Las recompensas de Epic Games podrán ser utilizadas por Shegos Store en las compras. Si no deseas que se utilicen, avísanos antes de pagar. El código de creador de la tienda es <strong>DENISSA_7U7</strong>.</p></section>
+                    <section id="terminos-11"><h2>11. Recargas y regalos de juegos de Epic Games</h2><p>Por motivos regionales, las compras de recargas o entregas mediante regalo pueden estar sujetas a restricciones y decisiones de Epic Games. Shegos Store realiza las compras por medios legales y, hasta la fecha de actualización de estos términos, no tiene reportes conocidos de revocación. Epic Games conserva sus derechos sobre su plataforma; esta condición no limita los derechos irrenunciables que correspondan según la normativa aplicable.</p></section>
+                    <section id="terminos-12"><h2>12. Saldos y premios de sorteos</h2><p>Los saldos del sistema automático o manual tienen una vigencia máxima de tres meses. Los premios de sorteos deben reclamarse dentro de los cuatro días posteriores a la notificación.</p></section>
+                    <section id="terminos-13"><h2>13. Conducta</h2><p>Para mantener una atención ordenada, el spam o la insistencia excesiva mientras una entrega está en curso puede hacer que el pedido pase al final de la cola de atención o dar lugar a una suspensión temporal del servicio.</p></section>
+                    <section id="terminos-14"><h2>14. Cambios en los términos</h2><p>Podemos actualizar estos términos cuando cambien los productos, los métodos de pago o la normativa aplicable. La versión vigente será la publicada en esta página, junto con su fecha de actualización. El uso de la tienda después de un cambio implica la aceptación de los términos actualizados, en la medida permitida por la ley.</p></section>
+                    <section id="terminos-15"><h2>15. Responsable y contacto</h2><p>Este sitio es gestionado por Yoel Limache. Para consultas sobre compras, entregas o estas condiciones, contáctanos por <a href="https://wa.me/18295392881" target="_blank" rel="noopener noreferrer">WhatsApp</a> o escribe a <a href="mailto:pagos@shegosstore.com">pagos@shegosstore.com</a>.</p></section>
+                </article>
+                <p class="terms-legal-note">Estos términos se aplican en la medida permitida por las normas de protección al consumidor que correspondan a cada compra.</p>
+                <a class="terms-back" href="#" onclick="abrirPestana('inicio-landing'); return false;">Volver al inicio</a>
+            </main>
+        </div>
+
     <footer class="site-footer">
         <div class="site-footer-main">
             <div class="site-footer-brand">
@@ -5729,6 +5808,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 <a href="#" onclick="irATienda(); return false;">Tienda de hoy</a>
                 <a href="#" onclick="abrirPestana('ids-regalos'); return false;">Compras vía regalo</a>
                 <a href="#" onclick="abrirPestana('recargas'); return false;">Servicios</a>
+                <a href="/terminos" onclick="abrirPestana('terminos'); return false;">Términos y condiciones</a>
             </div>
             <div class="site-footer-column">
                 <h2>Contacto</h2>
@@ -8240,6 +8320,7 @@ body { background-color: transparent !important; isolation: isolate; }
             'cuentas':    'ids-regalos',
             'pedidos':    'rastreo-pedidos',
             'servicios':  'recargas',
+            'terminos':   'terminos',
             'checkout':   'checkout'
         };
         /* Inverso: id interno → ruta amigable (el inicio siempre usa "/") */
