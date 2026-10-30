@@ -381,6 +381,22 @@ td{padding:12px 14px;vertical-align:middle}
   transform: translateY(-50%); color: var(--text3);
   font-size: .8em; pointer-events: none;
 }
+.vm-client-wrap.has-selection .vm-client-icon{color:var(--accent)}
+.vm-client-wrap.has-selection .finput{border-color:rgba(98,255,0,.58);box-shadow:0 0 0 2px rgba(98,255,0,.08)}
+.client-suggestion-list{display:none;position:absolute;top:calc(100% + 7px);left:0;right:0;z-index:3000;max-height:min(300px,42vh);overflow:auto;padding:6px;border:1px solid rgba(98,255,0,.26);border-radius:13px;background:rgba(8,13,9,.97);box-shadow:0 18px 48px rgba(0,0,0,.58);backdrop-filter:blur(16px);transform-origin:top center;animation:clientMenuIn .16s ease-out}
+.client-suggestion-list.open{display:grid;gap:4px}
+.client-suggestion{width:100%;min-width:0;display:flex;align-items:center;gap:10px;padding:10px 11px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text);text-align:left;cursor:pointer;transition:background .16s,border-color .16s,transform .16s}
+.client-suggestion:hover,.client-suggestion:focus-visible{background:rgba(98,255,0,.09);border-color:rgba(98,255,0,.25);outline:none;transform:translateX(2px)}
+.client-suggestion:active{background:rgba(98,255,0,.18);transform:scale(.99)}
+.client-suggestion-avatar{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--accent);background:rgba(98,255,0,.1);border:1px solid rgba(98,255,0,.27)}
+.client-suggestion-main{min-width:0;flex:1}
+.client-suggestion-name{display:block;font-size:.83rem;font-weight:700;overflow-wrap:anywhere}
+.client-suggestion-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:3px;color:var(--text3);font-size:.68rem}
+.client-suggestion-method{flex:0 0 auto;display:flex;align-items:center;gap:6px;color:var(--accent);font-size:.67rem;font-weight:700;text-transform:uppercase}
+.client-suggestion-check{flex:0 0 20px;color:var(--accent);opacity:0;transform:scale(.6);transition:all .16s}
+.client-suggestion.selected .client-suggestion-check{opacity:1;transform:scale(1)}
+@keyframes clientMenuIn{from{opacity:0;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:620px){.client-suggestion-list{max-height:38vh}.client-suggestion{padding:11px 9px}.client-suggestion-name{font-size:.9rem}.client-suggestion-method{max-width:100px;overflow-wrap:anywhere}}
 
 /* Precio destacado */
 .vm-price-wrap { position: relative; }
@@ -2710,10 +2726,10 @@ body, body.role-ceo {
             <input class="finput" id="vc-f-cliente"
               placeholder="Buscar por nombre, WhatsApp, Discord o Epic..." autocomplete="off"
               oninput="window.ventaClientSearch(this.value)"
-              onblur="setTimeout(()=>{ const d=document.getElementById('vc-cliente-dropdown'); if(d) d.style.display='none'; },200)"
+              onblur="setTimeout(()=>{ const d=document.getElementById('vc-cliente-dropdown'); if(d && !d.contains(document.activeElement)) d.classList.remove('open'); },220)"
               style="padding-right:36px">
             <i class="fas fa-search vm-client-icon"></i>
-            <div id="vc-cliente-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:3000;background:var(--surface2);border:1px solid var(--border2);border-radius:0 0 6px 6px;max-height:180px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)"></div>
+            <div id="vc-cliente-dropdown" class="client-suggestion-list" role="listbox" aria-label="Clientes encontrados"></div>
           </div>
           <div id="vc-cliente-hint" style="display:none;font-size:0.72em;margin-top:5px"></div>
         </div>
@@ -2949,12 +2965,12 @@ body, body.role-ceo {
           <div class="vm-ceo-tag"><i class="fas fa-shield-alt"></i> Información Financiera Restringida</div>
           <div class="frow">
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" style="color:var(--red)">Costo (USD)</label>
+              <label class="flabel" id="vc-f-costo-label" style="color:var(--red)">Costo (MXN)</label>
               <input class="finput" id="vc-f-costo-real" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
                 oninput="window.calcVentaMargen()" style="border-color:rgba(255,77,109,.3)">
             </div>
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" style="color:#f97316">Monto Recibido (USD)</label>
+              <label class="flabel" id="vc-f-recibido-label" style="color:#f97316">Monto Recibido (MXN)</label>
               <input class="finput" id="vc-f-monto-recibido" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
                 oninput="window.calcVentaMargen()" style="border-color:rgba(249,115,22,.3)"
                 title="Monto neto que realmente entró luego de comisiones (PayPal, Binance, etc). Déjalo vacío si es igual al precio de venta.">
@@ -2962,12 +2978,12 @@ body, body.role-ceo {
           </div>
           <div class="frow">
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" style="color:var(--text3)">Comisión (USD)</label>
+              <label class="flabel" id="vc-f-comision-label" style="color:var(--text3)">Comisión (MXN)</label>
               <input class="finput" id="vc-f-comision-ceo" type="number" step="0.01" placeholder="0.00"
                 readonly style="opacity:.8">
             </div>
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" style="color:var(--gold)">Ganancia Neta (USD)</label>
+              <label class="flabel" id="vc-f-neta-label" style="color:var(--gold)">Ganancia Neta (MXN)</label>
               <input class="finput" id="vc-f-neta-ceo" type="number" step="0.01" placeholder="0.00"
                 readonly style="border-color:rgba(255,215,0,.3);color:var(--gold);font-weight:700">
             </div>
@@ -4382,10 +4398,11 @@ function paymentMethodToDb(method) {
 }
 function paymentMethodFromDb(method) {
   const s=String(method||'').trim();
-  const found=PAYMENT_METHODS.find(x=>x.value===s||x.label.toLowerCase()===s.toLowerCase());
+  const normalized=s.toLocaleLowerCase().replace(/\s+/g,' ').trim();
+  const found=PAYMENT_METHODS.find(x=>x.value.toLocaleLowerCase()===normalized||x.label.toLocaleLowerCase()===normalized);
   if(found)return found.value;
-  const old={ 'PayPal':'paypal','Banco Popular':'popular','Transfer MX':'transferencia_mx','Transferencia MX':'transferencia_mx','Binance Pay':'binance' };
-  return old[s] || s.toLowerCase().replaceAll(' ','_');
+  const old={ 'paypal':'paypal','banco popular':'popular','transfer mx':'transferencia_mx','transferencia mx':'transferencia_mx','transferencia':'transferencia_mx','binance pay':'binance' };
+  return old[normalized] || normalized.replaceAll(' ','_');
 }
 function updateOrderFeeNote() {
   const method=document.getElementById('f-payment')?.value||'', total=parseFloat(document.getElementById('f-total')?.value)||0;
@@ -4414,7 +4431,7 @@ function syncPaymentPicker(id) {
 function renderVentaPaymentGrid() {
   const grid=document.getElementById('vc-payment-method-grid'), select=document.getElementById('vc-f-metodo');
   if(!grid||!select)return;
-  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>${isTransferPayment(item.value)?'Comisión 0.1%':'Comisión manual'}</small></button>`).join('');
+  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>${isTransferPayment(item.value)?'Comisión automática 0.01%':'Comisión manual'}</small></button>`).join('');
   grid.querySelectorAll('.payment-method-card').forEach(button=>button.addEventListener('click',()=>{
     select.value=button.dataset.method;
     select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -4447,7 +4464,7 @@ function enhancePaymentPickers() {
     menu.hidden = true;
     PAYMENT_METHODS.forEach(item => {
       const option=document.createElement('button'); option.type='button'; option.className='payment-picker-option'; option.setAttribute('role','option');
-      option.innerHTML=paymentLogoMarkup(item)+'<span>'+item.label+'</span><small>'+(isTransferPayment(item.value)?'Comisión 0.1%':'Comisión manual')+'</small>';
+      option.innerHTML=paymentLogoMarkup(item)+'<span>'+item.label+'</span><small>'+(isTransferPayment(item.value)?'Comisión 0.01%':'Comisión manual')+'</small>';
       option.addEventListener('click',()=>{select.value=item.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncPaymentPicker(id);menu.hidden=true;trigger.setAttribute('aria-expanded','false');});
       menu.appendChild(option);
     });
@@ -5817,6 +5834,10 @@ function renderVentas() {
 }
 
 const VENTA_USD_MXN_RATE = 18.67;
+function ventaToUsd(value, currency=document.getElementById('vc-f-moneda')?.value||'MXN') {
+  const amount=parseVentaNumber(value);
+  return currency==='MXN'?amount/VENTA_USD_MXN_RATE:amount;
+}
 function parseVentaNumber(value) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   let text = String(value ?? '').trim().replace(/[^\d,.-]/g, '');
@@ -5873,6 +5894,7 @@ function openVentaModal() {
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
   const monedaEl=document.getElementById('vc-f-moneda'); if(monedaEl)monedaEl.value='MXN';
+  syncVentaCurrencyFields(false);
   const idField=document.getElementById('vc-f-id'); if(idField)idField.value=generarIdVenta();
   syncPaymentPicker('vc-f-metodo');
   const hintEl = document.getElementById('vc-cliente-hint');
@@ -5900,7 +5922,7 @@ function openVentaModal() {
   const isoStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   document.getElementById('vc-f-fecha').value = isoStr;
   updateVentaConversionNote();
-  window.vmUpdateTotal();
+  window.calcVentaMargen();
   ventaModal.classList.add('open');
 }
 
@@ -5924,7 +5946,7 @@ window.editVenta = function(id) {
   window.toggleVentaFields();
   // Restore fields
   document.getElementById('vc-f-cliente').value = v.cliente || '';
-  const dropdown=document.getElementById('vc-cliente-dropdown'); if(dropdown)dropdown.style.display='none';
+  const dropdown=document.getElementById('vc-cliente-dropdown'); if(dropdown)dropdown.classList.remove('open');
   const client=(Array.isArray(clientesCache)?clientesCache:[]).find(c=>String(c.nombre||c.nombre_completo||'').toLowerCase()===String(v.cliente||'').toLowerCase());
   const discordEl=document.getElementById('vc-f-discord'); if(discordEl)discordEl.value=v.discord_id||v.discord||client?.discordId||'';
   const epicEl=document.getElementById('vc-f-epic'); if(epicEl)epicEl.value=v.epic_id||client?.epicId||'';
@@ -5939,7 +5961,7 @@ window.editVenta = function(id) {
   const statusEl = document.getElementById('vc-f-status');
   if (statusEl) statusEl.value = v.estado || 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
-  if (metEl) metEl.value = v.metodo_pago || '';
+  if (metEl) metEl.value = paymentMethodFromDb(v.metodo_pago);
   syncPaymentPicker('vc-f-metodo');
   const crEl = document.getElementById('vc-f-costo-real');
   if (crEl) crEl.value = v.costo_real || '';
@@ -5953,6 +5975,7 @@ window.editVenta = function(id) {
   if (caEl) caEl.value = v.cuota_adicional || '';
   const ipEl = document.getElementById('vc-f-interes-pct');
   if (ipEl) ipEl.value = v.interes_porcentaje || 0;
+  syncVentaCurrencyFields(false);
   const plEl = document.getElementById('vc-f-plazo');
   if (plEl) {
     // Intentar emparejar el porcentaje con una opción predefinida o poner custom
@@ -6041,11 +6064,11 @@ window.calcVentaMargen = function() {
   const montoRecibidoEl = document.getElementById('vc-f-monto-recibido');
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
   const feeNote = document.getElementById('vc-payment-fee-note');
-  const autoFee = isTransferPayment(paymentMethod) ? Math.round(total * .001 * 100) / 100 : 0;
+  const autoFee = isTransferPayment(paymentMethod) ? Math.round(total * .0001 * 100) / 100 : 0;
   if (isTransferPayment(paymentMethod)) {
     if (montoRecibidoEl) { montoRecibidoEl.value = Math.max(0,total-autoFee).toFixed(2); montoRecibidoEl.readOnly = true; }
     if (montoRecibidoEl) montoRecibidoEl.dataset.autoFee='true';
-    if (feeNote) { feeNote.textContent = `Comisión automática 0.1%: $${autoFee.toFixed(2)} · Recibido: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
+    if (feeNote) { feeNote.textContent = `Comisión automática 0.01%: $${autoFee.toFixed(2)} · Recibido: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
   } else {
     if (montoRecibidoEl?.dataset.autoFee==='true') { montoRecibidoEl.value=''; montoRecibidoEl.dataset.autoFee='false'; }
     if (montoRecibidoEl) montoRecibidoEl.readOnly = false;
@@ -6087,19 +6110,37 @@ document.addEventListener('input', event => {
   catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
 }, true);
 document.addEventListener('change', event => {
+  if (event.target?.id === 'vc-f-moneda') syncVentaCurrencyFields();
   if (event.target?.id === 'vc-f-moneda' || event.target?.id === 'vc-f-metodo') {
     try { recalculateVentaFinancialFields(); }
     catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
   }
 }, true);
 
+function syncVentaCurrencyFields(convert=true) {
+  const currency=document.getElementById('vc-f-moneda')?.value||'MXN';
+  ['vc-f-ingreso','vc-f-costo-real','vc-f-monto-recibido','vc-f-pago-parcial'].forEach(id=>{
+    const field=document.getElementById(id);if(!field)return;
+    const previous=field.dataset.moneyCurrency||currency;
+    if(convert&&previous!==currency&&field.value.trim()){
+      const usd=ventaToUsd(field.value,previous);
+      field.value=(currency==='MXN'?usd*VENTA_USD_MXN_RATE:usd).toFixed(2);
+    }
+    field.dataset.moneyCurrency=currency;
+  });
+  ['vc-f-costo-label','vc-f-recibido-label','vc-f-comision-label','vc-f-neta-label'].forEach((id,index)=>{
+    const label=document.getElementById(id);if(label)label.textContent=[`Costo (${currency})`,`Monto Recibido (${currency})`,`Comisión (${currency})`,`Ganancia Neta (${currency})`][index];
+  });
+}
+
 function recalculateVentaFinancialFields() {
-  const precio = ventaIngresoUsd();
+  syncVentaCurrencyFields(false);
+  const precio = ventaNumber('vc-f-ingreso');
   const interestPct = ventaNumber('vc-f-interes-pct');
   const total = precio * (1 + interestPct / 100);
   const method = document.getElementById('vc-f-metodo')?.value || '';
   const isTransfer = isTransferPayment(method);
-  const fee = isTransfer ? Math.round(total * 0.001 * 100) / 100 : 0;
+  const fee = isTransfer ? Math.round(total * 0.0001 * 100) / 100 : 0;
   const receivedField = document.getElementById('vc-f-monto-recibido');
   if (isTransfer && receivedField) {
     receivedField.value = Math.max(0, total - fee).toFixed(2);
@@ -6114,7 +6155,7 @@ function recalculateVentaFinancialFields() {
   const feeNote = document.getElementById('vc-payment-fee-note');
   if (feeNote) {
     feeNote.textContent = isTransfer
-      ? `Comisión automática 0.1%: $${fee.toFixed(2)} · Recibido: $${received.toFixed(2)}`
+      ? `Comisión automática 0.01%: $${fee.toFixed(2)} · Recibido: $${received.toFixed(2)}`
       : (method ? 'Comisión manual según la tarifa del método; se refleja en el monto recibido.' : '');
     feeNote.style.display = method ? 'block' : 'none';
   }
@@ -6134,10 +6175,13 @@ function recalculateVentaFinancialFields() {
   window.vmUpdateTotal(total);
 }
 
+// Todos los eventos existentes del panel usan esta misma fórmula y divisa.
+window.calcVentaMargen = recalculateVentaFinancialFields;
+
 window.vmUpdateTotal = function(val) {
-  const ingreso = val !== undefined ? val : ventaIngresoUsd();
+  const ingreso = val !== undefined ? val : ventaNumber('vc-f-ingreso');
   const disp = document.getElementById('vm-total-display');
-  if (disp) disp.textContent = '$' + ingreso.toFixed(2);
+  if (disp) disp.textContent = (document.getElementById('vc-f-moneda')?.value==='MXN'?'MX$':'$') + ingreso.toFixed(2) + (document.getElementById('vc-f-moneda')?.value==='USD'?' USD':' MXN');
 };
 
 window.vmSelectTipo = function(chip) {
@@ -6262,6 +6306,10 @@ async function cargarSugerenciasClientes() {
 // Bug 4 fix: save the date from the form field
 window.saveVenta = async function() {
   window._ventaSaveSucceeded = false;
+  syncVentaCurrencyFields(false);
+  recalculateVentaFinancialFields();
+  const saleCurrency=document.getElementById('vc-f-moneda')?.value||'MXN';
+  const saleAmount=parseVentaNumber(document.getElementById('vc-f-ingreso')?.value);
   const ingresoBase = ventaIngresoUsd();
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
@@ -6278,14 +6326,17 @@ window.saveVenta = async function() {
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
-  const autoFee = isTransferPayment(paymentMethod) ? Math.round(totalVenta * .001 * 100) / 100 : 0;
-  const costoReal     = ventaNumber('vc-f-costo-real');
+  const displayTotal = saleAmount * (1 + interesPct / 100);
+  const autoFeeDisplay = isTransferPayment(paymentMethod) ? Math.round(displayTotal * .0001 * 100) / 100 : 0;
+  const autoFee = ventaToUsd(autoFeeDisplay,saleCurrency);
+  const costoReal     = ventaToUsd(ventaNumber('vc-f-costo-real'),saleCurrency);
   const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
-  const montoRecibido = isTransferPayment(paymentMethod) ? Math.max(0,totalVenta-autoFee) :
-    ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
+  const receivedDisplay = isTransferPayment(paymentMethod) ? Math.max(0,displayTotal-autoFeeDisplay) :
+    ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null && montoRecibidoRaw.trim()!=='')
     ? parseVentaNumber(montoRecibidoRaw)
-    : totalVenta);
-  const comision      = isTransferPayment(paymentMethod) ? autoFee : (parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido));
+    : displayTotal);
+  const montoRecibido = ventaToUsd(receivedDisplay,saleCurrency);
+  const comision      = isTransferPayment(paymentMethod) ? autoFee : ventaToUsd(Math.max(0,displayTotal-receivedDisplay),saleCurrency);
   const ganancia      = montoRecibido - costoReal;
 
   let fechaISO = new Date().toISOString();
@@ -6312,9 +6363,9 @@ window.saveVenta = async function() {
     metodo_pago:         paymentMethod,
     producto:            document.getElementById('vc-f-producto')?.value          || '',
     comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
-    pago_parcial:        parseFloat(document.getElementById('vc-f-pago-parcial')?.value)     || 0,
-    pago_pendiente:      parseFloat(document.getElementById('vc-f-pago-pendiente')?.value)   || 0,
-    cuota_adicional:     parseFloat(document.getElementById('vc-f-cuota-adicional')?.value)  || 0,
+    pago_parcial:        ventaToUsd(ventaNumber('vc-f-pago-parcial'),saleCurrency),
+    pago_pendiente:      ventaToUsd(ventaNumber('vc-f-pago-pendiente'),saleCurrency),
+    cuota_adicional:     ventaToUsd(displayTotal-saleAmount,saleCurrency),
     interes_porcentaje:  parseFloat(document.getElementById('vc-f-interes-pct')?.value)      || 0,
     tipo_pago_apartar:   document.getElementById('vc-f-apartarpago')?.value       || null,
     apartado_anticipo:   parseVentaNumber(document.getElementById('fin-anticipo-usd')?.value)      || null,
@@ -6337,7 +6388,7 @@ window.saveVenta = async function() {
   let saveTimeoutId;
   try {
     const saveController = new AbortController();
-    saveTimeoutId = setTimeout(() => saveController.abort(), 30000);
+    saveTimeoutId = setTimeout(() => saveController.abort(), 15000);
     if (window.editingVentaId) {
       const updateRecord = { ...record };
       delete updateRecord.id;
@@ -6359,7 +6410,7 @@ window.saveVenta = async function() {
   } catch (err) {
     console.error('saveVenta error:', err);
     if (err?.name === 'AbortError') {
-      showToast('Supabase tardó más de 30 segundos. Revisa la lista antes de volver a intentar para evitar duplicar la venta.', true, 7000);
+      showToast('Supabase tardó más de 15 segundos. Revisa la lista antes de volver a intentar para evitar duplicar la venta.', true, 7000);
     } else if (err?.message?.includes('column') || err?.code === '42703') {
       showToast('Faltan columnas en Supabase (remarks / foto_producto) — corre el SQL de actualización', true);
     } else {
@@ -7630,7 +7681,7 @@ window.viewFormReceipt = function(hiddenInputId, title) {
 };
 
 // Reduce el peso de las fotos (máx. 1600px, JPEG) antes de guardarlas
-function readImageCompressed(file, maxDim = 1600, quality = 0.85) {
+function readImageCompressed(file, maxDim = 1200, quality = 0.76) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = reject;
@@ -8058,23 +8109,29 @@ function getClienteSuggestions(query) {
 }
 
 function renderClienteDropdown(dropEl, suggestions, onSelect) {
-  if (!suggestions.length) { dropEl.style.display = 'none'; return; }
-  dropEl.innerHTML = suggestions.map((c, i) =>
-    `<div data-idx="${i}" style="padding:9px 13px;cursor:pointer;font-size:0.82em;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;transition:background .15s"
-      onmouseover="this.style.background='var(--accent-dim)'" onmouseout="this.style.background=''"
-      onmousedown="event.preventDefault()">
-      <div style="display:flex;align-items:center;gap:9px;min-width:0">
-        <span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:rgba(98,255,0,.1);border:1px solid rgba(98,255,0,.28);color:var(--accent)"><i class="fas fa-user"></i></span>
-        <span style="font-weight:600;color:var(--text);min-width:0;overflow-wrap:anywhere">${rvEsc(c.nombre)}</span>
-        ${c.wa ? `<span style="color:var(--text3);font-size:0.85em;margin-left:8px"><i class="fab fa-whatsapp" style="color:#25D366"></i> ${c.wa}</span>` : ''}
-      </div>
-      ${c.metodo ? `<span style="font-size:0.7em;color:var(--accent);text-transform:uppercase;letter-spacing:.5px">${c.metodo.replace('_',' ')}</span>` : ''}
-    </div>`
-  ).join('');
-  dropEl.querySelectorAll('div[data-idx]').forEach((el, i) => {
-    el.addEventListener('mousedown', () => onSelect(suggestions[i]));
+  if (!dropEl) return;
+  if (!suggestions.length) { dropEl.classList.remove('open'); dropEl.innerHTML=''; return; }
+  dropEl.innerHTML = suggestions.map((c, i) => {
+    const methodValue=paymentMethodFromDb(c.metodo);
+    const method=PAYMENT_METHODS.find(x=>x.value===methodValue)||LEGACY_PAYMENT_METHODS[methodValue];
+    const contacts=[c.wa?`<span><i class="fab fa-whatsapp" style="color:#25D366"></i> ${rvEsc(c.wa)}</span>`:'',c.discordId?`<span><i class="fab fa-discord" style="color:#8b9cff"></i> ${rvEsc(c.discordId)}</span>`:''].filter(Boolean).join('');
+    return `<button type="button" class="client-suggestion" role="option" aria-selected="false" data-idx="${i}">
+      <span class="client-suggestion-avatar"><i class="fas fa-user"></i></span>
+      <span class="client-suggestion-main"><span class="client-suggestion-name">${rvEsc(c.nombre)}</span>${contacts?`<span class="client-suggestion-meta">${contacts}</span>`:''}</span>
+      ${method?`<span class="client-suggestion-method">${paymentLogoMarkup(method)}<span>${rvEsc(method.label)}</span></span>`:''}
+      <i class="fas fa-check-circle client-suggestion-check" aria-hidden="true"></i>
+    </button>`;
+  }).join('');
+  dropEl.querySelectorAll('button[data-idx]').forEach((button, i) => {
+    button.addEventListener('pointerdown',event=>event.preventDefault());
+    button.addEventListener('mousedown',event=>event.preventDefault());
+    button.addEventListener('click',()=>{
+      dropEl.querySelectorAll('.client-suggestion').forEach(item=>{item.classList.remove('selected');item.setAttribute('aria-selected','false');});
+      button.classList.add('selected');button.setAttribute('aria-selected','true');
+      onSelect(suggestions[i],button);
+    });
   });
-  dropEl.style.display = 'block';
+  dropEl.classList.add('open');
 }
 
 // Autocomplete en modal de Pedidos
@@ -8094,21 +8151,31 @@ window.orderClientSearch = function(val) {
 window.ventaClientSearch = function(val) {
   const dropEl = document.getElementById('vc-cliente-dropdown');
   const hintEl = document.getElementById('vc-cliente-hint');
+  const clientInput=document.getElementById('vc-f-cliente');
+  const clientWrap=clientInput?.closest('.vm-client-wrap');
+  if(clientWrap){clientWrap.classList.remove('has-selection');const icon=clientWrap.querySelector('.vm-client-icon');if(icon)icon.className='fas fa-search vm-client-icon';}
+  if(clientInput)delete clientInput.dataset.clientId;
   if (dropEl) {
     const suggestions = getClienteSuggestions(val);
     renderClienteDropdown(dropEl, suggestions, (c) => {
-      document.getElementById('vc-f-cliente').value = c.nombre;
+      if(clientInput){clientInput.value=c.nombre;clientInput.dataset.clientId=String(c.id||'');}
+      if(clientWrap){clientWrap.classList.add('has-selection');const icon=clientWrap.querySelector('.vm-client-icon');if(icon)icon.className='fas fa-check vm-client-icon';}
       if (c.wa) { const el = document.getElementById('vc-f-wa'); if(el) el.value = c.wa; }
       const epicEl = document.getElementById('vc-f-epic');
       const discordEl = document.getElementById('vc-f-discord');
       if (epicEl) epicEl.value = c.epicId || '';
       if (discordEl) discordEl.value = c.discordId || '';
-      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; syncPaymentPicker('vc-f-metodo'); }
-      dropEl.style.display = 'none';
+      const methodValue=paymentMethodFromDb(c.metodo);
+      const methodSelect=document.getElementById('vc-f-metodo');
+      if(methodSelect){methodSelect.value=PAYMENT_METHODS.some(item=>item.value===methodValue)?methodValue:'';methodSelect.dispatchEvent(new Event('change',{bubbles:true}));}
+      syncPaymentPicker('vc-f-metodo');
+      try{recalculateVentaFinancialFields();}catch(error){console.error('No se pudo actualizar el método de pago del cliente:',error);}
+      setTimeout(()=>dropEl.classList.remove('open'),260);
       if (hintEl) {
         hintEl.style.display = 'block';
         hintEl.style.color = 'var(--accent)';
-        hintEl.innerHTML = '<i class="fas fa-check-circle"></i> Cliente registrado — sus datos se cargaron desde la base de clientes';
+        const method=PAYMENT_METHODS.find(item=>item.value===methodValue);
+        hintEl.innerHTML = `<i class="fas fa-check-circle"></i> Cliente seleccionado${method?` · Método preferido: ${paymentLogoMarkup(method)} ${rvEsc(method.label)}`:' · Datos cargados desde la base de clientes'}`;
       }
     });
   }
@@ -8149,7 +8216,16 @@ window.saveVenta = async function() {
   const discordId = document.getElementById('vc-f-discord')?.value?.trim();
   const metodo = document.getElementById('vc-f-metodo')?.value?.trim();
   const tipo=document.getElementById('vc-f-tipo')?.value||'', product=document.getElementById('vc-f-producto')?.value||'';
-  const saved = await _origSaveVenta?.apply(this, arguments);
+  const saveBtn=document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
+  let saved=false;
+  try { saved = await _origSaveVenta?.apply(this, arguments); }
+  catch(error) {
+    console.error('Error inesperado al procesar la venta:',error);
+    showToast('No se pudo terminar el guardado: '+(error?.message||'error inesperado'),true,7000);
+    return false;
+  } finally {
+    if(saveBtn?.disabled){saveBtn.disabled=false;saveBtn.innerHTML='<i class="fas fa-save"></i> Guardar Venta';}
+  }
   if (saved && nombre) {
     const extra = {
       ...(epicId ? { epic_id: epicId } : {}),
