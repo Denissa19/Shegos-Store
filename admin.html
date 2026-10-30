@@ -1775,7 +1775,7 @@ body, body.role-ceo {
 
 <div id="login-screen">
   <div class="login-card">
-    <img class="login-logo-image" src="assets/logo-shegos.svg" alt="Shegos Store">
+    <img class="login-logo-image" src="assets/logo-horizontal.webp" alt="Shegos Store">
     <div class="login-sub">Panel de Gestión</div>
     <form id="login-form" onsubmit="event.preventDefault(); window.doLogin();" autocomplete="on">
     <input class="login-input" id="email-input" name="username" type="email" placeholder="Correo" autocomplete="username">
@@ -2696,7 +2696,7 @@ body, body.role-ceo {
         <div class="vm-sep"><span style="color:var(--text2)">Datos de la venta</span></div>
 
         <div class="fgroup">
-          <label class="flabel">Método de pago</label>
+          <label class="flabel">Método de pago utilizado *</label>
           <select class="fsel" id="vc-f-metodo" hidden aria-hidden="true" tabindex="-1">
             <option value="">— Seleccionar —</option>
             <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
@@ -2958,29 +2958,15 @@ body, body.role-ceo {
         <small class="venta-conversion-note" id="vc-f-conversion-note">Se convertirá automáticamente a USD. Tasa: 1 USD = 18.67 MXN.</small>
       </div>
 
-      <!-- CEO ONLY: Costos y margen -->
+      <!-- Precio, costo opcional para CEO y ganancia neta -->
       <div class="sec-ceo-only">
-        <div class="vm-sep"><span style="color:var(--red)"><i class="fas fa-lock" style="font-size:.75em;margin-right:4px"></i> — Costos</span></div>
+        <div class="vm-sep"><span style="color:var(--red)"><i class="fas fa-lock" style="font-size:.75em;margin-right:4px"></i> Costo y ganancia</span></div>
         <div class="vm-ceo-block">
-          <div class="vm-ceo-tag"><i class="fas fa-shield-alt"></i> Información Financiera Restringida</div>
           <div class="frow">
             <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" id="vc-f-costo-label" style="color:var(--red)">Costo (MXN)</label>
+              <label class="flabel" id="vc-f-costo-label" style="color:var(--red)">Costo del producto (opcional, MXN)</label>
               <input class="finput" id="vc-f-costo-real" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
                 oninput="window.calcVentaMargen()" style="border-color:rgba(255,77,109,.3)">
-            </div>
-            <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" id="vc-f-recibido-label" style="color:#f97316">Monto Recibido (MXN)</label>
-              <input class="finput" id="vc-f-monto-recibido" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00"
-                oninput="window.calcVentaMargen()" style="border-color:rgba(249,115,22,.3)"
-                title="Monto neto que realmente entró luego de comisiones (PayPal, Binance, etc). Déjalo vacío si es igual al precio de venta.">
-            </div>
-          </div>
-          <div class="frow">
-            <div class="fgroup" style="margin-bottom:0">
-              <label class="flabel" id="vc-f-comision-label" style="color:var(--text3)">Comisión (MXN)</label>
-              <input class="finput" id="vc-f-comision-ceo" type="number" step="0.01" placeholder="0.00"
-                readonly style="opacity:.8">
             </div>
             <div class="fgroup" style="margin-bottom:0">
               <label class="flabel" id="vc-f-neta-label" style="color:var(--gold)">Ganancia Neta (MXN)</label>
@@ -2989,6 +2975,11 @@ body, body.role-ceo {
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="vm-total-row">
+        <span class="vm-total-label"><i class="fas fa-dollar-sign" style="color:var(--accent);margin-right:6px"></i>Total de Venta</span>
+        <span class="vm-total-val" id="vm-total-display">MX$0.00 MXN</span>
       </div>
 
       <!-- Notas internas -->
@@ -3062,12 +3053,6 @@ body, body.role-ceo {
           <button type="button" class="btn btn-outline" onclick="window.vmAddRemark()"><i class="fas fa-plus"></i> Agregar</button>
         </div>
         <div id="vm-rem-list"></div>
-      </div>
-
-      <!-- Total bar -->
-      <div class="vm-total-row">
-        <span class="vm-total-label"><i class="fas fa-dollar-sign" style="color:var(--accent);margin-right:6px"></i>Total de Venta</span>
-        <span class="vm-total-val" id="vm-total-display">$0.00</span>
       </div>
 
     </div><!-- /mbody -->
@@ -4337,37 +4322,6 @@ function calcularPanelLocal(period) {
 // Guarda el último panel cargado (lo usa exportAccounting y renderSaldoMetodo)
 let _ultimoPanelContabilidad = null;
 
-async function renderAccounting() {
-  const period = document.getElementById('month-sel').value; // YYYY-MM
-  const area = document.getElementById('acc-table-area');
-  area.innerHTML = `<p style="font-size:0.82em;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando contabilidad...</p>`;
-
-  let desde = null, hasta = null;
-  if (period) {
-    const [y, m] = period.split('-').map(Number);
-    desde = new Date(y, m - 1, 1).toISOString();
-    hasta = new Date(y, m, 1).toISOString();
-  }
-
-  const panel = calcularPanelLocal(period);
-  _ultimoPanelContabilidad = panel;
-  const isCEO = !!panel.es_ceo;
-
-  if (isCEO) {
-    document.getElementById('acc-total-costo').textContent = `$${(panel.costo_total || 0).toFixed(2)}`;
-    document.getElementById('acc-total-neta').textContent = `$${(panel.ganancia_neta || 0).toFixed(2)}`;
-  }
-
-  const totalItems = (panel.pedidos_completados || 0) + (panel.ventas_manuales_count || 0);
-  const averageTicket = totalItems > 0 ? ((parseFloat(panel.ingresos_totales) || 0) / totalItems) : 0;
-
-  document.getElementById('acc-total').textContent = `$${(panel.ingresos_totales || 0).toFixed(2)}`;
-  document.getElementById('acc-cnt').textContent = totalItems;
-  document.getElementById('acc-avg').textContent = `$${averageTicket.toFixed(2)}`;
-  document.getElementById('acc-pend').textContent = `$${(panel.pendiente_cobro || 0).toFixed(2)}`;
-  document.getElementById('acc-total-sub').textContent = period ? `Período ${period}` : 'Todos los registros';
-  document.getElementById('acc-cnt-sub').textContent = `${totalItems} ventas registradas`;
-
 function paymentMethodIdentity(method) {
   const item = PAYMENT_METHODS.find(x => x.value === method) || LEGACY_PAYMENT_METHODS[method] || { label: String(method || 'Otro').replaceAll('_', ' '), fallback: '•', color: '#9aa3a0' };
   return '<span class="meth-identity" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '<span class="meth-name">' + item.label + '</span></span>';
@@ -4431,7 +4385,7 @@ function syncPaymentPicker(id) {
 function renderVentaPaymentGrid() {
   const grid=document.getElementById('vc-payment-method-grid'), select=document.getElementById('vc-f-metodo');
   if(!grid||!select)return;
-  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>${isTransferPayment(item.value)?'Comisión automática 0.01%':'Comisión manual'}</small></button>`).join('');
+  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>Registrar método</small></button>`).join('');
   grid.querySelectorAll('.payment-method-card').forEach(button=>button.addEventListener('click',()=>{
     select.value=button.dataset.method;
     select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -4474,6 +4428,38 @@ function enhancePaymentPickers() {
     wrap.insertBefore(trigger,select); wrap.appendChild(menu); syncPaymentPicker(id);
   });
 }
+
+async function renderAccounting() {
+  const period = document.getElementById('month-sel').value; // YYYY-MM
+  const area = document.getElementById('acc-table-area');
+  area.innerHTML = `<p style="font-size:0.82em;color:var(--text3)"><i class="fas fa-spinner fa-spin"></i> Cargando contabilidad...</p>`;
+
+  let desde = null, hasta = null;
+  if (period) {
+    const [y, m] = period.split('-').map(Number);
+    desde = new Date(y, m - 1, 1).toISOString();
+    hasta = new Date(y, m, 1).toISOString();
+  }
+
+  const panel = calcularPanelLocal(period);
+  _ultimoPanelContabilidad = panel;
+  const isCEO = !!panel.es_ceo;
+
+  if (isCEO) {
+    document.getElementById('acc-total-costo').textContent = `$${(panel.costo_total || 0).toFixed(2)}`;
+    document.getElementById('acc-total-neta').textContent = `$${(panel.ganancia_neta || 0).toFixed(2)}`;
+  }
+
+  const totalItems = (panel.pedidos_completados || 0) + (panel.ventas_manuales_count || 0);
+  const averageTicket = totalItems > 0 ? ((parseFloat(panel.ingresos_totales) || 0) / totalItems) : 0;
+
+  document.getElementById('acc-total').textContent = `$${(panel.ingresos_totales || 0).toFixed(2)}`;
+  document.getElementById('acc-cnt').textContent = totalItems;
+  document.getElementById('acc-avg').textContent = `$${averageTicket.toFixed(2)}`;
+  document.getElementById('acc-pend').textContent = `$${(panel.pendiente_cobro || 0).toFixed(2)}`;
+  document.getElementById('acc-total-sub').textContent = period ? `Período ${period}` : 'Todos los registros';
+  document.getElementById('acc-cnt-sub').textContent = `${totalItems} ventas registradas`;
+
   // Render métodos de pago
   const breakArea = document.getElementById('method-breakdown');
   const metodos = panel.metodos || {};
@@ -5226,7 +5212,7 @@ function mostrarPanel(email, role) {
 }
 
 async function doLogin() {
-  const email = document.getElementById('email-input').value.trim();
+  const email = document.getElementById('email-input').value.trim().toLowerCase();
   const pwd = document.getElementById('pwd-input').value;
   const errEl = document.getElementById('login-err');
   const btn = document.querySelector('.login-btn');
@@ -5258,9 +5244,20 @@ async function doLogin() {
   btn.style.opacity = '1';
 
   if (error) {
-    errEl.textContent = /fetch|network|load failed|failed to fetch/i.test(error.message || '')
-      ? 'No se pudo conectar. Revisa tu conexión e inténtalo de nuevo.'
-      : 'Correo o contraseña incorrectos';
+    const authCode = String(error.code || '').toLowerCase();
+    const authMessage = String(error.message || '');
+    if (/fetch|network|load failed|failed to fetch/i.test(authMessage)) {
+      errEl.textContent = 'No se pudo conectar con Supabase. Revisa tu conexión e inténtalo de nuevo.';
+    } else if (error.status === 429 || /too_many_requests|rate limit/i.test(authCode + ' ' + authMessage)) {
+      errEl.textContent = 'Se hicieron muchos intentos. Espera un momento antes de volver a iniciar sesión.';
+    } else if (/email_not_confirmed/i.test(authCode + ' ' + authMessage)) {
+      errEl.textContent = 'Ese correo aún no está confirmado en Supabase Auth.';
+    } else if (/invalid_credentials|invalid login credentials/i.test(authCode + ' ' + authMessage)) {
+      errEl.textContent = 'Correo o contraseña incorrectos.';
+    } else {
+      console.error('Error de inicio de sesión en Supabase:', error);
+      errEl.textContent = `No se pudo iniciar sesión (${authCode || error.status || 'error de Supabase'}). Revisa el estado de Authentication en Supabase.`;
+    }
     errEl.style.display = 'block';
     return;
   }
@@ -5786,8 +5783,8 @@ function renderVentas() {
   }
 
   // Role-aware table headers
-  let headers = `<th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Ingreso</th>`;
-  if (isCEO) headers += `<th style="color:var(--red)">Costo</th><th style="color:#f97316">Recibido</th><th style="color:var(--gold)">Ganancia</th><th>Margen</th>`;
+  let headers = `<th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Método de pago</th><th>Precio de venta</th>`;
+  if (isCEO) headers += `<th style="color:var(--red)">Costo</th><th style="color:var(--gold)">Ganancia neta</th>`;
   headers += `<th style="text-align:right">Acciones</th>`;
 
   let html = `<div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>`;
@@ -5795,9 +5792,9 @@ function renderVentas() {
   filtered.forEach(v => {
     const cfg = TIPO_CONFIG[v.tipo] || { label: v.tipo || '—', color:'var(--text2)' };
     const ingresoVal = parseFloat(v.ingreso) || 0;
-    const costoVal = parseFloat(v.costo) || 0;
-    const recibidoVal = (v.monto_recibido !== undefined && v.monto_recibido !== null) ? parseFloat(v.monto_recibido) : ingresoVal;
-    const gananciaVal = parseFloat(v.ganancia_neta) || 0;
+    const costoVal = parseFloat(v.costo_real ?? v.costo) || 0;
+    const savedProfit = parseFloat(v.ganancia_neta);
+    const gananciaVal = Number.isFinite(savedProfit) ? savedProfit : ingresoVal - costoVal;
     const margenV = ingresoVal > 0 ? ((gananciaVal/ingresoVal)*100) : 0;
     const rems = Array.isArray(v.remarks) ? v.remarks : [];
     const abiertos = rems.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length;
@@ -5806,13 +5803,12 @@ function renderVentas() {
       <td class="td-date">${vcLocalDay(v.created_at)}</td>
       <td><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
-      <td class="td-money" style="color:var(--accent)">$${ingresoVal.toFixed(2)}</td>`;
+      <td>${paymentMethodIdentity(paymentMethodFromDb(v.metodo_pago))}</td>
+      <td class="td-money" style="color:var(--accent)">$${ingresoVal.toFixed(2)} USD</td>`;
 
     if (isCEO) {
-      row += `<td style="color:var(--red)">$${costoVal.toFixed(2)}</td>
-      <td style="color:#f97316">$${recibidoVal.toFixed(2)}</td>
-      <td class="td-money" style="color:${gananciaVal>=0?'var(--gold)':'var(--red)'}">$${gananciaVal.toFixed(2)}</td>
-      <td><span class="badge ${margenV>=30?'b-done':margenV>=15?'b-proc':'b-pend'}">${v.margen || '0%'}</span></td>`;
+      row += `<td style="color:var(--red)">$${costoVal.toFixed(2)} USD</td>
+      <td class="td-money" style="color:${gananciaVal>=0?'var(--gold)':'var(--red)'}">$${gananciaVal.toFixed(2)} USD</td>`;
     }
 
     row += `<td style="text-align:right">
@@ -6046,61 +6042,7 @@ window.updateInterestPct = function() {
   window.calcVentaMargen();
 };
 
-window.calcVentaMargen = function() {
-  const ingreso    = ventaIngresoUsd();
-  updateVentaConversionNote();
-  const interesPct = ventaNumber('vc-f-interes-pct');
-  const cuota      = ingreso * (interesPct / 100);
-  const total      = ingreso + cuota;
-
-  const cuotaEl = document.getElementById('vc-f-cuota-adicional');
-  if (cuotaEl) cuotaEl.value = cuota.toFixed(2);
-
-  // Costo real de obtención del producto
-  const costo = ventaNumber('vc-f-costo-real');
-
-  // Monto Recibido = lo que realmente entra después de comisiones (PayPal, Binance, etc).
-  // Si se deja vacío, se asume que no hubo comisión (monto recibido = precio de venta).
-  const montoRecibidoEl = document.getElementById('vc-f-monto-recibido');
-  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
-  const feeNote = document.getElementById('vc-payment-fee-note');
-  const autoFee = isTransferPayment(paymentMethod) ? Math.round(total * .0001 * 100) / 100 : 0;
-  if (isTransferPayment(paymentMethod)) {
-    if (montoRecibidoEl) { montoRecibidoEl.value = total.toFixed(2); montoRecibidoEl.readOnly = true; }
-    if (montoRecibidoEl) montoRecibidoEl.dataset.autoFee='true';
-    if (feeNote) { feeNote.textContent = `Comisión automática 0.01%: $${autoFee.toFixed(2)} · Neto después de comisión: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
-  } else {
-    if (montoRecibidoEl?.dataset.autoFee==='true') { montoRecibidoEl.value=''; montoRecibidoEl.dataset.autoFee='false'; }
-    if (montoRecibidoEl) montoRecibidoEl.readOnly = false;
-    if (feeNote) {
-      feeNote.textContent = paymentMethod ? 'Comisión manual según la tarifa del método; se refleja en el monto recibido.' : '';
-      feeNote.style.display = paymentMethod ? 'block' : 'none';
-    }
-  }
-  const montoRecibidoRaw = montoRecibidoEl?.value;
-  const montoRecibido = isTransferPayment(paymentMethod) ? total :
-    (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? parseVentaNumber(montoRecibidoRaw) : total);
-
-  // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
-  const comision = isTransferPayment(paymentMethod) ? autoFee : total - montoRecibido;
-  const comisionEl = document.getElementById('vc-f-comision-ceo');
-  if (comisionEl) comisionEl.value = comision.toFixed(2);
-
-  // FÓRMULA: Ganancia Neta = Monto Recibido − Costo
-  const ganancia = montoRecibido - (isTransferPayment(paymentMethod)?autoFee:0) - costo;
-
-  const netaEl = document.getElementById('vc-f-neta-ceo');
-  if (netaEl) {
-    netaEl.value = ganancia.toFixed(2);
-    netaEl.style.color = ganancia >= 0 ? 'var(--gold)' : 'var(--red)';
-  }
-
-  const parcial     = ventaNumber('vc-f-pago-parcial');
-  const pendienteEl = document.getElementById('vc-f-pago-pendiente');
-  if (pendienteEl) pendienteEl.value = Math.max(0, total - parcial).toFixed(2);
-
-  window.vmUpdateTotal(total);
-};
+window.calcVentaMargen = function() { recalculateVentaFinancialFields(); };
 
 // Listener delegado como respaldo: sigue recalculando aunque el formulario
 // vuelva a renderizarse o el dispositivo no ejecute el atributo inline.
@@ -6128,9 +6070,10 @@ function syncVentaCurrencyFields(convert=true) {
     }
     field.dataset.moneyCurrency=currency;
   });
-  ['vc-f-costo-label','vc-f-recibido-label','vc-f-comision-label','vc-f-neta-label'].forEach((id,index)=>{
-    const label=document.getElementById(id);if(label)label.textContent=[`Costo (${currency})`,`Monto Recibido (${currency})`,`Comisión (${currency})`,`Ganancia Neta (${currency})`][index];
-  });
+  const costLabel=document.getElementById('vc-f-costo-label');
+  const netLabel=document.getElementById('vc-f-neta-label');
+  if(costLabel)costLabel.textContent=`Costo del producto (opcional, ${currency})`;
+  if(netLabel)netLabel.textContent=`Ganancia Neta (${currency})`;
 }
 
 function recalculateVentaFinancialFields() {
@@ -6138,34 +6081,12 @@ function recalculateVentaFinancialFields() {
   const precio = ventaNumber('vc-f-ingreso');
   const interestPct = ventaNumber('vc-f-interes-pct');
   const total = precio * (1 + interestPct / 100);
-  const method = document.getElementById('vc-f-metodo')?.value || '';
-  const isTransfer = isTransferPayment(method);
-  const fee = isTransfer ? Math.round(total * 0.0001 * 100) / 100 : 0;
-  const receivedField = document.getElementById('vc-f-monto-recibido');
-  if (isTransfer && receivedField) {
-    receivedField.value = total.toFixed(2);
-    receivedField.readOnly = true;
-  } else if (receivedField) {
-    receivedField.readOnly = false;
-  }
-  const rawReceived = receivedField?.value?.trim() || '';
-  const received = isTransfer ? total : (rawReceived ? parseVentaNumber(rawReceived) : total);
   const cost = ventaNumber('vc-f-costo-real');
-  const commission = isTransfer ? fee : Math.max(0, total - received);
   const feeNote = document.getElementById('vc-payment-fee-note');
-  const receivedLabel=document.getElementById('vc-f-recibido-label');
-  if(receivedLabel)receivedLabel.textContent=`Monto Recibido (${document.getElementById('vc-f-moneda')?.value||'MXN'}${isTransfer?', antes de comisión':''})`;
-  if (feeNote) {
-    feeNote.textContent = isTransfer
-      ? `Comisión automática 0.01%: $${fee.toFixed(2)} · Neto después de comisión: $${Math.max(0,received-fee).toFixed(2)}`
-      : (method ? 'Comisión manual según la tarifa del método; se refleja en el monto recibido.' : '');
-    feeNote.style.display = method ? 'block' : 'none';
-  }
-  const commissionField = document.getElementById('vc-f-comision-ceo');
-  if (commissionField) commissionField.value = commission.toFixed(2);
+  if (feeNote) feeNote.style.display = 'none';
   const profitField = document.getElementById('vc-f-neta-ceo');
   if (profitField) {
-    const profit = received - (isTransfer?fee:0) - cost;
+    const profit = total - cost;
     profitField.value = profit.toFixed(2);
     profitField.style.color = profit >= 0 ? 'var(--gold)' : 'var(--red)';
   }
@@ -6314,7 +6235,11 @@ window.saveVenta = async function() {
   const saleAmount=parseVentaNumber(document.getElementById('vc-f-ingreso')?.value);
   const ingresoBase = ventaIngresoUsd();
   const tipo = document.getElementById('vc-f-tipo').value;
-  if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
+  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
+  if (!(saleAmount > 0) || !tipo || !paymentMethod) {
+    showToast('El precio de venta, el tipo y el método de pago son obligatorios.', true);
+    return;
+  }
   const saleDateInput = document.getElementById('vc-f-fecha');
   if (!saleDateInput.value || !window.validateCalendarInput(saleDateInput, 'date')) {
     showToast('Selecciona una fecha válida para la venta.', true);
@@ -6327,19 +6252,10 @@ window.saveVenta = async function() {
   const interesPct    = ventaNumber('vc-f-interes-pct');
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
-  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
-  const displayTotal = saleAmount * (1 + interesPct / 100);
-  const autoFeeDisplay = isTransferPayment(paymentMethod) ? Math.round(displayTotal * .0001 * 100) / 100 : 0;
-  const autoFee = ventaToUsd(autoFeeDisplay,saleCurrency);
   const costoReal     = ventaToUsd(ventaNumber('vc-f-costo-real'),saleCurrency);
-  const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
-  const receivedDisplay = isTransferPayment(paymentMethod) ? Math.max(0,displayTotal-autoFeeDisplay) :
-    ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null && montoRecibidoRaw.trim()!=='')
-    ? parseVentaNumber(montoRecibidoRaw)
-    : displayTotal);
-  const montoRecibido = ventaToUsd(receivedDisplay,saleCurrency);
-  const comision      = isTransferPayment(paymentMethod) ? autoFee : ventaToUsd(Math.max(0,displayTotal-receivedDisplay),saleCurrency);
-  const ganancia      = montoRecibido - costoReal;
+  const montoRecibido = totalVenta;
+  const comision      = 0;
+  const ganancia      = totalVenta - costoReal;
 
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
@@ -6367,7 +6283,7 @@ window.saveVenta = async function() {
     comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
     pago_parcial:        ventaToUsd(ventaNumber('vc-f-pago-parcial'),saleCurrency),
     pago_pendiente:      ventaToUsd(ventaNumber('vc-f-pago-pendiente'),saleCurrency),
-    cuota_adicional:     ventaToUsd(displayTotal-saleAmount,saleCurrency),
+    cuota_adicional:     cuotaAdicional,
     interes_porcentaje:  parseFloat(document.getElementById('vc-f-interes-pct')?.value)      || 0,
     tipo_pago_apartar:   document.getElementById('vc-f-apartarpago')?.value       || null,
     apartado_anticipo:   parseVentaNumber(document.getElementById('fin-anticipo-usd')?.value)      || null,
@@ -6557,7 +6473,7 @@ window.exportVentasPDF = function() {
   const pattern=analysis?`<section class="section"><h2>Patrones de compra por día</h2><p>Mayor promedio: <b>${esc(analysis.best.label)}</b> (${analysis.best.average.toFixed(2)} ventas por ocurrencia). Menor promedio: <b>${esc(analysis.slow.label)}</b> (${analysis.slow.average.toFixed(2)}).</p><div class="weekdays">${analysis.averages.map(x=>`<span>${esc(x.label)}<b>${x.average.toFixed(2)}</b><small>${x.count} ventas · ${x.days} días</small></span>`).join('')}</div></section>`:'';
   const rankChart=(title,key)=>{const counts=new Map();rows.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';counts.set(name,(counts.get(name)||0)+1);});const items=[...counts].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count).slice(0,5),max=Math.max(1,...items.map(x=>x.count));return `<div class="rank-chart"><h3>${title}</h3>${items.length?items.map(x=>`<div class="rank-row"><span title="${esc(x.name)}">${esc(x.name)}</span><i><b style="width:${Math.max(3,x.count/max*100)}%"></b></i><strong>${x.count}</strong></div>`).join(''):'<p>Sin datos en el período.</p>'}</div>`;};
   const rankings=`<section class="section ranking-grid"><h2>Productos y tipos más vendidos del período</h2>${rankChart('Productos','producto')}${rankChart('Tipos de venta','tipo')}</section>`;
-  const logoUrl=new URL('assets/logo-shegos.svg',window.location.href).href;
+  const logoUrl=new URL('assets/logo-horizontal.webp',window.location.href).href;
   popup.document.open();
   popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(reportRange)}</title><style>
     @page{size:A4 landscape;margin:13mm}*{box-sizing:border-box}body{font:11px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #62ff00;padding-bottom:10px;margin-bottom:14px}.logo{width:185px;height:auto;max-height:95px;object-fit:contain}h1{font-size:21px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}h3{font-size:12px;margin:0 0 8px}p{margin:3px 0;color:#536052}.summary{display:flex;gap:10px;margin:12px 0}.metric{flex:1;padding:9px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:9px;text-transform:uppercase;letter-spacing:.6px}.metric strong{font-size:17px;display:block;margin-top:4px}.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}.compare-chart{padding:10px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:100px 1fr 65px;align-items:center;gap:7px;margin:8px 0;font-size:9px}.compare-row i,.rank-row i{height:10px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:15px 0;break-inside:avoid}.ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ranking-grid h2{grid-column:1/-1}.rank-chart{padding:9px;border:1px solid #d8e2d4;border-radius:8px}.rank-row{display:grid;grid-template-columns:150px 1fr 25px;align-items:center;gap:7px;margin:7px 0;font-size:9px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:7px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:9px}.weekdays b{display:block;color:#2d8209;font-size:13px}.weekdays small{display:block;color:#586157}table{width:100%;border-collapse:collapse;font-size:9px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:6px}td{padding:5px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
@@ -7980,23 +7896,28 @@ async function fetchClientesFromDB() {
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     let data, error;
     try {
-      const result = await supabase.from('clientes').select('*').order('updated_at', { ascending: false }).abortSignal(controller.signal);
+      let result = await supabase.from('clientes').select('*').order('updated_at', { ascending: false }).abortSignal(controller.signal);
+      // Bases creadas con el esquema anterior pueden no tener updated_at.
+      // En ese caso cargamos igualmente los clientes sin ordenar por esa columna.
+      if (result.error && (result.error.code === '42703' || /updated_at/i.test(result.error.message || ''))) {
+        result = await supabase.from('clientes').select('*').limit(1000).abortSignal(controller.signal);
+      }
       data = result.data; error = result.error;
     } finally { clearTimeout(timeoutId); }
     if (error) throw error;
     window._clientesLoadError = null;
     clientesCache = (data || []).map(c => ({
       id: c.id,
-      nombre: String(c.nombre || 'Cliente'),
-      wa: String(c.wa || ''),
+      nombre: String(c.nombre || c.nombre_completo || c.name || 'Cliente'),
+      wa: String(c.wa || c.whatsapp || c.telefono || c.phone || ''),
       referidoPor: c.referido_por || '',
       referidoPorId: c.referido_por_id || '',
-      metodo: c.metodo || '',
+      metodo: c.metodo || c.metodo_pago || '',
       epicId: c.epic_id || '',
       discordId: c.discord_id || '',
       regalo: !!c.compra_regalo,
       cosmeticosRegalo: !!c.compra_cosmeticos_regalo,
-      updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now(),
+      updated: (c.updated_at || c.updated || c.created_at) ? new Date(c.updated_at || c.updated || c.created_at).getTime() : 0,
       resena: c.resena_estado || 'pendiente',
       resenaSolicitadaEn: c.resena_solicitada_en || null,
       resenaRecibidaEn: c.resena_recibida_en || null,
@@ -8259,11 +8180,14 @@ window.renderClientesTab = async function(mode) {
   // mode === 'local' repinta con lo que ya está en memoria (sin volver a pedirlo a Supabase)
   if (mode !== 'local') {
     area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando clientes...</p></div>`;
+    if (badge) badge.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Sincronizando…';
     await fetchClientesFromDB();
   }
 
   if (window._clientesLoadError) {
-    area.innerHTML = '<div class="empty"><i class="fas fa-cloud-slash" style="color:var(--red)"></i><p style="color:var(--red)">No se pudieron cargar los clientes</p><button type="button" class="btn btn-outline" style="margin-top:12px" onclick="window.renderClientesTab()"><i class="fas fa-rotate-right"></i> Reintentar</button></div>';
+    if (badge) badge.textContent = 'Sin conexión a clientes';
+    const detail = rvEsc(window._clientesLoadError);
+    area.innerHTML = `<div class="empty"><i class="fas fa-cloud-slash" style="color:var(--red)"></i><p style="color:var(--red)">No se pudieron cargar los clientes desde Supabase.</p><small style="display:block;max-width:680px;margin:8px auto;color:var(--text3);overflow-wrap:anywhere">${detail}</small><button type="button" class="btn btn-outline" style="margin-top:12px" onclick="window.renderClientesTab()"><i class="fas fa-rotate-right"></i> Reintentar</button></div>`;
     return;
   }
 
