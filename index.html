@@ -39,7 +39,7 @@
     <link rel="dns-prefetch" href="https://fortnite-api.com">
     <!-- Precarga la PRIMERA imagen de fondo del hero con máxima prioridad, para que
          no tarde en aparecer al refrescar (antes se cargaban 6 fondos en fila) -->
-    <link rel="preload" as="image" href="https://cdn1.epicgames.com/spt-assets/prod-fn/FNBR_42-30_Fortnitemares_KeyArt_Fortnitemares_EGS_Launcher_Blade_2560x1440-cj2u6.jpg?resize=1&w=1280&h=720&quality=medium" fetchpriority="high">
+    <link rel="preload" as="image" href="https://preview.redd.it/this-is-the-background-of-the-fortnite-stw-image-does-v0-epyhr6hf4n091.png?width=1080&crop=smart&auto=webp&s=e2757e4865b70ff4cd058c502418b20914637768" fetchpriority="high">
     <meta property="og:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
     <meta property="og:description" content="Shegos Store | Fortnite">
     <meta property="og:type" content="website">
@@ -141,8 +141,8 @@
             inset: 0;
             z-index: 1;
             background:
-                linear-gradient(180deg, rgba(10, 8, 14, 0.3) 0%, rgba(10, 8, 14, 0.2) 35%, rgba(10, 8, 14, 0.3) 100%),
-                radial-gradient(ellipse at center, rgba(10, 8, 14, 0.1) 0%, rgba(10, 8, 14, 0.25) 100%);
+                linear-gradient(180deg, rgba(10, 8, 14, 0.12) 0%, rgba(10, 8, 14, 0.08) 35%, rgba(10, 8, 14, 0.14) 100%),
+                radial-gradient(ellipse at center, rgba(10, 8, 14, 0.03) 0%, rgba(10, 8, 14, 0.12) 100%);
             pointer-events: none;
         }
         .hero-bg-track {
@@ -164,7 +164,7 @@
         }
         /* Opacidad del fondo (punto medio: visible pero sin competir con el texto) */
         .hero-bg-rotator .bg-slide.bg-slide-active {
-            opacity: 0.40;
+            opacity: 0.32;
         }
         
         /* BANNER CÓDIGO FIJADO */
@@ -4511,7 +4511,9 @@
 :root { color-scheme: dark; --shegos-neon: #70ff00; }
 body { background-color: #030403; }
 .section-box, .producto, .servicio-home-card, .sb-card, .co-pay-option, .co-cart-item, .co-field-card, .order-card, .card {
-  background-color: rgba(5, 7, 5, .92) !important;
+  background-color: rgba(5, 7, 5, .78) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-color: rgba(112, 255, 0, .22);
 }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline-color: var(--shegos-neon) !important; }
