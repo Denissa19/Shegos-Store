@@ -4661,11 +4661,9 @@ body { background-color: transparent !important; isolation: isolate; }
         <div class="hero-bg-track" id="hero-bg-track"></div>
     </div>
     <script>
-    /* ── Rotador de fondo con crossfade (estilo Fortnite.com) ── */
+    /* Carga las imágenes de fondo de forma secuencial para reducir las peticiones iniciales. */
     (function () {
-        // Imagen de fondo de Fortnite Salvar el Mundo elegida para el sitio.
-        // Se mantiene fija para conservar la imagen seleccionada.
-        const IMAGENES_RESPALDO = [
+        const IMAGENES_FONDO = [
             'https://preview.redd.it/this-is-the-background-of-the-fortnite-stw-image-does-v0-epyhr6hf4n091.png?width=1080&crop=smart&auto=webp&s=e2757e4865b70ff4cd058c502418b20914637768',
             'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvl21dty0ahe06muhoa1yiia',
             'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvs7mfaz8fs006oac87zda69',
@@ -4674,29 +4672,25 @@ body { background-color: transparent !important; isolation: isolate; }
             'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvkzx5dm4cnc07mpl9lueu8v',
             'https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/output=format:webp/cmvgt2bsj1t8908n0j3pf0w1l'
         ];
-        const INTERVALO = 8000; // 8 segundos entre cambios
-
-        const track = document.getElementById('hero-bg-track');
-        if (!track) return;
-
-        const slides = IMAGENES_RESPALDO.map((url, i) => {
-            const slide = document.createElement('div');
-            slide.className = 'bg-slide' + (i === 0 ? ' bg-slide-active' : '');
-            slide.style.backgroundImage = `url('${url}')`;
-            track.appendChild(slide);
-            return slide;
-        });
-        if (!slides.length) return;
-
-        let indiceActual = 0;
-        if (slides.length > 1) {
-            setInterval(() => {
-                const siguiente = (indiceActual + 1) % slides.length;
-                slides[indiceActual].classList.remove('bg-slide-active');
-                slides[siguiente].classList.add('bg-slide-active');
-                indiceActual = siguiente;
-            }, INTERVALO);
-        }
+        const track=document.getElementById('hero-bg-track');
+        if(!track||!IMAGENES_FONDO.length)return;
+        const transicion=1900; let indice=0;
+        let actual=document.createElement('div');
+        actual.className='bg-slide bg-slide-active';
+        actual.style.backgroundImage="url('"+IMAGENES_FONDO[0]+"')";
+        track.appendChild(actual);
+        window.setInterval(function(){
+            indice=(indice+1)%IMAGENES_FONDO.length;
+            const siguiente=document.createElement('div');
+            siguiente.className='bg-slide';
+            siguiente.style.backgroundImage="url('"+IMAGENES_FONDO[indice]+"')";
+            track.appendChild(siguiente);
+            requestAnimationFrame(function(){requestAnimationFrame(function(){
+                siguiente.classList.add('bg-slide-active');
+                const anterior=actual; actual=siguiente; anterior.classList.remove('bg-slide-active');
+                window.setTimeout(function(){if(anterior.parentNode)anterior.parentNode.removeChild(anterior);},transicion+150);
+            });});
+        },8000);
     })();
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -6259,14 +6253,20 @@ body { background-color: transparent !important; isolation: isolate; }
                 // pasa el tiempo, simplemente seguimos sin esa imagen puntual.
                 const cargarImagen = (src) => new Promise((resolve) => {
                     if (!src) { resolve(null); return; }
-                    let resuelto = false;
-                    const terminar = (valor) => { if (resuelto) return; resuelto = true; resolve(valor); };
-                    const img = new Image();
+                    let resuelto = false, temporizador = 0, img = null;
+                    const terminar = (valor) => {
+                        if (resuelto) return;
+                        resuelto = true;
+                        if (temporizador) clearTimeout(temporizador);
+                        if (!valor && img) { img.onload=null; img.onerror=null; img.removeAttribute('src'); }
+                        resolve(valor);
+                    };
+                    img = new Image();
                     img.crossOrigin = 'anonymous';
                     img.onload = () => terminar(img);
                     img.onerror = () => terminar(null);
                     img.src = src;
-                    setTimeout(() => terminar(null), 8000);
+                    temporizador = setTimeout(() => terminar(null), 8000);
                 });
 
                 function roundRectPath(ctx, x, y, w, h, r) {
@@ -6335,10 +6335,10 @@ body { background-color: transparent !important; isolation: isolate; }
                 // eso en móvil usamos menos columnas y tarjetas más pequeñas: el
                 // canvas final queda muy por debajo de esos límites y la imagen se
                 // genera de forma confiable también en celulares de gama baja.
-                const numCols = 15;
+                const numCols = 7;
                 const margin = 40;
                 const gapX = 14, gapY = 16;
-                const cardW = esMobile ? 190 : 260;
+                const cardW = esMobile ? 250 : 400;
                 const W = margin * 2 + numCols * cardW + (numCols - 1) * gapX;
 
                 // Factor de escala del encabezado/pie: en móvil el canvas es mucho
@@ -6392,7 +6392,9 @@ body { background-color: transparent !important; isolation: isolate; }
                 // usadas más abajo. En móvil usamos un factor menor para no acercarnos
                 // al límite de ~4096px de ancho/alto que fallaba en algunos navegadores.
                 const logicalH = Math.round(totalH);
-                const RES_SCALE = esMobile ? 1.3 : 2;
+                const MAX_CANVAS_EDGE = 20000;
+                const MAX_CANVAS_PIXELS = 40000000;
+                const RES_SCALE = Math.min(esMobile ? 0.8 : 0.85, MAX_CANVAS_EDGE / Math.max(W, logicalH), Math.sqrt(MAX_CANVAS_PIXELS / (W * logicalH)));
                 const canvas = document.createElement('canvas');
                 canvas.width = Math.round(W * RES_SCALE);
                 canvas.height = Math.round(logicalH * RES_SCALE);
@@ -6489,14 +6491,35 @@ body { background-color: transparent !important; isolation: isolate; }
                 ctx.fillStyle = '#0e1420';
                 ctx.fillText(txtCreator, pillX + pillPadX, pillY + pillH / 2 + px(27));
                 ctx.font = `900 ${px(102)}px 'BurbankBigCondensed', Arial`;
-                ctx.fillStyle = '#70ff00';
+                ctx.fillStyle = '#1958d1';
                 ctx.fillText(txtCodigo, pillX + pillPadX + wCreator + px(24), pillY + pillH / 2 + px(36));
 
                 // ── Precargar todas las imágenes de los items (sin música), en el mismo
                 // orden en que aparecen en la cuadrícula, para no repetir llamadas de red ──
                 const imgsMap = new Map();
-                const imgsCargadas = await Promise.all(itemsOrdenados.map(it => cargarImagen(it.imagen)));
-                itemsOrdenados.forEach((it, i) => imgsMap.set(it, imgsCargadas[i]));
+                const imgsCargadas = new Array(itemsOrdenados.length);
+                const cacheThumbSize = Math.min(320, thumbSize);
+                let siguienteImagen = 0;
+                const maxConcurrentes = Math.min(esMobile ? 8 : 16, itemsOrdenados.length);
+                async function trabajadorDeImagenes() {
+                    while (true) {
+                        const i = siguienteImagen++;
+                        if (i >= itemsOrdenados.length) return;
+                        const original = await cargarImagen(itemsOrdenados[i].imagen);
+                        if (!original) continue;
+                        const mini = document.createElement('canvas');
+                        mini.width = cacheThumbSize; mini.height = cacheThumbSize;
+                        const miniCtx = mini.getContext('2d');
+                        if (miniCtx) {
+                            const ratio = Math.max(cacheThumbSize / original.width, cacheThumbSize / original.height);
+                            const w = original.width * ratio, h = original.height * ratio;
+                            miniCtx.drawImage(original, (cacheThumbSize-w)/2, (cacheThumbSize-h)/2, w, h);
+                            imgsCargadas[i] = mini;
+                        }
+                    }
+                }
+                await Promise.all(Array.from({length:maxConcurrentes},()=>trabajadorDeImagenes()));
+                itemsOrdenados.forEach((it,i)=>imgsMap.set(it,imgsCargadas[i]||null));
 
                 // ── Dibujar TODOS los cosméticos del día en una sola cuadrícula
                 // continua, sin títulos de sección: cada tarjeta va justo detrás de
@@ -6623,7 +6646,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 // al manejar strings tan largos, dejando el botón de descarga "sin
                 // hacer nada" en esos equipos. toBlob entrega los bytes directamente.
                 const blob = await new Promise((resolve, reject) => {
-                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.92);
+                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.82);
                 });
                 const dataUrl = URL.createObjectURL(blob);
                 const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.jpg`;
