@@ -4671,6 +4671,11 @@ body { background-color: transparent !important; isolation: isolate; }
   #currency-trigger-desktop { width:40px !important; height:40px !important; min-width:40px; padding:0 !important; justify-content:center; }
 }
 </style>
+
+<style id="shegos-direct-vbucks-list">
+#vb-precios.club-precios { min-height:0; padding-top:12px; }
+#vb-precios .servicio-card { opacity:1 !important; transform:none !important; transition:none !important; }
+</style>
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -5077,22 +5082,7 @@ body { background-color: transparent !important; isolation: isolate; }
 
             <div id="sub-pavos" class="sub-seccion-servicios">
                 <button class="filtro-btn" onclick="mostrarSubServicio('menu')" style="margin-bottom: 20px;">← Volver</button>
-                <!-- HERO V-BUCKS (estilo Fortnite Crew) -->
-                <section id="vb-hero-sec" class="club-hero">
-                    <div class="club-hero-main">
-                        <div class="club-hero-text">
-                            <h2 class="club-hero-title">V-BUCKS<small>DE FORTNITE</small></h2>
-                            <p class="club-hero-lema">Recarga tus pavos de forma rápida y segura</p>
-                            <p class="club-hero-desc">Se entrega <strong>una cuenta con los pavos ya recargados</strong>. Cambias los datos a los tuyos y recibes tus regalos.</p>
-                            <p class="club-hero-nota">*Los regalos se pueden enviar tras 48 h de agregado.</p>
-                            <button class="club-hero-btn" onclick="vbIrAPrecios()">Ver precios</button>
-                        </div>
-                        <div class="club-hero-img"><img decoding="async" src="https://imgs.search.brave.com/eXrymGzY5POI-hJIAe_Zf4XlwgxTdp4Z9cWN1Iz3lmg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRpYS5nYW1lc3RvcC5j/b20vaS9nYW1lc3Rv/cC9FR1NfMjgwMFZC/dWNrc18xOTIweDEwODAtMTkyMHgxMDgwLWViNjczYjFhODZlMzFkZTY4MDcyMGExYTM1NDQ2ZjA0YWRmOTg3ZWEvZm9ybml0ZSUyMHZidWNrcy53ZWJw" width="1280" height="720" alt="V-Bucks de Fortnite"></div>
-                    </div>
-                    <button class="club-scroll-arrow" onclick="vbIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
-                </section>
-
-                <!-- PRECIOS (aparecen al deslizar) -->
+                <!-- Pavos y cuentas disponibles -->
                 <section id="vb-precios" class="club-precios">
                     <div class="club-panel activo">
                 <h4 class="vb-subtitle">Elige tu cantidad</h4>
