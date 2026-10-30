@@ -1360,7 +1360,7 @@ select option,select optgroup{background:#111;color:#fff}
         <input class="filter-sel" id="cc-price-max" type="number" min="0" step="0.01" placeholder="Precio máx. (USD)" oninput="window.renderCatalogoCuentas()">
         <select class="filter-sel sec-ceo-only" id="cc-state" onchange="window.renderCatalogoCuentas()"><option value="">Todos los estados</option><option value="disponible">Disponibles</option><option value="reservada">Reservadas</option><option value="vendida">Vendidas</option></select>
       </div>
-      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div>
+      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><div class="account-catalog-tools"><button class="btn btn-ghost sec-ceo-only" id="cc-import" type="button" onclick="window.importCatalogoCuentas()"><i class="fas fa-cloud-arrow-down"></i> Importar cuentas</button><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div></div>
       <div class="account-catalog-grid" id="cc-grid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div></div>
     </div>
 
@@ -4249,6 +4249,7 @@ function exportAccounting() {
 
 // --- CATÁLOGO DE CUENTAS DISPONIBLES ---
 let catalogoCuentas = [];
+let catalogoSkinSignedUrls = new Map();
 const escaparCatalogo = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 
 async function cargarCatalogoCuentas() {
@@ -4257,9 +4258,16 @@ async function cargarCatalogoCuentas() {
   if (!grid) return;
   grid.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div>';
   try {
-    const { data, error } = await supabase.from('catalogo_cuentas').select('id,titulo,cantidad_skins,skins_destacadas,tiene_stw,dias_inactividad,precio_usd,descripcion,estado,creado_en').order('precio_usd');
+    const { data, error } = await supabase.from('catalogo_cuentas').select('id,titulo,cantidad_skins,skins_destacadas,imagenes_skins,tiene_stw,dias_inactividad,precio_usd,descripcion,estado,creado_en').order('precio_usd');
     if (error) throw error;
     catalogoCuentas = data || [];
+    catalogoSkinSignedUrls = new Map();
+    const imagePaths = [...new Set(catalogoCuentas.flatMap(row => Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).filter(Boolean))];
+    if (imagePaths.length) {
+      const { data: signedImages, error: imageError } = await supabase.storage.from('catalogo-skins').createSignedUrls(imagePaths, 3600);
+      if (imageError) console.warn('No se pudieron firmar las imágenes del catálogo:', imageError.message);
+      else (signedImages || []).forEach(image => { if (image.path && image.signedUrl) catalogoSkinSignedUrls.set(image.path, image.signedUrl); });
+    }
     renderCatalogoCuentas();
   } catch (err) {
     if (count) count.textContent = 'No se pudo cargar el catálogo';
@@ -4292,11 +4300,51 @@ function renderCatalogoCuentas() {
   }
   grid.innerHTML = rows.map(row => {
     const tags = (row.skins_destacadas || []).filter(Boolean).map(tag => `<span class="account-skin-tag">${escaparCatalogo(tag)}</span>`).join('');
+    const skinImages = (Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).slice(0, 6).map((path, index) => {
+      const imageUrl = catalogoSkinSignedUrls.get(path);
+      if (!imageUrl) return '';
+      const name = row.skins_destacadas?.[index] || `Skin ${index + 1}`;
+      return `<div class="account-skin-image"><img src="${escaparCatalogo(imageUrl)}" alt="${escaparCatalogo(name)}" loading="lazy"><span>${escaparCatalogo(name)}</span></div>`;
+    }).join('');
+    const gallery = skinImages ? `<div class="account-skin-gallery">${skinImages}</div>` : '';
     const estado = row.estado === 'disponible' ? 'Disponible' : row.estado === 'reservada' ? 'Reservada' : 'Vendida';
     const edit = currentRole === 'CEO' ? `<button class="btn btn-ghost account-edit-btn" type="button" onclick="window.abrirEditorCuentaCatalogo('${escaparCatalogo(row.id)}')"><i class="fas fa-pen"></i> Editar</button>` : '';
-    return `<article class="account-catalog-card"><div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
+    return `<article class="account-catalog-card">${gallery}<div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
   }).join('');
 }
+
+window.importCatalogoCuentas = async function(reset = false) {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede actualizar el catálogo.', true);
+  const button = document.getElementById('cc-import');
+  const resetting = reset || button?.dataset.completed === 'true';
+  if (button) { button.disabled = true; button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando…'; }
+  try {
+    const { data, error } = await supabase.functions.invoke('catalogo-importar', { body: resetting ? { reset: true } : { batch_size: 8 } });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    if (resetting) {
+      if (button) { button.dataset.completed = 'false'; button.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Importar cuentas'; }
+      showToast(data?.message || 'Recorrido reiniciado.');
+      return;
+    }
+    if (button) {
+      button.dataset.completed = data?.has_more ? 'false' : 'true';
+      button.innerHTML = data?.has_more
+        ? '<i class="fas fa-cloud-arrow-down"></i> Importar siguiente lote'
+        : '<i class="fas fa-rotate-left"></i> Reiniciar importación';
+    }
+    showToast(`${data?.message || 'Catálogo actualizado.'} ${data?.imported || 0} cuentas · ${data?.images || 0} imágenes.`);
+    await cargarCatalogoCuentas();
+  } catch (err) {
+    if (button) {
+      button.dataset.completed = 'false';
+      button.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Importar cuentas';
+    }
+    showToast(err.message || 'No se pudo actualizar el catálogo.', true);
+  } finally {
+    if (button) button.disabled = false;
+  }
+};
 
 function abrirEditorCuentaCatalogo(id = '') {
   if (currentRole !== 'CEO') return showToast('Solo el CEO puede administrar el catálogo.', true);
