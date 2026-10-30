@@ -5314,17 +5314,11 @@ body { background-color: transparent !important; isolation: isolate; }
                             <button class="co-back-btn" onclick="cambiarPasoCheckout(1)">← Volver al carrito</button>
                             <h3 class="co-section-title">Datos de Contacto</h3>
 
-                            <div class="co-field-card">
-                                <div class="co-field-card-icon"><i class="fas fa-user"></i></div>
-                                <div class="co-field-card-body">
-                                    <label class="co-label">Nombre completo</label>
-                                    <input type="text" id="cliente-nombre" class="co-input" placeholder="Tu nombre">
-                                </div>
-                            </div>
+                            
                             <div class="co-field-card">
                                 <div class="co-field-card-icon"><i class="fab fa-whatsapp"></i></div>
                                 <div class="co-field-card-body">
-                                    <label class="co-label">WhatsApp</label>
+                                    <label class="co-label">WhatsApp con código de país</label>
                                     <div class="co-field-card-whatsapp">
                                         <input type="text" id="cliente-whatsapp-codigo" class="co-input-code" placeholder="+1" inputmode="tel" maxlength="4">
                                         <input type="tel" id="cliente-whatsapp-numero" class="co-input" placeholder="Tu número de WhatsApp" inputmode="tel">
@@ -5340,7 +5334,7 @@ body { background-color: transparent !important; isolation: isolate; }
                             </div>
                             <div class="co-friend-notice" style="cursor:default;">
                                 <i class="fas fa-circle-info"></i>
-                                <span>Debes dejar al menos <strong>uno</strong> de los dos: tu WhatsApp o tu usuario de Discord, para que podamos contactarte y completar tu pedido.</span>
+                                <span>Debes dejar al menos uno: tu WhatsApp con código de país o tu usuario de Discord, para que podamos contactarte y completar tu pedido.</span>
                             </div>
                             <div class="co-field-card">
                                 <div class="co-field-card-icon"><i class="fas fa-gamepad"></i></div>
@@ -7675,7 +7669,6 @@ body { background-color: transparent !important; isolation: isolate; }
             ];
             if (d.idPedido) partes.push(E.id + ' *Pedido:* ' + d.idPedido);
             partes.push(
-                E.user + ' *Cliente:* ' + d.nombre,
                 E.phone + ' *WhatsApp:* ' + (d.whatsapp || '\u2014'),
                 E.discord + ' *Discord:* ' + (d.discord || '\u2014'),
                 E.epic + ' *Epic ID:* ' + d.epicId
@@ -7725,8 +7718,6 @@ body { background-color: transparent !important; isolation: isolate; }
         async function enviarPedidoFinal() {
             const btnFinal = document.getElementById('btn-main-checkout');
             if (!btnFinal || btnFinal.classList.contains('locked')) return;
-
-            const nombre = document.getElementById('cliente-nombre').value;
             const epicId = document.getElementById('cliente-epic').value;
             const waCodigo = document.getElementById('cliente-whatsapp-codigo').value.trim();
             const waNumero = document.getElementById('cliente-whatsapp-numero').value.trim();
@@ -7741,8 +7732,8 @@ body { background-color: transparent !important; isolation: isolate; }
             const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
             const metodoRaw = seleccionado ? seleccionado.value : "";
 
-            if(!nombre || !epicId || (!whatsappCliente && !discordCliente) || !metodoRaw) {
-                return alert("Por favor completa todos tus datos (incluyendo WhatsApp o Discord) y elige un método de pago.");
+            if(!epicId || (!whatsappCliente && !discordCliente) || !metodoRaw) {
+                return alert("Completa tu ID de Epic Games, tu WhatsApp con código de país o tu usuario de Discord, y elige un método de pago.");
             }
 
             if(carrito.length === 0) return alert("Tu carrito está vacío.");
@@ -7788,7 +7779,7 @@ body { background-color: transparent !important; isolation: isolate; }
 
             const orderData = {
                 id_pedido: orderId,
-                nombre_cliente: nombre,
+                nombre_cliente: 'Sin nombre proporcionado',
                 whatsapp_cliente: whatsappCliente,
                 discord_cliente: discordCliente,
                 epic_id_cliente: epicId,
@@ -7814,7 +7805,6 @@ body { background-color: transparent !important; isolation: isolate; }
                 const metodo = metodoRaw.toUpperCase();
                 const mensaje = construirMensajePedidoWhatsApp({
                     idPedido: orderId,
-                    nombre: nombre,
                     whatsapp: whatsappCliente,
                     discord: discordCliente,
                     epicId: epicId,
@@ -7916,7 +7906,6 @@ body { background-color: transparent !important; isolation: isolate; }
         }
 
         function confirmarYEnviarWhatsApp() {
-            const nombre = document.getElementById('cliente-nombre').value;
             const epicId = document.getElementById('cliente-epic').value;
             const waCodigo = document.getElementById('cliente-whatsapp-codigo').value.trim();
             const waNumero = document.getElementById('cliente-whatsapp-numero').value.trim();
@@ -7930,7 +7919,6 @@ body { background-color: transparent !important; isolation: isolate; }
             const total = totalMostrado();
 
             const mensaje = construirMensajePedidoWhatsApp({
-                nombre: nombre,
                 whatsapp: whatsappCliente,
                 discord: discordCliente,
                 epicId: epicId,
@@ -8195,14 +8183,13 @@ body { background-color: transparent !important; isolation: isolate; }
                 }
                 cambiarPasoCheckout(2);
             } else if (pasoCheckoutActual === 2) {
-                const nombre = document.getElementById('cliente-nombre').value.trim();
                 const epicId = document.getElementById('cliente-epic').value.trim();
                 const waCodigo = document.getElementById('cliente-whatsapp-codigo').value.trim();
                 const waNumero = document.getElementById('cliente-whatsapp-numero').value.trim();
                 const discord = document.getElementById('cliente-discord').value.trim();
                 const whatsappCompleto = waCodigo && waNumero;
-                if (!nombre || !epicId) {
-                    return alert("Por favor completa tu nombre e ID de Epic Games.");
+                if (!epicId) {
+                    return alert("Por favor ingresa tu ID de Epic Games.");
                 }
                 if (!whatsappCompleto && !discord) {
                     return alert("Por favor ingresa tu número de WhatsApp (con código de país) o tu usuario de Discord para poder contactarte.");
