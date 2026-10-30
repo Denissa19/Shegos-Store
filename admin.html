@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="shortcut icon" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 @font-face {
@@ -257,7 +257,7 @@ td{padding:12px 14px;vertical-align:middle}
 .sec-line{flex:1;height:1px;background:var(--border)}
 
 /* ── TOAST ──────────────────────────────── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--accent);padding:13px 18px;font-size:0.78em;color:var(--text);z-index:9000;transform:translateY(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:300px;border-radius:4px;font-weight:500}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-left:3px solid var(--accent);padding:13px 18px;font-size:0.78em;color:var(--text);z-index:9000;transform:translateY(120%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-width:300px;border-radius:4px;font-weight:500;pointer-events:none}
 .toast.show{transform:translateY(0)}
 .toast.err{border-left-color:var(--red)}
 
@@ -572,7 +572,7 @@ td{padding:12px 14px;vertical-align:middle}
   }
 
   /* Toast bottom offset for bottom nav */
-  .toast { bottom: 80px; right: 14px; left: 14px; max-width: none; }
+  .toast { bottom: calc(14px + env(safe-area-inset-bottom)); right: 14px; left: 14px; max-width: none; }
 
   /* Sec title */
   .sec-title h3 { font-size: 1.05em; }
@@ -608,80 +608,9 @@ td{padding:12px 14px;vertical-align:middle}
   #tab-cuentas .toolbar .search-wrap { width: 100%; }
   #tab-cuentas .toolbar .month-input { flex: 1; min-width: 100px; }
 
-  /* Recovery tab */
-  #tab-recovery .stats-row { grid-template-columns: 1fr 1fr !important; }
-  #rec-charts-row { grid-template-columns: 1fr !important; }
-  .rec-donut-wrap { gap: 16px; }
-  .rec-donut-svg { width: 80px; height: 80px; }
 }
 
-/* ── RECOVERY TAB STYLES ─────────────────── */
-.recovery-chart-wrap {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 22px;
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
-}
-.recovery-chart-title {
-  font-size: 0.7em;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--text2);
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-.rec-donut-wrap {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  flex-wrap: wrap;
-}
-.rec-donut-svg { flex-shrink: 0; }
-.rec-legend { display: flex; flex-direction: column; gap: 10px; }
-.rec-legend-item {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 0.8em; font-weight: 600; color: var(--text);
-}
-.rec-legend-dot {
-  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-}
-.rec-legend-val { color: var(--text2); font-weight: 500; margin-left: auto; padding-left: 16px; }
-
-.rec-history-card {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  transition: border-color .2s;
-}
-.rec-history-card:hover { border-color: var(--accent); }
-.rec-status-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  flex-shrink: 0; margin-top: 4px;
-}
-.rec-history-info { flex: 1; min-width: 0; }
-.rec-history-email {
-  font-size: 0.82em; font-weight: 700; color: var(--accent);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.rec-history-meta {
-  font-size: 0.68em; color: var(--text2); margin-top: 3px; font-weight: 500;
-}
-.rec-history-badge {
-  font-size: 0.62em; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
-  flex-shrink: 0; align-self: flex-start;
-}
-.rbadge-si { background: rgba(40,254,182,.12); color: var(--accent); border: 1px solid rgba(40,254,182,.3); }
-.rbadge-no { background: rgba(255,77,109,.12); color: var(--red); border: 1px solid rgba(255,77,109,.3); }
-
-/* ── TOGGLE SWITCH ────────────────────────── */
+  /* ── TOGGLE SWITCH ────────────────────────── */
 .toggle-wrap { display: flex; gap: 6px; }
 .toggle-btn {
   flex: 1; padding: 10px 8px; border-radius: 6px;
@@ -819,6 +748,7 @@ td{padding:12px 14px;vertical-align:middle}
 .cal-month-item { text-align: center; padding: 8px 4px; font-size: .75em; font-weight: 700; cursor: pointer; border-radius: 5px; color: var(--text2); transition: all .15s; text-transform: uppercase; letter-spacing: .5px; border: 1px solid transparent; }
 .cal-month-item:hover { background: var(--accent-dim); color: var(--accent); border-color: rgba(40,254,182,.3); }
 .cal-month-item.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+</style>
 <style id="ux-polish">
 /* ── PULIDO UX: movimiento, profundidad y feedback ── */
 :root{--ease:cubic-bezier(.2,.8,.2,1)}
@@ -969,6 +899,7 @@ select option,select optgroup{background:#111;color:#fff}
 .stat-card:hover::after{height:2px !important}
 .stat-card:hover .stat-value{text-shadow:none !important}
 </style>
+<link rel="stylesheet" href="admin-ui.css">
 <body>
 
 <div id="login-screen">
@@ -1021,30 +952,61 @@ select option,select optgroup{background:#111;color:#fff}
   </div>
 </div>
 
+<div class="overlay" id="modal-catalogo-cuenta" onclick="if(event.target===this)window.cerrarEditorCuentaCatalogo()">
+  <div class="mcard">
+    <div class="mhead"><div class="mtitle" id="cc-modal-title">Agregar cuenta</div><button class="mclose" type="button" onclick="window.cerrarEditorCuentaCatalogo()" aria-label="Cerrar"><i class="fas fa-times"></i></button></div>
+    <form onsubmit="window.guardarCuentaCatalogo(event)">
+      <div class="mbody">
+        <input id="cc-id" type="hidden">
+        <div class="fgroup"><label class="flabel" for="cc-title">Nombre interno visible en el catálogo</label><input class="finput" id="cc-title" required maxlength="100" placeholder="Ej. Cuenta legendaria"></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-skin-count">Cantidad de skins</label><input class="finput" id="cc-skin-count" type="number" min="0" required value="0"></div><div class="fgroup"><label class="flabel" for="cc-idle-days">Días de inactividad</label><input class="finput" id="cc-idle-days" type="number" min="0" required value="0"></div></div>
+        <div class="fgroup"><label class="flabel" for="cc-skin-tags">Skins destacadas · separadas por coma</label><input class="finput" id="cc-skin-tags" placeholder="Renegade Raider, Black Knight"></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-has-stw">Salvar el mundo</label><select class="fsel" id="cc-has-stw"><option value="true">Sí, incluye STW</option><option value="false">No incluye STW</option></select></div><div class="fgroup"><label class="flabel" for="cc-price">Precio de venta (USD)</label><input class="finput" id="cc-price" type="number" min="0" step="0.01" required></div></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-status-edit">Estado</label><select class="fsel" id="cc-status-edit"><option value="disponible">Disponible</option><option value="reservada">Reservada</option><option value="vendida">Vendida</option></select></div><div class="fgroup"><label class="flabel" for="cc-reference">Referencia interna</label><input class="finput" id="cc-reference" placeholder="Solo visible para CEO"></div></div>
+        <div class="frow"><div class="fgroup"><label class="flabel" for="cc-cost">Costo de adquisición (USD)</label><input class="finput" id="cc-cost" type="number" min="0" step="0.01"></div><div class="fgroup"><label class="flabel" for="cc-internal-notes">Notas internas</label><input class="finput" id="cc-internal-notes" placeholder="Privadas para CEO"></div></div>
+        <div class="fgroup"><label class="flabel" for="cc-description">Descripción para el equipo</label><textarea class="ftarea" id="cc-description" maxlength="500" placeholder="Detalles útiles para ofrecer esta cuenta"></textarea></div>
+        <div id="cc-form-error" class="catalog-form-error" hidden></div>
+      </div>
+      <div class="mfoot"><button class="btn btn-ghost" type="button" onclick="window.cerrarEditorCuentaCatalogo()">Cancelar</button><button class="btn btn-accent" id="cc-save" type="submit"><i class="fas fa-floppy-disk"></i> Guardar cuenta</button></div>
+    </form>
+  </div>
+</div>
 
 <div id="app">
   <div class="topbar">
-    <div class="topbar-brand">SHEGOS <span>STORE</span></div>
+    <button type="button" class="sidebar-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="window.toggleAdminSidebar()"><i class="fas fa-bars"></i></button><div class="topbar-brand">Panel de gestión</div>
     <div class="topbar-right">
       <div class="topbar-revenue" id="topbar-rev"></div>
       <div class="topbar-revenue" id="topbar-user" style="font-size:0.72em;color:var(--text2)"></div>
       <button class="btn-logout" onclick="window.openWallpaperPicker()" title="Cambiar fondo" style="border-color:var(--border2);margin-right:4px">
         <i class="fas fa-image"></i>
       </button>
+      <button class="btn-logout btn-change-password" onclick="window.openChangePassword()" title="Cambiar contraseña" aria-label="Cambiar contraseña"><i class="fas fa-key"></i><span>Cambiar contraseña</span></button>
       <button class="btn-logout" onclick="window.doLogout()"><i class="fas fa-sign-out-alt"></i> Salir</button>
     </div>
   </div>
   <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none" onchange="window.applyWallpaper(this)">
 
-  <div class="tabs-nav">
-    <button class="tab-nav-btn active" id="btn-tab-pedidos" onclick="window.switchTab('pedidos',this)"><i class="fas fa-list-ul"></i> Pedidos</button>
-    <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)"><i class="fas fa-chart-bar"></i> Contabilidad</button>
-    <button class="tab-nav-btn" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)" style="display:none"><i class="fas fa-coins"></i> Cuentas</button>
-    <button class="tab-nav-btn" id="btn-tab-recovery" onclick="window.switchTab('recovery',this)" style="display:none"><i class="fas fa-shield-alt"></i> Recuperación</button>
-    <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i> Clientes</button>
-    <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i> Notas</button>
-    <button class="tab-nav-btn" id="btn-tab-xboxgames" onclick="window.switchTab('xboxgames',this)"><i class="fab fa-xbox"></i> Juegos Xbox</button>
-  </div>
+  <nav class="tabs-nav" id="admin-sidebar" aria-label="Navegación principal">
+    <div class="sidebar-brand"><img src="data:image/webp;base64,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" alt="Shegos Store"><button type="button" class="sidebar-close" aria-label="Cerrar menú" onclick="window.toggleAdminSidebar(false)"><i class="fas fa-times"></i></button></div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Operación diaria</div>
+      <button class="tab-nav-btn active" id="btn-tab-pedidos" onclick="window.switchTab('pedidos',this)"><i class="fas fa-list-ul"></i><span>Pedidos</span></button>
+      <button class="tab-nav-btn" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)" style="display:none"><i class="fas fa-coins"></i><span>Cuentas</span></button>
+      <button class="tab-nav-btn" id="btn-tab-catalogo-cuentas" onclick="window.switchTab('catalogo-cuentas',this)"><i class="fas fa-gamepad"></i><span>Catálogo de cuentas</span></button>
+      <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i><span>Clientes</span></button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Finanzas y control</div>
+      <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)" style="display:none"><i class="fas fa-chart-bar"></i><span>Contabilidad</span></button>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Espacio de trabajo</div>
+      <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i><span>Notas</span></button>
+    </div>
+    <div class="sidebar-footnote"><i class="fas fa-circle-check"></i> Gestión de Shegos Store</div>
+  </nav>
+  <button type="button" id="sidebar-scrim" aria-label="Cerrar menú" onclick="window.toggleAdminSidebar(false)"></button>
 
   <!-- Mobile Bottom Navigation -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
@@ -1058,21 +1020,28 @@ select option,select optgroup{background:#111;color:#fff}
       <button class="mnav-btn" id="mnav-cuentas" onclick="window.switchTab('cuentas', document.getElementById('btn-tab-cuentas')); window.setActiveMNav('cuentas')">
         <i class="fas fa-coins"></i>Cuentas
       </button>
-      <button class="mnav-btn" id="mnav-recovery" onclick="window.switchTab('recovery', document.getElementById('btn-tab-recovery')); window.setActiveMNav('recovery')">
-        <i class="fas fa-shield-alt"></i>Recup.
+      <button class="mnav-btn" id="mnav-catalogo-cuentas" onclick="window.switchTab('catalogo-cuentas', document.getElementById('btn-tab-catalogo-cuentas')); window.setActiveMNav('catalogo-cuentas')">
+        <i class="fas fa-gamepad"></i>Catálogo
       </button>
-      <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
+<button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
       </button>
-      <button class="mnav-btn" id="mnav-xboxgames" onclick="window.switchTab('xboxgames', document.getElementById('btn-tab-xboxgames')); window.setActiveMNav('xboxgames')">
-        <i class="fab fa-xbox"></i>Xbox
-      </button>
+      
     </div>
   </nav>
 
   <div class="main">
 
     <div class="tab-panel active" id="tab-pedidos">
+
+      <div class="dash-welcome">
+  <div class="dash-welcome-copy">
+    <span class="dash-eyebrow">Operación · Shegos Store</span>
+    <h1>Pedidos al día</h1>
+    <p>Revisa lo pendiente, sigue cada entrega y mantén la tienda en movimiento.</p>
+  </div>
+  <div class="dash-welcome-mark" aria-hidden="true"><i class="fas fa-bolt"></i></div>
+</div>
 
       <div class="stats-row">
         <div class="stat-card" style="--accent-c:var(--gold)" onclick="window.filterByStatus('Pendiente')">
@@ -1140,7 +1109,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label>Período:</label>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" readonly onclick="window.openCal('month-sel','month')">
+            <input type="text" class="month-input" id="month-sel" placeholder="Seleccionar mes" onclick="window.openCal('month-sel','month')" onchange="window.validateCalendarInput(this,'month')" title="También puedes escribir el mes con formato AAAA-MM.">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-month-sel"></div>
@@ -1226,6 +1195,25 @@ select option,select optgroup{background:#111;color:#fff}
 
     <!-- ── TAB CUENTAS ─────────────────────────── -->
     <div class="tab-panel" id="tab-cuentas">
+
+      <section class="sales-insights" aria-labelledby="sales-insights-title">
+        <div class="sales-insights-heading"><div><span class="dash-eyebrow">Ventas · Tendencia</span><h2 id="sales-insights-title">Así se mueve la tienda</h2><p>Compara el mes actual con el anterior y encuentra tus productos más vendidos.</p></div><span class="sales-insights-period" id="sales-insights-period"></span></div>
+        <div class="sales-insights-metrics">
+          <article class="sales-insight-metric"><span>Ventas este mes</span><strong id="sales-month-count">0</strong><small id="sales-month-change">Sin comparación</small></article>
+          <article class="sales-insight-metric"><span>Mes anterior</span><strong id="sales-prev-count">0</strong><small id="sales-prev-label">—</small></article>
+          <article class="sales-insight-metric sec-ceo-only"><span>Ingresos este mes</span><strong id="sales-month-revenue">$0.00</strong><small id="sales-revenue-change">Comparado con el mes anterior</small></article>
+        </div>
+        <div class="sales-insights-charts">
+          <article class="sales-chart-card sales-chart-month"><div class="sales-chart-title"><div><strong>Ventas por mes</strong><span>Últimos 6 meses</span></div><i class="fas fa-chart-column"></i></div><div id="sales-monthly-chart" class="sales-bars" role="img" aria-label="Cantidad de ventas por mes"></div></article>
+          <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Productos más vendidos</strong><span>Por número de ventas</span></div><i class="fas fa-trophy"></i></div><div id="sales-products-chart" class="sales-rank-list"></div></article>
+          <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Tipos de venta</strong><span>Distribución del mes actual</span></div><i class="fas fa-layer-group"></i></div><div id="sales-types-chart" class="sales-rank-list"></div></article>
+        </div>
+        <article class="purchase-pattern-card" aria-labelledby="purchase-pattern-title">
+          <div class="sales-chart-title"><div><strong id="purchase-pattern-title">Análisis inteligente de compras</strong><span>Media de compras por día de la semana en el período seleccionado</span></div><i class="fas fa-wand-magic-sparkles"></i></div>
+          <div id="purchase-pattern-summary" class="purchase-pattern-summary">Selecciona un rango o espera a que carguen las ventas.</div>
+          <div id="purchase-weekday-chart" class="purchase-weekday-chart"></div>
+        </article>
+      </section>
 
       <!-- Tarjetas por tipo — solo contador visible para ADMIN, $ solo CEO -->
       <div class="stats-row" style="grid-template-columns:repeat(7,1fr);margin-bottom:14px">
@@ -1321,14 +1309,14 @@ select option,select optgroup{background:#111;color:#fff}
         </select>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-from" title="Desde" placeholder="Desde" readonly onclick="window.openCal('vc-date-from','date')">
+            <input type="text" class="month-input" id="vc-date-from" title="Desde · formato AAAA-MM-DD" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-from"></div>
         </div>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-to" title="Hasta" placeholder="Hasta" readonly onclick="window.openCal('vc-date-to','date')">
+            <input type="text" class="month-input" id="vc-date-to" title="Hasta · formato AAAA-MM-DD" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-to"></div>
@@ -1346,9 +1334,8 @@ select option,select optgroup{background:#111;color:#fff}
           <option value="365">Último año</option>
         </select>
         <button class="btn btn-ghost" onclick="window.vcClearDates()"><i class="fas fa-calendar-xmark"></i> Todas</button>
-        <button class="btn btn-accent" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
-        <button class="btn btn-ghost sec-ceo-only" onclick="window.openRetiroModal()" style="border-color:#f97316;color:#f97316"><i class="fas fa-wallet"></i> Registrar Retiro</button>
-        <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasCSV()"><i class="fas fa-download"></i> CSV</button>
+        <button type="button" class="btn btn-accent" id="btn-nueva-venta" onclick="window.openVentaModal()"><i class="fas fa-plus"></i> Nueva Venta</button>
+        <button class="btn btn-outline sec-ceo-only" onclick="window.exportVentasPDF()"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
       </div>
 
       <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div><span id="vc-count-info" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span></div>
@@ -1356,97 +1343,28 @@ select option,select optgroup{background:#111;color:#fff}
     </div>
 
     <!-- ── TAB RECUPERACIÓN ─────────────────── -->
-    <div class="tab-panel" id="tab-recovery">
-
-      <!-- Stat cards -->
-      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-        <div class="stat-card" style="--accent-c:var(--accent)">
-          <div class="stat-label"><i class="fas fa-shield-check"></i> Total Recuperadas</div>
-          <div class="stat-value green" id="rec-s-total">0</div>
-          <div class="stat-sub">registros totales</div>
-        </div>
-        <div class="stat-card" style="--accent-c:#a855f7">
-          <div class="stat-label"><i class="fas fa-lock"></i> Inactividad Prom.</div>
-          <div class="stat-value" style="color:#a855f7;font-size:1.8em" id="rec-s-inac">—</div>
-          <div class="stat-sub">días sin uso</div>
-        </div>
-        <div class="stat-card" style="--accent-c:var(--accent)">
-          <div class="stat-label"><i class="fas fa-check-double"></i> Aseguradas Bien</div>
-          <div class="stat-value green" id="rec-s-si">0</div>
-          <div class="stat-sub">cuenta segura</div>
-        </div>
-        <div class="stat-card" style="--accent-c:var(--red)">
-          <div class="stat-label"><i class="fas fa-exclamation-triangle"></i> Sin Asegurar</div>
-          <div class="stat-value" style="color:var(--red)" id="rec-s-no">0</div>
-          <div class="stat-sub">requieren atención</div>
-        </div>
-      </div>
-
-      <!-- Charts row -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px" id="rec-charts-row">
-        <!-- Donut chart -->
-        <div class="recovery-chart-wrap">
-          <div class="recovery-chart-title">ESTADO DE SEGURIDAD</div>
-          <div class="rec-donut-wrap">
-            <svg class="rec-donut-svg" id="rec-donut" width="100" height="100" viewBox="0 0 36 36">
-              <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--border2)" stroke-width="3.2"/>
-              <circle id="rec-donut-si" cx="18" cy="18" r="15.9" fill="none" stroke="#28feb6" stroke-width="3.2"
-                stroke-dasharray="100 0" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray .6s ease"/>
-              <circle id="rec-donut-no" cx="18" cy="18" r="15.9" fill="none" stroke="#ff4d6d" stroke-width="3.2"
-                stroke-dasharray="0 100" stroke-dashoffset="25" stroke-linecap="round" style="transition:stroke-dasharray .6s ease;transform:rotate(0deg);transform-origin:center"/>
-              <text x="18" y="20.5" text-anchor="middle" font-size="6" fill="var(--text)" font-family="Poppins,sans-serif" font-weight="700" id="rec-donut-pct">0%</text>
-            </svg>
-            <div class="rec-legend">
-              <div class="rec-legend-item">
-                <div class="rec-legend-dot" style="background:var(--accent)"></div>
-                Aseguradas bien
-                <span class="rec-legend-val" id="rec-leg-si">0</span>
-              </div>
-              <div class="rec-legend-item">
-                <div class="rec-legend-dot" style="background:var(--red)"></div>
-                Sin asegurar
-                <span class="rec-legend-val" id="rec-leg-no">0</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Monthly bar chart -->
-        <div class="recovery-chart-wrap">
-          <div class="recovery-chart-title">RECUPERACIONES POR MES</div>
-          <div class="bar-chart" id="rec-bar-chart" style="height:100px"></div>
-        </div>
-      </div>
-
-      <!-- Revert rate card -->
-      <div class="acc-card" style="--tc:#f97316;margin-bottom:20px">
-        <div class="acc-label"><i class="fas fa-undo" style="margin-right:6px"></i>Tasa de Revert</div>
-        <div class="acc-val" id="rec-s-revert">0%</div>
-        <div class="acc-sub" id="rec-s-revert-sub">cuentas sin asegurar bien / total</div>
-      </div>
-
-      <!-- Toolbar -->
-      <div class="toolbar">
-        <div class="search-wrap">
-          <i class="fas fa-search"></i>
-          <input class="search-input" id="rec-search" placeholder="Buscar por correo, notas...">
-        </div>
-        <select class="filter-sel" id="rec-filter-asegurada">
-          <option value="">Todas</option>
-          <option value="si">Aseguradas</option>
-          <option value="no">Sin Asegurar</option>
-        </select>
-        <button class="btn btn-ghost" id="rec-clear-filter" onclick="window.recClearFilter()"><i class="fas fa-times"></i> Limpiar</button>
-        <button class="btn btn-accent" onclick="window.openRecoveryModal()"><i class="fas fa-plus"></i> Registrar Recuperación</button>
-        <button class="btn btn-outline" onclick="window.exportRecoveryCSV()"><i class="fas fa-download"></i> CSV</button>
-      </div>
-
-      <div class="sec-title"><h3>Historial de Recuperaciones</h3><div class="sec-line"></div></div>
-      <div id="rec-list-area"></div>
-
-    </div>
+    
 
     <!-- ── TAB CLIENTES ─────────────────────────── -->
+    <div class="tab-panel" id="tab-catalogo-cuentas">
+      <section class="account-catalog-hero">
+        <div><span class="dash-eyebrow">Inventario · Shegos Store</span><h1>Catálogo de cuentas</h1><p>Encuentra una cuenta disponible y consulta sus detalles y precio.</p></div>
+        <button class="btn btn-accent sec-ceo-only" type="button" onclick="window.abrirEditorCuentaCatalogo()"><i class="fas fa-plus"></i> Agregar cuenta</button>
+      </section>
+      <div class="account-catalog-filters">
+        <label class="search-wrap"><i class="fas fa-search"></i><input class="search-input" id="cc-search" placeholder="Buscar cuenta o skin..." oninput="window.renderCatalogoCuentas()"></label>
+        <select class="filter-sel" id="cc-stw" onchange="window.renderCatalogoCuentas()"><option value="">STW: cualquiera</option><option value="true">Con STW</option><option value="false">Sin STW</option></select>
+        <input class="filter-sel" id="cc-skins-min" type="number" min="0" placeholder="Skins desde" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-skins-max" type="number" min="0" placeholder="Skins hasta" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-idle-max" type="number" min="0" placeholder="Inactividad máx. (días)" oninput="window.renderCatalogoCuentas()">
+        <input class="filter-sel" id="cc-price-max" type="number" min="0" step="0.01" placeholder="Precio máx. (USD)" oninput="window.renderCatalogoCuentas()">
+        <select class="filter-sel sec-ceo-only" id="cc-state" onchange="window.renderCatalogoCuentas()"><option value="">Todos los estados</option><option value="disponible">Disponibles</option><option value="reservada">Reservadas</option><option value="vendida">Vendidas</option></select>
+      </div>
+      <div class="account-catalog-summary"><span id="cc-count">Cargando catálogo…</span><div class="account-catalog-tools"><button class="btn btn-ghost sec-ceo-only" id="cc-agenty-trigger" type="button" onclick="document.getElementById('cc-agenty-file').click()"><i class="fas fa-file-import"></i> Importar JSON</button><input id="cc-agenty-file" class="sec-ceo-only" type="file" accept=".json,application/json" style="display:none!important" onchange="window.importarCatalogoAgenty(this.files?.[0],this)"><button class="btn btn-ghost sec-ceo-only" id="cc-import" type="button" onclick="window.importCatalogoCuentas()"><i class="fas fa-cloud-arrow-down"></i> Importar cuentas</button><button class="btn btn-ghost" type="button" onclick="window.cargarCatalogoCuentas()"><i class="fas fa-rotate"></i> Actualizar</button></div></div>
+      <details class="account-import-help sec-ceo-only"><summary>Campos para exportar desde Agenty</summary><p>Exporta JSON con una publicación por elemento y estos campos: <code>listing_id</code>, <code>title</code>, <code>price_usd</code>, <code>description</code>, <code>skin_count</code>, <code>skins</code>, <code>account_image_url</code> y <code>listing_url</code>. En <code>account_image_url</code> coloca únicamente la imagen generada con el botón dentro del anuncio. El ID mantiene unidos la portada y sus datos.</p></details>
+      <div class="account-catalog-grid" id="cc-grid"><div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div></div>
+    </div>
+
     <div class="tab-panel" id="tab-clientes">
       <div class="toolbar" style="margin-bottom:20px">
         <div class="search-wrap">
@@ -1480,6 +1398,12 @@ select option,select optgroup{background:#111;color:#fff}
       </div>
 
       <div id="cli-table-area"></div>
+
+      <section class="gift-clients-section" aria-labelledby="gift-clients-title">
+        <div class="sec-title"><h3 id="gift-clients-title"><i class="fas fa-gift" style="margin-right:8px;color:#ec4899"></i>Clientes de compras vía regalo</h3><div class="sec-line"></div><span id="gift-client-count" class="gift-client-count">0</span></div>
+        <p class="gift-clients-note">Guarda juntos sus IDs de Epic y Discord y su WhatsApp para agilizar la entrega de regalos y cosméticos.</p>
+        <div id="gift-customer-area"></div>
+      </section>
     </div>
 
     <!-- ── TAB NOTAS / BORRADORES ─────────────── -->
@@ -1516,32 +1440,7 @@ select option,select optgroup{background:#111;color:#fff}
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
-    <div class="tab-panel" id="tab-xboxgames">
-      <div style="background:rgba(255,159,10,.1);border:1px solid rgba(255,159,10,.35);border-radius:10px;padding:14px 16px;margin-bottom:20px;display:flex;gap:12px;align-items:flex-start">
-        <i class="fas fa-triangle-exclamation" style="color:#ff9f0a;font-size:1.2em;margin-top:2px"></i>
-        <div style="font-size:0.8em;color:var(--text2);line-height:1.5">
-          <strong style="color:#ff9f0a">Los precios de estos juegos cambian continuamente.</strong>
-          Por eso el precio siempre se muestra como <strong>"Consultar"</strong> — confirma el costo actual antes de cerrar la venta.
-        </div>
-      </div>
-
-      <div class="toolbar" style="margin-bottom:18px">
-        <div class="search-wrap">
-          <i class="fas fa-search"></i>
-          <input class="search-input" id="xbox-games-search" placeholder="Buscar juego de Xbox..." oninput="window.renderXboxGamesList()">
-        </div>
-        <button class="btn btn-accent" onclick="window.cargarCatalogoXboxGames()"><i class="fas fa-cloud-download-alt"></i> Cargar catálogo de juegos</button>
-        <button class="btn btn-ghost" onclick="window.openCatalogoModal()"><i class="fas fa-box"></i> Gestionar catálogo</button>
-      </div>
-
-      <div class="sec-title">
-        <h3><i class="fab fa-xbox" style="margin-right:8px"></i>Juegos Xbox</h3>
-        <div class="sec-line"></div>
-        <span id="xbox-games-count-badge" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span>
-      </div>
-
-      <div id="xbox-games-list-area"></div>
-    </div>
+    
 
   </div></div>
 
@@ -1591,13 +1490,13 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Método de Pago</label>
           <select class="fsel" id="f-payment">
             <option value="">— Seleccionar —</option>
-            <option value="link">Link de Pago</option>
-            <option value="paypal">PayPal</option>
-            <option value="popular">Banco Popular</option>
-            <option value="binance">Binance Pay</option>
-            <option value="remitly">Remitly</option>
-            <option value="transferencia_mx">Transferencia MX</option>
+            <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+            <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+            <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
+            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
           </select>
+          <small id="f-payment-fee-note" class="payment-fee-note"></small>
         </div>
       </div>
       <div class="fgroup">
@@ -1627,7 +1526,7 @@ select option,select optgroup{background:#111;color:#fff}
           <label class="flabel">Fecha</label>
           <div class="date-picker-wrap">
             <div class="date-picker-input-row">
-              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('f-date','datetime')">
+              <input class="finput" id="f-date" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('f-date','datetime')" onchange="window.validateCalendarInput(this,'datetime')" title="También puedes escribir fecha y hora con formato AAAA-MM-DDTHH:mm.">
               <i class="fas fa-calendar-alt date-picker-icon"></i>
             </div>
             <div class="cal-popup" id="cal-f-date"></div>
@@ -1907,6 +1806,43 @@ select option,select optgroup{background:#111;color:#fff}
 
 
 <!-- ── MODAL CONFIRMACIÓN PERSONALIZADO ──────────── -->
+<div class="overlay" id="modal-change-password" onclick="if(event.target===this) window.closeChangePassword()">
+  <div class="mcard change-password-card" role="dialog" aria-modal="true" aria-labelledby="change-password-title">
+    <div class="mhead">
+      <div class="mtitle" id="change-password-title"><i class="fas fa-key" aria-hidden="true"></i> Cambiar contraseña</div>
+      <button class="mclose" type="button" onclick="window.closeChangePassword()" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="change-password-form" onsubmit="window.submitChangePassword(event)">
+      <div class="mbody">
+        <p class="change-password-intro">Confirma tu contraseña actual y elige una nueva para proteger tu cuenta.</p>
+        <div class="fgroup">
+          <label class="flabel" for="cp-current">Contraseña actual</label>
+          <input class="finput" id="cp-current" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="fgroup">
+          <label class="flabel" for="cp-new">Nueva contraseña</label>
+          <input class="finput" id="cp-new" type="password" autocomplete="new-password" minlength="8" required aria-describedby="cp-password-hint">
+          <small id="cp-password-hint" class="change-password-hint">Usa al menos 8 caracteres.</small>
+        </div>
+        <div class="fgroup">
+          <label class="flabel" for="cp-confirm">Repite la nueva contraseña</label>
+          <input class="finput" id="cp-confirm" type="password" autocomplete="new-password" minlength="8" required>
+        </div>
+        <div class="fgroup" id="cp-nonce-group" hidden>
+          <label class="flabel" for="cp-nonce">Código de verificación</label>
+          <input class="finput" id="cp-nonce" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="12" aria-describedby="cp-nonce-hint">
+          <small id="cp-nonce-hint" class="change-password-hint">Escribe el código que te enviamos por correo o teléfono.</small>
+        </div>
+        <div id="change-pwd-msg" class="change-password-message" role="status" aria-live="polite" hidden></div>
+      </div>
+      <div class="mfoot change-password-actions">
+        <button class="btn btn-ghost" type="button" onclick="window.closeChangePassword()">Cancelar</button>
+        <button class="btn btn-accent" type="submit" id="change-pwd-submit"><i class="fas fa-check"></i> Actualizar contraseña</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="overlay" id="modal-confirm">
   <div class="confirm-card">
     <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
@@ -1920,56 +1856,7 @@ select option,select optgroup{background:#111;color:#fff}
 </div>
 
 <!-- ── MODAL RECUPERACIÓN DE CUENTA ──────── -->
-<div class="overlay" id="modal-recovery">
-  <div class="mcard" style="max-width:520px">
-    <div class="mhead">
-      <div class="mtitle" id="rec-m-title" style="color:var(--accent)">Registrar Recuperación</div>
-      <button class="mclose" onclick="window.closeRecoveryModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="mbody">
-      <div class="fgroup">
-        <label class="flabel">Correo de la Cuenta *</label>
-        <input class="finput" id="rec-f-email" type="email" placeholder="cuenta@ejemplo.com" autocomplete="off">
-      </div>
-      <div class="frow">
-        <div class="fgroup">
-          <label class="flabel">Días de Inactividad</label>
-          <input class="finput" id="rec-f-inactividad" type="number" min="0" placeholder="ej. 30">
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Fecha de Recuperación *</label>
-          <div class="date-picker-wrap">
-            <div class="date-picker-input-row">
-              <input class="finput" id="rec-f-fecha" type="text" placeholder="Seleccionar fecha" readonly onclick="window.openCal('rec-f-fecha','date')">
-              <i class="fas fa-calendar-alt date-picker-icon"></i>
-            </div>
-            <div class="cal-popup" id="cal-rec-f-fecha"></div>
-          </div>
-        </div>
-      </div>
-      <div class="fgroup">
-        <label class="flabel">¿Se aseguró la cuenta bien? *</label>
-        <div class="toggle-wrap">
-          <button type="button" class="toggle-btn" id="rec-toggle-si" onclick="window.recToggleAsegurada('si')">
-            <i class="fas fa-check" style="margin-right:6px"></i>Sí
-          </button>
-          <button type="button" class="toggle-btn" id="rec-toggle-no" onclick="window.recToggleAsegurada('no')">
-            <i class="fas fa-times" style="margin-right:6px"></i>No
-          </button>
-        </div>
-        <input type="hidden" id="rec-f-asegurada">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Notas adicionales</label>
-        <textarea class="ftarea" id="rec-f-notas" placeholder="Observaciones, tipo de revert, detalles..."></textarea>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn btn-ghost" onclick="window.closeRecoveryModal()">Cancelar</button>
-      <button class="btn btn-accent" onclick="window.saveRecovery()"><i class="fas fa-save"></i> Guardar</button>
-    </div>
-  </div>
-</div>
+
 
 <!-- ── MODAL NUEVA VENTA (REDISEÑO COMPLETO) ───── -->
 
@@ -2013,17 +1900,8 @@ select option,select optgroup{background:#111;color:#fff}
           <button type="button" class="vm-tipo-chip" data-tipo="Recarga de pavos" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-coins"></i>Pavos
           </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Packs" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-box"></i>Packs
-          </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Streaming" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-tv"></i>Streaming
-          </button>
           <button type="button" class="vm-tipo-chip" data-tipo="Venta via regalo" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-gift"></i>Regalo
-          </button>
-          <button type="button" class="vm-tipo-chip" data-tipo="Apartar cuentas" onclick="window.vmSelectTipo(this)">
-            <i class="fas fa-bookmark"></i>Financiar/Apartar
           </button>
         </div>
         <!-- Hidden real select for compatibility -->
@@ -2035,7 +1913,7 @@ select option,select optgroup{background:#111;color:#fff}
         <label class="flabel">Fecha</label>
         <div class="date-picker-wrap">
           <div class="date-picker-input-row">
-            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" readonly onclick="window.openCal('vc-f-fecha','datetime')">
+            <input class="finput" id="vc-f-fecha" type="text" placeholder="Seleccionar fecha y hora" onclick="window.openCal('vc-f-fecha','datetime')" onchange="window.validateCalendarInput(this,'datetime')" title="También puedes escribir fecha y hora con formato AAAA-MM-DDTHH:mm.">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-f-fecha"></div>
@@ -2085,45 +1963,14 @@ select option,select optgroup{background:#111;color:#fff}
             <label class="flabel">Método de Pago</label>
             <select class="fsel" id="vc-f-metodo">
               <option value="">— Seleccionar —</option>
-              <option value="link">Link de Pago</option>
-              <option value="paypal">PayPal</option>
-              <option value="popular">Banco Popular</option>
-              <option value="binance">Binance Pay</option>
-              <option value="remitly">Remitly</option>
-              <option value="transferencia_mx">Transferencia MX</option>
+              <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+              <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+              <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
+              <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+              <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
             </select>
+            <small id="vc-payment-fee-note" class="payment-fee-note"></small>
           </div>
-        </div>
-        <div class="frow">
-          <div class="fgroup">
-            <label class="flabel">Plazo / Cuotas</label>
-            <select class="fsel" id="vc-f-plazo" onchange="window.updateInterestPct()">
-              <option value="0">Contado (0%)</option>
-              <option value="2.5">7 Días (2.5%)</option>
-              <option value="5">15 Días (5%)</option>
-              <option value="10">30 Días (10%)</option>
-              <option value="15">45 Días (15%)</option>
-              <option value="custom">Personalizado</option>
-            </select>
-          </div>
-          <div class="fgroup">
-            <label class="flabel">Interés (%)</label>
-            <input class="finput" id="vc-f-interes-pct" type="number" step="0.1" placeholder="0" oninput="window.calcVentaMargen()">
-          </div>
-        </div>
-        <div class="frow">
-          <div class="fgroup">
-            <label class="flabel">Pago Parcial (USD)</label>
-            <input class="finput" id="vc-f-pago-parcial" type="number" step="0.01" placeholder="0.00" oninput="window.calcVentaMargen()">
-          </div>
-          <div class="fgroup">
-            <label class="flabel">Pago Pendiente (USD)</label>
-            <input class="finput" id="vc-f-pago-pendiente" type="number" step="0.01" placeholder="0.00" readonly style="background:var(--surface2); opacity: 0.8">
-          </div>
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Cuota Adicional / Interés (USD)</label>
-          <input class="finput" id="vc-f-cuota-adicional" type="number" step="0.01" readonly style="background:var(--surface2); opacity: 0.8">
         </div>
       </div>
 
@@ -2321,8 +2168,8 @@ select option,select optgroup{background:#111;color:#fff}
 
       <!-- Nombre producto / cuenta (siempre visible) -->
       <div class="fgroup">
-        <label class="flabel" id="label-vc-f-producto">Producto</label>
-        <input class="finput" id="vc-f-producto" placeholder="Nombre del producto o cuenta...">
+            <label class="flabel" id="label-vc-f-producto">Producto / detalle</label>
+        <input class="finput" id="vc-f-producto" placeholder="Cuenta de Fortnite — agrega skins u otro detalle">
       </div>
 
       <!-- Precio de venta -->
@@ -2580,25 +2427,8 @@ let toastTimer;
 let catalogoProductos = [];   // Catálogo manual de productos (Supabase: tabla catalogo_productos)
 let editingCatalogoId = null; // Id del producto de catálogo en edición (null = nuevo)
 
-// Categoría reservada para los juegos de Xbox: el precio real fluctúa seguido,
-// así que en la UI siempre se muestra "Consultar" en vez del precio_usd guardado.
+// Categoría retirada del catálogo visible; se conservan los registros históricos.
 const XBOX_GAMES_CATEGORIA = 'Juegos Xbox';
-const XBOX_GAMES_SEED = [
-  'Assassin\'s Creed Chronicles','Assassin\'s Creed III Remastered','Assassin\'s Creed Mirage',
-  'Assassin\'s Creed Odyssey','Assassin\'s Creed Origins','Assassin\'s Creed Rogue Remastered',
-  'Assassin\'s Creed Shadows','Assassin\'s Creed Syndicate','Assassin\'s Creed The Ezio Collection',
-  'Assassin\'s Creed Unity','Battlefield 4','Battlefield 4 Premium Edition','Battlefield 6',
-  'Battlefield 2042 (EA Play)','Battlefield 2042 Cross-Gen Bundle','Battlefield 2042 Elite Edition',
-  'Borderlands 3','Borderlands 3 Season Pass Bundle','Borderlands 3 Super Deluxe Edition',
-  'Borderlands 4','Borderlands 4 Super Deluxe Edition','Borderlands Collection: Pandora\'s Box',
-  'Call of Duty Black Ops','Call of Duty Black Ops II','Call of Duty Black Ops 4 Digital Deluxe',
-  'Call of Duty Modern Warfare','Dead Cells','Dead Island 2','Dragon Ball FighterZ',
-  'Dragon Ball Xenoverse','Dragon Ball Xenoverse 2','Dragon Ball Z Kakarot','Dragon Ball: The Breakers',
-  'Dying Light: The Beast','Fallout 76','Far Cry 6','Far Cry Classic','Far Cry Primal',
-  'Helldivers 2','Lego Star Wars: The Complete Saga','Microsoft Flight Simulator (Premium Deluxe)',
-  'NHL 26','Red Dead Redemption 2','Resident Evil (Requiem)','Sea of Thieves (Premium Edition)',
-  'Tainted Grail: The Fall of Avalon','The Outer Worlds 2','Voice of Cards: The Beasts of Burden'
-];
 let tiendaHoyItems = [];      // Rotación diaria de la tienda de Fortnite (vía fortnite-api.com, en vivo)
 let tiendaHoyLoaded = false;
 let tiendaHoyLoading = false;
@@ -2609,6 +2439,7 @@ let serviciosSyncIntervalId = null;
 // --- INICIALIZACIÓN ---
 window.addEventListener('DOMContentLoaded', async () => {
   setupEventListeners();
+  enhancePaymentPickers();
   renderQuickTags();
 
   // Manejar recuperación de contraseña vía enlace de email
@@ -2668,8 +2499,9 @@ function setupEventListeners() {
   document.getElementById('vc-date-from')?.addEventListener('change', renderVentas);
   document.getElementById('vc-date-to')?.addEventListener('change', renderVentas);
   document.getElementById('vc-tipo-filter')?.addEventListener('change', renderVentas); // Bug 11 fix
-  document.getElementById('rec-search')?.addEventListener('input', renderRecoveries);
-  document.getElementById('rec-filter-asegurada')?.addEventListener('change', renderRecoveries);
+  document.getElementById('vc-f-metodo')?.addEventListener('change', () => window.calcVentaMargen());
+  document.getElementById('f-payment')?.addEventListener('change', updateOrderFeeNote);
+  document.getElementById('f-total')?.addEventListener('input', updateOrderFeeNote);
 
   document.getElementById('vc-f-cliente')?.addEventListener('input', (e) => {
     const val = e.target.value;
@@ -2722,11 +2554,18 @@ async function fetchOrders() {
     if (error) throw error;
     
     // Ordenar: primero por fecha del pedido, si no existe usar created_at
-    currentOrders = (data || []).sort((a, b) => {
-      const da = a.fecha || a.created_at || '';
-      const db = b.fecha || b.created_at || '';
-      return db.localeCompare(da);
-    });
+    currentOrders = (data || []).map(o => ({
+      ...o,
+      id: o.id_pedido || o.id,
+      id_pedido: o.id_pedido || o.id,
+      telefono_cliente: o.telefono_cliente || o.telefono || '',
+      fecha: o.fecha || o.creado_en || o.completado_en || o.created_at || '',
+      created_at: o.created_at || o.creado_en || o.fecha || '',
+      comprobante: o.comprobante || o.comprobante_url || null,
+      notas: o.notas || o.notes || '',
+      metodo_pago: paymentMethodFromDb(o.metodo_pago),
+      cuentas_agregadas: o.cuentas_agregadas || []
+    })).sort((a, b) => (b.fecha || b.created_at || '').localeCompare(a.fecha || a.created_at || ''));
     renderTable();
     renderAccounting();
     updateStats();
@@ -3054,7 +2893,7 @@ async function fetchCatalogo() {
       .order('categoria', { ascending: true })
       .order('nombre', { ascending: true });
     if (error) throw error;
-    catalogoProductos = data || [];
+    catalogoProductos = (data || []).filter(p => p.categoria !== XBOX_GAMES_CATEGORIA);
   } catch (err) {
     console.error('Error cargando catálogo:', err);
     catalogoProductos = [];
@@ -3371,85 +3210,6 @@ async function eliminarProductoCatalogo(id) {
   }
 }
 
-// ═══════════════════════════════════════════════
-// SECCIÓN JUEGOS XBOX (categoría "Juegos Xbox" en catalogo_productos).
-// El precio real cambia seguido, así que se guarda en 0 y la UI siempre
-// muestra "Consultar" en vez del precio_usd.
-// ═══════════════════════════════════════════════
-
-// Inserta en Supabase los juegos de XBOX_GAMES_SEED que todavía no existan
-// en el catálogo (evita duplicados comparando por nombre, sin importar mayúsculas).
-async function cargarCatalogoXboxGames() {
-  const existentes = new Set(
-    catalogoProductos
-      .filter(p => p.categoria === XBOX_GAMES_CATEGORIA)
-      .map(p => p.nombre.trim().toLowerCase())
-  );
-  const faltantes = XBOX_GAMES_SEED.filter(nombre => !existentes.has(nombre.trim().toLowerCase()));
-
-  if (faltantes.length === 0) {
-    showToast('Ya están todos los juegos en el catálogo');
-    return;
-  }
-
-  try {
-    const filas = faltantes.map(nombre => ({
-      categoria: XBOX_GAMES_CATEGORIA,
-      nombre,
-      precio_usd: 0
-    }));
-    const { error } = await supabase.from('catalogo_productos').insert(filas);
-    if (error) throw error;
-    showToast(`${faltantes.length} juego${faltantes.length !== 1 ? 's' : ''} agregado${faltantes.length !== 1 ? 's' : ''} al catálogo`);
-    await fetchCatalogo();
-    renderXboxGamesList();
-  } catch (err) {
-    showToast('Error: ' + err.message, true);
-  }
-}
-
-function renderXboxGamesList() {
-  const area = document.getElementById('xbox-games-list-area');
-  if (!area) return;
-
-  const juegos = catalogoProductos.filter(p => p.categoria === XBOX_GAMES_CATEGORIA);
-  const badge = document.getElementById('xbox-games-count-badge');
-
-  if (juegos.length === 0) {
-    if (badge) badge.textContent = '';
-    area.innerHTML = `<div class="empty"><i class="fab fa-xbox"></i><p>Aún no has cargado los juegos de Xbox. Usa "Cargar catálogo de juegos".</p></div>`;
-    return;
-  }
-
-  const q = (document.getElementById('xbox-games-search')?.value || '').toLowerCase();
-  const filtrados = juegos
-    .filter(p => !q || p.nombre.toLowerCase().includes(q))
-    .sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-  if (badge) badge.textContent = `${juegos.length} juego${juegos.length !== 1 ? 's' : ''}`;
-
-  if (filtrados.length === 0) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-search"></i><p>Sin resultados para tu búsqueda</p></div>`;
-    return;
-  }
-
-  let html = `<div class="table-wrap"><table><thead><tr><th>Juego</th><th>Precio</th><th style="text-align:right">Acciones</th></tr></thead><tbody>`;
-  filtrados.forEach(p => {
-    html += `<tr>
-      <td class="td-name"><i class="fab fa-xbox" style="color:#107C10;margin-right:8px"></i>${p.nombre}</td>
-      <td><span style="color:#ff9f0a;font-weight:700">Consultar</span></td>
-      <td style="text-align:right">
-        <div class="td-act" style="justify-content:flex-end">
-          <button class="ibtn" onclick="window.editarProductoCatalogo('${p.id}')" title="Editar"><i class="fas fa-pen"></i></button>
-          <button class="ibtn del" onclick="window.eliminarProductoCatalogo('${p.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-        </div>
-      </td>
-    </tr>`;
-  });
-  html += `</tbody></table></div>`;
-  area.innerHTML = html;
-}
-
 async function saveOrder() {
   const idField = document.getElementById('f-id').value.trim();
   const name = document.getElementById('f-name').value.trim();
@@ -3458,6 +3218,11 @@ async function saveOrder() {
   
   if (!name || !phone || !total) {
     showToast('Por favor completa los campos obligatorios (*)', true);
+    return;
+  }
+  const orderDateInput = document.getElementById('f-date');
+  if (orderDateInput.value && !window.validateCalendarInput(orderDateInput, 'datetime')) {
+    showToast('Corrige la fecha y hora del pedido antes de guardar.', true);
     return;
   }
   window.RemEd.ord.flush(); // incluye el remark que quedó escrito sin pulsar "Agregar"
@@ -3485,19 +3250,22 @@ async function saveOrder() {
     if (!isNaN(parsed.getTime())) fechaOrderISO = parsed.toISOString();
   }
 
+  const paymentMethod = document.getElementById('f-payment').value;
+  const orderFee = paymentMethod === 'transferencia_mx' ? Math.round(total * 0.001 * 100) / 100 : 0;
   const orderData = {
-    id_pedido: editingOrderId ? undefined : (idField || 'SHG-' + Math.floor(1000 + Math.random() * 9000)),
     estado: document.getElementById('f-status').value,
     nombre_cliente: name,
-    telefono_cliente: phone,
+    telefono: phone,
     epic_id_cliente: document.getElementById('f-epic').value.trim(),
-    metodo_pago: document.getElementById('f-payment').value,
+    metodo_pago: paymentMethodToDb(paymentMethod),
     cuentas_agregadas: currentTags,
-    productos: products,
+    productos,
     total_usd: total,
-    fecha: fechaOrderISO,
-    notes: document.getElementById('f-notes').value.trim(),
-    comprobante: document.getElementById('f-receipt-base64').value || null
+    monto_recibido: Math.max(0,total-orderFee),
+    comision: orderFee,
+    creado_en: fechaOrderISO,
+    notas: document.getElementById('f-notes').value.trim(),
+    comprobante_url: document.getElementById('f-receipt-base64').value || null
   };
   // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
   // así guardar un pedido normal sigue funcionando aunque falten las columnas.
@@ -3512,7 +3280,9 @@ async function saveOrder() {
       // UPDATE: remove auto/pk fields from body
       const updateData = { ...orderData };
       delete updateData.id_pedido;
-      const { error: err } = await supabase.from('pedidos').update(updateData).eq('id', editingOrderId);
+      delete updateData.id;
+      delete updateData.id_pedido;
+      const { error: err } = await supabase.from('pedidos').update(updateData).eq('id_pedido', editingOrderId);
       if (err) throw err;
     } else {
       // INSERT
@@ -3541,7 +3311,7 @@ async function deleteOrder(id) {
       const { error } = await supabase
         .from('pedidos')
         .delete()
-        .eq('id', id);
+        .eq('id_pedido', id);
       if (error) throw error;
       showToast('Pedido eliminado de la nube');
       fetchOrders();
@@ -3556,8 +3326,8 @@ async function updateOrderStatus(id, newStatus) {
   try {
     const { error } = await supabase
       .from('pedidos')
-      .update({ status: newStatus })
-      .eq('id', id);
+      .update({ estado: newStatus })
+      .eq('id_pedido', id);
 
     if (error) throw error;
 
@@ -3708,8 +3478,8 @@ function getTableRow(o) {
     </td>
     <td style="text-align:right">
       <div class="td-act" style="justify-content:flex-end">
-        ${o.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
-        ${o.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+        <button class="ibtn" type="button" title="${o.comprobante ? 'Ver / descargar comprobante' : 'Este pedido no tiene comprobante}" aria-label="Ver comprobante" ${o.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${o.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>
+        <button class="ibtn" type="button" title="${o.foto_producto ? 'Ver foto del producto' : 'Este pedido no tiene foto del producto}" aria-label="Ver foto del producto" ${o.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${o.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}' ,'foto_producto')"><i class="fas fa-box-open"></i></button>
         ${remFlagBtn('pedido', o)}
         ${o.estado === 'Completado' ? rvBtn('pedido', o) : ''}
         <button class="ibtn" onclick="window.viewDetail('${o.id}')" title="Ver Detalle"><i class="fas fa-eye"></i></button>
@@ -3731,11 +3501,13 @@ function calcularPanelLocal(period) {
   const sumPed = compl.reduce((s, o) => s + num(o.total_usd), 0);
   const sumVen = vensPer.reduce((s, v) => s + num(v.ingreso), 0);
   const addM = (obj, k, v) => { k = k || 'sin_metodo'; obj[k] = (obj[k] || 0) + v; };
-  const metodos = {}, metodosTotal = {}, dist = {};
-  currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.total_usd)));
+  const metodos = {}, metodosTotal = {}, metodosCount = {}, dist = {};
+  currentOrders.filter(o => o.estado === 'Completado').forEach(o => addM(metodosTotal, o.metodo_pago, num(o.monto_recibido ?? o.total_usd)));
   currentVentas.forEach(v => addM(metodosTotal, v.metodo_pago, num(v.ingreso)));
-  compl.forEach(o => addM(metodos, o.metodo_pago, num(o.total_usd)));
+  compl.forEach(o => addM(metodos, o.metodo_pago, num(o.monto_recibido ?? o.total_usd)));
   vensPer.forEach(v => addM(metodos, v.metodo_pago, num(v.ingreso)));
+  compl.forEach(o => { const k=o.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
+  vensPer.forEach(v => { const k=v.metodo_pago||'sin_metodo'; metodosCount[k]=(metodosCount[k]||0)+1; });
   if (sumPed > 0) dist['Pedido'] = sumPed;
   vensPer.forEach(v => { const t = v.tipo || 'Otro'; dist[t] = (dist[t] || 0) + num(v.ingreso); });
   const serie = [], hoy = new Date();
@@ -3758,7 +3530,7 @@ function calcularPanelLocal(period) {
     pendiente_cobro: pendPed + pendVen,
     costo_total: vensPer.reduce((s, v) => s + (num(v.costo_real) || num(v.costo)), 0),
     ganancia_neta: vensPer.reduce((s, v) => s + num(v.ganancia_neta), 0),
-    metodos, metodos_total: metodosTotal, distribucion_tipo: dist, serie_mensual: serie,
+    metodos, metodos_count: metodosCount, metodos_total: metodosTotal, distribucion_tipo: dist, serie_mensual: serie,
     registros: [
       ...pedsPer.map(o => ({ id: o.id_pedido, fuente: 'Pedido', cliente: o.nombre_cliente, metodo: o.metodo_pago, total: num(o.total_usd), estado: o.estado })),
       ...vensPer.map(v => ({ id: v.id_pedido || v.id, fuente: 'Venta', cliente: v.cliente, metodo: v.metodo_pago, total: num(v.ingreso), estado: v.estado || 'Completado' }))
@@ -3800,16 +3572,97 @@ async function renderAccounting() {
   document.getElementById('acc-total-sub').textContent = period ? `Período ${period} (pedidos + ventas)` : 'Todos los registros';
   document.getElementById('acc-cnt-sub').textContent = `${panel.pedidos_completados || 0} pedidos + ${panel.ventas_manuales_count || 0} ventas`;
 
+function paymentMethodIdentity(method) {
+  const item = PAYMENT_METHODS.find(x => x.value === method) || LEGACY_PAYMENT_METHODS[method] || { label: String(method || 'Otro').replaceAll('_', ' '), fallback: '•', color: '#9aa3a0' };
+  return '<span class="meth-identity" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '<span class="meth-name">' + item.label + '</span></span>';
+}
+
+const PAYMENT_METHODS = [
+  {value:'binance',label:'Binance',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
+  {value:'binance_giftcard',label:'Binance Giftcard',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
+  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:'https://cdn.simpleicons.org/xbox/107c10',fallback:'X',color:'#107c10'},
+  {value:'remitly',label:'Remitly',logo:'https://cdn.simpleicons.org/remitly/2f6bed',fallback:'R',color:'#2f6bed'},
+  {value:'bybit',label:'Bybit',logo:'https://cdn.simpleicons.org/bybit/f7a600',fallback:'B',color:'#f7a600'},
+  {value:'airtm',label:'Airtm',logo:'https://cdn.simpleicons.org/airtm/0067ff',fallback:'A',color:'#1685ff'},
+  {value:'transferencia_mx',label:'Transferencia MX',fallback:'MX',color:'#38bdf8'},
+  {value:'spei',label:'SPEI',fallback:'S',color:'#61a5ff'},
+  {value:'oxxo',label:'OXXO',logo:'https://cdn.simpleicons.org/oxxogas/e31837',fallback:'O',color:'#e31837'},
+  {value:'mercado_pago',label:'Mercado Pago',logo:'https://cdn.simpleicons.org/mercadopago/00a0e3',fallback:'MP',color:'#00a0e3'},
+  {value:'cripto',label:'Cripto',logo:'https://cdn.simpleicons.org/bitcoin/f7931a',fallback:'₿',color:'#f7931a'}
+];
+const LEGACY_PAYMENT_METHODS = {
+  link:{label:'Link de Pago (histórico)',fallback:'↗',color:'#77808a'}, paypal:{label:'PayPal (histórico)',fallback:'P',color:'#0070ba'},
+  popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
+  binance_pay:{label:'Binance Pay',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'}
+};
+function paymentMethodToDb(method) {
+  const labels={binance:'Binance',binance_giftcard:'Binance Giftcard',xbox_giftcard:'Xbox Giftcard',remitly:'Remitly',bybit:'Bybit',airtm:'Airtm',transferencia_mx:'Transferencia MX',spei:'SPEI',oxxo:'OXXO',mercado_pago:'Mercado Pago',cripto:'Cripto',paypal:'PayPal',popular:'Banco Popular'};
+  return labels[method] || method || 'Otro';
+}
+function paymentMethodFromDb(method) {
+  const s=String(method||'').trim();
+  const found=PAYMENT_METHODS.find(x=>x.value===s||x.label.toLowerCase()===s.toLowerCase());
+  if(found)return found.value;
+  const old={ 'PayPal':'paypal','Banco Popular':'popular','Transfer MX':'transferencia_mx','Transferencia MX':'transferencia_mx','Binance Pay':'binance' };
+  return old[s] || s.toLowerCase().replaceAll(' ','_');
+}
+function updateOrderFeeNote() {
+  const method=document.getElementById('f-payment')?.value||'', total=parseFloat(document.getElementById('f-total')?.value)||0;
+  const fee=method==='transferencia_mx'?Math.round(total*.001*100)/100:0, note=document.getElementById('f-payment-fee-note');
+  if(!note)return;
+  note.textContent=method==='transferencia_mx'?`Comisión automática 0.1%: $${fee.toFixed(2)} · Se recibirán $${Math.max(0,total-fee).toFixed(2)}.`:'';
+  note.style.display=method==='transferencia_mx'?'block':'none';
+}
+function paymentLogoMarkup(item, cls='pay-logo-img') {
+  const image = item.logo ? `<img class="${cls}" src="${item.logo}" alt="" loading="lazy" decoding="async" onerror="this.hidden=true">` : '';
+  return `<span class="pay-logo meth-logo" style="--pay-color:${item.color}">${image}<span class="pay-logo-fallback">${item.fallback || '•'}</span></span>`;
+}
+function syncPaymentPicker(id) {
+  const select = document.getElementById(id), root = select?.closest('.payment-picker');
+  if (!select || !root) return;
+  if (select.value && !Array.from(select.options).some(o=>o.value===select.value)) {
+    const legacy=LEGACY_PAYMENT_METHODS[select.value];
+    if (legacy) select.add(new Option(legacy.label, select.value));
+  }
+  const item = PAYMENT_METHODS.find(x => x.value === select.value) || LEGACY_PAYMENT_METHODS[select.value];
+  const label = root.querySelector('.payment-picker-label'), logo = root.querySelector('.payment-picker-current-logo');
+  if (label) label.textContent = item?.label || '— Seleccionar —';
+  if (logo) logo.innerHTML = item ? paymentLogoMarkup(item) : '<span class="pay-logo pay-logo-empty"><i class="fas fa-credit-card"></i></span>';
+}
+function enhancePaymentPickers() {
+  ['f-payment','vc-f-metodo','ac-metodo'].forEach(id => {
+    const select = document.getElementById(id);
+    if (!select || select.dataset.logoPicker) return;
+    select.dataset.logoPicker = '1';
+    select.classList.add('payment-native-select');
+    const wrap = document.createElement('div'); wrap.className = 'payment-picker';
+    select.parentNode.insertBefore(wrap, select); wrap.appendChild(select);
+    const trigger = document.createElement('button'); trigger.type='button'; trigger.className='payment-picker-trigger';
+    trigger.setAttribute('aria-haspopup','listbox'); trigger.setAttribute('aria-expanded','false');
+    trigger.innerHTML='<span class="payment-picker-current-logo"></span><span class="payment-picker-label"></span><i class="fas fa-chevron-down"></i>';
+    const menu = document.createElement('div'); menu.className='payment-picker-menu'; menu.setAttribute('role','listbox');
+    menu.hidden = true;
+    PAYMENT_METHODS.forEach(item => {
+      const option=document.createElement('button'); option.type='button'; option.className='payment-picker-option'; option.setAttribute('role','option');
+      option.innerHTML=paymentLogoMarkup(item)+'<span>'+item.label+'</span>';
+      option.addEventListener('click',()=>{select.value=item.value;select.dispatchEvent(new Event('change',{bubbles:true}));syncPaymentPicker(id);menu.hidden=true;trigger.setAttribute('aria-expanded','false');});
+      menu.appendChild(option);
+    });
+    trigger.addEventListener('click',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden));});
+    document.addEventListener('click',e=>{if(!wrap.contains(e.target)){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}});
+    select.addEventListener('change',()=>syncPaymentPicker(id));
+    wrap.insertBefore(trigger,select); wrap.appendChild(menu); syncPaymentPicker(id);
+  });
+}
   // Render métodos de pago
   const breakArea = document.getElementById('method-breakdown');
   const metodos = panel.metodos || {};
-  if (Object.keys(metodos).length === 0) {
+  const topMetodos = Object.entries(metodos).sort((a,b)=>(panel.metodos_count?.[b[0]]||0)-(panel.metodos_count?.[a[0]]||0)).slice(0,4);
+  if (topMetodos.length === 0) {
     breakArea.innerHTML = `<div style="font-size:0.8em;color:var(--text3)">No hay ingresos registrados por métodos de pago en este período.</div>`;
   } else {
     let mHtml = '';
-    for (let m in metodos) {
-      mHtml += `<div class="meth-card"><span class="meth-name">${m.replace('_',' ')}</span><span class="meth-val">$${(parseFloat(metodos[m]) || 0).toFixed(2)}</span></div>`;
-    }
+    for (const [m,total] of topMetodos) mHtml += `<div class="meth-card">${paymentMethodIdentity(m)}<span class="meth-val">${(parseFloat(total) || 0).toFixed(2)}</span></div>`;
     breakArea.innerHTML = mHtml;
   }
 
@@ -3929,6 +3782,9 @@ function renderChart(serieMensual) {
 
 // --- MODALES Y ACCIONES ---
 function openModal() {
+  const orderModal = document.getElementById('modal-order');
+  if (!orderModal) { showToast('No se encontró el formulario del pedido', true); return; }
+  orderModal.classList.add('open');
   editingOrderId = null;
   document.getElementById('m-title').textContent = 'Nuevo Pedido';
   document.getElementById('f-id').value = '';
@@ -3950,11 +3806,11 @@ function openModal() {
   document.getElementById('prod-list').innerHTML = '';
   addProdRow();
   clearReceipt();
-  window.clearOrderProd();
-  window.RemEd.ord.load([]);
-
-  document.getElementById('modal-order').classList.add('open');
+  window.clearOrderProd?.();
+  window.RemEd?.ord?.load?.([]);
 }
+
+window.openModal = openModal;
 
 function editOrder(id) {
   const o = currentOrders.find(item => item.id === id);
@@ -3969,6 +3825,7 @@ function editOrder(id) {
   document.getElementById('f-phone').value = o.telefono_cliente || '';
   document.getElementById('f-epic').value = o.epic_id_cliente || '';
   document.getElementById('f-payment').value = o.metodo_pago || '';
+  syncPaymentPicker('f-payment');
   document.getElementById('f-total').value = o.total_usd || '';
   document.getElementById('f-notes').value = o.notes || '';
   
@@ -4018,6 +3875,7 @@ function closeModal() {
 function viewDetail(id) {
   const o = currentOrders.find(item => item.id === id);
   if (!o) return;
+  document.getElementById('modal-detail')?.classList.add('open');
 
   document.getElementById('det-id').textContent = `Detalle del Pedido ${o.id}`;
   const accountsStr = (o.cuentas_agregadas || []).map(a => `<span class="badge b-proc" style="margin-right:4px">${a}</span>`).join('') || 'Ninguna';
@@ -4067,7 +3925,6 @@ function viewDetail(id) {
   </div>`;
 
   document.getElementById('det-body').innerHTML = html;
-  document.getElementById('modal-detail').classList.add('open');
 }
 
 function closeDetail() {
@@ -4257,6 +4114,7 @@ function processOrderText() {
   document.getElementById('f-phone').value = phone;
   document.getElementById('f-epic').value = epic;
   document.getElementById('f-payment').value = payment;
+  syncPaymentPicker('f-payment');
   document.getElementById('f-total').value = total;
   document.getElementById('f-notes').value = 'Extraído automáticamente de texto.';
 
@@ -4390,9 +4248,217 @@ function exportAccounting() {
   dl.click();
 }
 
+// --- CATÁLOGO DE CUENTAS DISPONIBLES ---
+let catalogoCuentas = [];
+let catalogoSkinSignedUrls = new Map();
+const escaparCatalogo = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+async function cargarCatalogoCuentas() {
+  const grid = document.getElementById('cc-grid');
+  const count = document.getElementById('cc-count');
+  if (!grid) return;
+  grid.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando catálogo…</p></div>';
+  try {
+    const { data, error } = await supabase.from('catalogo_cuentas').select('id,titulo,cantidad_skins,skins_destacadas,imagenes_skins,tiene_stw,dias_inactividad,precio_usd,descripcion,estado,creado_en').order('precio_usd');
+    if (error) throw error;
+    catalogoCuentas = data || [];
+    catalogoSkinSignedUrls = new Map();
+    const imagePaths = [...new Set(catalogoCuentas.flatMap(row => Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).filter(Boolean))];
+    if (imagePaths.length) {
+      const { data: signedImages, error: imageError } = await supabase.storage.from('catalogo-skins').createSignedUrls(imagePaths, 3600);
+      if (imageError) console.warn('No se pudieron firmar las imágenes del catálogo:', imageError.message);
+      else (signedImages || []).forEach(image => { if (image.path && image.signedUrl) catalogoSkinSignedUrls.set(image.path, image.signedUrl); });
+    }
+    renderCatalogoCuentas();
+  } catch (err) {
+    if (count) count.textContent = 'No se pudo cargar el catálogo';
+    grid.innerHTML = `<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>${escaparCatalogo(err.message || 'Revisa tu conexión e inténtalo de nuevo.')}</p></div>`;
+  }
+}
+
+function renderCatalogoCuentas() {
+  const grid = document.getElementById('cc-grid');
+  if (!grid) return;
+  const value = id => document.getElementById(id)?.value ?? '';
+  const search = value('cc-search').trim().toLocaleLowerCase();
+  const stw = value('cc-stw');
+  const minSkins = Number(value('cc-skins-min')) || 0;
+  const maxSkins = value('cc-skins-max') === '' ? Infinity : Number(value('cc-skins-max'));
+  const maxIdle = value('cc-idle-max') === '' ? Infinity : Number(value('cc-idle-max'));
+  const maxPrice = value('cc-price-max') === '' ? Infinity : Number(value('cc-price-max'));
+  const state = currentRole === 'CEO' ? value('cc-state') : 'disponible';
+  const rows = catalogoCuentas.filter(row => {
+    const text = [row.titulo, row.descripcion, ...(row.skins_destacadas || [])].join(' ').toLocaleLowerCase();
+    return (!search || text.includes(search)) && (stw === '' || String(row.tiene_stw) === stw) &&
+      row.cantidad_skins >= minSkins && row.cantidad_skins <= maxSkins &&
+      row.dias_inactividad <= maxIdle && Number(row.precio_usd) <= maxPrice && (!state || row.estado === state);
+  });
+  const count = document.getElementById('cc-count');
+  if (count) count.textContent = `${rows.length} ${rows.length === 1 ? 'cuenta disponible' : 'cuentas encontradas'}`;
+  if (!rows.length) {
+    grid.innerHTML = `<div class="empty account-catalog-empty"><i class="fas fa-gamepad"></i><p>${catalogoCuentas.length ? 'No hay cuentas que coincidan con esos filtros.' : (currentRole === 'CEO' ? 'Aún no has agregado cuentas. Usa “Agregar cuenta” para empezar.' : 'No hay cuentas disponibles en este momento.')}</p></div>`;
+    return;
+  }
+  grid.innerHTML = rows.map(row => {
+    const tags = (row.skins_destacadas || []).filter(Boolean).map(tag => `<span class="account-skin-tag">${escaparCatalogo(tag)}</span>`).join('');
+    const imageCount = (row.imagenes_skins || []).length;
+    const singleGeneratedCover = imageCount === 1;
+    const skinImages = (Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).slice(0, 24).map((path, index) => {
+      const imageUrl = catalogoSkinSignedUrls.get(path);
+      if (!imageUrl) return '';
+      const name = singleGeneratedCover ? `Portada de ${row.titulo || 'cuenta Fortnite'}` : (row.skins_destacadas?.[index] || `Skin ${index + 1}`);
+      return `<div class="account-skin-image"><img src="${escaparCatalogo(imageUrl)}" alt="${escaparCatalogo(name)}" loading="lazy"><span>${escaparCatalogo(name)}</span></div>`;
+    }).join('');
+    const paidSkins = String(row.descripcion || '').match(/(\d{1,4})\s+paid\b/i)?.[1] || '';
+    const vbucks = String(row.descripcion || '').match(/([\d,]+)\s*V-Bucks?/i)?.[1] || '';
+    const coverHeading = `${Number(row.cantidad_skins)||0}${paidSkins ? ` (${paidSkins})` : ''} skins${vbucks ? ` · ≈${vbucks} V-Bucks` : ''}`;
+    const gallery = skinImages ? `<div class="account-cover${singleGeneratedCover ? ' account-cover-single' : ''}">${singleGeneratedCover ? '' : `<div class="account-cover-header"><span><i class="fas fa-shirt"></i> ${escaparCatalogo(coverHeading)}</span><small>${Math.min(24,imageCount)} vistas</small></div>`}<div class="account-skin-gallery${singleGeneratedCover ? ' account-skin-gallery-single' : ''}">${skinImages}</div></div>` : `<div class="account-cover-empty"><i class="fas fa-images"></i><span>Vista de cuenta pendiente</span></div>`;
+
+    const estado = row.estado === 'disponible' ? 'Disponible' : row.estado === 'reservada' ? 'Reservada' : 'Vendida';
+    const edit = currentRole === 'CEO' ? `<button class="btn btn-ghost account-edit-btn" type="button" onclick="window.abrirEditorCuentaCatalogo('${escaparCatalogo(row.id)}')"><i class="fas fa-pen"></i> Editar</button>` : '';
+    return `<article class="account-catalog-card">${gallery}<div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
+  }).join('');
+}
+
+window.importarCatalogoAgenty = async function(file, input) {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede importar cuentas.', true);
+  if (!file) return;
+  const button = document.getElementById('cc-agenty-trigger');
+  let imported = 0, images = 0;
+  try {
+    const payload = JSON.parse(await file.text());
+    const rows = Array.isArray(payload) ? payload : [payload?.records, payload?.results, payload?.items, payload?.rows, payload?.data].find(Array.isArray);
+    if (!Array.isArray(rows) || !rows.length) throw new Error('El JSON no contiene una lista de publicaciones.');
+    if (rows.some(row => !row || typeof row !== 'object' || Array.isArray(row))) throw new Error('El archivo debe tener una publicación por fila.');
+    if (button) { button.disabled = true; button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando…'; }
+    for (let i = 0; i < rows.length; i += 8) {
+      const batch = rows.slice(i, i + 8);
+      if (button) button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Importando ${Math.min(i + batch.length, rows.length)} / ${rows.length}`;
+      const { data, error } = await supabase.functions.invoke('catalogo-importar', { body: { mode: 'agenty', records: batch } });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      imported += Number(data?.imported) || 0;
+      images += Number(data?.images) || 0;
+    }
+    await cargarCatalogoCuentas();
+    showToast(`Importación terminada: ${imported} cuentas y ${images} imágenes.`, false, 5000);
+  } catch (err) {
+    if (imported) await cargarCatalogoCuentas();
+    showToast(`${err?.message || 'No se pudo importar el archivo.'}${imported ? ` Se guardaron ${imported} cuentas antes del error.` : ''}`, true, 6000);
+  } finally {
+    if (button) { button.disabled = false; button.innerHTML = '<i class="fas fa-file-import"></i> Importar JSON'; }
+    if (input) input.value = '';
+  }
+};
+
+window.importCatalogoCuentas = async function(reset = false) {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede actualizar el catálogo.', true);
+  const button = document.getElementById('cc-import');
+  const resetting = reset || button?.dataset.completed === 'true';
+  if (button) { button.disabled = true; button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando…'; }
+  try {
+    const { data, error } = await supabase.functions.invoke('catalogo-importar', { body: resetting ? { reset: true } : { batch_size: 8 } });
+    if (error) throw error;
+    if (data?.error) throw new Error(data.error);
+    if (resetting) {
+      if (button) { button.dataset.completed = 'false'; button.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Importar cuentas'; }
+      showToast(data?.message || 'Recorrido reiniciado.');
+      return;
+    }
+    if (button) {
+      button.dataset.completed = data?.has_more ? 'false' : 'true';
+      button.innerHTML = data?.has_more
+        ? '<i class="fas fa-cloud-arrow-down"></i> Importar siguiente lote'
+        : '<i class="fas fa-rotate-left"></i> Reiniciar importación';
+    }
+    showToast(`${data?.message || 'Catálogo actualizado.'} ${data?.imported || 0} cuentas · ${data?.images || 0} imágenes.`);
+    await cargarCatalogoCuentas();
+  } catch (err) {
+    if (button) {
+      button.dataset.completed = 'false';
+      button.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> Importar cuentas';
+    }
+    showToast(err.message || 'No se pudo actualizar el catálogo.', true);
+  } finally {
+    if (button) button.disabled = false;
+  }
+};
+
+function abrirEditorCuentaCatalogo(id = '') {
+  if (currentRole !== 'CEO') return showToast('Solo el CEO puede administrar el catálogo.', true);
+  const form = document.querySelector('#modal-catalogo-cuenta form');
+  form?.reset();
+  document.getElementById('cc-form-error').hidden = true;
+  document.getElementById('cc-id').value = id;
+  document.getElementById('cc-modal-title').textContent = id ? 'Editar cuenta' : 'Agregar cuenta';
+  document.getElementById('cc-skin-count').value = '0';
+  document.getElementById('cc-idle-days').value = '0';
+  document.getElementById('cc-status-edit').value = 'disponible';
+  if (id) {
+    const row = catalogoCuentas.find(item => item.id === id);
+    if (!row) return showToast('No se encontró la cuenta.', true);
+    document.getElementById('cc-title').value = row.titulo || '';
+    document.getElementById('cc-skin-count').value = row.cantidad_skins ?? 0;
+    document.getElementById('cc-idle-days').value = row.dias_inactividad ?? 0;
+    document.getElementById('cc-skin-tags').value = (row.skins_destacadas || []).join(', ');
+    document.getElementById('cc-has-stw').value = String(!!row.tiene_stw);
+    document.getElementById('cc-price').value = row.precio_usd ?? '';
+    document.getElementById('cc-status-edit').value = row.estado || 'disponible';
+    document.getElementById('cc-description').value = row.descripcion || '';
+    supabase.rpc('leer_detalle_catalogo_cuenta', { p_id: id }).then(({data,error}) => {
+      if (error) return showToast('No se pudo cargar la información privada.', true);
+      const detail = Array.isArray(data) ? data[0] : data;
+      if (!detail) return;
+      document.getElementById('cc-reference').value = detail.referencia_interna || '';
+      document.getElementById('cc-cost').value = detail.costo_adquisicion_usd ?? '';
+      document.getElementById('cc-internal-notes').value = detail.notas_internas || '';
+    });
+  }
+  document.getElementById('modal-catalogo-cuenta').classList.add('open');
+}
+
+function cerrarEditorCuentaCatalogo() { document.getElementById('modal-catalogo-cuenta')?.classList.remove('open'); }
+
+async function guardarCuentaCatalogo(event) {
+  event.preventDefault();
+  if (currentRole !== 'CEO') return;
+  const btn = document.getElementById('cc-save');
+  const errorBox = document.getElementById('cc-form-error');
+  const rawCost = document.getElementById('cc-cost').value;
+  btn.disabled = true;
+  errorBox.hidden = true;
+  try {
+    const args = {
+      p_id: document.getElementById('cc-id').value || null,
+      p_titulo: document.getElementById('cc-title').value.trim(),
+      p_cantidad_skins: Number(document.getElementById('cc-skin-count').value),
+      p_skins_destacadas: document.getElementById('cc-skin-tags').value.split(',').map(x => x.trim()).filter(Boolean),
+      p_tiene_stw: document.getElementById('cc-has-stw').value === 'true',
+      p_dias_inactividad: Number(document.getElementById('cc-idle-days').value),
+      p_precio_usd: Number(document.getElementById('cc-price').value),
+      p_descripcion: document.getElementById('cc-description').value.trim(),
+      p_estado: document.getElementById('cc-status-edit').value,
+      p_referencia_interna: document.getElementById('cc-reference').value.trim(),
+      p_costo_adquisicion_usd: rawCost === '' ? null : Number(rawCost),
+      p_notas_internas: document.getElementById('cc-internal-notes').value.trim()
+    };
+    const { error } = await supabase.rpc('guardar_cuenta_catalogo', args);
+    if (error) throw error;
+    cerrarEditorCuentaCatalogo();
+    showToast('Cuenta guardada correctamente.');
+    await cargarCatalogoCuentas();
+  } catch (err) {
+    errorBox.textContent = err.message || 'No se pudo guardar la cuenta.';
+    errorBox.hidden = false;
+  } finally { btn.disabled = false; }
+}
+
 // --- NAVEGACIÓN GENERAL ---
 function switchTab(tab, btn) {
   activeTab = tab;
+  document.getElementById('app')?.classList.remove('sidebar-open');
+  const sidebarToggle = document.querySelector('.sidebar-toggle');
+  if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'false');
   document.querySelectorAll('.tab-nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   
@@ -4408,16 +4474,23 @@ function switchTab(tab, btn) {
   if (tab === 'clientes') {
     window.renderClientesTab();
   }
+  if (tab === 'catalogo-cuentas') cargarCatalogoCuentas();
   // Al entrar a Contabilidad, recarga todo desde el backend (incluye
   // saldo por método y retiros si el usuario es CEO — eso ya lo hace
   // renderAccounting() internamente).
   if (tab === 'contabilidad') {
     renderAccounting();
   }
-  if (tab === 'xboxgames') {
-    renderXboxGamesList();
-  }
 }
+
+window.toggleAdminSidebar = function(force) {
+  const app = document.getElementById('app');
+  if (!app) return;
+  const shouldOpen = typeof force === 'boolean' ? force : !app.classList.contains('sidebar-open');
+  app.classList.toggle('sidebar-open', shouldOpen);
+  const toggle = document.querySelector('.sidebar-toggle');
+  if (toggle) toggle.setAttribute('aria-expanded', String(shouldOpen));
+};
 
 function filterByStatus(st) {
   document.getElementById('filt-status').value = st;
@@ -4434,13 +4507,13 @@ function openWA(num) {
   window.open(`https://wa.me/${clean}`, '_blank');
 }
 
-function showToast(msg, isErr = false) {
+function showToast(msg, isErr = false, duration = 3500) {
   const t = document.getElementById('toast');
   if (!t) return;
   t.textContent = msg;
   t.className = 'toast show' + (isErr ? ' err' : '');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), duration);
 }
 
 // --- AUTH CON SUPABASE ---
@@ -4499,7 +4572,8 @@ async function doLogin() {
   sessionStorage.setItem('shegos_role', role);
   sessionStorage.setItem('shegos_email', email);
   mostrarPanel(email, role);
-  showToast(`Bienvenido/a ${role === 'CEO' ? 'CEO 👑' : 'Admin'}`);
+  const welcomeDuration = window.matchMedia('(max-width: 768px)').matches ? 1400 : 3500;
+  showToast(`Bienvenido/a ${role === 'CEO' ? 'CEO 👑' : 'Admin'}`, false, welcomeDuration);
 }
 
 async function doLogout() {
@@ -4507,6 +4581,90 @@ async function doLogout() {
   sessionStorage.clear();
   location.reload();
 }
+
+let passwordChangeNeedsNonce = false;
+
+window.openChangePassword = function() {
+  passwordChangeNeedsNonce = false;
+  const form = document.getElementById('change-password-form');
+  form.reset();
+  document.getElementById('cp-current').disabled = false;
+  document.getElementById('change-pwd-msg').hidden = true;
+  document.getElementById('cp-nonce-group').hidden = true;
+  document.getElementById('modal-change-password').classList.add('open');
+  setTimeout(() => document.getElementById('cp-current').focus(), 80);
+};
+
+window.closeChangePassword = function() {
+  document.getElementById('modal-change-password').classList.remove('open');
+  document.getElementById('change-password-form').reset();
+  document.getElementById('cp-current').disabled = false;
+  document.getElementById('change-pwd-msg').hidden = true;
+  document.getElementById('cp-nonce-group').hidden = true;
+  passwordChangeNeedsNonce = false;
+};
+
+window.submitChangePassword = async function(event) {
+  event.preventDefault();
+  const currentPassword = document.getElementById('cp-current').value;
+  const newPassword = document.getElementById('cp-new').value;
+  const confirmation = document.getElementById('cp-confirm').value;
+  const nonce = document.getElementById('cp-nonce').value.trim();
+  const button = document.getElementById('change-pwd-submit');
+  const message = document.getElementById('change-pwd-msg');
+  const showMessage = (text, isError) => {
+    message.textContent = text;
+    message.className = 'change-password-message ' + (isError ? 'is-error' : 'is-success');
+    message.hidden = false;
+  };
+
+  if (!passwordChangeNeedsNonce && !currentPassword) { showMessage('Escribe tu contraseña actual.', true); return; }
+  if (newPassword.length < 8) { showMessage('La nueva contraseña debe tener al menos 8 caracteres.', true); return; }
+  if (newPassword !== confirmation) { showMessage('Las nuevas contraseñas no coinciden.', true); return; }
+  if (!passwordChangeNeedsNonce && newPassword === currentPassword) { showMessage('Elige una contraseña diferente a la actual.', true); return; }
+  if (passwordChangeNeedsNonce && !nonce) { showMessage('Escribe el código de verificación que recibiste.', true); return; }
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando…';
+  message.hidden = true;
+  let updated = false;
+  try {
+    const attributes = passwordChangeNeedsNonce
+      ? { password: newPassword, nonce }
+      : { password: newPassword, current_password: currentPassword };
+    const { error } = await supabase.auth.updateUser(attributes);
+    if (error && error.code === 'reauthentication_needed' && !passwordChangeNeedsNonce) {
+      const { error: reauthError } = await supabase.auth.reauthenticate();
+      if (reauthError) throw reauthError;
+      passwordChangeNeedsNonce = true;
+      document.getElementById('cp-nonce-group').hidden = false;
+      document.getElementById('cp-current').disabled = true;
+      document.getElementById('cp-nonce').focus();
+      showMessage('Supabase requiere una verificación adicional. Te enviamos un código para continuar.', false);
+      return;
+    }
+    if (error) throw error;
+    updated = true;
+    showMessage('Contraseña actualizada correctamente.', false);
+    showToast('Contraseña actualizada');
+    button.innerHTML = '<i class="fas fa-check"></i> Contraseña actualizada';
+    setTimeout(() => window.closeChangePassword(), 1500);
+  } catch (error) {
+    console.error('[change-password] No se pudo actualizar la contraseña:', error);
+    const code = error.code || '';
+    const detail = error.message || '';
+    let text = 'No se pudo cambiar la contraseña. Inténtalo de nuevo.';
+    if (code === 'same_password') text = 'Elige una contraseña diferente a la actual.';
+    else if (code === 'weak_password' || /weak password/i.test(detail)) text = 'La contraseña no cumple los requisitos de seguridad de tu cuenta.';
+    else if (code === 'invalid_credentials' || /current password|invalid login credentials/i.test(detail)) text = 'La contraseña actual no es correcta.';
+    else if (code === 'reauthentication_not_valid') text = 'El código no es válido. Revisa el código recibido e inténtalo otra vez.';
+    showMessage(text, true);
+  } finally {
+    if (!updated) { button.disabled = false; button.innerHTML = '<i class="fas fa-check"></i> Actualizar contraseña'; }
+  }
+};
+
+
 
 // --- OJITO CONTRASEÑA ---
 window.togglePwd = function() {
@@ -4570,7 +4728,6 @@ function aplicarRestriccionesRol(role) {
   currentRole = role;
   const accountingTab = document.getElementById('btn-tab-contabilidad');
   const cuentasTab = document.getElementById('btn-tab-cuentas');
-  const recoveryTab = document.getElementById('btn-tab-recovery');
   const body = document.getElementById('app');
 
   // Restricciones estrictas para campos financieros en el modal de ventas
@@ -4582,7 +4739,6 @@ function aplicarRestriccionesRol(role) {
   if (role === 'CEO') {
     if (accountingTab) accountingTab.style.display = '';
     if (cuentasTab) cuentasTab.style.display = '';
-    if (recoveryTab) recoveryTab.style.display = '';
     if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.add('role-ceo');
     document.body.classList.add('role-ceo');
@@ -4592,12 +4748,10 @@ function aplicarRestriccionesRol(role) {
     const mnavConta = document.getElementById('mnav-contabilidad');
     if (mnavConta) mnavConta.classList.remove('hidden');
     fetchVentas();
-    fetchRecoveries();
   } else {
-    // ADMIN: can access Cuentas, Recovery and Clientes but NOT Contabilidad
+    // ADMIN: puede acceder a Cuentas y Clientes, sin Contabilidad
     if (accountingTab) accountingTab.style.display = 'none';
     if (cuentasTab) cuentasTab.style.display = '';
-    if (recoveryTab) recoveryTab.style.display = '';
     if (clientesTab) clientesTab.style.display = '';
     if (body) body.classList.remove('role-ceo');
     document.body.classList.remove('role-ceo');
@@ -4617,7 +4771,6 @@ function aplicarRestriccionesRol(role) {
       switchTab('pedidos', document.getElementById('btn-tab-pedidos'));
     }
     fetchVentas();
-    fetchRecoveries();
   }
 
   // Sincronizar visibilidad financiera en el modal de ventas de forma inmediata
@@ -4731,6 +4884,33 @@ function updateVentasStats(filtered) {
 
   // Gráfica ganancia por tipo (CEO only)
   renderGananciaChart(sumGanancia);
+  renderSalesInsights();
+}
+
+function renderSalesInsights() {
+  const now = new Date(), currentKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const prevDate = new Date(now.getFullYear(), now.getMonth()-1, 1), prevKey = `${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
+  const monthOf = v => vcLocalDay(v.created_at || '').slice(0,7);
+  const current = currentVentas.filter(v => monthOf(v) === currentKey), previous = currentVentas.filter(v => monthOf(v) === prevKey);
+  const setText = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  setText('sales-month-count', current.length); setText('sales-prev-count', previous.length);
+  setText('sales-prev-label', prevDate.toLocaleDateString('es-DO',{month:'long',year:'numeric'}));
+  const delta=current.length-previous.length, pct=previous.length ? Math.round(delta/previous.length*100) : (current.length ? 100 : 0);
+  setText('sales-month-change', `${delta>=0?'+':''}${delta} ventas (${pct>=0?'+':''}${pct}%) frente al mes anterior`);
+  setText('sales-insights-period', now.toLocaleDateString('es-DO',{month:'long',year:'numeric'}));
+  const revenue=current.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0), prevRevenue=previous.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0);
+  setText('sales-month-revenue', `$${revenue.toFixed(2)}`);
+  setText('sales-revenue-change', `Mes anterior: $${prevRevenue.toFixed(2)}`);
+  const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const monthly=document.getElementById('sales-monthly-chart');
+  if(monthly){
+    const values=[]; for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1),key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; values.push({key,label:d.toLocaleDateString('es-DO',{month:'short'}),count:currentVentas.filter(v=>monthOf(v)===key).length});}
+    const max=Math.max(1,...values.map(x=>x.count)); monthly.innerHTML=values.map(x=>`<div class="sales-bar-col" title="${x.count} ventas"><span>${x.count}</span><i style="height:${Math.max(4,x.count/max*100)}%"></i><small>${esc(x.label)}</small></div>`).join('');
+  }
+  const renderRank=(id,entries)=>{const el=document.getElementById(id);if(!el)return;const max=Math.max(1,...entries.map(x=>x.count));el.innerHTML=entries.length?entries.slice(0,5).map(x=>`<div class="sales-rank-row"><span class="sales-rank-name" title="${esc(x.name)}">${esc(x.name)}</span><span class="sales-rank-track"><i style="width:${Math.max(4,x.count/max*100)}%"></i></span><b>${x.count}</b></div>`).join(''):'<p class="sales-chart-empty">Aún no hay ventas este mes.</p>';};
+  const group=key=>{const m=new Map();current.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';m.set(name,(m.get(name)||0)+1);});return [...m].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);};
+  renderRank('sales-products-chart',group('producto'));
+  renderRank('sales-types-chart',group('tipo'));
 }
 
 function renderGananciaChart(sumGanancia) {
@@ -4851,6 +5031,7 @@ function renderVentas() {
   });
 
   updateVentasStats(filtered);
+  renderPurchasePatterns(currentVentas.filter(v=>{const d=vcLocalDay(v.created_at);return (!from||!d||d>=from)&&(!to||!d||d<=to);}));
   const countInfo = document.getElementById('vc-count-info');
   if (countInfo) countInfo.textContent = `${filtered.length} de ${currentVentas.length} venta${currentVentas.length !== 1 ? 's' : ''}`;
 
@@ -4891,8 +5072,8 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
-          ${v.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
-          ${v.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('venta','${v.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+          <button class="ibtn" type="button" title="${v.comprobante ? 'Ver / descargar comprobante' : 'Esta venta no tiene comprobante}" aria-label="Ver comprobante" ${v.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${v.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>
+          <button class="ibtn" type="button" title="${v.foto_producto ? 'Ver foto del producto' : 'Esta venta no tiene foto del producto}" aria-label="Ver foto del producto" ${v.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${v.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}' ,'foto_producto')"><i class="fas fa-box-open"></i></button>
           ${remFlagBtn('venta', v)}
           ${rvBtn('venta', v)}
           <button class="ibtn" onclick="window.editVenta('${v.id}')"><i class="fas fa-pen"></i></button>
@@ -4907,6 +5088,9 @@ function renderVentas() {
 }
 
 function openVentaModal() {
+  const ventaModal = document.getElementById('modal-venta');
+  if (!ventaModal) { showToast('No se encontró el formulario de venta', true); return; }
+  ventaModal.classList.add('open');
   window.editingVentaId = null;
   document.getElementById('vc-m-title').textContent = 'Nueva Venta';
   document.getElementById('vc-f-parse').value = '';
@@ -4931,6 +5115,7 @@ function openVentaModal() {
   if (statusEl) statusEl.value = 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
+  syncPaymentPicker('vc-f-metodo');
   const hintEl = document.getElementById('vc-cliente-hint');
   if (hintEl) hintEl.style.display = 'none';
   const plazoEl = document.getElementById('vc-f-plazo');
@@ -4957,8 +5142,10 @@ function openVentaModal() {
   const isoStr = now.toISOString().slice(0,16);
   document.getElementById('vc-f-fecha').value = isoStr;
   window.vmUpdateTotal();
-  document.getElementById('modal-venta').classList.add('open');
+  ventaModal.classList.add('open');
 }
+
+window.openVentaModal = openVentaModal;
 
 window.editVenta = function(id) {
   const v = currentVentas.find(x => String(x.id) === String(id));
@@ -4988,6 +5175,7 @@ window.editVenta = function(id) {
   if (statusEl) statusEl.value = v.estado || 'Pendiente';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = v.metodo_pago || '';
+  syncPaymentPicker('vc-f-metodo');
   const crEl = document.getElementById('vc-f-costo-real');
   if (crEl) crEl.value = v.costo_real || '';
   const mrEl = document.getElementById('vc-f-monto-recibido');
@@ -5054,8 +5242,10 @@ function closeVentaModal() {
 }
 
 window.updateInterestPct = function() {
-  const plazo = document.getElementById('vc-f-plazo').value;
+  const plazoEl = document.getElementById('vc-f-plazo');
   const interesInput = document.getElementById('vc-f-interes-pct');
+  if (!plazoEl || !interesInput) return;
+  const plazo = plazoEl.value;
   if (plazo !== 'custom') {
     interesInput.value = plazo;
     interesInput.readOnly = true;
@@ -5082,13 +5272,24 @@ window.calcVentaMargen = function() {
   // Monto Recibido = lo que realmente entra después de comisiones (PayPal, Binance, etc).
   // Si se deja vacío, se asume que no hubo comisión (monto recibido = precio de venta).
   const montoRecibidoEl = document.getElementById('vc-f-monto-recibido');
+  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
+  const feeNote = document.getElementById('vc-payment-fee-note');
+  const autoFee = paymentMethod === 'transferencia_mx' ? Math.round(total * .001 * 100) / 100 : 0;
+  if (paymentMethod === 'transferencia_mx') {
+    if (montoRecibidoEl) { montoRecibidoEl.value = Math.max(0,total-autoFee).toFixed(2); montoRecibidoEl.readOnly = true; }
+    if (montoRecibidoEl) montoRecibidoEl.dataset.autoFee='true';
+    if (feeNote) { feeNote.textContent = `Comisión automática 0.1%: $${autoFee.toFixed(2)} · Recibido: $${Math.max(0,total-autoFee).toFixed(2)}`; feeNote.style.display='block'; }
+  } else {
+    if (montoRecibidoEl?.dataset.autoFee==='true') { montoRecibidoEl.value=''; montoRecibidoEl.dataset.autoFee='false'; }
+    if (montoRecibidoEl) montoRecibidoEl.readOnly = false;
+    if (feeNote) { feeNote.textContent=''; feeNote.style.display='none'; }
+  }
   const montoRecibidoRaw = montoRecibidoEl?.value;
-  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
-    ? (parseFloat(montoRecibidoRaw) || 0)
-    : total;
+  const montoRecibido = paymentMethod === 'transferencia_mx' ? Math.max(0,total-autoFee) :
+    (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null ? (parseFloat(montoRecibidoRaw) || 0) : total);
 
   // Comisión = diferencia entre lo cobrado al cliente y lo que realmente entró
-  const comision = total - montoRecibido;
+  const comision = paymentMethod === 'transferencia_mx' ? autoFee : total - montoRecibido;
   const comisionEl = document.getElementById('vc-f-comision-ceo');
   if (comisionEl) comisionEl.value = comision.toFixed(2);
 
@@ -5132,27 +5333,19 @@ window.vmToggleParse = function() {
 window.toggleVentaFields = function() {
   const tipo = document.getElementById('vc-f-tipo').value;
   const isCuenta = tipo === 'Cuenta de fortnite';
-  const isApartar = tipo === 'Apartar cuentas';
-  const isStreaming = tipo === 'Streaming';
   const cuentaBlock = document.getElementById('vm-cuenta-fields');
   const apartarBlock = document.getElementById('vm-apartar-fields');
   const streamingBlock = document.getElementById('vm-streaming-fields');
   if (cuentaBlock) cuentaBlock.style.display = isCuenta ? 'block' : 'none';
-  if (apartarBlock) apartarBlock.style.display = isApartar ? 'block' : 'none';
-  if (streamingBlock) {
-    streamingBlock.style.display = isStreaming ? 'block' : 'none';
-    if (isStreaming) populateStreamingSelect();
-  }
+  if (apartarBlock) apartarBlock.style.display = 'none';
+  if (streamingBlock) streamingBlock.style.display = 'none';
   const labelProd = document.getElementById('label-vc-f-producto');
-  if (labelProd) {
-    if (isCuenta) labelProd.textContent = 'Nombre de la Cuenta';
-    else if (isApartar) labelProd.textContent = 'Nombre / Referencia de la Cuenta';
-    else if (isStreaming) labelProd.textContent = 'Plataforma / Plan';
-    else labelProd.textContent = 'Nombre del Producto';
-  }
+  if (labelProd) labelProd.textContent = isCuenta ? 'Cuenta / detalle editable' : 'Nombre del Producto';
+  const product = document.getElementById('vc-f-producto');
+  if (isCuenta && product && (!product.value.trim() || product.value === 'Cuenta de Fortnite')) product.value = 'Cuenta de Fortnite';
   // Auto-generate ID for cuentas
   const idInp = document.getElementById('vc-f-id');
-  if ((isCuenta || isApartar) && idInp && !idInp.value) {
+  if (isCuenta && idInp && !idInp.value) {
     idInp.value = 'SHG-' + Math.floor(1000 + Math.random() * 9000);
   }
 };
@@ -5214,7 +5407,7 @@ async function cargarSugerenciasClientes() {
   try {
     const { data, error } = await supabase
       .from('pedidos')
-      .select('nombre_cliente, telefono_cliente')
+      .select('nombre_cliente, telefono')
       .limit(200);
 
     // Si hay error de Supabase, ignorar silenciosamente (tabla vacía o sin permisos aún)
@@ -5224,7 +5417,7 @@ async function cargarSugerenciasClientes() {
     const clientesUnicos = {};
     data.forEach(p => {
       if (p.nombre_cliente && !clientesUnicos[p.nombre_cliente]) {
-        clientesUnicos[p.nombre_cliente] = p.telefono_cliente || '';
+        clientesUnicos[p.nombre_cliente] = p.telefono || '';
       }
     });
 
@@ -5245,6 +5438,11 @@ window.saveVenta = async function() {
   const ingresoBase = parseFloat(document.getElementById('vc-f-ingreso')?.value || 0);
   const tipo = document.getElementById('vc-f-tipo').value;
   if (!ingresoBase || !tipo) { showToast('El ingreso y el tipo son obligatorios', true); return; }
+  const saleDateInput = document.getElementById('vc-f-fecha');
+  if (saleDateInput.value && !window.validateCalendarInput(saleDateInput, 'datetime')) {
+    showToast('Corrige la fecha y hora de la venta antes de guardar.', true);
+    return;
+  }
 
   const saveBtn = document.querySelector('#modal-venta .btn-accent[onclick*="saveVenta"]');
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
@@ -5252,13 +5450,16 @@ window.saveVenta = async function() {
   const interesPct    = parseFloat(document.getElementById('vc-f-interes-pct')?.value) || 0;
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
+  const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
+  const autoFee = paymentMethod === 'transferencia_mx' ? Math.round(totalVenta * .001 * 100) / 100 : 0;
   const costoReal     = parseFloat(document.getElementById('vc-f-costo-real')?.value) || 0;
   const montoRecibidoRaw = document.getElementById('vc-f-monto-recibido')?.value;
-  const montoRecibido = (montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
+  const montoRecibido = paymentMethod === 'transferencia_mx' ? Math.max(0,totalVenta-autoFee) :
+    ((montoRecibidoRaw !== '' && montoRecibidoRaw !== undefined && montoRecibidoRaw !== null)
     ? (parseFloat(montoRecibidoRaw) || 0)
-    : totalVenta;
-  const comision      = parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido);
-  const ganancia      = parseFloat(document.getElementById('vc-f-neta-ceo')?.value) || (montoRecibido - costoReal);
+    : totalVenta);
+  const comision      = paymentMethod === 'transferencia_mx' ? autoFee : (parseFloat(document.getElementById('vc-f-comision-ceo')?.value) || (totalVenta - montoRecibido));
+  const ganancia      = montoRecibido - costoReal;
 
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
@@ -5281,7 +5482,7 @@ window.saveVenta = async function() {
     id_pedido:           document.getElementById('vc-f-id')?.value               || '',
     estado:              document.getElementById('vc-f-status')?.value            || '',
     whatsapp:            document.getElementById('vc-f-wa')?.value                || '',
-    metodo_pago:         document.getElementById('vc-f-metodo')?.value            || '',
+    metodo_pago:         paymentMethod,
     producto:            document.getElementById('vc-f-producto')?.value          || '',
     comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
     pago_parcial:        parseFloat(document.getElementById('vc-f-pago-parcial')?.value)     || 0,
@@ -5389,6 +5590,26 @@ function vcQuickRange(days) {
   renderVentas();
 }
 
+function renderPurchasePatterns(rows) {
+  const chart=document.getElementById('purchase-weekday-chart'), summary=document.getElementById('purchase-pattern-summary');
+  if(!chart||!summary)return null;
+  const records=rows||[];
+  if(!records.length){summary.textContent='Todavía no hay ventas suficientes para detectar un patrón.';chart.innerHTML='';return null;}
+  const fromVal=document.getElementById('vc-date-from')?.value||'',toVal=document.getElementById('vc-date-to')?.value||'';
+  const days=records.map(v=>vcLocalDay(v.created_at)).filter(Boolean).sort();
+  const start=new Date((fromVal||days[0])+'T00:00:00'), end=new Date((toVal||days[days.length-1])+'T00:00:00');
+  if(isNaN(start)||isNaN(end)||end<start){summary.textContent='Revisa las fechas seleccionadas para calcular el patrón.';chart.innerHTML='';return null;}
+  const counts=Array(7).fill(0), occurrences=Array(7).fill(0), labels=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  records.forEach(v=>{const d=new Date(vcLocalDay(v.created_at)+'T00:00:00');if(!isNaN(d))counts[d.getDay()]++;});
+  const cursor=new Date(start); while(cursor<=end){occurrences[cursor.getDay()]++;cursor.setDate(cursor.getDate()+1);}
+  const averages=labels.map((label,i)=>({label,count:counts[i],days:occurrences[i],average:occurrences[i]?counts[i]/occurrences[i]:0}));
+  const observed=averages.filter(x=>x.days>0), ranked=[...observed].sort((a,b)=>b.average-a.average), best=ranked[0], slow=ranked[ranked.length-1];
+  summary.innerHTML=`En este rango, el promedio más alto es <strong>${best.label}</strong> (${best.average.toFixed(2)} ventas por ${best.label.toLowerCase()}), y el más bajo es <strong>${slow.label}</strong> (${slow.average.toFixed(2)}). Cálculo estadístico automático a partir de las fechas registradas.`;
+  const max=Math.max(0.01,...averages.map(x=>x.average));
+  chart.innerHTML=averages.map(x=>`<div class="purchase-weekday-row"><span>${x.label}</span><span class="purchase-weekday-track"><i style="width:${Math.max(2,x.average/max*100)}%"></i></span><b>${x.average.toFixed(2)}</b><small>${x.count} ventas · ${x.days} días</small></div>`).join('');
+  return {averages,best,slow,start,end};
+}
+
 function exportVentasCSV() {
   if (currentVentas.length === 0) { showToast('No hay ventas para exportar', true); return; }
   const isCEO = currentRole === 'CEO';
@@ -5405,6 +5626,30 @@ function exportVentasCSV() {
   a.download = `Ventas_${new Date().toISOString().substring(0,10)}.csv`;
   a.click();
 }
+
+window.exportVentasPDF = function() {
+  const from=document.getElementById('vc-date-from')?.value||'',to=document.getElementById('vc-date-to')?.value||'';
+  const day=v=>vcLocalDay(v.created_at);
+  const rows=currentVentas.filter(v=>(!from||day(v)>=from)&&(!to||day(v)<=to)).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));
+  if(!rows.length){showToast('No hay ventas dentro del rango seleccionado',true);return;}
+  const popup=window.open('','_blank');
+  if(!popup){showToast('El navegador bloqueó el PDF. Permite ventanas emergentes e inténtalo de nuevo.',true);return;}
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const gross=rows.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0), net=rows.reduce((s,v)=>s+(parseFloat(v.monto_recibido??v.ingreso)||0),0), fees=rows.reduce((s,v)=>s+(parseFloat(v.comision)||0),0);
+  const analysis=renderPurchasePatterns(rows);
+  const range=`${from||'Inicio del historial'} — ${to||'Hoy'}`;
+  const isCEO=currentRole==='CEO';
+  const tableRows=rows.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(vcLocalDateTime(v.created_at))}</td><td>${esc(v.tipo)}</td><td>${esc(v.producto)}</td><td>${esc(v.cliente)}</td><td>${esc(paymentMethodIdentityLabel(v.metodo_pago))}</td><td class="num">$${(parseFloat(v.ingreso)||0).toFixed(2)}</td>${isCEO?`<td class="num">$${(parseFloat(v.comision)||0).toFixed(2)}</td><td class="num">$${(parseFloat(v.monto_recibido??v.ingreso)||0).toFixed(2)}</td>`:''}</tr>`).join('');
+  const pattern=analysis?`<section><h2>Patrones de compra por día</h2><p>Mayor promedio: <b>${esc(analysis.best.label)}</b> (${analysis.best.average.toFixed(2)} ventas por ocurrencia). Menor promedio: <b>${esc(analysis.slow.label)}</b> (${analysis.slow.average.toFixed(2)}).</p><div class="weekdays">${analysis.averages.map(x=>`<span>${esc(x.label)}<b>${x.average.toFixed(2)}</b></span>`).join('')}</div></section>`:'';
+  popup.document.open();
+  popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(range)}</title><style>
+    @page{size:A4 landscape;margin:14mm}*{box-sizing:border-box}body{font:12px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #62ff00;padding-bottom:12px;margin-bottom:18px}h1{font-size:22px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}p{margin:3px 0;color:#536052}.brand{font-weight:900;letter-spacing:2px;color:#286f0b}.summary{display:flex;gap:12px;margin:12px 0 20px}.metric{flex:1;padding:11px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:10px;text-transform:uppercase;letter-spacing:.7px}.metric strong{font-size:18px;display:block;margin-top:5px}section{margin:16px 0}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:8px;border-radius:6px;background:#f2f7ef;text-align:center}.weekdays b{display:block;color:#2d8209;font-size:14px}table{width:100%;border-collapse:collapse;font-size:10px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:7px}td{padding:6px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body><header><div><div class="brand">SHEGOS STORE</div><h1>Registro de ventas</h1><p>Período: ${esc(range)}</p></div><div><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
+  <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>${pattern}
+  <section><h2>Detalle del registro</h2><table><thead><tr><th>#</th><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cliente</th><th>Método</th><th>Ingreso</th>${isCEO?'<th>Comisión</th><th>Recibido</th>':''}</tr></thead><tbody>${tableRows}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div><script>window.addEventListener('load',()=>setTimeout(()=>window.print(),350));<\/script></body></html>`);
+  popup.document.close();
+};
+function paymentMethodIdentityLabel(method){const item=PAYMENT_METHODS.find(x=>x.value===method)||LEGACY_PAYMENT_METHODS[method];return item?.label||String(method||'—').replaceAll('_',' ');}
 
 
 function toggleDiscord() {
@@ -5485,238 +5730,6 @@ function parseDiscordText() {
 }
 
 // ── FIN SECCIÓN CUENTAS ─────────────────────────
-
-// ═══════════════════════════════════════════════
-// SECCIÓN RECUPERACIÓN DE CUENTAS
-// ═══════════════════════════════════════════════
-let currentRecoveries = [];
-let editingRecoveryId = null;
-let recAseguradaSelected = '';
-
-async function fetchRecoveries() {
-  const area = document.getElementById('rec-list-area');
-  if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando recuperaciones...</p></div>`;
-  try {
-    const { data, error } = await supabase.from('recuperaciones').select('*');
-    if (error) throw error;
-    currentRecoveries = (data || []).sort((a,b) => (b.fecha_recuperacion||b.created_at||'').localeCompare(a.fecha_recuperacion||a.created_at||''));
-    renderRecoveries();
-    updateRecoveryStats();
-  } catch(err) {
-    console.error(err);
-    if (area) area.innerHTML = `
-      <div class="empty">
-        <i class="fas fa-cloud-slash" style="color:var(--red)"></i>
-        <p style="color:var(--red);margin-bottom:8px">No se pudo cargar la tabla recuperaciones</p>
-        <p style="font-size:0.75em;color:var(--text3);margin-bottom:16px">${err?.message||''}</p>
-        <p style="font-size:0.7em;color:var(--text3)">Asegúrate de crear la tabla <strong style="color:var(--accent)">recuperaciones</strong> en Supabase</p>
-        <button class="btn btn-outline" style="margin-top:12px" onclick="window.fetchRecoveries()"><i class="fas fa-rotate-right"></i> Reintentar</button>
-      </div>`;
-  }
-}
-
-function updateRecoveryStats() {
-  const total = currentRecoveries.length;
-  const si = currentRecoveries.filter(r => r.asegurada_bien === 'si' || r.asegurada_bien === true).length;
-  const no = total - si;
-  const inacVals = currentRecoveries.map(r => parseInt(r.inactividad)||0).filter(v => v > 0);
-  const inacProm = inacVals.length ? Math.round(inacVals.reduce((a,b)=>a+b,0)/inacVals.length) : null;
-  const revertPct = total > 0 ? ((no/total)*100).toFixed(0) : 0;
-
-  const setTxt = (id, v) => { const el=document.getElementById(id); if(el) el.textContent = v; };
-  setTxt('rec-s-total', total);
-  setTxt('rec-s-inac', inacProm !== null ? inacProm : '—');
-  setTxt('rec-s-si', si);
-  setTxt('rec-s-no', no);
-  setTxt('rec-s-revert', revertPct + '%');
-  setTxt('rec-leg-si', si);
-  setTxt('rec-leg-no', no);
-
-  // Donut chart
-  const circle = document.getElementById('rec-donut-si');
-  const circleNo = document.getElementById('rec-donut-no');
-  const pctEl = document.getElementById('rec-donut-pct');
-  if (circle && circleNo && pctEl) {
-    const pctSi = total > 0 ? (si/total)*100 : 0;
-    const pctNo = 100 - pctSi;
-    circle.setAttribute('stroke-dasharray', `${pctSi.toFixed(1)} ${(100-pctSi).toFixed(1)}`);
-    circleNo.setAttribute('stroke-dasharray', `${pctNo.toFixed(1)} ${(100-pctNo).toFixed(1)}`);
-    // offset no circle to start after si
-    const offset = 25 - pctSi;
-    circleNo.setAttribute('stroke-dashoffset', offset.toFixed(1));
-    pctEl.textContent = total > 0 ? `${Math.round(pctSi)}%` : '0%';
-  }
-
-  // Monthly bar chart
-  const chartContainer = document.getElementById('rec-bar-chart');
-  if (chartContainer) {
-    let monthlyData = {};
-    const now = new Date();
-    for (let i=5;i>=0;i--) {
-      let d = new Date(now.getFullYear(), now.getMonth()-i, 1);
-      let key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-      monthlyData[key] = { label: d.toLocaleString('es',{month:'short'}).toUpperCase(), val: 0 };
-    }
-    currentRecoveries.forEach(r => {
-      const k = (r.fecha_recuperacion||r.created_at||'').substring(0,7);
-      if (monthlyData[k]) monthlyData[k].val++;
-    });
-    const maxVal = Math.max(...Object.values(monthlyData).map(m=>m.val),1);
-    chartContainer.innerHTML = Object.values(monthlyData).map(m=>`
-      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:4px">
-        <div style="font-size:0.58em;color:var(--accent);font-weight:700">${m.val||''}</div>
-        <div style="width:100%;background:linear-gradient(180deg,var(--accent),rgba(40,254,182,.3));border-radius:3px 3px 0 0;min-height:2px;height:${Math.max((m.val/maxVal)*88,2)}px;transition:height .4s ease"></div>
-        <div style="font-size:0.58em;color:var(--text2);font-weight:600">${m.label}</div>
-      </div>`).join('');
-  }
-}
-
-function renderRecoveries() {
-  const area = document.getElementById('rec-list-area');
-  if (!area) return;
-  const query = (document.getElementById('rec-search')?.value||'').toLowerCase();
-  const filtroAseg = document.getElementById('rec-filter-asegurada')?.value||'';
-
-  let filtered = currentRecoveries.filter(r => {
-    if (filtroAseg && r.asegurada_bien !== filtroAseg && !(filtroAseg==='si' && r.asegurada_bien===true) && !(filtroAseg==='no' && r.asegurada_bien===false)) return false;
-    if (query) return (r.correo||'').toLowerCase().includes(query) || (r.notas||'').toLowerCase().includes(query);
-    return true;
-  });
-
-  if (filtered.length === 0) {
-    area.innerHTML = `<div class="empty"><i class="fas fa-shield-alt"></i><p>No hay recuperaciones registradas</p></div>`;
-    return;
-  }
-
-  area.innerHTML = filtered.map(r => {
-    const aseg = r.asegurada_bien === 'si' || r.asegurada_bien === true;
-    const dotColor = aseg ? 'var(--accent)' : 'var(--red)';
-    const badgeCls = aseg ? 'rbadge-si' : 'rbadge-no';
-    const badgeText = aseg ? 'Asegurada ✓' : 'Sin Asegurar ✗';
-    const fecha = r.fecha_recuperacion ? r.fecha_recuperacion.substring(0,10) : (r.created_at||'').substring(0,10);
-    const inac = r.inactividad ? `${r.inactividad} días inactiva` : '';
-    return `<div class="rec-history-card">
-      <div class="rec-status-dot" style="background:${dotColor}"></div>
-      <div class="rec-history-info">
-        <div class="rec-history-email">${r.correo || '—'}</div>
-        <div class="rec-history-meta">${fecha}${inac ? ' · ' + inac : ''}${r.notas ? ' · ' + r.notas.substring(0,60) : ''}</div>
-      </div>
-      <span class="rec-history-badge ${badgeCls}">${badgeText}</span>
-      <div style="display:flex;gap:4px;margin-left:8px">
-        <button class="ibtn" onclick="window.editRecovery('${r.id}')" title="Editar"><i class="fas fa-pen"></i></button>
-        <button class="ibtn del" onclick="window.deleteRecovery('${r.id}')" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function openRecoveryModal() {
-  editingRecoveryId = null;
-  recAseguradaSelected = '';
-  document.getElementById('rec-m-title').textContent = 'Registrar Recuperación';
-  document.getElementById('rec-f-email').value = '';
-  document.getElementById('rec-f-inactividad').value = '';
-  document.getElementById('rec-f-notas').value = '';
-  document.getElementById('rec-f-asegurada').value = '';
-  const now = new Date();
-  document.getElementById('rec-f-fecha').value = now.toISOString().substring(0,10);
-  document.getElementById('rec-toggle-si').className = 'toggle-btn';
-  document.getElementById('rec-toggle-no').className = 'toggle-btn';
-  document.getElementById('modal-recovery').classList.add('open');
-}
-
-function editRecovery(id) {
-  const r = currentRecoveries.find(x => x.id === id);
-  if (!r) return;
-  editingRecoveryId = id;
-  document.getElementById('rec-m-title').textContent = 'Editar Recuperación';
-  document.getElementById('rec-f-email').value = r.correo || '';
-  document.getElementById('rec-f-inactividad').value = r.inactividad || '';
-  document.getElementById('rec-f-notas').value = r.notas || '';
-  document.getElementById('rec-f-fecha').value = (r.fecha_recuperacion||r.created_at||'').substring(0,10);
-  recAseguradaSelected = (r.asegurada_bien === 'si' || r.asegurada_bien === true) ? 'si' : 'no';
-  document.getElementById('rec-f-asegurada').value = recAseguradaSelected;
-  document.getElementById('rec-toggle-si').className = 'toggle-btn' + (recAseguradaSelected==='si' ? ' active-si' : '');
-  document.getElementById('rec-toggle-no').className = 'toggle-btn' + (recAseguradaSelected==='no' ? ' active-no' : '');
-  document.getElementById('modal-recovery').classList.add('open');
-}
-
-function closeRecoveryModal() {
-  document.getElementById('modal-recovery').classList.remove('open');
-}
-
-window.recToggleAsegurada = function(val) {
-  recAseguradaSelected = val;
-  document.getElementById('rec-f-asegurada').value = val;
-  document.getElementById('rec-toggle-si').className = 'toggle-btn' + (val==='si' ? ' active-si' : '');
-  document.getElementById('rec-toggle-no').className = 'toggle-btn' + (val==='no' ? ' active-no' : '');
-};
-
-async function saveRecovery() {
-  const correo = document.getElementById('rec-f-email').value.trim();
-  const asegurada = document.getElementById('rec-f-asegurada').value;
-  const fecha = document.getElementById('rec-f-fecha').value;
-  if (!correo || !asegurada || !fecha) {
-    showToast('Correo, fecha y estado de seguridad son obligatorios', true);
-    return;
-  }
-  const record = {
-    correo,
-    inactividad: parseInt(document.getElementById('rec-f-inactividad').value)||null,
-    fecha_recuperacion: fecha,
-    asegurada_bien: asegurada,
-    notas: document.getElementById('rec-f-notas').value.trim()||null
-  };
-  if (editingRecoveryId) record.id = editingRecoveryId;
-  try {
-    let error;
-    if (editingRecoveryId) {
-      const { error: err } = await supabase.from('recuperaciones').update(record).eq('id', editingRecoveryId);
-      error = err;
-    } else {
-      const { error: err } = await supabase.from('recuperaciones').insert([record]);
-      error = err;
-    }
-    if (error) throw error;
-    showToast(editingRecoveryId ? 'Recuperación actualizada' : 'Recuperación guardada');
-    closeRecoveryModal();
-    fetchRecoveries();
-  } catch(err) {
-    showToast('Error al guardar: ' + (err?.message||''), true);
-    console.error(err);
-  }
-}
-
-async function deleteRecovery(id) {
-  window.openConfirmModal('Eliminar Registro', '¿Eliminar este registro de recuperación permanentemente?', async function() {
-    try {
-      const { error } = await supabase.from('recuperaciones').delete().eq('id', id);
-      if (error) throw error;
-      showToast('Registro eliminado');
-      fetchRecoveries();
-    } catch(err) {
-      showToast('Error al eliminar', true);
-    }
-  });
-}
-
-function recClearFilter() {
-  document.getElementById('rec-search').value = '';
-  document.getElementById('rec-filter-asegurada').value = '';
-  renderRecoveries();
-}
-
-function exportRecoveryCSV() {
-  if (currentRecoveries.length === 0) { showToast('No hay recuperaciones para exportar', true); return; }
-  let csv = 'ID,Correo,Inactividad (días),Fecha Recuperación,Asegurada Bien,Notas\n';
-  currentRecoveries.forEach(r => {
-    csv += `"${r.id||''}","${r.correo||''}",${r.inactividad||''},"${r.fecha_recuperacion||''}","${r.asegurada_bien||''}","${(r.notas||'').replace(/"/g,"'")}"\n`;
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = `Recuperaciones_${new Date().toISOString().substring(0,10)}.csv`;
-  a.click();
-}
 
 // Mobile nav helper
 window.setActiveMNav = function(tab) {
@@ -6130,6 +6143,65 @@ window.doConfirmAction = async function() {
 // ═══════════════════════════════════════════════
 const calState = {};
 
+window.validateCalendarInput = function(input, mode) {
+  const value = input.value.trim();
+  input.setCustomValidity('');
+  if (!value) {
+    input.dataset.lastValidValue = '';
+    if (input.id === 'month-sel') renderAccounting();
+    if (input.id === 'vc-date-from' || input.id === 'vc-date-to') {
+      const quick = document.getElementById('vc-range-quick');
+      if (quick) quick.value = '';
+      renderVentas();
+    }
+    return true;
+  }
+  let match;
+  if (mode === 'month') {
+    match = /^(\d{4})-(\d{2})$/.exec(value);
+    if (match) {
+      const year = Number(match[1]), month = Number(match[2]);
+      if (year >= 1900 && month >= 1 && month <= 12) {
+        input.dataset.lastValidValue = value;
+        renderAccounting();
+        return true;
+      }
+    }
+  } else if (mode === 'datetime') {
+    match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value);
+    if (match) {
+      const [, y, mo, day, hour, minute] = match.map(Number);
+      const date = new Date(y, mo - 1, day);
+      if (y >= 1900 && date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === day && hour < 24 && minute < 60) {
+        input.dataset.lastValidValue = value;
+        return true;
+      }
+    }
+  } else {
+    match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if (match) {
+      const [, y, mo, day] = match.map(Number);
+      const date = new Date(y, mo - 1, day);
+      if (y >= 1900 && date.getFullYear() === y && date.getMonth() === mo - 1 && date.getDate() === day) {
+        input.dataset.lastValidValue = value;
+        if (input.id === 'vc-date-from' || input.id === 'vc-date-to') {
+          const quick = document.getElementById('vc-range-quick');
+          if (quick) quick.value = '';
+          renderVentas();
+        }
+        return true;
+      }
+    }
+  }
+  input.setCustomValidity(mode === 'month'
+    ? 'Escribe el mes con el formato AAAA-MM.'
+    : mode === 'datetime'
+      ? 'Escribe fecha y hora con el formato AAAA-MM-DDTHH:mm.'
+      : 'Escribe la fecha con el formato AAAA-MM-DD.');
+  input.reportValidity();
+  return false;
+};
+
 window.openCal = function(inputId, mode) {
   // Close any other open pickers
   document.querySelectorAll('.cal-popup.open').forEach(p => {
@@ -6340,7 +6412,10 @@ window.calSelectMonth = function(inputId, monthIdx) {
   if (!s) return;
   s.selected = new Date(s.year, monthIdx, 1);
   const val = `${s.year}-${String(monthIdx+1).padStart(2,'0')}`;
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   // Trigger change for accounting
   if (inputId === 'month-sel') renderAccounting();
@@ -6367,13 +6442,19 @@ window.calMonthToday = function(inputId) {
   if (!s) return;
   const now = new Date();
   const val = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   if (inputId === 'month-sel') renderAccounting();
 };
 
 window.calClear = function(inputId) {
-  document.getElementById(inputId).value = '';
+  const target = document.getElementById(inputId);
+  target.value = '';
+  target.dataset.lastValidValue = '';
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   if (inputId === 'month-sel') renderAccounting();
 };
@@ -6392,7 +6473,10 @@ window.calConfirm = function(inputId) {
   } else {
     val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   }
-  document.getElementById(inputId).value = val;
+  const target = document.getElementById(inputId);
+  target.value = val;
+  target.dataset.lastValidValue = val;
+  target.setCustomValidity('');
   document.getElementById('cal-' + inputId).classList.remove('open');
   // Trigger dependent filters
   if (inputId === 'vc-date-from' || inputId === 'vc-date-to') {
@@ -6423,7 +6507,6 @@ window.calConfirm = function(inputId) {
     switch(id) {
       case 'modal-order':       window.closeModal?.(); break;
       case 'modal-venta':       window.closeVentaModal?.(); break;
-      case 'modal-recovery':    window.closeRecoveryModal?.(); break;
       case 'modal-import':      window.closeImport?.(); break;
       case 'modal-detail':      window.closeDetail?.(); break;
       case 'modal-parse':       window.closeParseModal?.(); break;
@@ -6432,7 +6515,7 @@ window.calConfirm = function(inputId) {
       case 'modal-confirm':     window.closeConfirmModal?.(); break;
       case 'modal-add-cliente': window.closeAddClienteModal?.(); break;
       case 'modal-feedback':    window.closeFeedbackModal?.(); break;
-      case 'modal-retiro':      window.closeRetiroModal?.(); break;
+      case 'modal-review-single': window.closeReviewMessage?.(); break;
       default:
         // Generic fallback: just remove 'open'
         document.getElementById(id)?.classList.remove('open');
@@ -6444,6 +6527,11 @@ window.calConfirm = function(inputId) {
 window.doLogin = doLogin;
 window.doLogout = doLogout;
 window.switchTab = switchTab;
+window.cargarCatalogoCuentas = cargarCatalogoCuentas;
+window.renderCatalogoCuentas = renderCatalogoCuentas;
+window.abrirEditorCuentaCatalogo = abrirEditorCuentaCatalogo;
+window.cerrarEditorCuentaCatalogo = cerrarEditorCuentaCatalogo;
+window.guardarCuentaCatalogo = guardarCuentaCatalogo;
 window.filterByStatus = filterByStatus;
 window.openParseModal = openParseModal;
 window.closeParseModal = closeParseModal;
@@ -6472,8 +6560,6 @@ window.openWA = openWA;
 window.aplicarRestriccionesRol = aplicarRestriccionesRol;
 window.handleReceiptUpload = handleReceiptUpload;
 window.orderHandleDrop = window.orderHandleDrop;
-window.toggleVentaFields = toggleVentaFields;
-window.handleVentaReceipt = handleVentaReceipt;
 window.renderTable = renderTable;
 window.fetchOrders = fetchOrders;
 window.fetchCatalogo = fetchCatalogo;
@@ -6485,16 +6571,12 @@ window.editarProductoCatalogo = editarProductoCatalogo;
 window.eliminarProductoCatalogo = eliminarProductoCatalogo;
 window.resetCatalogoForm = resetCatalogoForm;
 window.renderCatalogoList = renderCatalogoList;
-window.cargarCatalogoXboxGames = cargarCatalogoXboxGames;
-window.renderXboxGamesList = renderXboxGamesList;
 window.renderAccounting = renderAccounting;
 window.fetchVentas = fetchVentas;
 window.renderVentas = renderVentas;
 window.openVentaModal = openVentaModal;
 window.closeVentaModal = closeVentaModal;
-window.editVenta = editVenta;
 window.deleteVenta = deleteVenta;
-window.saveVenta = saveVenta;
 window.parseVentaAutomatica = parseVentaAutomatica;
 window.vcClearDates = vcClearDates;
 window.vcQuickRange = vcQuickRange;
@@ -6529,10 +6611,13 @@ window.closeImageViewer = function() {
 };
 
 window.openImageNewTab = async function() {
+  const tab = window.open('about:blank', '_blank');
+  if (!tab) { showToast('El navegador bloqueó la nueva pestaña. Permite ventanas emergentes e inténtalo otra vez.', true); return; }
   try {
     const blob = await _srcToBlob(_imgViewerSrc);
-    window.open(URL.createObjectURL(blob), '_blank');
-  } catch (e) { showToast('No se pudo abrir la imagen', true); }
+    const url=URL.createObjectURL(blob); tab.location.href=url;
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+  } catch (e) { tab.close(); showToast('No se pudo abrir la imagen', true); }
 };
 
 window.downloadViewerImage = async function() {
@@ -6839,21 +6924,12 @@ window.clearOrderProd = function() {
   if (fi) fi.value = '';
 };
 window.exportVentasCSV = exportVentasCSV;
-window.updateInterestPct = updateInterestPct;
 window.vmSelectTipo = window.vmSelectTipo;
 window.vmToggleParse = window.vmToggleParse;
 window.vmUpdateTotal = window.vmUpdateTotal;
 window.vmHandleDrop = window.vmHandleDrop;
 window.vmClearReceipt = window.vmClearReceipt;
 window.setupRealtime = setupRealtime;
-window.fetchRecoveries = fetchRecoveries;
-window.openRecoveryModal = openRecoveryModal;
-window.editRecovery = editRecovery;
-window.closeRecoveryModal = closeRecoveryModal;
-window.saveRecovery = saveRecovery;
-window.deleteRecovery = deleteRecovery;
-window.recClearFilter = recClearFilter;
-window.exportRecoveryCSV = exportRecoveryCSV;
 window.loadNotes = loadNotes;
 window.renderNotesList = renderNotesList;
 
@@ -6875,6 +6951,10 @@ async function fetchClientesFromDB() {
       nombre: c.nombre,
       wa: c.wa || '',
       metodo: c.metodo || '',
+      epicId: c.epic_id || '',
+      discordId: c.discord_id || '',
+      regalo: !!c.compra_regalo,
+      cosmeticosRegalo: !!c.compra_cosmeticos_regalo,
       updated: c.updated_at ? new Date(c.updated_at).getTime() : Date.now(),
       resena: c.resena_estado || 'pendiente',
       resenaSolicitadaEn: c.resena_solicitada_en || null,
@@ -6897,7 +6977,7 @@ function getClientes() {
   return clientesCache;
 }
 
-async function upsertCliente(nombre, wa, metodo) {
+async function upsertCliente(nombre, wa, metodo, extra = {}) {
   if (!nombre) return;
   // Refrescamos la caché antes de decidir insert vs update, para evitar
   // fallos silenciosos por restricción única cuando la caché local está desactualizada
@@ -6909,10 +6989,14 @@ async function upsertCliente(nombre, wa, metodo) {
       const patch = { updated_at: new Date().toISOString() };
       if (wa) patch.wa = wa;
       if (metodo) patch.metodo = metodo;
+      if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
+      if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
+      if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
+      if (extra.compra_cosmeticos_regalo !== undefined) patch.compra_cosmeticos_regalo = !!extra.compra_cosmeticos_regalo;
       const { error } = await supabase.from('clientes').update(patch).eq('id', existing.id);
       if (error) throw error;
     } else {
-      const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '' }]);
+      const { error } = await supabase.from('clientes').insert([{ nombre, wa: wa || '', metodo: metodo || '', ...extra }]);
       if (error) {
         // Código 23505 = violación de restricción única (el cliente ya existe en la DB
         // aunque no estuviera en la caché local). En ese caso, intentamos actualizar en vez de fallar.
@@ -6920,6 +7004,10 @@ async function upsertCliente(nombre, wa, metodo) {
           const patch = { updated_at: new Date().toISOString() };
           if (wa) patch.wa = wa;
           if (metodo) patch.metodo = metodo;
+          if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
+          if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
+          if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
+          if (extra.compra_cosmeticos_regalo !== undefined) patch.compra_cosmeticos_regalo = !!extra.compra_cosmeticos_regalo;
           const { error: updErr } = await supabase.from('clientes').update(patch).ilike('nombre', nombre);
           if (updErr) throw updErr;
         } else {
@@ -6973,7 +7061,7 @@ window.orderClientSearch = function(val) {
   renderClienteDropdown(dropEl, suggestions, (c) => {
     document.getElementById('f-name').value = c.nombre;
     if (c.wa) document.getElementById('f-phone').value = c.wa;
-    if (c.metodo) document.getElementById('f-payment').value = c.metodo;
+    if (c.metodo) { document.getElementById('f-payment').value = c.metodo; syncPaymentPicker('f-payment'); }
     dropEl.style.display = 'none';
   });
 };
@@ -6987,7 +7075,7 @@ window.ventaClientSearch = function(val) {
     renderClienteDropdown(dropEl, suggestions, (c) => {
       document.getElementById('vc-f-cliente').value = c.nombre;
       if (c.wa) { const el = document.getElementById('vc-f-wa'); if(el) el.value = c.wa; }
-      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; }
+      if (c.metodo) { const el = document.getElementById('vc-f-metodo'); if(el) el.value = c.metodo; syncPaymentPicker('vc-f-metodo'); }
       dropEl.style.display = 'none';
       window.ventaClientSearch(c.nombre);
     });
@@ -7026,7 +7114,11 @@ window.saveVenta = async function() {
   const nombre = document.getElementById('vc-f-cliente')?.value?.trim();
   const wa = document.getElementById('vc-f-wa')?.value?.trim();
   const metodo = document.getElementById('vc-f-metodo')?.value?.trim();
-  if (nombre) await upsertCliente(nombre, wa, metodo);
+  const tipo=document.getElementById('vc-f-tipo')?.value||'', product=document.getElementById('vc-f-producto')?.value||'';
+  if (nombre) await upsertCliente(nombre, wa, metodo, {
+    ...(tipo==='Venta via regalo'?{compra_regalo:true}:{}),
+    ...(tipo==='Venta via regalo'&&/(skin|cosm[eé]tic|gesto|pico|envoltura|emote)/i.test(product)?{compra_cosmeticos_regalo:true}:{})
+  });
   return _origSaveVenta?.apply(this, arguments);
 };
 
@@ -7051,6 +7143,7 @@ window.renderClientesTab = async function(mode) {
 
   const all = getClientes();
   rvRenderPanel(all);
+  renderGiftCustomers(all);
 
   const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
   const rvF = document.getElementById('cli-rv-filter')?.value || '';
@@ -7073,7 +7166,7 @@ window.renderClientesTab = async function(mode) {
     return;
   }
 
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
 
   const resenaCell = c => {
     const st = RV_ESTADOS[c.resena] || RV_ESTADOS.pendiente;
@@ -7154,6 +7247,15 @@ window.renderClientesTab = async function(mode) {
   `;
 };
 
+function renderGiftCustomers(list=getClientes()) {
+  const area=document.getElementById('gift-customer-area'), count=document.getElementById('gift-client-count');
+  if(!area)return;
+  const clients=list.filter(c=>c.regalo||c.cosmeticosRegalo);
+  if(count)count.textContent=String(clients.length);
+  if(!clients.length){area.innerHTML='<div class="gift-clients-empty"><i class="fas fa-address-card"></i><span>Aún no hay clientes clasificados por compras vía regalo.</span></div>';return;}
+  area.innerHTML=`<div class="table-wrap gift-client-table"><table><thead><tr><th>Cliente</th><th>Tipo de compra</th><th>Epic Games ID</th><th>Discord ID</th><th>WhatsApp</th><th>Acción</th></tr></thead><tbody>${clients.map(c=>`<tr><td data-label="Cliente"><strong>${rvEsc(c.nombre)}</strong></td><td data-label="Tipo"><div class="gift-client-tags">${c.regalo?'<span>Regalo</span>':''}${c.cosmeticosRegalo?'<span>Cosméticos</span>':''}</div></td><td data-label="Epic ID">${rvEsc(c.epicId)||'—'}</td><td data-label="Discord ID">${rvEsc(c.discordId)||'—'}</td><td data-label="WhatsApp">${c.wa?`<a href="https://wa.me/${String(c.wa).replace(/\D/g,'')}" target="_blank" rel="noopener">${rvEsc(c.wa)}</a>`:'—'}</td><td data-label="Acción"><button class="ibtn" type="button" title="Editar cliente" onclick="window.editClienteModal('${c.id}')"><i class="fas fa-pen"></i></button></td></tr>`).join('')}</tbody></table></div>`;
+}
+
 window.editClienteModal = function(id) {
   const c = clientesCache.find(cl => String(cl.id) === String(id));
   if (!c) return;
@@ -7161,6 +7263,11 @@ window.editClienteModal = function(id) {
   document.getElementById('ac-nombre').value = c.nombre;
   document.getElementById('ac-wa').value = c.wa || '';
   document.getElementById('ac-metodo').value = c.metodo || '';
+  syncPaymentPicker('ac-metodo');
+  document.getElementById('ac-epic-id').value=c.epicId||'';
+  document.getElementById('ac-discord-id').value=c.discordId||'';
+  document.getElementById('ac-regalo').checked=!!c.regalo;
+  document.getElementById('ac-cosmeticos-regalo').checked=!!c.cosmeticosRegalo;
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   // Store real id for editing
@@ -7188,7 +7295,7 @@ window.deleteCliente = async function(id) {
 window.exportClientesCSV = function() {
   const clientes = getClientes();
   if (!clientes.length) { showToast('No hay clientes para exportar', true); return; }
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transferencia MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
   const RV_LABEL = { pendiente: 'Sin pedir', solicitada: 'Pedida', recibida: 'Recibida' };
   const PREMIO_LABEL = { ninguna: '', ganada: 'Por entregar', entregada: 'Entregada' };
   const rows = [['Nombre','WhatsApp','Método de Pago','Último Registro','Reseña','Calificación','Comentario','Recompensa']];
@@ -7270,7 +7377,7 @@ function rvFindCliente(nombre, wa) {
 function rvBtn(kind, rec) {
   const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
   const wa = kind === 'venta' ? rec.whatsapp : rec.telefono_cliente;
-  if (!wa) return '';
+  if (!wa) return `<button class="ibtn" type="button" title="Agrega un WhatsApp al registro para solicitar reseña" aria-label="Solicitar reseña" disabled style="color:#25D366;border-color:rgba(37,211,102,.4);opacity:.38;cursor:not-allowed"><i class="far fa-star"></i></button>`;
   const c = rvFindCliente(nombre, wa);
   const done = !!c && c.resena === 'recibida';
   const asked = !!c && c.resena === 'solicitada';
@@ -7280,7 +7387,7 @@ function rvBtn(kind, rec) {
   return `<button class="ibtn" title="${title}" style="color:${color};border-color:${border}" onclick="window.pedirResenaDeRegistro('${kind}','${rec.id}')"><i class="${done || asked ? 'fas' : 'far'} fa-star"></i></button>`;
 }
 
-window.pedirResenaDeRegistro = async function(kind, id) {
+window.pedirResenaDeRegistro = function(kind, id) {
   const rec = (kind === 'venta' ? currentVentas : currentOrders).find(x => String(x.id) === String(id));
   if (!rec) return;
   const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
@@ -7288,29 +7395,39 @@ window.pedirResenaDeRegistro = async function(kind, id) {
   if (!wa) { showToast('Este registro no tiene WhatsApp', true); return; }
   const c = rvFindCliente(nombre, wa);
   if (c && c.resena === 'recibida') { showToast(`${c.nombre} ya dejó su reseña ✓`); return; }
-  window.open(rvWaUrl(c || { nombre, wa }), '_blank');
-  if (c && await rvMarkAsked(c)) {
-    await fetchClientesFromDB();
-    renderTable(); renderVentas();
-    window.renderClientesTab('local');
-  }
+  window.openReviewMessage(c || { nombre, wa });
 };
 
-window.pedirResenaA = async function(id) {
+window.pedirResenaA = function(id) {
   const c = getClientes().find(x => String(x.id) === String(id));
   if (!c) return;
   if (!c.wa) { showToast('Este cliente no tiene WhatsApp', true); return; }
-  const modalOpen = document.getElementById('modal-feedback').classList.contains('open');
-  const tplEl = document.getElementById('fb-msg-text');
-  const tpl = modalOpen && tplEl && tplEl.value.trim() ? tplEl.value.trim() : FB_DEFAULT_MSG;
-  window.open(rvWaUrl(c, tpl), '_blank');
-  fbSelected.delete(String(c.id));
-  if (c.resena !== 'recibida' && await rvMarkAsked(c)) {
+  window.openReviewMessage(c);
+};
+
+let singleReviewClient = null;
+window.openReviewMessage = function(client) {
+  if (!client?.wa) { showToast('Este cliente no tiene WhatsApp', true); return; }
+  singleReviewClient = client;
+  document.getElementById('review-single-name').textContent = client.nombre || 'Cliente';
+  document.getElementById('review-single-contact').textContent = client.wa;
+  document.getElementById('review-single-text').value = FB_DEFAULT_MSG.replace(/\{nombre\}/gi, rvFirstName(client.nombre));
+  document.getElementById('modal-review-single').classList.add('open');
+};
+window.closeReviewMessage = function() { document.getElementById('modal-review-single').classList.remove('open'); singleReviewClient = null; };
+window.sendReviewMessage = async function() {
+  const client = singleReviewClient;
+  if (!client?.wa) { showToast('No se encontró el contacto', true); return; }
+  const text = document.getElementById('review-single-text').value.trim();
+  const popup = window.open(rvWaUrl(client, text), '_blank');
+  if (!popup) { showToast('El navegador bloqueó WhatsApp; permite ventanas emergentes e inténtalo otra vez.', true); return; }
+  const saved = rvFindCliente(client.nombre, client.wa);
+  if (saved && saved.resena !== 'recibida' && await rvMarkAsked(saved, true)) {
     await fetchClientesFromDB();
-    window.renderClientesTab('local');
     renderTable(); renderVentas();
+    window.renderClientesTab('local');
   }
-  if (modalOpen) window.fbRenderClientsList();
+  window.closeReviewMessage();
 };
 
 // ── Modal "Pedir reseñas" (envío a varios clientes) ──
@@ -7564,6 +7681,9 @@ window.openAddClienteModal = function() {
   document.getElementById('ac-nombre').value = '';
   document.getElementById('ac-wa').value = '';
   document.getElementById('ac-metodo').value = '';
+  syncPaymentPicker('ac-metodo');
+  document.getElementById('ac-epic-id').value=''; document.getElementById('ac-discord-id').value='';
+  document.getElementById('ac-regalo').checked=false; document.getElementById('ac-cosmeticos-regalo').checked=false;
   const msg = document.getElementById('ac-msg');
   msg.style.display = 'none';
   delete document.getElementById('modal-add-cliente').dataset.editId;
@@ -7580,6 +7700,12 @@ window.saveAddCliente = async function() {
   const nombre = document.getElementById('ac-nombre').value.trim();
   const wa = document.getElementById('ac-wa').value.trim();
   const metodo = document.getElementById('ac-metodo').value;
+  const extra = {
+    epic_id: document.getElementById('ac-epic-id').value.trim(),
+    discord_id: document.getElementById('ac-discord-id').value.trim(),
+    compra_regalo: document.getElementById('ac-regalo').checked,
+    compra_cosmeticos_regalo: document.getElementById('ac-cosmeticos-regalo').checked
+  };
   const msg = document.getElementById('ac-msg');
   if (!nombre) {
     msg.style.cssText = 'display:block;background:rgba(255,77,109,.1);color:var(--red);border:1px solid rgba(255,77,109,.3)';
@@ -7591,14 +7717,14 @@ window.saveAddCliente = async function() {
   try {
     if (editId) {
       // Edit mode: update record directly by id
-      const patch = { nombre, updated_at: new Date().toISOString() };
+      const patch = { nombre, updated_at: new Date().toISOString(), ...extra };
       if (wa) patch.wa = wa;
       if (metodo) patch.metodo = metodo;
       const { error } = await supabase.from('clientes').update(patch).eq('id', editId);
       if (error) throw error;
       await fetchClientesFromDB();
     } else {
-      const ok = await upsertCliente(nombre, wa, metodo);
+      const ok = await upsertCliente(nombre, wa, metodo, extra);
       if (!ok) throw new Error(window._clientesSaveError || 'no se pudo guardar');
     }
   } catch (err) {
@@ -7631,55 +7757,12 @@ async function cargarRetiros() {
   return _retirosCache;
 }
 
-window.openRetiroModal = function() {
-  document.getElementById('ret-monto').value = '';
-  document.getElementById('ret-metodo').value = '';
-  document.getElementById('ret-tipo').value = '';
-  document.getElementById('ret-notas').value = '';
-  document.querySelectorAll('[data-ret]').forEach(c => c.classList.remove('active'));
-  const now = new Date();
-  document.getElementById('ret-fecha').value = now.toISOString().substring(0,10);
-  document.getElementById('modal-retiro').classList.add('open');
-};
-
-window.closeRetiroModal = function() {
-  document.getElementById('modal-retiro').classList.remove('open');
-};
-
-window.selectRetiroTipo = function(chip) {
-  document.querySelectorAll('[data-ret]').forEach(c => c.classList.remove('active'));
-  chip.classList.add('active');
-  document.getElementById('ret-tipo').value = chip.dataset.ret;
-};
-
-window.saveRetiro = async function() {
-  const monto = parseFloat(document.getElementById('ret-monto').value) || 0;
-  const metodo = document.getElementById('ret-metodo').value;
-  const tipo = document.getElementById('ret-tipo').value;
-  const notas = document.getElementById('ret-notas').value.trim();
-  if (!monto || monto <= 0 || !metodo || !tipo) {
-    showToast('Monto, método y tipo son obligatorios', true);
-    return;
-  }
-  try {
-    const { error: errR } = await supabase.from('retiros').insert([{ monto, metodo_pago: metodo, motivo: tipo + (notas ? ' — ' + notas : '') }]);
-    if (errR) throw errR;
-    window.closeRetiroModal();
-    showToast(`Retiro de $${monto.toFixed(2)} registrado ✓`);
-    await renderSaldoMetodo(_ultimoPanelContabilidad?.metodos_total || {});
-    await renderRetirosSection();
-  } catch (e) {
-    showToast('Error registrando retiro: ' + e.message, true);
-  }
-};
-
 async function renderSaldoMetodo(ingresosPorMetodo) {
   const grid = document.getElementById('saldo-metodo-grid');
   const retirosList = document.getElementById('retiros-list-acc');
   if (!grid) return;
 
   const ingresos = ingresosPorMetodo || {};
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
 
   const retiros = await cargarRetiros();
   const retirosPorMetodo = {};
@@ -7705,7 +7788,7 @@ async function renderSaldoMetodo(ingresosPorMetodo) {
     gridHtml += `
       <div class="meth-card" style="flex-direction:column;align-items:flex-start;gap:6px;border-top:2px solid ${color}">
         <div style="display:flex;justify-content:space-between;width:100%;align-items:center">
-          <span class="meth-name" style="color:${color}">${METODO_LABELS[met]||met.replace('_',' ')}</span>
+          ${paymentMethodIdentity(met)}
           <span class="meth-val" style="color:${saldo>=0?color:'var(--red)'}">$${saldo.toFixed(2)}</span>
         </div>
         <div style="font-size:0.68em;color:var(--text3);display:flex;gap:10px">
@@ -7757,7 +7840,7 @@ window.deleteRetiro = function(id) {
 // ─── GRÁFICA + TABLA COMPLETA DE RETIROS ────────────────────────────────────
 async function renderRetirosSection() {
   const retiros = _retirosCache.length ? _retirosCache : await cargarRetiros();
-  const METODO_LABELS = { link:'Link de Pago', paypal:'PayPal', popular:'Banco Popular', binance:'Binance Pay', remitly:'Remitly', transferencia_mx:'Transfer MX' };
+  const METODO_LABELS = Object.fromEntries([...PAYMENT_METHODS,...Object.entries(LEGACY_PAYMENT_METHODS).map(([value,x])=>({value,...x}))].map(x=>[x.value,x.label]));
   const COLORS_MAP = { link:'#5865F2', paypal:'#0070ba', popular:'#ff4d6d', binance:'#f0b90b', remitly:'#00b2a0', transferencia_mx:'#a855f7' };
   const FALLBACK_COLORS = ['#f97316','#28feb6','#ec4899','#14b8a6','#facc15'];
 
@@ -7888,13 +7971,20 @@ window.resetWallpaper = function() {
         <label class="flabel">Método de Pago Preferido</label>
         <select class="fsel" id="ac-metodo">
           <option value="">— Seleccionar —</option>
-          <option value="link">Link de Pago</option>
-          <option value="paypal">PayPal</option>
-          <option value="popular">Banco Popular</option>
-          <option value="binance">Binance Pay</option>
-          <option value="remitly">Remitly</option>
-          <option value="transferencia_mx">Transferencia MX</option>
+          <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
+          <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
+          <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
+          <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
+          <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
         </select>
+      </div>
+      <div class="frow gift-client-fields">
+        <div class="fgroup"><label class="flabel" for="ac-epic-id">ID de Epic Games</label><input class="finput" id="ac-epic-id" placeholder="Epic ID del cliente"></div>
+        <div class="fgroup"><label class="flabel" for="ac-discord-id">ID de Discord</label><input class="finput" id="ac-discord-id" placeholder="Usuario o ID de Discord"></div>
+      </div>
+      <div class="gift-client-flags">
+        <label><input type="checkbox" id="ac-regalo"> Compra mediante regalo</label>
+        <label><input type="checkbox" id="ac-cosmeticos-regalo"> Compra cosméticos vía regalo</label>
       </div>
       <div id="ac-msg" style="display:none;font-size:0.78em;margin-top:10px;padding:10px 13px;border-radius:4px;font-weight:500"></div>
     </div>
@@ -7908,6 +7998,18 @@ window.resetWallpaper = function() {
 </div>
 
 <!-- ── MODAL FEEDBACK WHATSAPP ──────────── -->
+<div class="overlay" id="modal-review-single">
+  <div class="mcard review-single-card">
+    <div class="mhead"><div class="mtitle"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:8px"></i>Solicitar reseña</div><button class="mclose" onclick="window.closeReviewMessage()"><i class="fas fa-times"></i></button></div>
+    <div class="mbody">
+      <div class="review-single-contact"><strong id="review-single-name">Cliente</strong><span id="review-single-contact"></span></div>
+      <label class="flabel" for="review-single-text">Mensaje para WhatsApp</label>
+      <textarea class="ftarea" id="review-single-text" style="min-height:150px"></textarea>
+    </div>
+    <div class="mfoot"><button class="btn btn-ghost" onclick="window.closeReviewMessage()">Cancelar</button><button class="btn btn-accent" onclick="window.sendReviewMessage()" style="background:#25D366;color:#04130b"><i class="fab fa-whatsapp"></i> Abrir WhatsApp</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="modal-feedback">
   <div class="mcard" style="max-width:540px">
     <div class="mhead">
@@ -7970,71 +8072,6 @@ window.resetWallpaper = function() {
   </div>
 </div>
 
-<!-- ── MODAL REGISTRAR RETIRO ──────────── -->
-<div class="overlay" id="modal-retiro">
-  <div class="mcard" style="max-width:460px">
-    <div class="mhead">
-      <div class="mtitle" style="color:#f97316"><i class="fas fa-wallet" style="margin-right:8px"></i>Registrar Retiro</div>
-      <button class="mclose" onclick="window.closeRetiroModal()"><i class="fas fa-times"></i></button>
-    </div>
-    <div class="mbody">
-      <p style="font-size:0.8em;color:var(--text2);margin-bottom:16px;line-height:1.6">
-        Registra un retiro de fondos hacia banco o de ganancias. Esto se descontará del saldo esperado por método de pago.
-      </p>
-      <div class="frow">
-        <div class="fgroup">
-          <label class="flabel">Monto (USD) *</label>
-          <div style="position:relative">
-            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-weight:700">$</span>
-            <input class="finput" id="ret-monto" type="number" step="0.01" min="0.01" placeholder="0.00" style="padding-left:24px;border-color:rgba(249,115,22,.4)">
-          </div>
-        </div>
-        <div class="fgroup">
-          <label class="flabel">Método de Pago *</label>
-          <select class="fsel" id="ret-metodo" style="border-color:rgba(249,115,22,.4)">
-            <option value="">— Seleccionar —</option>
-            <option value="link">Link de Pago</option>
-            <option value="paypal">PayPal</option>
-            <option value="popular">Banco Popular</option>
-            <option value="binance">Binance Pay</option>
-            <option value="remitly">Remitly</option>
-            <option value="transferencia_mx">Transferencia MX</option>
-          </select>
-        </div>
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Tipo de Retiro *</label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="vm-apago-chip" data-ret="banco" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-building-columns"></i>Retiro a Banco
-          </button>
-          <button type="button" class="vm-apago-chip" data-ret="ganancias" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-coins"></i>Retiro de Ganancias
-          </button>
-          <button type="button" class="vm-apago-chip" data-ret="otro" onclick="window.selectRetiroTipo(this)">
-            <i class="fas fa-ellipsis-h"></i>Otro
-          </button>
-        </div>
-        <input type="hidden" id="ret-tipo">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Fecha</label>
-        <input class="finput" id="ret-fecha" type="date">
-      </div>
-      <div class="fgroup">
-        <label class="flabel">Notas</label>
-        <textarea class="ftarea" id="ret-notas" placeholder="Descripción del retiro, destino..." style="min-height:56px"></textarea>
-      </div>
-    </div>
-    <div class="mfoot">
-      <button class="btn btn-ghost" onclick="window.closeRetiroModal()">Cancelar</button>
-      <button class="btn btn-accent" onclick="window.saveRetiro()" style="background:#f97316;color:#000">
-        <i class="fas fa-wallet"></i> Registrar Retiro
-      </button>
-    </div>
-  </div>
-</div>
-
 <script>
 // Efecto de onda al tocar botones, pestañas y chips
 document.addEventListener('pointerdown', function (e) {
@@ -8052,3 +8089,4 @@ document.addEventListener('pointerdown', function (e) {
 </script>
 </body>
 </html>
+
