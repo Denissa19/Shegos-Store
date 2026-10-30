@@ -4508,7 +4508,7 @@
 }
 </style>
 <style id="shegos-brand-refresh">
-:root { color-scheme: dark; --shegos-neon: #70ff00; }
+:root { color-scheme: dark; --shegos-neon: #70ff00; --primary-color: #70ff00; }
 html, body { background-color: transparent !important; }
 .section-box, .producto, .servicio-home-card, .sb-card, .co-pay-option, .co-cart-item, .co-field-card, .order-card, .card {
   background-color: rgba(5, 7, 5, .58) !important;
@@ -4523,15 +4523,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 <style id="shegos-storefront-refresh">
 .brand-home{display:flex;align-items:center;min-width:0;text-decoration:none}
 .logo-nav{width:clamp(180px,17vw,250px)!important;height:62px!important;max-width:100%;object-fit:contain;object-position:left center}
-.hero-container{min-height:min(760px,82vh);padding:clamp(30px,5vw,72px) clamp(18px,5vw,76px) 30px;gap:clamp(8px,2vw,30px);align-items:center;overflow:hidden}
+.hero-container{min-height:min(820px,88vh);padding:clamp(30px,5vw,72px) clamp(18px,5vw,76px) 30px;gap:clamp(8px,2vw,30px);align-items:center;overflow:visible}
 .hero-text{flex:1 1 48%;max-width:680px}
 .hero-wordmark{font-family:'Anton','Bebas Neue',Impact,sans-serif!important;font-size:clamp(3.2rem,7.5vw,7rem)!important;line-height:.9!important;letter-spacing:.025em!important;margin:0 0 16px!important;font-weight:900!important;text-transform:uppercase;color:#fff!important;text-shadow:0 8px 35px rgba(0,0,0,.75)}
-.hero-wordmark span{display:block;color:#70ff00;text-shadow:0 0 26px rgba(112,255,0,.25)}
+.hero-wordmark span{display:block;color:var(--primary-color);text-shadow:0 0 26px rgba(112,255,0,.25)}
 .hero-intro{font-size:clamp(1rem,1.5vw,1.2rem)!important;line-height:1.65!important;max-width:560px!important;margin:0 0 24px!important;color:#d4dbd0!important}
 .hero-eyebrow{font-size:.78rem;letter-spacing:.22em;color:#a7ff6a}
-.hero-image{flex:1 1 52%;min-width:0;min-height:clamp(440px,68vh,670px);height:auto;margin-left:0;align-self:stretch;overflow:visible}
+.hero-image{flex:1 1 56%;min-width:0;min-height:clamp(500px,78vh,760px);height:auto;margin-left:0;align-self:stretch;overflow:visible}
 .hero-image::before{width:min(90%,600px);height:auto;aspect-ratio:1;background:radial-gradient(circle,rgba(112,255,0,.2),rgba(112,255,0,.05) 38%,transparent 72%);filter:blur(5px)}
-.hero-image img{height:100%;max-height:690px;max-width:100%;width:100%;object-fit:contain;object-position:center bottom;left:0;right:0;filter:drop-shadow(0 24px 50px rgba(0,0,0,.72)) drop-shadow(0 0 22px rgba(112,255,0,.13))}
+.hero-image img{height:100%;max-height:820px;max-width:100%;width:100%;object-fit:contain;object-position:center bottom;left:0;right:0;transform:scale(1.34);transform-origin:center bottom;filter:drop-shadow(0 24px 50px rgba(0,0,0,.72)) drop-shadow(0 0 28px rgba(112,255,0,.2))}
 .hero-badges{gap:12px;flex-wrap:wrap}
 .hero-badge{background:rgba(10,13,10,.72);border:1px solid rgba(112,255,0,.24);border-radius:14px;backdrop-filter:blur(12px)}
 #contenedor-tienda .grid-productos{grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(9px,.9vw,14px)}
@@ -4568,7 +4568,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  .hero-text{max-width:100%;width:100%}
  .hero-wordmark{font-size:clamp(3.2rem,12vw,5.8rem)!important}
  .hero-image{display:flex!important;width:100%;min-height:clamp(320px,75vw,470px);height:auto;margin:0;order:2}
- .hero-image img{position:relative;width:min(100%,600px);height:auto;max-height:460px;min-height:0;object-fit:contain}
+ .hero-image img{position:relative;width:min(100%,600px);height:auto;max-height:560px;min-height:0;object-fit:contain;transform:scale(1.1)}
  .hero-badges{flex-direction:row!important;align-items:stretch!important}
  .hero-badge{flex:1;min-width:145px}
  #contenedor-tienda .grid-productos{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
@@ -4593,7 +4593,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
  .hero-wordmark{font-size:clamp(2.8rem,13vw,4rem)!important}
  .hero-intro{font-size:.95rem!important}
  .hero-image{min-height:300px}
- .hero-image img{max-height:350px}
+ .hero-image img{max-height:400px;transform:scale(1.04)}
  #contenedor-tienda .grid-productos{gap:8px!important}
  #contenedor-tienda .cosmetic-card{min-height:250px;border-radius:12px}
  #contenedor-tienda .skin-art-stage,#contenedor-tienda .card-img{height:150px;min-height:150px}
