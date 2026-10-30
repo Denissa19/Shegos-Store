@@ -3477,8 +3477,8 @@ function getTableRow(o) {
     </td>
     <td style="text-align:right">
       <div class="td-act" style="justify-content:flex-end">
-        ${o.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
-        ${o.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+        <button class="ibtn" type="button" title="${o.comprobante ? 'Ver / descargar comprobante' : 'Este pedido no tiene comprobante}" aria-label="Ver comprobante" ${o.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${o.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>
+        <button class="ibtn" type="button" title="${o.foto_producto ? 'Ver foto del producto' : 'Este pedido no tiene foto del producto}" aria-label="Ver foto del producto" ${o.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${o.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}' ,'foto_producto')"><i class="fas fa-box-open"></i></button>
         ${remFlagBtn('pedido', o)}
         ${o.estado === 'Completado' ? rvBtn('pedido', o) : ''}
         <button class="ibtn" onclick="window.viewDetail('${o.id}')" title="Ver Detalle"><i class="fas fa-eye"></i></button>
@@ -5033,8 +5033,8 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
-          ${v.comprobante ? `<button class="ibtn" title="Ver / descargar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>` : ''}
-          ${v.foto_producto ? `<button class="ibtn" title="Foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('venta','${v.id}','foto_producto')"><i class="fas fa-box-open"></i></button>` : ''}
+          <button class="ibtn" type="button" title="${v.comprobante ? 'Ver / descargar comprobante' : 'Esta venta no tiene comprobante}" aria-label="Ver comprobante" ${v.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${v.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>
+          <button class="ibtn" type="button" title="${v.foto_producto ? 'Ver foto del producto' : 'Esta venta no tiene foto del producto}" aria-label="Ver foto del producto" ${v.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${v.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}' ,'foto_producto')"><i class="fas fa-box-open"></i></button>
           ${remFlagBtn('venta', v)}
           ${rvBtn('venta', v)}
           <button class="ibtn" onclick="window.editVenta('${v.id}')"><i class="fas fa-pen"></i></button>
@@ -7338,7 +7338,7 @@ function rvFindCliente(nombre, wa) {
 function rvBtn(kind, rec) {
   const nombre = kind === 'venta' ? rec.cliente : rec.nombre_cliente;
   const wa = kind === 'venta' ? rec.whatsapp : rec.telefono_cliente;
-  if (!wa) return '';
+  if (!wa) return `<button class="ibtn" type="button" title="Agrega un WhatsApp al registro para solicitar reseña" aria-label="Solicitar reseña" disabled style="color:#25D366;border-color:rgba(37,211,102,.4);opacity:.38;cursor:not-allowed"><i class="far fa-star"></i></button>`;
   const c = rvFindCliente(nombre, wa);
   const done = !!c && c.resena === 'recibida';
   const asked = !!c && c.resena === 'solicitada';
