@@ -42,19 +42,20 @@ function attr(tag: string, name: string) {
 function validSourcePage(value: string) {
   try {
     const u = new URL(value);
-    return u.protocol === "https:" && u.hostname === "lzt.market" && /^\/epicgames\/?$/.test(u.pathname);
+    return u.protocol === "https:" && u.hostname === "lzt.market" && /^\/epicgames(?:\/fortnite)?\/?$/.test(u.pathname);
   } catch { return false; }
 }
 
 function parseCards(html: string, pageUrl: string) {
-  const starts = [...html.matchAll(/<div\b[^>]*class=["'][^"']*\bmarketItemCard\b[^"']*["'][^>]*>/gi)].map(m => m.index ?? -1).filter(x => x >= 0);
+  const starts = [...html.matchAll(/<div\b[^>]*class=["'][^"']*\b(?:marketItemCard|marketItem--\d+)\b[^"']*["'][^>]*>/gi)].map(m => m.index ?? -1).filter(x => x >= 0);
   const cards = [] as Array<{ id: string; url: string; title: string; price: number; skins: number; text: string }>;
   for (let i = 0; i < starts.length; i++) {
     const block = html.slice(starts[i], starts[i + 1] ?? html.length);
-    const linkMatch = block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]*?class=["'][^"']*\bitemTitle\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
-    if (!linkMatch) continue;
+    const titledLink = block.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*>[\s\S]*?class=["'][^"']*\bitemTitle\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
+    const listingLink = titledLink || [...block.matchAll(/<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi)].find(m => /https?:\/\/lzt\.market\/\d+|href=["']\/?\d+\//i.test(m[0]));
+    if (!listingLink) continue;
     let url: URL;
-    try { url = new URL(decodeHtml(linkMatch[1]), pageUrl); } catch { continue; }
+    try { url = new URL(decodeHtml(listingLink[1]), pageUrl); } catch { continue; }
     if (url.hostname !== "lzt.market") continue;
     const id = url.pathname.match(/^\/(\d+)\/?$/)?.[1];
     if (!id) continue;
@@ -62,7 +63,7 @@ function parseCards(html: string, pageUrl: string) {
     if (!Number.isFinite(price) || price <= 0) continue;
     const text = cleanText(block);
     const skins = Number(text.match(/(?:\||\b)(\d{1,5})\s*(?:skins?|скинов|скина|скин)\b/i)?.[1]) || 0;
-    cards.push({ id, url: `https://lzt.market/${id}/`, title: cleanText(linkMatch[2]).slice(0, 100) || `Cuenta Fortnite · ${skins} skins`, price, skins, text });
+    cards.push({ id, url: `https://lzt.market/${id}/`, title: cleanText(listingLink[2]).slice(0, 100) || `Cuenta Fortnite · ${skins} skins`, price, skins, text });
   }
   const unique = [...new Map(cards.map(card => [card.id, card])).values()];
   return { cards: unique, nextUrl: [...html.matchAll(/href=["']([^"']*\bafter=[^"']+)["']/gi)].map(m => { try { return new URL(decodeHtml(m[1]), pageUrl).href; } catch { return ""; } }).find(Boolean) || "" };
