@@ -81,7 +81,7 @@ function parseFeaturedSkins(detailHtml: string) {
     if (u.hostname !== "fortnite-api.com" || !u.pathname.includes("/images/cosmetics/br/")) continue;
     const name = cleanText(attr(tag, "alt")) || "Skin destacada";
     if (!found.some(item => item.url === u.href)) found.push({ name: name.slice(0, 70), url: u.href });
-    if (found.length >= 6) break;
+    if (found.length >= 24) break;
   }
   return found;
 }
@@ -111,6 +111,135 @@ async function sha256(value: string) {
   return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 32);
 }
 
+function field(record: Record<string, unknown>, names: string[]) {
+  const entries = Object.entries(record);
+  for (const name of names) {
+    const found = entries.find(([key, value]) => key.toLocaleLowerCase().replace(/[^a-z0-9]/g, "") === name.toLocaleLowerCase().replace(/[^a-z0-9]/g, "") && value !== undefined && value !== null && value !== "");
+    if (found) return found[1];
+  }
+  return undefined;
+}
+
+function listImageValues(value: unknown, out: string[] = []): string[] {
+  if (out.length >= 6 || value == null) return out;
+  if (typeof value === "string") {
+    const candidate = value.trim();
+    if ((candidate.startsWith("https://") || candidate.startsWith("data:image/")) && !out.includes(candidate)) out.push(candidate);
+    return out;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) listImageValues(entry, out);
+    return out;
+  }
+  if (typeof value === "object") {
+    const image = value as Record<string, unknown>;
+    for (const key of ["url", "src", "image_url", "image", "original", "href"]) {
+      if (image[key]) listImageValues(image[key], out);
+    }
+  }
+  return out;
+}
+
+async function storeAgentyImage(supabase: ReturnType<typeof createClient>, rawSource: string) {
+  let bytes: Uint8Array;
+  let contentType: string;
+  let stableKey: string;
+  const dataMatch = rawSource.match(/^data:image\/(png|jpeg|jpg|webp);base64,([\s\S]+)$/i);
+  if (dataMatch) {
+    contentType = `image/${dataMatch[1].toLowerCase() === "jpg" ? "jpeg" : dataMatch[1].toLowerCase()}`;
+    bytes = Uint8Array.from(atob(dataMatch[2]), c => c.charCodeAt(0));
+    stableKey = rawSource.slice(0, 500);
+  } else {
+    const source = new URL(rawSource);
+    const host = source.hostname.toLocaleLowerCase();
+    const allowed = host === "lzt.market" || host.endsWith(".lzt.market") || host === "fortnite-api.com" || host.endsWith(".fortnite-api.com");
+    if (source.protocol !== "https:" || !allowed || source.username || source.password) throw new Error("Agenty incluyó una imagen de un dominio no permitido.");
+    const response = await fetch(source.href, { headers: { "User-Agent": "Mozilla/5.0 (compatible; StoreCatalog/1.0)", "Accept": "image/avif,image/webp,image/png,image/jpeg,image/*" } });
+    if (!response.ok) throw new Error(`No se pudo descargar una imagen (${response.status}).`);
+    contentType = (response.headers.get("content-type") || "").split(";")[0].toLowerCase();
+    if (!/^image\/(png|jpeg|webp)$/.test(contentType)) throw new Error("La imagen debe ser JPG, PNG o WEBP.");
+    bytes = new Uint8Array(await response.arrayBuffer());
+    stableKey = source.href;
+  }
+  if (!bytes.length || bytes.length > 2_000_000) throw new Error("Cada imagen debe pesar menos de 2 MB.");
+  const ext = contentType === "image/jpeg" ? "jpg" : contentType.split("/")[1];
+  const path = `agenty/${await sha256(stableKey)}.${ext}`;
+  const { error } = await supabase.storage.from("catalogo-skins").upload(path, bytes, { contentType, upsert: true, cacheControl: "31536000" });
+  if (error) throw new Error("No se pudo guardar una imagen en el catálogo privado.");
+  return path;
+}
+
+async function importAgentyRows(supabase: ReturnType<typeof createClient>, rows: unknown[], ceoId: string) {
+  if (!Array.isArray(rows) || rows.length < 1 || rows.length > 12) throw new Error("Envía entre 1 y 12 publicaciones por lote.");
+  let images = 0;
+  const imported: string[] = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || typeof row !== "object" || Array.isArray(row)) throw new Error(`La fila ${i + 1} no tiene formato de publicación.`);
+    const record = row as Record<string, unknown>;
+    const rawUrl = field(record, ["listing_url", "publication_url", "source_url", "url", "link", "enlace"]);
+    let listingId = String(field(record, ["listing_id", "account_id", "item_id", "listingid", "id_anuncio", "id"]) ?? "").match(/\d+/)?.[0] || "";
+    let sourceUrl = "";
+    if (rawUrl) {
+      try {
+        const parsedUrl = new URL(String(rawUrl));
+        const match = parsedUrl.pathname.match(/^\/(\d+)\/?$/);
+        if (parsedUrl.protocol !== "https:" || parsedUrl.hostname !== "lzt.market" || !match) throw new Error("enlace del anuncio inválido");
+        listingId = listingId || match[1];
+        sourceUrl = `https://lzt.market/${listingId}/`;
+      } catch (error) {
+        throw new Error(`Fila ${i + 1}: ${error instanceof Error ? error.message : "enlace del anuncio inválido"}.`);
+      }
+    }
+    if (!/^\d{5,}$/.test(listingId)) throw new Error(`Fila ${i + 1}: falta el ID numérico de la publicación.`);
+    sourceUrl ||= `https://lzt.market/${listingId}/`;
+
+    const rawPrice = field(record, ["price_usd", "original_price_usd", "original_price", "price", "precio_usd", "precio_original", "precio", "cost"]);
+    const priceText = String(rawPrice ?? "").replace(/[^\d.,-]/g, "");
+    const priceValue = Number(priceText.includes(".") ? priceText.replace(/,/g, "") : priceText.replace(/,/g, "."));
+    if (!Number.isFinite(priceValue) || priceValue <= 0) throw new Error(`Fila ${i + 1}: falta un precio original válido en USD.`);
+
+    const skinsRaw = field(record, ["skin_names", "featured_skins", "skins_destacadas", "skins"]);
+    const skinNames = Array.isArray(skinsRaw)
+      ? skinsRaw.map(item => typeof item === "string" ? item : (item && typeof item === "object" ? String((item as Record<string, unknown>).name || "") : "")).filter(Boolean).slice(0, 12)
+      : typeof skinsRaw === "string" ? skinsRaw.split(/[,;|]/).map(item => item.trim()).filter(Boolean).slice(0, 12) : [];
+    const rawCount = field(record, ["skin_count", "skins_count", "cantidad_skins", "skins_total", "number_of_skins"]);
+    const countValue = Number(String(rawCount ?? "").match(/\d+/)?.[0]) || skinNames.length;
+    const rawDescription = field(record, ["description", "details", "descripcion", "detalles", "published_details"]);
+    const description = String(rawDescription ?? "").replace(/https?:\/\/(?:www\.)?lzt\.market\/\S*/gi, "").replace(/\s+/g, " ").trim().slice(0, 1200);
+    const rawStw = field(record, ["has_stw", "tiene_stw", "stw", "save_the_world"]);
+    const hasStw = typeof rawStw === "boolean" ? rawStw : /^(true|yes|sí|si|con stw|1)$/i.test(String(rawStw ?? ""));
+    const rawIdle = field(record, ["idle_days", "days_inactive", "dias_inactividad", "inactivity_days"]);
+    const idleValue = Number(String(rawIdle ?? "").match(/\d+/)?.[0]);
+    const idleDays = Number.isFinite(idleValue) ? Math.max(0, Math.min(3650, idleValue)) : 90;
+    const rawTitle = field(record, ["title", "name", "nombre", "publication_title", "listing_title", "titulo"]);
+    const title = String(rawTitle ?? `Cuenta Fortnite · ${countValue} skins`).replace(/\s+/g, " ").trim().slice(0, 120);
+    const rawImage = field(record, ["account_image_url", "generated_image_url", "cover_image_url", "account_photo_url", "imagen_cuenta", "foto_cuenta", "image_url", "image"]);
+    const imageSource = listImageValues(rawImage)[0];
+    const imagePaths: string[] = [];
+    if (imageSource) {
+      imagePaths.push(await storeAgentyImage(supabase, imageSource));
+      images++;
+    }
+    const { error } = await supabase.rpc("catalogo_lzt_upsert_account", {
+      p_listing_id: listingId,
+      p_source_url: sourceUrl,
+      p_ceo_id: ceoId,
+      p_title: title,
+      p_skin_count: countValue,
+      p_featured_skins: skinNames,
+      p_has_stw: hasStw,
+      p_idle_days: idleDays,
+      p_source_cost: priceValue,
+      p_image_paths: imagePaths,
+      p_description: description,
+    });
+    if (error) throw new Error(`Fila ${i + 1}: no se pudo guardar la publicación ${listingId}.`);
+    imported.push(title);
+  }
+  return { imported: imported.length, images, titles: imported };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return respond({ error: "Método no permitido." }, 405);
@@ -128,6 +257,10 @@ Deno.serve(async (req) => {
     if (staffError || !staff?.activo || staff.rol !== "CEO") return respond({ error: "Solo el CEO puede actualizar el catálogo." }, 403);
 
     const body = await req.json().catch(() => ({}));
+    if (body?.mode === "agenty") {
+      const result = await importAgentyRows(supabase, body.records, authData.user.id);
+      return respond({ ...result, message: "Lote de Agenty importado. Los precios de venta se calcularon en Supabase." });
+    }
     const batchSize = Math.max(1, Math.min(12, Number(body.batch_size) || 8));
     const { data: configRows, error: configError } = await supabase.rpc("catalogo_lzt_import_state");
     if (configError) throw new Error("No se pudo leer la configuración privada del catálogo.");
