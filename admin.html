@@ -4301,15 +4301,19 @@ function renderCatalogoCuentas() {
   }
   grid.innerHTML = rows.map(row => {
     const tags = (row.skins_destacadas || []).filter(Boolean).map(tag => `<span class="account-skin-tag">${escaparCatalogo(tag)}</span>`).join('');
+    const imageCount = (row.imagenes_skins || []).length;
+    const singleGeneratedCover = imageCount === 1;
     const skinImages = (Array.isArray(row.imagenes_skins) ? row.imagenes_skins : []).slice(0, 24).map((path, index) => {
       const imageUrl = catalogoSkinSignedUrls.get(path);
       if (!imageUrl) return '';
-      const name = row.skins_destacadas?.[index] || `Skin ${index + 1}`;
+      const name = singleGeneratedCover ? `Portada de ${row.titulo || 'cuenta Fortnite'}` : (row.skins_destacadas?.[index] || `Skin ${index + 1}`);
       return `<div class="account-skin-image"><img src="${escaparCatalogo(imageUrl)}" alt="${escaparCatalogo(name)}" loading="lazy"><span>${escaparCatalogo(name)}</span></div>`;
     }).join('');
-    const imageCount = (row.imagenes_skins || []).length;
-    const singleGeneratedCover = imageCount === 1;
-    const gallery = skinImages ? `<div class="account-cover${singleGeneratedCover ? ' account-cover-single' : ''}">${singleGeneratedCover ? '' : `<div class="account-cover-header"><span><i class="fas fa-shirt"></i> ${Number(row.cantidad_skins)||0} skins</span><small>${Math.min(24,imageCount)} destacadas</small></div>`}<div class="account-skin-gallery${singleGeneratedCover ? ' account-skin-gallery-single' : ''}">${skinImages}</div></div>` : `<div class="account-cover-empty"><i class="fas fa-images"></i><span>Vista de cuenta pendiente</span></div>`;
+    const paidSkins = String(row.descripcion || '').match(/(\d{1,4})\s+paid\b/i)?.[1] || '';
+    const vbucks = String(row.descripcion || '').match(/([\d,]+)\s*V-Bucks?/i)?.[1] || '';
+    const coverHeading = `${Number(row.cantidad_skins)||0}${paidSkins ? ` (${paidSkins})` : ''} skins${vbucks ? ` · ≈${vbucks} V-Bucks` : ''}`;
+    const gallery = skinImages ? `<div class="account-cover${singleGeneratedCover ? ' account-cover-single' : ''}">${singleGeneratedCover ? '' : `<div class="account-cover-header"><span><i class="fas fa-shirt"></i> ${escaparCatalogo(coverHeading)}</span><small>${Math.min(24,imageCount)} vistas</small></div>`}<div class="account-skin-gallery${singleGeneratedCover ? ' account-skin-gallery-single' : ''}">${skinImages}</div></div>` : `<div class="account-cover-empty"><i class="fas fa-images"></i><span>Vista de cuenta pendiente</span></div>`;
+
     const estado = row.estado === 'disponible' ? 'Disponible' : row.estado === 'reservada' ? 'Reservada' : 'Vendida';
     const edit = currentRole === 'CEO' ? `<button class="btn btn-ghost account-edit-btn" type="button" onclick="window.abrirEditorCuentaCatalogo('${escaparCatalogo(row.id)}')"><i class="fas fa-pen"></i> Editar</button>` : '';
     return `<article class="account-catalog-card">${gallery}<div class="account-card-top"><span class="account-state state-${escaparCatalogo(row.estado)}">${estado}</span><strong class="account-price">$${Number(row.precio_usd).toFixed(2)} <small>USD</small></strong></div><h2>${escaparCatalogo(row.titulo)}</h2><div class="account-card-stats"><span><i class="fas fa-shirt"></i><b>${Number(row.cantidad_skins)||0}</b> skins</span><span><i class="fas fa-bolt"></i>${row.tiene_stw ? 'Con STW' : 'Sin STW'}</span><span><i class="fas fa-clock"></i>${Number(row.dias_inactividad)||0} días inactiva</span></div>${tags ? `<div class="account-skin-tags">${tags}</div>` : ''}${row.descripcion ? `<p class="account-card-description">${escaparCatalogo(row.descripcion)}</p>` : ''}<div class="account-card-actions">${edit}</div></article>`;
