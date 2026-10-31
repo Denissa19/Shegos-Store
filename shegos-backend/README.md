@@ -1,6 +1,6 @@
 # Shegos Store — Backend API
 
-API REST en Node.js/Express + Supabase (Postgres) para el sistema de gifting
+Requiere Node.js 18 o superior (usa `fetch` integrado). API REST en Node.js/Express + Supabase (Postgres) para el sistema de gifting
 de cosméticos de Fortnite, gestión de inventario, bots de regalo, pedidos y
 contabilidad con control de acceso por rol (CEO / Admin).
 
