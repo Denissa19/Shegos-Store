@@ -2953,8 +2953,9 @@ body, body.role-ceo {
             <option value="MXN" selected>MXN</option>
             <option value="USD">USD</option>
           </select>
-          <input class="finput" id="vc-f-ingreso" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
+          <input class="finput" id="vc-f-ingreso" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="vc-f-ingreso-error" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
         </div>
+        <small id="vc-f-ingreso-error" role="alert" style="display:none;color:#ff4d6d;font-weight:700;margin-top:6px">Escribe un precio mayor que cero (puedes usar punto o coma decimal).</small>
         <small class="venta-conversion-note" id="vc-f-conversion-note">Se convertirá automáticamente a USD. Tasa: 1 USD = 18.67 MXN.</small>
       </div>
 
@@ -6048,6 +6049,13 @@ window.calcVentaMargen = function() { recalculateVentaFinancialFields(); };
 // vuelva a renderizarse o el dispositivo no ejecute el atributo inline.
 document.addEventListener('input', event => {
   if (!event.target?.matches?.('#vc-f-ingreso,#vc-f-costo-real,#vc-f-monto-recibido,#vc-f-pago-parcial,#vc-f-interes-pct')) return;
+  if (event.target.id === 'vc-f-ingreso' && parseVentaNumber(event.target.value) > 0) {
+    event.target.removeAttribute('aria-invalid');
+    event.target.style.borderColor = '';
+    event.target.style.boxShadow = '';
+    const amountError = document.getElementById('vc-f-ingreso-error');
+    if (amountError) amountError.style.display = 'none';
+  }
   try { recalculateVentaFinancialFields(); }
   catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
 }, true);
@@ -6236,8 +6244,28 @@ window.saveVenta = async function() {
   const ingresoBase = ventaIngresoUsd();
   const tipo = document.getElementById('vc-f-tipo').value;
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
-  if (!(saleAmount > 0) || !tipo || !paymentMethod) {
-    showToast('El precio de venta, el tipo y el método de pago son obligatorios.', true);
+  const amountInput = document.getElementById('vc-f-ingreso');
+  const amountError = document.getElementById('vc-f-ingreso-error');
+  if (!(saleAmount > 0)) {
+    if (amountInput) {
+      amountInput.setAttribute('aria-invalid', 'true');
+      amountInput.style.borderColor = '#ff4d6d';
+      amountInput.style.boxShadow = '0 0 0 2px rgba(255,77,109,.2)';
+      amountInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => amountInput.focus({ preventScroll: true }), 250);
+    }
+    if (amountError) amountError.style.display = 'block';
+    showToast('Escribe un precio de venta mayor que cero.', true);
+    return;
+  }
+  if (amountInput) {
+    amountInput.removeAttribute('aria-invalid');
+    amountInput.style.borderColor = '';
+    amountInput.style.boxShadow = '';
+  }
+  if (amountError) amountError.style.display = 'none';
+  if (!tipo || !paymentMethod) {
+    showToast('El tipo de venta y el método de pago son obligatorios.', true);
     return;
   }
   const saleDateInput = document.getElementById('vc-f-fecha');
