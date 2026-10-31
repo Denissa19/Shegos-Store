@@ -4675,6 +4675,8 @@ body { background-color: transparent !important; isolation: isolate; }
 <style id="shegos-direct-vbucks-list">
 #vb-precios.club-precios { min-height:0; padding-top:12px; }
 #vb-precios .servicio-card { opacity:1 !important; transform:none !important; transition:none !important; }
+
+.stw-vbucks-page{max-width:1100px;margin:0 auto;padding:34px 20px 64px}.stw-vbucks-shell{overflow:hidden;border:1px solid rgba(112,255,0,.22);border-radius:22px;background:linear-gradient(145deg,rgba(17,24,33,.94),rgba(8,12,18,.91));box-shadow:0 20px 70px rgba(0,0,0,.25)}.stw-vbucks-head{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(110deg,rgba(112,255,0,.09),transparent 55%)}.stw-vbucks-title{display:flex;align-items:center;gap:14px;min-width:0}.stw-vbucks-mark{width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;border-radius:15px;background:rgba(112,255,0,.12);color:#70ff00;font-size:1.35rem}.stw-vbucks-title h2{margin:0;color:#fff;font-size:clamp(1.15rem,2vw,1.65rem)}.stw-vbucks-title p{margin:5px 0 0;color:#a8adb7;font-size:.9rem}.stw-vbucks-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.stw-vbucks-actions button,.stw-vbucks-source{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 15px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.05);color:#fff;text-decoration:none;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}.stw-vbucks-actions button:hover,.stw-vbucks-source:hover{border-color:rgba(112,255,0,.6)}.stw-vbucks-actions .stw-vbucks-download{border-color:transparent;background:#70ff00;color:#081006}.stw-vbucks-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:18px 28px 0}.stw-vbucks-total{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid rgba(112,255,0,.22);border-radius:12px;background:rgba(112,255,0,.07);color:#d8ffd0;font-weight:800}.stw-vbucks-total strong{color:#70ff00;font-size:1.2rem}.stw-vbucks-status{padding:0 28px;margin:12px 0;color:#969daa;font-size:.82rem}.stw-vbucks-list{display:grid;gap:10px;padding:18px 28px 26px}.stw-vbucks-row{display:grid;grid-template-columns:minmax(160px,1fr) 110px minmax(150px,auto);align-items:center;gap:14px;padding:15px 17px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.045)}.stw-vbucks-zone{display:flex;align-items:center;gap:12px;min-width:0;color:#fff;font-weight:750}.stw-vbucks-zone i{color:#70ff00;font-size:1.08rem}.stw-vbucks-pl{justify-self:center;padding:7px 11px;border-radius:10px;background:rgba(255,255,255,.07);color:#d8dce3;font-size:.85rem;font-weight:800}.stw-vbucks-reward{justify-self:end;display:flex;align-items:center;gap:9px;color:#70ff00;font-weight:800}.stw-vbucks-coin{display:grid;place-items:center;width:26px;height:26px;border:2px solid #70ff00;border-radius:50%;color:#70ff00;font-size:.8rem;font-weight:900}.stw-vbucks-message{padding:24px;border:1px dashed rgba(255,255,255,.15);border-radius:14px;color:#bdc2ca;text-align:center;line-height:1.6}.stw-vbucks-message i{display:block;margin-bottom:10px;color:#70ff00;font-size:1.4rem}.stw-vbucks-note{margin:0;padding:14px 28px 18px;border-top:1px solid rgba(255,255,255,.07);color:#89919c;font-size:.78rem;line-height:1.5}@media(max-width:680px){.stw-vbucks-page{padding:18px 10px 38px}.stw-vbucks-head{align-items:flex-start;flex-direction:column;padding:19px 16px}.stw-vbucks-actions{width:100%;justify-content:stretch}.stw-vbucks-actions button,.stw-vbucks-source{flex:1;padding:0 10px;font-size:.78rem}.stw-vbucks-summary{padding:15px 16px 0}.stw-vbucks-status{padding:0 16px}.stw-vbucks-list{padding:14px 14px 20px}.stw-vbucks-row{grid-template-columns:1fr auto;gap:9px;padding:13px}.stw-vbucks-pl{grid-column:2;grid-row:1}.stw-vbucks-reward{grid-column:1/-1;justify-self:start}.stw-vbucks-note{padding:12px 16px 16px}}
 </style>
 </head>
 <body>
@@ -4725,7 +4727,7 @@ body { background-color: transparent !important; isolation: isolate; }
             <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
             <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
-            <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
+            <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>\n            <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas V-Bucks</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
             <a href="https://wa.me/18295392881" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;" rel="noopener noreferrer"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Contactar por WhatsApp</a>
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;" rel="noopener noreferrer"><i class="fab fa-discord" style="color:#5865F2;"></i> Únete a nuestro Discord</a>
@@ -4742,7 +4744,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
                 <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
-                <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
+                <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>\n                <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas</button>
             </nav>
         </div>
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
@@ -5784,7 +5786,29 @@ body { background-color: transparent !important; isolation: isolate; }
                 </article>
                 <p class="terms-legal-note">Estos términos se aplican en la medida permitida por las normas de protección al consumidor que correspondan a cada compra.</p>
                 <a class="terms-back" href="#" onclick="abrirPestana('inicio-landing'); return false;">Volver al inicio</a>
-            </main>
+            
+        <div id="stw-alertas" class="pestana oculto">
+            <section class="stw-vbucks-page" aria-labelledby="stw-vbucks-heading">
+                <div class="stw-vbucks-shell">
+                    <div class="stw-vbucks-head">
+                        <div class="stw-vbucks-title">
+                            <span class="stw-vbucks-mark" aria-hidden="true"><i class="fas fa-coins"></i></span>
+                            <div><h2 id="stw-vbucks-heading">Alertas de V-Bucks</h2><p>Misiones disponibles hoy en Salvar el Mundo</p></div>
+                        </div>
+                        <div class="stw-vbucks-actions">
+                            <a class="stw-vbucks-source" href="https://fortnitedb.com/" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i> FortniteDB</a>
+                            <button type="button" id="stw-vbucks-refresh" onclick="cargarAlertasSTW(true)"><i class="fas fa-rotate"></i> Actualizar</button>
+                            <button type="button" id="stw-vbucks-image" class="stw-vbucks-download" onclick="generarImagenAlertasSTW()"><i class="fas fa-download"></i> Crear imagen</button>
+                        </div>
+                    </div>
+                    <div class="stw-vbucks-summary"><span class="stw-vbucks-total"><i class="fas fa-bolt"></i> Total de hoy <strong id="stw-vbucks-total">—</strong></span><span class="stw-vbucks-total"><i class="fas fa-map-location-dot"></i> Misiones <strong id="stw-vbucks-count">—</strong></span></div>
+                    <p class="stw-vbucks-status" id="stw-vbucks-status" role="status" aria-live="polite">Esperando datos de FortniteDB…</p>
+                    <div class="stw-vbucks-list" id="stw-vbucks-list" aria-live="polite"><div class="stw-vbucks-message"><i class="fas fa-spinner fa-spin"></i>Cargando alertas…</div></div>
+                    <p class="stw-vbucks-note">Datos públicos de FortniteDB. Las misiones y recompensas cambian con el reinicio diario; confirma la alerta dentro del juego antes de completarla.</p>
+                </div>
+            </section>
+        </div>
+</main>
         </div>
 
     <footer class="site-footer">
@@ -10771,5 +10795,76 @@ function mostrarModalCapturaMovil(url) {
 
 <script>document.addEventListener("DOMContentLoaded",function(){var y=document.getElementById("footer-year");if(y)y.textContent=new Date().getFullYear();});</script>
 
+
+    <script>
+    (function(){
+        'use strict';
+        const READER_URL='https://r.jina.ai/https://fortnitedb.com/';
+        const CACHE_KEY='shegos-stw-vbucks-v1';
+        const CACHE_TTL=300000;
+        const ZONES={T:'Twine Peaks',C:'Canny Valley',P:'Plankerton',S:'Stonewood',V:'Ventures'};
+        let missions=[],expires='',fetchedAt=0,loaded=false;
+        function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+        function els(){return {list:document.getElementById('stw-vbucks-list'),status:document.getElementById('stw-vbucks-status'),total:document.getElementById('stw-vbucks-total'),count:document.getElementById('stw-vbucks-count'),refresh:document.getElementById('stw-vbucks-refresh'),image:document.getElementById('stw-vbucks-image')};}
+        function parse(text){
+            if(!/V-Bucks Missions/i.test(text)||!/Missions Expire\s*:/i.test(text))throw new Error('Formato de FortniteDB no reconocido.');
+            const exp=text.match(/Missions Expire\s*:\s*(\d{4}-\d{2}-\d{2})/i);
+            const re=/^([STPCV])!\[Image\s+\d+:[^\]]+\]\((https?:\/\/[^)]+)\)(\d+)!\[Image\s+\d+:\s*V-Bucks\]\((?:https?:\/\/[^)]+)\)\s*(?:\d+\s*x\s*)?V-Bucks\s*$/gim;
+            const rows=[],seen=new Set();let m;
+            while((m=re.exec(text))!==null){const key=m[1]+'|'+m[2]+'|'+m[3];if(seen.has(key))continue;seen.add(key);const amount=m[0].match(/(\d+)\s*x\s*V-Bucks/i);rows.push({zone:ZONES[m[1]]||'Salvar el Mundo',power:Number(m[3]),reward:amount?Number(amount[1]):50});}
+            return {rows,expires:exp?exp[1]:''};
+        }
+        function render(){
+            const e=els();if(!e.list)return;
+            const total=missions.reduce((s,m)=>s+m.reward,0);
+            if(e.total)e.total.textContent=String(total);if(e.count)e.count.textContent=String(missions.length);
+            if(!missions.length){e.list.innerHTML='<div class="stw-vbucks-message"><i class="fas fa-circle-check"></i>FortniteDB no muestra misiones con V-Bucks disponibles hoy.</div>';return;}
+            e.list.innerHTML=missions.map(function(m){return '<div class="stw-vbucks-row"><div class="stw-vbucks-zone"><i class="fas fa-map-pin" aria-hidden="true"></i><span>'+esc(m.zone)+' · Misión de alerta</span></div><span class="stw-vbucks-pl">PL '+esc(m.power)+'</span><div class="stw-vbucks-reward"><span class="stw-vbucks-coin" aria-hidden="true">V</span>'+esc(m.reward)+' V-Bucks</div></div>';}).join('');
+        }
+        function save(){try{sessionStorage.setItem(CACHE_KEY,JSON.stringify({missions:missions,expires:expires,fetchedAt:fetchedAt}));}catch(_){}}
+        function restore(){try{const c=JSON.parse(sessionStorage.getItem(CACHE_KEY)||'null');if(c&&Array.isArray(c.missions)&&Date.now()-c.fetchedAt<86400000){missions=c.missions;expires=c.expires||'';fetchedAt=c.fetchedAt;render();const e=els();if(e.status)e.status.textContent='Consulta '+new Date(fetchedAt).toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'})+(expires?' · Expira '+expires:'');return Date.now()-fetchedAt<CACHE_TTL;}}catch(_){}return false;}
+        window.cargarAlertasSTW=async function(force){
+            const e=els();if(!e.list)return;if(loaded&&!force)return;if(!force&&restore()){loaded=true;return;}
+            if(e.refresh)e.refresh.disabled=true;if(!missions.length)e.list.innerHTML='<div class="stw-vbucks-message"><i class="fas fa-spinner fa-spin"></i>Consultando las misiones disponibles…</div>';
+            if(e.status)e.status.textContent='Consultando el resumen público de FortniteDB…';
+            try{
+                const controller=new AbortController(),timer=setTimeout(function(){controller.abort();},18000);let response;
+                try{response=await fetch(READER_URL,{mode:'cors',cache:'no-store',headers:{Accept:'text/plain'},signal:controller.signal});}finally{clearTimeout(timer);}
+                if(!response.ok)throw new Error('Respuesta '+response.status);
+                const result=parse(await response.text());missions=result.rows;expires=result.expires;fetchedAt=Date.now();loaded=true;save();render();
+                if(e.status)e.status.textContent='Consultado '+new Date(fetchedAt).toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'})+(expires?' · Misiones expiran '+expires:'');
+            }catch(err){
+                console.error('[Shegos STW] Error al actualizar alertas:',err);
+                if(missions.length){render();if(e.status)e.status.textContent='No se pudo actualizar; se muestran datos guardados de '+new Date(fetchedAt).toLocaleTimeString('es-DO',{hour:'2-digit',minute:'2-digit'})+'.';}
+                else{e.list.innerHTML='<div class="stw-vbucks-message"><i class="fas fa-triangle-exclamation"></i>No se pudieron cargar las alertas. Comprueba tu conexión o visita <a href="https://fortnitedb.com/" target="_blank" rel="noopener noreferrer" style="color:#70ff00">FortniteDB</a>.</div>';if(e.status)e.status.textContent='La fuente pública no respondió.';}
+            }finally{if(e.refresh)e.refresh.disabled=false;}
+        };
+        function round(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+        window.generarImagenAlertasSTW=async function(){
+            if(!loaded&&!missions.length)await window.cargarAlertasSTW(false);
+            if(!loaded&&!missions.length){alert('No hay datos de alertas para crear la imagen todavía.');return;}
+            const button=els().image;if(button){button.disabled=true;button.innerHTML='<i class="fas fa-spinner fa-spin"></i> Creando…';}
+            try{
+                const width=1080,rowH=104,pad=52,header=264,footer=82,height=header+Math.max(missions.length,1)*rowH+footer;
+                const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');
+                const bg=ctx.createLinearGradient(0,0,width,height);bg.addColorStop(0,'#121b2c');bg.addColorStop(.52,'#10121b');bg.addColorStop(1,'#080b11');ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
+                ctx.fillStyle='rgba(112,255,0,.10)';ctx.beginPath();ctx.arc(width-30,20,300,0,Math.PI*2);ctx.fill();
+                ctx.strokeStyle='rgba(112,255,0,.8)';ctx.lineWidth=3;round(ctx,20,20,width-40,height-40,28);ctx.stroke();
+                ctx.fillStyle='#70ff00';ctx.font='800 23px Arial,sans-serif';ctx.fillText('SHEGOS STORE',pad,75);
+                ctx.fillStyle='#fff';ctx.font='800 42px Arial,sans-serif';ctx.fillText('ALERTAS DE V-BUCKS',pad,132);
+                ctx.fillStyle='#aeb7c3';ctx.font='500 21px Arial,sans-serif';ctx.fillText('SALVAR EL MUNDO  ·  '+new Date().toLocaleDateString('es-DO',{day:'2-digit',month:'long',year:'numeric'}),pad,172);
+                ctx.fillStyle='#70ff00';ctx.font='800 24px Arial,sans-serif';ctx.fillText(missions.reduce((s,m)=>s+m.reward,0)+' V-BUCKS DISPONIBLES',pad,220);
+                if(!missions.length){ctx.fillStyle='rgba(255,255,255,.06)';round(ctx,pad,header,width-pad*2,rowH-14,16);ctx.fill();ctx.fillStyle='#e7ebf1';ctx.font='700 24px Arial,sans-serif';ctx.fillText('Hoy no hay misiones con V-Bucks.',pad+20,header+51);}
+                missions.forEach(function(m,i){const y=header+i*rowH;ctx.fillStyle='rgba(255,255,255,.055)';round(ctx,pad,y,width-pad*2,rowH-14,16);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.10)';ctx.lineWidth=1;round(ctx,pad,y,width-pad*2,rowH-14,16);ctx.stroke();ctx.fillStyle='#70ff00';ctx.font='800 23px Arial,sans-serif';ctx.fillText(m.zone.toUpperCase(),pad+20,y+37);ctx.fillStyle='#b4bdc8';ctx.font='600 18px Arial,sans-serif';ctx.fillText('MISIÓN DE ALERTA',pad+20,y+66);ctx.fillStyle='#fff';ctx.font='800 23px Arial,sans-serif';ctx.fillText('PL '+m.power,620,y+46);ctx.fillStyle='#70ff00';ctx.font='800 26px Arial,sans-serif';ctx.textAlign='right';ctx.fillText(m.reward+' V-BUCKS',width-pad-20,y+48);ctx.textAlign='left';});
+                ctx.fillStyle='#89919c';ctx.font='500 16px Arial,sans-serif';ctx.fillText('Fuente: FortniteDB · Confirma la alerta en el juego antes de completarla.',pad,height-45);
+                const blob=await new Promise(function(resolve,reject){canvas.toBlob(function(value){value?resolve(value):reject(new Error('No se pudo crear el archivo.'));},'image/png');});
+                const name='shegos-alertas-vbucks-'+new Date().toISOString().slice(0,10)+'.png',file=new File([blob],name,{type:'image/png'});
+                if(navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share)await navigator.share({files:[file],title:'Alertas de V-Bucks'});
+                else{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url);},60000);}
+            }catch(err){if(err&&err.name!=='AbortError')alert('No se pudo crear la imagen. Intenta de nuevo.');}
+            finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-download"></i> Crear imagen';}}
+        };
+    })();
+    </script>
 </body>
 </html>
