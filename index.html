@@ -4562,7 +4562,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .site-footer-socials{display:flex;gap:10px;margin-top:5px}
 .site-footer-socials a{display:grid;place-items:center;width:34px;height:34px;border:1px solid rgba(112,255,0,.28);border-radius:50%;background:rgba(112,255,0,.06);color:#eaffdf;text-decoration:none;transition:.2s}
 .site-footer-socials a:hover{background:#70ff00;color:#071000;transform:translateY(-3px)}
+.btn-add-cart.cosmetic-added-feedback{animation:cosmeticAdded .68s cubic-bezier(.2,.85,.25,1);box-shadow:0 0 0 4px rgba(112,255,0,.18),0 0 26px rgba(112,255,0,.48)}
+.cosmetic-card.cosmetic-added-feedback{animation:cosmeticCardAdded .68s cubic-bezier(.2,.85,.25,1)}
+@keyframes cosmeticAdded{0%{transform:scale(1)}38%{transform:scale(1.09) translateY(-2px)}68%{transform:scale(.98)}100%{transform:scale(1)}}
+@keyframes cosmeticCardAdded{0%{box-shadow:0 0 0 0 rgba(112,255,0,0)}40%{box-shadow:0 0 0 3px rgba(112,255,0,.38),0 12px 30px rgba(112,255,0,.16)}100%{box-shadow:0 0 0 0 rgba(112,255,0,0)}}
+@media(prefers-reduced-motion:reduce){.btn-add-cart.cosmetic-added-feedback,.cosmetic-card.cosmetic-added-feedback{animation:none}}
+.site-footer-payments{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:0 auto 16px;padding:14px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
+.site-footer-payments-label{width:100%;margin:0 0 2px;color:#8e988a;text-align:center;font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.site-footer-payment{display:inline-flex;align-items:center;justify-content:center;min-width:86px;height:34px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.055);color:#eef2eb;font-size:.72rem;font-weight:800;letter-spacing:.01em}
+.site-footer-payment.paypal{color:#bce0ff}.site-footer-payment.binance{color:#ffe067}.site-footer-payment.mercado{color:#b6f0ff}.site-footer-payment.spei{color:#e9eaff}.site-footer-payment.oxxo{color:#ffdddd}
 .site-footer-bottom{display:flex;justify-content:space-between;gap:12px;max-width:940px;margin:0 auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.09);color:#7e887a;font-size:.74rem}
+@media(max-width:600px){.site-footer-payments{gap:7px}.site-footer-payment{min-width:74px;height:31px;padding:0 9px;font-size:.65rem}.site-footer-payments-label{font-size:.6rem}.site-footer-bottom{flex-wrap:wrap;justify-content:center;text-align:center;gap:6px 14px}}
+
 @media(max-width:850px){
  .hero-container{min-height:auto;padding:32px 20px 20px;flex-direction:column;align-items:stretch;gap:0}
  .hero-text{max-width:100%;width:100%}
@@ -5831,6 +5842,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 </div>
             </div>
         </div>
+        <div class="site-footer-payments" aria-label="Métodos de pago aceptados"><p class="site-footer-payments-label">Métodos de pago</p><span class="site-footer-payment paypal">PayPal</span><span class="site-footer-payment binance">Binance Pay</span><span class="site-footer-payment mercado">Mercado Pago</span><span class="site-footer-payment spei">SPEI</span><span class="site-footer-payment oxxo">OXXO</span></div>
         <div class="site-footer-bottom"><span>© <span id="footer-year">2026</span> SHEGOS STORE. Todos los derechos reservados.</span><a href="/terminos" onclick="abrirPestana('terminos'); return false;" style="color:inherit;text-decoration:none">Términos y condiciones</a><span>Atención segura · Soporte directo</span></div>
     </footer>
 
@@ -7355,6 +7367,29 @@ body { background-color: transparent !important; isolation: isolate; }
             }
         }
 
+        function reproducirSonidoAgregarCosmetico() {
+            try {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContextClass) return;
+                const ctx = new AudioContextClass();
+                const ahora = ctx.currentTime;
+                const gain = ctx.createGain();
+                gain.gain.setValueAtTime(0.0001, ahora);
+                gain.gain.exponentialRampToValueAtTime(0.045, ahora + 0.012);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ahora + 0.19);
+                gain.connect(ctx.destination);
+                [740, 988].forEach((frecuencia, indice) => {
+                    const osc = ctx.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.value = frecuencia;
+                    osc.connect(gain);
+                    osc.start(ahora + indice * 0.055);
+                    osc.stop(ahora + indice * 0.055 + 0.09);
+                });
+                setTimeout(() => ctx.close().catch(() => {}), 260);
+            } catch (_) { /* El sonido es opcional; el carrito sigue funcionando si el navegador lo bloquea. */ }
+        }
+
         function agregarAlCarrito(n, p, i, v, t, ev, rareza) { 
             // El mismo botón alterna entre agregar y quitar el artículo.
             const indiceExistente = carrito.findIndex(item => item.nombre === n);
@@ -7365,7 +7400,22 @@ body { background-color: transparent !important; isolation: isolate; }
             }
             const eraVacio = carrito.length === 0;
             carrito.push({ nombre: n, precio: p, imagen: i, vbucks: v, tipo: t, rareza: rareza || '' }); 
-            actualizarCarrito(); 
+            actualizarCarrito();
+
+            const clickedButton = ev?.currentTarget || ev?.target?.closest?.('.btn-add-cart');
+            if (clickedButton?.classList?.contains('btn-add-cart')) {
+                const card = clickedButton.closest('.cosmetic-card');
+                clickedButton.classList.remove('cosmetic-added-feedback');
+                card?.classList.remove('cosmetic-added-feedback');
+                void clickedButton.offsetWidth;
+                clickedButton.classList.add('cosmetic-added-feedback');
+                card?.classList.add('cosmetic-added-feedback');
+                setTimeout(() => {
+                    clickedButton.classList.remove('cosmetic-added-feedback');
+                    card?.classList.remove('cosmetic-added-feedback');
+                }, 720);
+                reproducirSonidoAgregarCosmetico();
+            }
 
             const btn = document.getElementById('btn-carrito-nav');
             if (btn) {
