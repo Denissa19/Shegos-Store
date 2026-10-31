@@ -4727,7 +4727,8 @@ body { background-color: transparent !important; isolation: isolate; }
             <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
             <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
             <button class="tab-btn" onclick="abrirPestana('rastreo-pedidos')"><i class="fas fa-truck"></i> Mis Pedidos</button>
-            <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>\n            <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas V-Bucks</button>
+            <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
+            <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas V-Bucks</button>
             <button class="tab-btn" onclick="abrirCarritoLateral()"><i class="fas fa-shopping-cart"></i> Ver Carrito</button>
             <a href="https://wa.me/18295392881" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;" rel="noopener noreferrer"><i class="fab fa-whatsapp" style="color:#25D366;"></i> Contactar por WhatsApp</a>
             <a href="https://discord.gg/Z2pfu9zbDn" target="_blank" class="tab-btn" style="display:block; text-decoration:none; color:#fff;" rel="noopener noreferrer"><i class="fab fa-discord" style="color:#5865F2;"></i> Únete a nuestro Discord</a>
@@ -4744,7 +4745,8 @@ body { background-color: transparent !important; isolation: isolate; }
                 <button class="tab-btn activo" onclick="abrirPestana('inicio-landing')"><i class="fas fa-home"></i> Inicio</button>
                 <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
-                <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>\n                <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas</button>
+                <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
+                <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas</button>
             </nav>
         </div>
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
@@ -10839,7 +10841,7 @@ function mostrarModalCapturaMovil(url) {
                 else{e.list.innerHTML='<div class="stw-vbucks-message"><i class="fas fa-triangle-exclamation"></i>No se pudieron cargar las alertas. Comprueba tu conexión o visita <a href="https://fortnitedb.com/" target="_blank" rel="noopener noreferrer" style="color:#70ff00">FortniteDB</a>.</div>';if(e.status)e.status.textContent='La fuente pública no respondió.';}
             }finally{if(e.refresh)e.refresh.disabled=false;}
         };
-        function round(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);}
+        function round(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect){ctx.roundRect(x,y,w,h,r);return;}ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
         window.generarImagenAlertasSTW=async function(){
             if(!loaded&&!missions.length)await window.cargarAlertasSTW(false);
             if(!loaded&&!missions.length){alert('No hay datos de alertas para crear la imagen todavía.');return;}
