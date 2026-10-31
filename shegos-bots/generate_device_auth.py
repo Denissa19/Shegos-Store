@@ -18,14 +18,10 @@ except ImportError:
     sys.exit(1)
 
 # ─────────────────────────────────────────────────────────────
-# Clientes de Epic Games (se prueban en orden)
-# ─────────────────────────────────────────────────────────────
-CLIENTS = [
-    ("830865842828479e957579f189689531", "1799981881724683a48e788229e612f0"),  # Switch (Alt)
-    ("5229dcd3ac3845208b496649092f251b", "e3bd2d3e-bf8c-4857-9e7d-f3d947d220c4"),  # Switch
-    ("34a02cf8f4414e29b15921876da36f9a", "daafbccc737745039dffe53d94fc76cf"),  # PC
-    ("3f69e56c7649492c8cc29f1af08a8a12", "b51ee9cb12234f50a69efa67ef53812e"),  # iOS
-]
+# El código de autorización queda vinculado al clientId que lo generó.
+# Debe usarse el mismo cliente al pedirlo y al intercambiarlo.
+AUTH_CLIENT_ID = "34a02cf8f4414e29b15921876da36f9a"  # Cliente PC
+AUTH_CLIENT_SECRET = "daafbccc737745039dffe53d94fc76cf"
 
 TOKEN_URL = "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token"
 
@@ -46,23 +42,29 @@ def basic_auth(client_id: str, client_secret: str) -> str:
 
 
 async def exchange_code_for_token(session: aiohttp.ClientSession, code: str) -> dict | None:
-    """Intenta obtener un access token probando cada cliente."""
-    for client_id, client_secret in CLIENTS:
-        headers = {
-            "Authorization": basic_auth(client_id, client_secret),
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
-        data = {"grant_type": "authorization_code", "code": code}
+    """Intercambia el código con el mismo cliente usado para generarlo."""
+    headers = {
+        "Authorization": basic_auth(AUTH_CLIENT_ID, AUTH_CLIENT_SECRET),
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    data = {"grant_type": "authorization_code", "code": code}
+    try:
         async with session.post(TOKEN_URL, headers=headers, data=data) as resp:
-            result = await resp.json()
-            if resp.status == 200:
-                print(f"  ✅ Cliente funcionando: {client_id[:8]}...")
+            result = await resp.json(content_type=None)
+            if resp.status == 200 and result.get("access_token"):
+                print("  ✅ Código intercambiado correctamente.")
                 return result
-            else:
-                error = result.get("errorCode", result.get("error", "desconocido"))
-                print(f"  ⚠️  Cliente {client_id[:8]}... falló: {error}")
+            error = result.get("errorCode", result.get("error", "respuesta_inválida"))
+            print(f"  ⚠️  Epic rechazó el código: {error}")
+            if "invalid_client_credentials" in str(error):
+                print("  Revisa que las credenciales del cliente OAuth configurado sigan vigentes.")
+            elif "authorization_code_not_for_your_client" in str(error):
+                print("  El código fue generado con otro clientId. Solicita uno nuevo desde el enlace mostrado.")
+            elif "authorization_code" in str(error) or "invalid_grant" in str(error):
+                print("  El código puede haber expirado o ya haberse usado. Solicita uno nuevo.")
+    except (aiohttp.ClientError, asyncio.TimeoutError) as exc:
+        print(f"  ⚠️  Error de conexión con Epic: {type(exc).__name__}")
     return None
-
 
 async def generate_device_auth_token(session, access_token, account_id):
     """Genera las credenciales de Device Auth."""
@@ -86,7 +88,7 @@ async def process_account(session: aiohttp.ClientSession, name: str) -> dict | N
     print("  1. Inicia sesion en Epic Games con esta cuenta en el navegador.")
     print("  2. Abre este link (Cópialo y pégalo en tu navegador):")
     print("     https://www.epicgames.com/id/api/redirect"
-          "?clientId=5229dcd3ac3845208b496649092f251b&responseType=code")
+          f"?clientId={AUTH_CLIENT_ID}&responseType=code")
     print("  3. Copia solo el valor de 'authorizationCode'.")
 
     code = input("\n[>] Pega el authorizationCode aqui: ").strip()
