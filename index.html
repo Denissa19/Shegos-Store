@@ -6056,9 +6056,38 @@ body { background-color: transparent !important; isolation: isolate; }
 
         async function cargarTienda() {
             const cont = document.getElementById('contenedor-tienda');
+            const cacheKey = 'shegos_tienda_cache_v1';
+            let datos = null;
+            let cacheLocal = [];
+            // Mostrar la última tienda válida de inmediato para que una red móvil lenta
+            // no deje la sección vacía mientras llega la actualización.
             try {
-                const res = await fetch('https://fortnite-api.com/v2/shop?language=es');
-                const datos = await res.json();
+                cacheLocal = JSON.parse(localStorage.getItem(cacheKey) || '[]');
+                if (Array.isArray(cacheLocal) && cacheLocal.length) {
+                    tiendaItems = cacheLocal;
+                    const countCached = document.getElementById('hero-items-count');
+                    if (countCached) countCached.innerText = tiendaItems.length;
+                    renderFiltros();
+                    aplicarFiltros();
+                    initFiltrosAvanzados();
+                    iniciarHeroSkinRotativa(tiendaItems.filter(it => it.categoria === 'SKINS' && it.featured).map(it => ({img:it.featured,vbucks:it.vbucks,nombre:it.nombre})));
+                }
+            } catch (cacheError) { console.warn('No se pudo leer la tienda guardada.', cacheError); }
+            try {
+                let ultimoError = null;
+                for (let intento = 0; intento < 3 && !datos; intento++) {
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 12000);
+                    try {
+                        const res = await fetch('https://fortnite-api.com/v2/shop?language=es', { signal: controller.signal, cache: 'no-store' });
+                        if (!res.ok) throw new Error('La tienda respondió con estado ' + res.status);
+                        datos = await res.json();
+                    } catch (errorRed) {
+                        ultimoError = errorRed;
+                        if (intento < 2) await new Promise(resolve => setTimeout(resolve, 500 * (intento + 1)));
+                    } finally { clearTimeout(timer); }
+                }
+                if (!datos) throw ultimoError || new Error('No se pudo cargar la tienda.');
                 console.log("Datos de la tienda recibidos:", datos); // Punto 1: Verificación
                 
                 if (!datos.data || !datos.data.entries) throw new Error("Datos inválidos");
@@ -6200,6 +6229,8 @@ body { background-color: transparent !important; isolation: isolate; }
                     }
                 });
 
+            try { localStorage.setItem(cacheKey, JSON.stringify(tiendaItems)); } catch (cacheError) { console.warn('No se pudo guardar la tienda en caché.', cacheError); }
+
             // Sincronizar carrito: eliminar cosméticos que ya no están en la tienda
             const itemsCountEl = document.getElementById('hero-items-count');
             if (itemsCountEl) itemsCountEl.innerText = tiendaItems.length;
@@ -6219,7 +6250,16 @@ body { background-color: transparent !important; isolation: isolate; }
                 aplicarFiltros();
                 initFiltrosAvanzados();
                 iniciarHeroSkinRotativa(skinsParaHero);
-            } catch(e) { cont.innerHTML = "Error conectando con la tienda."; }
+            } catch(e) {
+                console.error('Error conectando con la tienda:', e);
+                if (tiendaItems.length) {
+                    cont.dataset.shopCache = 'true';
+                    const aviso = document.getElementById('aviso-tienda-cache');
+                    if (aviso) aviso.textContent = 'Mostrando la última tienda guardada. Actualiza la página cuando tengas mejor conexión.';
+                } else if (cont) {
+                    cont.innerHTML = '<div class="co-empty-cart"><strong>No pudimos cargar la tienda ahora.</strong><span>Revisa tu conexión e inténtalo de nuevo.</span><button type="button" class="btn-outline-mint" onclick="cargarTienda()">Reintentar</button></div>';
+                }
+            }
         }
 
         // ── Genera UNA sola imagen "Tienda del Día" organizada por tipo de cosmético ──
@@ -6337,10 +6377,10 @@ body { background-color: transparent !important; isolation: isolate; }
                 // En escritorio distribuimos el catálogo en 18 columnas y seguimos
                 // agregando filas hasta incluir todos los cosméticos. En móviles
                 // conservamos una cuadrícula más angosta por los límites del dispositivo.
-                const numCols = esMobile ? 7 : 18;
-                const margin = 40;
-                const gapX = 14, gapY = 16;
-                const cardW = esMobile ? 250 : 560;
+                const numCols = 18;
+                const margin = esMobile ? 12 : 40;
+                const gapX = esMobile ? 5 : 14, gapY = esMobile ? 6 : 16;
+                const cardW = esMobile ? 120 : 560;
                 const W = margin * 2 + numCols * cardW + (numCols - 1) * gapX;
 
                 // Factor de escala del encabezado/pie: en móvil el canvas es mucho
@@ -6648,7 +6688,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 // al manejar strings tan largos, dejando el botón de descarga "sin
                 // hacer nada" en esos equipos. toBlob entrega los bytes directamente.
                 const blob = await new Promise((resolve, reject) => {
-                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', 0.82);
+                    canvas.toBlob((b) => b ? resolve(b) : reject(new Error('No se pudo generar el blob de la imagen')), 'image/jpeg', esMobile ? 0.72 : 0.82);
                 });
                 const dataUrl = URL.createObjectURL(blob);
                 const nombreArchivo = `tienda-shegostore-${new Date().toISOString().slice(0, 10)}.jpg`;
