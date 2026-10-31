@@ -4568,9 +4568,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @keyframes cosmeticCardAdded{0%{box-shadow:0 0 0 0 rgba(112,255,0,0)}40%{box-shadow:0 0 0 3px rgba(112,255,0,.38),0 12px 30px rgba(112,255,0,.16)}100%{box-shadow:0 0 0 0 rgba(112,255,0,0)}}
 @media(prefers-reduced-motion:reduce){.btn-add-cart.cosmetic-added-feedback,.cosmetic-card.cosmetic-added-feedback{animation:none}}
 .site-footer-payments{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:10px;margin:0 auto 16px;padding:14px 0;border-top:1px solid rgba(255,255,255,.08);border-bottom:1px solid rgba(255,255,255,.08)}
-.site-footer-payments-label{width:100%;margin:0 0 2px;color:#8e988a;text-align:center;font-size:.67rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
-.site-footer-payment{display:inline-flex;align-items:center;justify-content:center;min-width:86px;height:34px;padding:0 12px;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:rgba(255,255,255,.055);color:#eef2eb;font-size:.72rem;font-weight:800;letter-spacing:.01em}
-.site-footer-payment.paypal{color:#bce0ff}.site-footer-payment.binance{color:#ffe067}.site-footer-payment.mercado{color:#b6f0ff}.site-footer-payment.spei{color:#e9eaff}.site-footer-payment.oxxo{color:#ffdddd}
+.site-footer-payment{display:flex;align-items:center;justify-content:center;width:116px;height:42px;padding:7px 12px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:#fff;overflow:hidden}
+.site-footer-payment img{display:block;width:100%;height:100%;max-width:92px;object-fit:contain}
+.site-footer-payment.binance{background:#111318;border-color:#292c32}.site-footer-payment.oxxo{background:#e8132a;border-color:#e8132a}
+.site-footer-payment.paypal,.site-footer-payment.mercado,.site-footer-payment.spei{background:#fff}
 .site-footer-bottom{display:flex;justify-content:space-between;gap:12px;max-width:940px;margin:0 auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.09);color:#7e887a;font-size:.74rem}
 @media(max-width:600px){.site-footer-payments{gap:7px}.site-footer-payment{min-width:74px;height:31px;padding:0 9px;font-size:.65rem}.site-footer-payments-label{font-size:.6rem}.site-footer-bottom{flex-wrap:wrap;justify-content:center;text-align:center;gap:6px 14px}}
 
@@ -5842,7 +5843,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 </div>
             </div>
         </div>
-        <div class="site-footer-payments" aria-label="Métodos de pago aceptados"><p class="site-footer-payments-label">Métodos de pago</p><span class="site-footer-payment paypal">PayPal</span><span class="site-footer-payment binance">Binance Pay</span><span class="site-footer-payment mercado">Mercado Pago</span><span class="site-footer-payment spei">SPEI</span><span class="site-footer-payment oxxo">OXXO</span></div>
+        <div class="site-footer-payments" aria-label="Logotipos de métodos de pago aceptados"><span class="site-footer-payment paypal"><img loading="lazy" decoding="async" src="https://imgs.search.brave.com/UfOpjldjHbocMAlhitRv6714NaICFmOelqjFdXDK33U/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/bG9nby53aW5lL2Ev/bG9nby9QYXlQYWwv/UGF5UGFsLUxvZ28u/d2luZS5zdmc" alt="PayPal"></span><span class="site-footer-payment binance"><img loading="lazy" decoding="async" src="https://cdn.brandfetch.io/id-pjrLx_q/w/360/h/192/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B" alt="Binance Pay"></span><span class="site-footer-payment mercado"><img loading="lazy" decoding="async" src="https://imgs.search.brave.com/OCigs4i-8sIvN5RSs04J6waq9xfWaVCAoCxZusQrTW8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9icmFu/ZGxvZ29zLm5ldC93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMi8w/Ny9tZXJjYWRvX3Bh/Z28tbG9nb19icmFu/ZGxvZ29zLm5ldF90/dnh3Yi01MTJ4NTEy/LnBuZw" alt="Mercado Pago"></span><span class="site-footer-payment spei"><img loading="lazy" decoding="async" src="https://cdn.worldvectorlogo.com/logos/spei-1.svg" alt="SPEI"></span><span class="site-footer-payment oxxo"><img loading="lazy" decoding="async" src="https://imgs.search.brave.com/on1ea1z38JGMrU0XdBQ04up2OCL6WqefqEH4s_5YHYg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9sb2dv/dHlwLnVzL2ZpbGUv/b3h4by5zdmc" alt="OXXO"></span></div>
         <div class="site-footer-bottom"><span>© <span id="footer-year">2026</span> SHEGOS STORE. Todos los derechos reservados.</span><a href="/terminos" onclick="abrirPestana('terminos'); return false;" style="color:inherit;text-decoration:none">Términos y condiciones</a><span>Atención segura · Soporte directo</span></div>
     </footer>
 
@@ -10852,19 +10853,45 @@ function mostrarModalCapturaMovil(url) {
     (function(){
         'use strict';
         const READER_URL='https://r.jina.ai/https://fortnitedb.com/';
-        const CACHE_KEY='shegos-stw-vbucks-v1';
+        const CACHE_KEY='shegos-stw-vbucks-v2';
         const CACHE_TTL=300000;
         const ZONES={T:'Twine Peaks',C:'Canny Valley',P:'Plankerton',S:'Stonewood',V:'Ventures'};
         let missions=[],expires='',fetchedAt=0,loaded=false;
         function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
         function els(){return {list:document.getElementById('stw-vbucks-list'),status:document.getElementById('stw-vbucks-status'),total:document.getElementById('stw-vbucks-total'),count:document.getElementById('stw-vbucks-count'),refresh:document.getElementById('stw-vbucks-refresh'),image:document.getElementById('stw-vbucks-image')};}
         function parse(text){
-            if(!/V-Bucks Missions/i.test(text)||!/Missions Expire\s*:/i.test(text))throw new Error('Formato de FortniteDB no reconocido.');
+            if(!/V-Bucks Missions/i.test(text))throw new Error('No se encontró la sección de misiones V-Bucks.');
             const exp=text.match(/Missions Expire\s*:\s*(\d{4}-\d{2}-\d{2})/i);
-            const re=/^([STPCV])!\[Image\s+\d+:[^\]]+\]\((https?:\/\/[^)]+)\)(\d+)!\[Image\s+\d+:\s*V-Bucks\]\((?:https?:\/\/[^)]+)\)\s*(?:\d+\s*x\s*)?V-Bucks\s*$/gim;
-            const rows=[],seen=new Set();let m;
-            while((m=re.exec(text))!==null){const key=m[1]+'|'+m[2]+'|'+m[3];if(seen.has(key))continue;seen.add(key);const amount=m[0].match(/(\d+)\s*x\s*V-Bucks/i);rows.push({zone:ZONES[m[1]]||'Salvar el Mundo',power:Number(m[3]),reward:amount?Number(amount[1]):50});}
-            return {rows,expires:exp?exp[1]:''};
+            const rows=[],seen=new Set();
+            const lines=String(text).split(/\r?\n/);
+            lines.forEach(function(line){
+                if(!/V-Bucks/i.test(line))return;
+                const normalized=line
+                    .replace(/!?\[Image\s+\d+\s*:\s*([^\]]+)\]\(https?:\/\/[^)]+\)/gi,'$1')
+                    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/gi,'$1')
+                    .replace(/\s+/g,' ').trim();
+                const cells=normalized.split('|').map(function(cell){return cell.trim();});
+                const zoneMatch=(cells[0]||'').match(/^([STPCV])\b/i);
+                if(!zoneMatch)return;
+                const powerMatch=(cells[2]||'').match(/\b(\d{1,3})\b/);
+                const rewardMatch=(cells.slice(3).join(' ')+' '+normalized).match(/\b(\d{1,4})\s*x\s*V-Bucks\b/i);
+                if(!powerMatch||!rewardMatch)return;
+                const code=zoneMatch[1].toUpperCase(),power=Number(powerMatch[1]),reward=Number(rewardMatch[1]);
+                const key=code+'|'+power+'|'+reward;
+                if(seen.has(key))return;seen.add(key);
+                rows.push({zone:ZONES[code]||'Salvar el Mundo',power:power,reward:reward});
+            });
+            // Compatibilidad si FortniteDB entrega filas sin separadores de columnas.
+            if(!rows.length){
+                const fallback=/\b([STPCV])\b[^\r\n]{0,180}?\b(\d{1,3})\b[^\r\n]{0,180}?\b(\d{1,4})\s*x\s*V-Bucks\b/gim;
+                let m;
+                while((m=fallback.exec(text))!==null){
+                    const code=m[1].toUpperCase(),key=code+'|'+m[2]+'|'+m[3];
+                    if(seen.has(key))continue;seen.add(key);
+                    rows.push({zone:ZONES[code]||'Salvar el Mundo',power:Number(m[2]),reward:Number(m[3])});
+                }
+            }
+            return {rows:rows,expires:exp?exp[1]:''};
         }
         function render(){
             const e=els();if(!e.list)return;
