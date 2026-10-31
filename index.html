@@ -4549,7 +4549,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 #contenedor-tienda .skin-art-label{top:8px;left:8px;padding:4px 6px;font-size:.48rem}
 #contenedor-tienda .cosmetic-card:hover .skin-art-stage{filter:saturate(1.16)}
 .site-footer{margin-top:40px!important;padding:30px clamp(20px,3vw,36px) 14px!important;text-align:left!important;background:linear-gradient(150deg,#101510,#080a08 65%)!important;border-top:1px solid rgba(112,255,0,.32)!important}
-.site-footer-main{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(3,minmax(150px,1fr));gap:22px;max-width:940px;margin:0 auto 22px}
+.site-footer-main{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 44px;max-width:620px;margin:0 auto 22px}
 .site-footer-brand>a{display:inline-flex;min-height:48px;align-items:center}
 .site-footer-brand img{width:min(100%,190px);height:50px;object-fit:contain;object-position:left center}
 .site-footer-brand p,.site-footer-column p{max-width:260px;margin:9px 0 0;color:#99a195;line-height:1.5;font-size:.82rem}
@@ -5789,20 +5789,6 @@ body { background-color: transparent !important; isolation: isolate; }
 
     <footer class="site-footer">
         <div class="site-footer-main">
-            <div class="site-footer-brand">
-                <a href="#" onclick="abrirPestana('inicio-landing'); return false;" aria-label="Shegos Store, inicio">
-                    <img src="/assets/logo-horizontal.webp" alt="Logo Shegos Store" loading="lazy" onerror="this.hidden=true;">
-                </a>
-                <p>Tu tienda gamer: Fortnite, V-Bucks y atención cercana para cada compra.</p>
-            </div>
-            <div class="site-footer-column">
-                <h2>Explora</h2>
-                <a href="#" onclick="abrirPestana('inicio-landing'); return false;">Inicio</a>
-                <a href="#" onclick="irATienda(); return false;">Tienda de hoy</a>
-                <a href="#" onclick="abrirPestana('ids-regalos'); return false;">Compras vía regalo</a>
-                <a href="#" onclick="abrirPestana('recargas'); return false;">Servicios</a>
-                <a href="/terminos" onclick="abrirPestana('terminos'); return false;">Términos y condiciones</a>
-            </div>
             <div class="site-footer-column">
                 <h2>Contacto</h2>
                 <a href="https://wa.me/18295392881" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>
@@ -5819,7 +5805,7 @@ body { background-color: transparent !important; isolation: isolate; }
                 </div>
             </div>
         </div>
-        <div class="site-footer-bottom"><span>© <span id="footer-year">2026</span> SHEGOS STORE. Todos los derechos reservados.</span><span>Atención segura · Soporte directo</span></div>
+        <div class="site-footer-bottom"><span>© <span id="footer-year">2026</span> SHEGOS STORE. Todos los derechos reservados.</span><a href="/terminos" onclick="abrirPestana('terminos'); return false;" style="color:inherit;text-decoration:none">Términos y condiciones</a><span>Atención segura · Soporte directo</span></div>
     </footer>
 
     <div class="floating-container">
