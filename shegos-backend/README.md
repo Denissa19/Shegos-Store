@@ -56,8 +56,17 @@ protege cada endpoint según el nivel de acceso.
 | GET | `/api/analytics/kpis` | **CEO** | Ingresos, costos, ganancia neta, ROI |
 | GET | `/api/analytics/serie` | **CEO** | Serie diaria/mensual para gráficos |
 | GET | `/api/analytics/resumen-operativo` | CEO, Admin | Pedidos/unidades sin datos financieros |
+| POST | `/api/analytics/informe-ventas-ia` | CEO, Admin | Análisis estratégico de ventas, fortalezas, riesgos y plan de acción 30/60/90 días |
 
-## 5. Filtros temporales (analytics)
+## 5. Informe estratégico con IA
+
+El endpoint `POST /api/analytics/informe-ventas-ia` recibe únicamente métricas agregadas (ventas, ingresos, productos, métodos de pago y patrones por día); no acepta nombres ni filas individuales de clientes. La respuesta se genera mediante OpenAI Responses API con salida JSON estructurada.
+
+Configura `OPENAI_API_KEY` como secreto en el entorno del servidor backend. Opcionalmente define `OPENAI_MODEL` (por defecto `gpt-6-astra`). No agregues la clave al HTML ni al repositorio. La ruta exige sesión CEO/Admin y limita la frecuencia de solicitudes. Sin la clave configurada el endpoint responde que la función no está disponible.
+
+El panel frontend debe apuntar a la URL pública del backend mediante `window.SHEGOS_API_BASE_URL` definido antes del script del panel; localmente se conserva `http://localhost:4000`.
+
+## 6. Filtros temporales (analytics)
 
 Query params comunes: `?periodo=mes_actual|mes_anterior|anio_actual|personalizado&desde=...&hasta=...`
 
@@ -67,7 +76,7 @@ GET /api/analytics/kpis?periodo=personalizado&desde=2026-01-01&hasta=2026-07-01
 GET /api/analytics/serie?granularidad=mensual&anio=2026
 ```
 
-## 6. Estructura de respuesta para gráficos
+## 7. Estructura de respuesta para gráficos
 
 `GET /api/analytics/serie` responde:
 
@@ -96,7 +105,7 @@ datasets: [
 { "ingresos_brutos": 4200.75, "costos_totales": 2100.00, "ganancia_neta": 2100.75, "roi_porcentaje": 100.04 }
 ```
 
-## 7. Seguridad por capas
+## 8. Seguridad por capas
 
 1. **Middleware RBAC** (`requireAuth` + `requireRole`) — primera barrera en la API.
 2. **RLS de Postgres** — segunda barrera a nivel de fila, activa aunque alguien
@@ -110,7 +119,7 @@ datasets: [
    UPDATE; solo se inserta vía función `security definer` y solo CEO puede
    eliminar registros erróneos.
 
-## 8. Estructura del proyecto
+## 9. Estructura del proyecto
 
 ```
 shegos-backend/
@@ -130,7 +139,7 @@ shegos-backend/
 └── .env.example
 ```
 
-## 9. Nota sobre el frontend adjunto
+## 10. Nota sobre el frontend adjunto
 
 Los archivos `index.html` y `admin.html` que enviaste se usaron como
 referencia de los flujos de datos (catálogo por rareza, carrito, métodos de
