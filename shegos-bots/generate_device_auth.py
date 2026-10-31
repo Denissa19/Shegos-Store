@@ -25,6 +25,10 @@ AUTH_CLIENT_SECRET = "daafbccc737745039dffe53d94fc76cf"
 
 TOKEN_URL = "https://account-public-service-prod03.ol.epicgames.com/account/api/oauth/token"
 
+class EpicDeviceAuthPermissionError(Exception):
+    """Epic no permitió crear Device Auth para este cliente OAuth."""
+
+
 BOT_NAMES = [
     "Maidas-S",
     "Maidas-OS",
@@ -74,10 +78,15 @@ async def generate_device_auth_token(session, access_token, account_id):
         "Content-Type": "application/json",
     }
     async with session.post(url, headers=headers, json={}) as resp:
-        result = await resp.json()
+        result = await resp.json(content_type=None)
         if resp.status == 200:
             return result
-        print(f"  Error generando device auth: {result}")
+        error_code = result.get("errorCode", "desconocido")
+        print(f"  Epic rechazó la creación de Device Auth: {error_code}")
+        if error_code == "errors.com.epicgames.common.missing_permission":
+            raise EpicDeviceAuthPermissionError(
+                "El cliente OAuth no tiene el permiso account:public:account:deviceAuths CREATE."
+            )
         return None
 
 
@@ -144,7 +153,12 @@ async def run_generator():
                     print(f"    Saltando '{name}'.")
                     continue
 
-            auth_data = await process_account(session, name)
+            try:
+                auth_data = await process_account(session, name)
+            except EpicDeviceAuthPermissionError as exc:
+                print(f"\n[!] Proceso detenido: {exc}")
+                print("    No sigas generando códigos: el permiso debe habilitarse para el cliente OAuth o debe usarse un flujo autorizado distinto.")
+                break
             if auth_data:
                 all_auths[name] = auth_data
                 with open(output_file, "w", encoding="utf-8") as f:
@@ -154,7 +168,7 @@ async def run_generator():
     print(f"\n{'='*60}")
     print("  PROCESO FINALIZADO")
     print(f"{'='*60}")
-    print(f"Cuentas guardadas: {list(all_auths.keys())}")
+    print(f"Credenciales presentes en el archivo local (pueden estar caducadas): {list(all_auths.keys())}")
 
 
 if __name__ == "__main__":
