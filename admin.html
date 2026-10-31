@@ -4303,7 +4303,7 @@ function calcularPanelLocal(period) {
     });
   }
   const pendPed = pedsPer.filter(o => o.estado === 'Pendiente' || o.estado === 'En Proceso').reduce((s, o) => s + num(o.total_usd), 0);
-  const pendVen = vensPer.reduce((s, v) => s + num(v.pago_pendiente), 0);
+  const pendVen = vensPer.reduce((s, v) => s + ((v.estado !== 'Completado' && v.estado !== 'Cancelado') ? Math.max(0, num(v.ingreso) - num(v.monto_recibido)) : 0), 0);
   return {
     es_ceo: currentRole === 'CEO',
     ingresos_totales: sumPed + sumVen,
@@ -6281,7 +6281,8 @@ window.saveVenta = async function() {
   const cuotaAdicional = ingresoBase * (interesPct / 100);
   const totalVenta    = ingresoBase + cuotaAdicional;
   const costoReal     = ventaToUsd(ventaNumber('vc-f-costo-real'),saleCurrency);
-  const montoRecibido = totalVenta;
+  const estadoVenta = document.getElementById('vc-f-status')?.value || '';
+  const montoRecibido = estadoVenta === 'Completado' ? totalVenta : 0;
   const comision      = 0;
   const ganancia      = totalVenta - costoReal;
 
@@ -6304,23 +6305,14 @@ window.saveVenta = async function() {
     margen:              totalVenta > 0 ? ((ganancia / totalVenta) * 100).toFixed(1) + '%' : '0%',
     notas:               document.getElementById('vc-f-notas')?.value?.trim()    || '',
     id_pedido:           document.getElementById('vc-f-id')?.value               || generarIdVenta(),
-    estado:              document.getElementById('vc-f-status')?.value            || '',
+    estado:              estadoVenta,
     whatsapp:            document.getElementById('vc-f-wa')?.value                || '',
     metodo_pago:         paymentMethod,
     producto:            document.getElementById('vc-f-producto')?.value          || '',
     comprobante:         document.getElementById('vc-f-receipt-base64')?.value    || null,
-    pago_parcial:        ventaToUsd(ventaNumber('vc-f-pago-parcial'),saleCurrency),
-    pago_pendiente:      ventaToUsd(ventaNumber('vc-f-pago-pendiente'),saleCurrency),
-    cuota_adicional:     cuotaAdicional,
+cuota_adicional:     cuotaAdicional,
     interes_porcentaje:  parseFloat(document.getElementById('vc-f-interes-pct')?.value)      || 0,
-    tipo_pago_apartar:   document.getElementById('vc-f-apartarpago')?.value       || null,
-    apartado_anticipo:   parseVentaNumber(document.getElementById('fin-anticipo-usd')?.value)      || null,
-    apartado_total:      parseVentaNumber(document.getElementById('fin-total-con-interes')?.value) || null,
-    apartado_pendiente:  parseVentaNumber(document.getElementById('fin-pendiente')?.value)         || null,
-    fin_plazo:           document.getElementById('fin-plazo')?.value              || null,
-    fin_cuota:           parseVentaNumber(document.getElementById('fin-monto-cuota')?.value)       || null,
-    fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value, 10)          || null,
-    created_at:          fechaISO
+created_at:          fechaISO
   };
   if ((document.getElementById('vm-rem-text')?.value || '').trim()) window.vmAddRemark(); // no perder un remark sin "Agregar"
   // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
@@ -6544,7 +6536,8 @@ window.exportVentasPDF = async function() {
   popup.document.open();
   popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(reportRange)}</title><style>
     @page{size:A4 portrait;margin:10mm 9mm}*{box-sizing:border-box}body{font:10px/1.42 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;gap:14px;border-radius:10px;background:#080c08;color:#fff;border-bottom:3px solid #70ff00;padding:12px 14px;margin-bottom:12px}header p{color:#d4dfd0}.brand-mark{display:flex;align-items:center;justify-content:center;background:#030503;border-radius:8px;padding:4px 8px;flex:0 0 116px}.logo{display:block;width:100%;height:70px;object-fit:contain}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:0 0 8px}h3{font-size:11px;margin:0 0 7px}p{margin:3px 0;color:#536052}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}.metric{padding:8px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:8px;text-transform:uppercase;letter-spacing:.5px}.metric strong{font-size:15px;display:block;margin-top:3px}.comparison{display:grid;grid-template-columns:1fr;gap:7px;margin:10px 0 12px}.compare-chart{padding:8px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:90px 1fr 65px;align-items:center;gap:6px;margin:6px 0;font-size:8px}.compare-row i,.rank-row i{height:8px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:11px 0;break-inside:auto}.ranking-grid{display:grid;grid-template-columns:1fr;gap:8px}.ranking-grid h2{grid-column:1}.rank-chart{padding:8px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.rank-row{display:grid;grid-template-columns:minmax(80px,1.2fr) 1fr 20px;align-items:center;gap:6px;margin:6px 0;font-size:8px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.weekdays span{padding:6px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:8px}.weekdays b{display:block;color:#2d8209;font-size:12px}.weekdays small{display:block;color:#586157;font-size:7px}.analysis-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-metrics>div{padding:7px;border-radius:7px;background:#f2f7ef}.analysis-metrics span{display:block;color:#586157;font-size:8px}.analysis-metrics b{display:block;margin-top:2px;color:#236e0a;font-size:12px}.insight-list,.action-plan ol{padding-left:17px;margin:8px 0}.ai-kicker{font-size:8px;letter-spacing:1.5px;font-weight:800;color:#359b10;margin-bottom:4px}.ai-overview{padding:11px;border:1px solid #cfe6c4;border-radius:9px;background:#f7fbf5}.ai-overview>p{font-size:10px;line-height:1.55;color:#233020}.ai-overview>small{font-size:7px;color:#6d786b}.ai-grid{display:grid;grid-template-columns:1fr;gap:7px;margin:9px 0}.ai-card{border:1px solid #dce5d8;border-radius:8px;padding:9px;break-inside:avoid}.ai-card h3{font-size:10px;color:#214a17}.ai-card ul{padding-left:15px}.ai-card li{margin:5px 0}.ai-card p{font-size:8px;line-height:1.4;color:#4d584a}.ai-card.positive{border-left:3px solid #42bd13}.ai-card.caution{border-left:3px solid #e0a100}.plan-grid{display:grid;grid-template-columns:1fr;gap:6px}.plan-item{padding:8px;border:1px solid #dce5d8;border-radius:7px;break-inside:avoid}.plan-meta{display:flex;justify-content:space-between;font-size:8px;color:#33860f}.plan-item h4{font-size:9px;margin:4px 0}.plan-item p{font-size:8px;color:#354334}.plan-item small{font-size:7px;color:#687366}.data-notes{font-size:8px}.insight-list li,.action-plan li{margin:5px 0}.action-plan{padding:10px;border-left:3px solid #42bd13;background:#f7faf5;border-radius:0 7px 7px 0}.action-plan p{font-size:8px}table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:5px}td{padding:4px;border-bottom:1px solid #e1e7df;vertical-align:top;overflow-wrap:anywhere}tr{break-inside:avoid}.detail-cell strong,.detail-cell small{display:block}.detail-cell small{margin-top:2px;color:#596358;font-size:6.5px}.num{text-align:right;white-space:nowrap}.foot{margin-top:12px;color:#778176;font-size:8px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.section,.metric,.analysis-metrics>div,.ai-card,.plan-item{break-inside:avoid}table{break-inside:auto}}
-  .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}</style></head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><div class="brand-mark"><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"></div><div><h1>Informe de ventas · Shegos Store</h1><p>Período: ${esc(reportRange)}</p><p style="color:#70ff00;font-weight:bold">Análisis estratégico generado con IA · ${esc(ai.model||'OpenAI')}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
+  .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}</style><style id="shegos-disable-installment-sales">#vm-apartar-fields{display:none!important}</style>
+</head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><div class="brand-mark"><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"></div><div><h1>Informe de ventas · Shegos Store</h1><p>Período: ${esc(reportRange)}</p><p style="color:#70ff00;font-weight:bold">Análisis estratégico generado con IA · ${esc(ai.model||'OpenAI')}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
   <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>money(x))}${isCEO?bar('Recibido neto',net,previousNet,x=>money(x)):''}</div></section>${insightReport}${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
   <section class="section"><h2>Detalle del registro</h2><table><thead><tr><th style="width:4%">#</th><th style="width:${isCEO?11:12}%">Fecha</th><th style="width:${isCEO?29:39}%">Producto · cliente · tipo</th><th style="width:${isCEO?14:19}%">Método</th><th style="width:${isCEO?12:16}%">Ingreso</th>${isCEO?'<th style="width:10%">Comisión</th><th style="width:14%">Recibido</th>':''}</tr></thead><tbody>${tableRows||`<tr><td colspan="${isCEO?7:5}">No hay ventas registradas en el período seleccionado.</td></tr>`}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div></body></html>`);
