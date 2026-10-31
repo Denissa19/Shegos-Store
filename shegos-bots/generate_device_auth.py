@@ -32,9 +32,11 @@ TOKEN_URL = "https://account-public-service-prod03.ol.epicgames.com/account/api/
 BOT_NAMES = [
     "Maidas-S",
     "Maidas-OS",
-    "DENISSA_7u7",
+    "Denissa_7u7",
     "Shegos么1",
     "Shegos么2",
+    "Shegos么3",
+    "Shegos么4",
 ]
 
 
