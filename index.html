@@ -5048,7 +5048,7 @@ body { background-color: transparent !important; isolation: isolate; }
                   <div class="sb-section">
                     <div class="sb-inner">
                       <div class="sb-section-head">
-                        <div class="sb-section-title">Cuentas a agregar / Aceptar solicitud</div>
+                        <div class="sb-section-title">Recibirás una solicitud de amistad de estas cuentas</div>
                         <span id="sb-count-pill" class="sb-count-pill" style="display:none"></span>
                       </div>
                       <div class="sb-bots-grid" id="sb-bots-grid"></div>
@@ -9056,7 +9056,7 @@ function mostrarModalCapturaMovil(url) {
       function pad(n){ return String(n).padStart(2,"0"); }
 
       async function sbLoadBots(){
-        try{ var r=await fetch(API+"/status/public"); if(r.ok){ var d=await r.json(); var online=(d.online_bots||[]).map(function(n){return String(n).trim().toLowerCase();}); var allowedOnline=BOTS.filter(function(n){return online.indexOf(n.toLowerCase())>=0;}); var allowedOffline=BOTS.filter(function(n){return online.indexOf(n.toLowerCase())<0;}); sbRenderBots(allowedOnline,allowedOffline); var pill=document.getElementById("sb-count-pill"); if(pill){ pill.textContent=allowedOnline.length+"/"+BOTS.length+" ONLINE"; pill.style.display="inline-block"; } return; } } catch(e){}
+        try{ var r=await fetch(API+"/status/public"); if(r.ok){ var d=await r.json(); var online=(d.online_bots||[]).map(function(n){return String(n).trim().toLowerCase();}); var allowedOnline=BOTS.filter(function(n){return online.indexOf(n.toLowerCase())>=0;}); var allowedOffline=BOTS.filter(function(n){return online.indexOf(n.toLowerCase())<0;}); sbRenderBots(allowedOnline,allowedOffline); var pill=document.getElementById("sb-count-pill"); if(pill){ pill.textContent=allowedOnline.length+"/"+BOTS.length+" DISPONIBLES"; pill.style.display="inline-block"; } return; } } catch(e){}
         sbRenderBots(BOTS,[]);
       }
       var SB_AVATAR_MAP = {
@@ -9101,12 +9101,12 @@ function mostrarModalCapturaMovil(url) {
         items.sort(function(a,b){ return rank(a.n)-rank(b.n); });
         var h="";
         items.forEach(function(it){
-          var n=it.n, ini=n.charAt(0).toUpperCase(), av=sbAvatarFor(n), st=it.on?"online":"offline", lbl=it.on?"Online":"Offline";
+          var n=it.n, ini=n.charAt(0).toUpperCase(), av=sbAvatarFor(n), st=it.on?"online":"offline", lbl=it.on?"Disponible":"No disponible";
           h+='<div class="sb-bot-card'+(it.on?'':' offline')+'"><div class="sb-bot-icon"><img loading="lazy" decoding="async" src="'+av+'" alt="" onerror="var p=this.parentElement;if(p){p.textContent=\''+ini+'\';}"></div><div class="sb-bot-info"><span class="sb-bot-name">'+esc(n)+'</span></div><span class="sb-bot-badge '+st+'"><span class="sb-dot '+st+'"></span> '+lbl+'</span></div>';
         });
         g.innerHTML=h;
         var pill=document.getElementById("sb-count-pill");
-        if(pill && pill.style.display!=="none"){ pill.textContent=on.length+"/"+(on.length+off.length)+" ONLINE"; }
+        if(pill && pill.style.display!=="none"){ pill.textContent=on.length+"/"+(on.length+off.length)+" DISPONIBLES"; }
       }
       function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
     })();
