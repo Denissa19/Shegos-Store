@@ -4058,176 +4058,6 @@
 .auth-tab-btn:hover { color: #aaa; }
 .auth-tab-active { color: #70ff00 !important; border-bottom-color: #70ff00 !important; }
 
-/* ══════════ ALERTAS DE MISIÓN — SALVAR EL MUNDO ══════════ */
-:root {
-    --stw-stonewood: #4a9d5a;
-    --stw-plankerton: #d98a3d;
-    --stw-canny: #d9b64a;
-    --stw-twine: #9b5fd6;
-    --stw-ventures: #ff6b35;
-    --stw-events: #34d1b3;
-    --stw-accent: #4dc4ff;
-}
-.stw-section { padding: 30px 20px 60px; max-width: 1100px; margin: 0 auto; }
-.stw-header { text-align: center; margin-bottom: 24px; }
-.stw-header h2 { font-size: 1.8em; margin-bottom: 6px; color: #fff; }
-.stw-header p.stw-sub { color: #999; font-size: 0.9em; }
-.stw-updated { color: #666; font-size: 0.78em; margin-top: 6px; }
-.stw-updated i { margin-right: 4px; }
-
-/* Tarjetas de resumen */
-.stw-stats-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-    background: #0a0d0b; border: 1px solid #1b2417; border-radius: 16px;
-    padding: 20px; margin: 20px 0 26px;
-}
-.stw-stat-card {
-    background: #101310; border-radius: 12px; padding: 16px 10px;
-    text-align: center; display: flex; flex-direction: column; gap: 4px;
-}
-.stw-stat-card .stw-stat-num { font-size: 1.6em; font-weight: 800; color: #fff; }
-.stw-stat-card .stw-stat-num.stw-vbucks-num { color: #f5b942; }
-.stw-stat-card .stw-stat-num.stw-updated-num { font-size: 1.05em; color: var(--stw-accent); }
-.stw-stat-card .stw-stat-label { font-size: 0.72em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-
-/* Pestañas de categoría */
-.stw-cat-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 0 0 22px; }
-.stw-cat-tab {
-    display: flex; align-items: center; gap: 8px;
-    background: #101310; border: 2px solid transparent; color: #ccc;
-    padding: 9px 16px; border-radius: 25px; cursor: pointer;
-    font-weight: 700; font-size: 0.82em;
-    transition: all 0.2s ease;
-}
-.stw-cat-tab .stw-cat-icon { width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; }
-.stw-cat-tab .stw-cat-count {
-    background: rgba(255,255,255,0.15); border-radius: 10px; padding: 1px 8px; font-size: 0.85em;
-}
-.stw-cat-tab:hover { border-color: rgba(255,255,255,0.2); }
-.stw-cat-tab.activo { background: var(--stw-accent); color: #050705; border-color: var(--stw-accent); }
-.stw-cat-tab.activo .stw-cat-count { background: rgba(0,0,0,0.2); }
-
-.stw-download-wrap { text-align: center; margin-bottom: 26px; }
-.stw-btn-descarga {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--stw-accent); color: #050705; border: none;
-    padding: 10px 22px; border-radius: 25px; font-weight: 800; cursor: pointer;
-    font-size: 0.85em;
-}
-.stw-btn-descarga:hover { filter: brightness(1.08); }
-
-/* Tarjeta tipo "story" de la categoría activa */
-.stw-story-card {
-    background: #0a0d0b; border: 1px solid #1b2417; border-radius: 16px;
-    padding: 34px 20px; text-align: center;
-}
-.stw-story-icon { width: 60px; height: 60px; margin: 0 auto 14px; display: flex; align-items: center; justify-content: center; font-size: 2em; }
-.stw-story-title { color: #fff; font-weight: 800; font-size: 1.3em; letter-spacing: 0.5px; }
-.stw-story-title .stw-story-date { color: var(--stw-accent); font-weight: 700; }
-.stw-story-cat { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; font-weight: 800; color: #f5b942; }
-
-.stw-region-panel { display: none; }
-.stw-region-panel.activo { display: block; animation: fadeIn 0.35s ease; }
-
-.stw-region-banner {
-    display: flex; align-items: center; gap: 12px;
-    padding: 14px 20px; border-radius: 12px; margin-bottom: 16px;
-    font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1em;
-    color: #fff;
-}
-.stw-region-banner.stonewood  { background: linear-gradient(90deg, var(--stw-stonewood), transparent); }
-.stw-region-banner.plankerton { background: linear-gradient(90deg, var(--stw-plankerton), transparent); }
-.stw-region-banner.canny_valley{ background: linear-gradient(90deg, var(--stw-canny), transparent); }
-.stw-region-banner.twine_peaks { background: linear-gradient(90deg, var(--stw-twine), transparent); }
-
-.stw-mission-list { display: flex; flex-direction: column; gap: 10px; }
-.stw-mission-row {
-    display: grid;
-    grid-template-columns: 60px 1fr 200px;
-    align-items: center; gap: 14px;
-    background: #0b0d0b; border: 1px solid #1b2417; border-left: 4px solid #555;
-    border-radius: 10px; padding: 12px 16px;
-    transition: transform 0.15s ease, background 0.15s ease;
-}
-.stw-mission-row:hover { background: #101310; transform: translateX(3px); }
-.stw-mission-row.stonewood  { border-left-color: var(--stw-stonewood); }
-.stw-mission-row.plankerton { border-left-color: var(--stw-plankerton); }
-.stw-mission-row.canny_valley{ border-left-color: var(--stw-canny); }
-.stw-mission-row.twine_peaks { border-left-color: var(--stw-twine); }
-.stw-mission-row.ventures { border-left-color: var(--stw-ventures); }
-.stw-mission-row.events { border-left-color: var(--stw-events); }
-
-.stw-alertas-mision { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
-
-.stw-pl {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: #0a0a0a; border-radius: 8px; padding: 6px 0; font-weight: 800;
-}
-.stw-pl span.num { font-size: 1.15em; color: #fff; }
-.stw-pl span.label { font-size: 0.55em; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
-
-.stw-mission-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.stw-mission-name { color: #fff; font-weight: 700; font-size: 0.92em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.stw-mission-zone { color: #999; font-size: 0.78em; display: flex; align-items: center; gap: 5px; }
-
-.stw-modifiers { display: flex; flex-wrap: wrap; gap: 5px; }
-.stw-mod-icon {
-    width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    background: #1b2417; font-size: 0.75em; color: #fff;
-}
-.stw-mod-icon.fire  { background: #7a2a12; color: #ff8a4d; }
-.stw-mod-icon.water { background: #123a5c; color: #4dc4ff; }
-.stw-mod-icon.nature{ background: #1e4d1e; color: #6ee06e; }
-.stw-mod-icon.mini_boss { background: #4d1414; color: #ff6b6b; }
-.stw-mod-icon.mega   { background: #4d3a0f; color: #ffc85c; }
-
-.stw-alert-reward { display: flex; align-items: center; gap: 6px; font-size: 0.8em; font-weight: 700; }
-.stw-alert-reward.none { color: #555; font-style: italic; font-weight: 400; }
-.stw-alert-reward.legendary { color: #f5b942; }
-.stw-alert-reward.mythic    { color: #ff7f11; }
-.stw-alert-reward.epic      { color: #c44dff; }
-.stw-alert-reward.rare      { color: #4aa8ff; }
-.stw-alert-reward.uncommon  { color: #3aad4e; }
-.stw-alert-reward.common    { color: #8a8a9e; }
-
-.stw-normal-rewards { display: flex; flex-direction: column; gap: 2px; font-size: 0.75em; color: #aaa; }
-
-.stw-empty, .stw-loading, .stw-error { text-align: center; padding: 60px 20px; color: #888; }
-.stw-loading i { font-size: 1.8em; margin-bottom: 10px; display: block; color: #70ff00; }
-.stw-error i { color: #e74c3c; }
-.stw-error button { margin-top: 12px; }
-
-@media (max-width: 768px) {
-    .stw-section { padding: 20px 12px 40px; }
-    .stw-header h2 { font-size: 1.4em; }
-
-    .stw-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 14px; }
-    .stw-stat-card { padding: 12px 6px; }
-    .stw-stat-card .stw-stat-num { font-size: 1.25em; }
-    .stw-stat-card .stw-stat-num.stw-updated-num { font-size: 0.85em; }
-
-    .stw-cat-tabs {
-        flex-wrap: wrap; justify-content: center;
-        margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0;
-    }
-    .stw-cat-tab { flex: 0 1 auto; font-size: 0.72em; padding: 8px 12px; white-space: nowrap; }
-
-    .stw-btn-descarga { width: 100%; justify-content: center; }
-
-    .stw-story-card { padding: 24px 14px; }
-    .stw-story-title { font-size: 1.05em; }
-
-    .stw-mission-row {
-        grid-template-columns: 50px 1fr !important;
-        grid-template-areas: "pl info" "alert alert";
-        display: grid; gap: 8px; padding: 12px;
-    }
-    .stw-mission-row .stw-pl { grid-area: pl; justify-self: start; }
-    .stw-mission-row .stw-mission-info { grid-area: info; }
-    .stw-mission-row .stw-alert-reward { grid-area: alert; justify-self: start; }
-    .stw-mission-name { white-space: normal; }
-}
-
 /* ══════════ PLANTILLA DE SPRITES / ESPÍRITUS ══════════ */
 .sprites-header { text-align: center; margin-bottom: 20px; }
 .sprites-header h2 { font-size: 1.8em; margin-bottom: 6px; color: #fff; }
@@ -4689,6 +4519,96 @@ body { background-color: transparent !important; isolation: isolate; }
 #vb-precios .servicio-card { opacity:1 !important; transform:none !important; transition:none !important; }
 
 </style>
+<style id="shegos-responsive-terms-checkout">
+/* Evita que los estilos globales de header/nav recorten la página legal. */
+#terminos .terms-page { width:min(100%,1180px); max-width:1180px; box-sizing:border-box; margin:clamp(16px,4vw,40px) auto 64px; padding:clamp(14px,3vw,36px); }
+#terminos .terms-heading {
+  position:relative!important; inset:auto!important; display:block!important; width:100%!important;
+  height:auto!important; min-height:0!important; max-height:none!important; overflow:visible!important;
+  padding:0!important; margin:0 auto 26px!important; border:0!important; border-image:none!important;
+  border-radius:0!important; background:transparent!important; box-shadow:none!important;
+  backdrop-filter:none!important; -webkit-backdrop-filter:none!important; transform:none!important;
+  text-align:center; z-index:auto!important;
+}
+#terminos .terms-heading h1 { max-width:100%; line-height:1.12; overflow-wrap:anywhere; }
+#terminos nav.terms-toc {
+  display:block!important; position:static!important; width:100%!important; max-width:100%!important;
+  height:auto!important; overflow:visible!important; margin:0 auto 30px!important; padding:clamp(16px,3vw,28px)!important;
+  border:1px solid rgba(112,255,0,.2)!important; border-radius:20px!important;
+  background:rgba(15,14,22,.92)!important; box-shadow:0 16px 44px rgba(0,0,0,.24)!important;
+}
+#terminos .terms-toc ol { grid-auto-flow:row!important; grid-template-columns:repeat(2,minmax(0,1fr))!important; grid-template-rows:none!important; gap:8px 28px!important; }
+#terminos .terms-toc li,#terminos .terms-toc a { min-width:0; overflow-wrap:anywhere; }
+#terminos .terms-content { width:100%; max-width:900px; min-width:0; margin-inline:auto; }
+#terminos .terms-content section { scroll-margin-top:90px; }
+#terminos .terms-content h2 { line-height:1.35; overflow-wrap:anywhere; }
+#terminos .terms-content p,#terminos .terms-content li { overflow-wrap:anywhere; }
+#terminos .terms-back { max-width:100%; box-sizing:border-box; }
+#checkout,#checkout .co-wrap,#checkout .co-body,#checkout .co-main,#checkout .co-sidebar { min-width:0; max-width:100%; box-sizing:border-box; }
+#checkout { height:auto!important; min-height:0; overflow:visible!important; }
+#checkout .co-wrap { width:min(100%,960px); margin-inline:auto; padding:clamp(12px,3vw,30px); }
+#checkout .co-body { display:grid!important; grid-template-columns:minmax(0,1fr) minmax(260px,320px); gap:clamp(14px,3vw,30px); align-items:start; }
+#checkout .co-main,#checkout .co-sidebar { width:100%; }
+#checkout .co-steps { width:100%; gap:clamp(5px,2vw,14px); margin:0 auto 26px; }
+#checkout .co-step { min-width:0; }
+#checkout .co-step-label { text-align:center; letter-spacing:.04em; }
+#checkout .co-step-line { min-width:14px; max-width:100px; }
+#checkout .co-field-card,#checkout .co-pay-option { min-width:0; }
+#checkout .co-field-card-body,#checkout .co-pay-info { min-width:0; overflow-wrap:anywhere; }
+#checkout .co-input,#checkout input[type="text"],#checkout input[type="tel"] { min-width:0; max-width:100%; box-sizing:border-box; }
+#checkout .co-field-card-whatsapp { display:grid; grid-template-columns:minmax(64px,82px) minmax(0,1fr); width:100%; }
+#checkout .co-pay-option { display:grid; grid-template-columns:56px minmax(0,1fr) 20px; gap:10px; align-items:center; }
+#checkout .co-pay-logo-wrap { width:56px; min-width:0; }
+#checkout .co-sidebar { position:sticky; top:86px; align-self:start; }
+/* Franja inferior a todo lo ancho, sin panel encerrado; contenido previo ya conserva contacto, comunidad y logos. */
+.site-footer {
+  display:grid!important; grid-template-columns:minmax(190px,1fr) minmax(250px,1.2fr) minmax(300px,1.5fr);
+  align-items:center; gap:16px 28px; width:100%!important; max-width:none!important;
+  margin:48px 0 0!important; padding:24px clamp(14px,4vw,56px) 16px!important;
+  border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important;
+}
+.site-footer-main { display:contents!important; }
+.site-footer-column { min-width:0; gap:8px; }
+.site-footer-column h2 { margin:0 0 4px; }
+.site-footer-community p { margin:0; }
+.site-footer-payments { display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; gap:clamp(6px,1vw,14px); margin:0!important; }
+.site-footer-payment { flex:1 1 0; min-width:0; max-width:130px; }
+.site-footer-payment img { max-width:100%; }
+.site-footer-bottom { grid-column:1/-1; width:100%; max-width:none; margin:0; padding-top:12px; }
+@media(max-width:800px) {
+  #terminos .terms-page { margin:16px auto 42px; padding:12px; }
+  #terminos .terms-heading { margin-bottom:20px!important; }
+  #terminos nav.terms-toc { margin-bottom:24px!important; border-radius:16px!important; }
+  #terminos .terms-toc ol { grid-template-columns:minmax(0,1fr)!important; gap:5px!important; }
+  #terminos .terms-toc a { line-height:1.45; padding:5px 0; }
+  #checkout .co-wrap { padding:12px; }
+  #checkout .co-body { grid-template-columns:minmax(0,1fr)!important; gap:14px; }
+  #checkout .co-sidebar { order:-1; position:static; }
+  #checkout .co-summary-card { padding:clamp(14px,4vw,20px); }
+  #checkout #checkout-productos-lista { max-height:min(26vh,190px); overflow:auto; overscroll-behavior:contain; }
+  #checkout .co-steps { margin-bottom:20px; }
+  #checkout .co-step-label { font-size:clamp(.58rem,2.6vw,.7rem); letter-spacing:0; }
+  #checkout .co-step-num { width:32px; height:32px; }
+  #checkout .co-step-line { min-width:8px; }
+  #checkout .co-pay-option { grid-template-columns:44px minmax(0,1fr) 16px; gap:8px; padding:10px; }
+  #checkout .co-pay-logo-wrap { width:44px; height:44px; }
+  #checkout .co-pay-desc { white-space:normal; }
+  #checkout .co-upload-box { min-height:110px; padding:16px 12px; }
+  #checkout .co-cta-btn { width:100%; min-height:48px; }
+  .site-footer { grid-template-columns:minmax(0,1fr); gap:16px; padding:20px 14px 14px!important; }
+  .site-footer-payments { flex-wrap:wrap; justify-content:flex-start; }
+  .site-footer-payment { flex:0 1 92px; height:34px; }
+  .site-footer-bottom { justify-content:flex-start; text-align:left; }
+}
+@media(max-width:380px) {
+  #checkout .co-steps { gap:4px; }
+  #checkout .co-step-label { font-size:.55rem; }
+  #checkout .co-field-card-whatsapp { grid-template-columns:64px minmax(0,1fr); gap:7px; }
+  #checkout .co-pay-option { grid-template-columns:38px minmax(0,1fr) 14px; gap:7px; }
+  #checkout .co-pay-logo-wrap { width:38px; height:38px; }
+}
+@media(prefers-reduced-motion:reduce) { #terminos *,#checkout * { scroll-behavior:auto!important; } }
+</style>
 </head>
 <body>
     <div class="hero-bg-rotator">
@@ -4756,7 +4676,6 @@ body { background-color: transparent !important; isolation: isolate; }
                 <button class="tab-btn" onclick="irATienda()"><i class="fas fa-store"></i> Tienda</button>
                 <button class="tab-btn" onclick="abrirPestana('ids-regalos')"><i class="fas fa-user-plus"></i> Cuentas</button>
                 <button class="tab-btn" onclick="abrirPestana('recargas')"><i class="fas fa-bolt"></i> Servicios</button>
-                <button class="tab-btn" onclick="abrirPestana('stw-alertas')"><i class="fas fa-coins"></i> Alertas</button>
             </nav>
         </div>
         <div class="header-controls" style="display: flex; align-items: center; gap: 15px; flex-shrink: 0;">
@@ -5794,7 +5713,7 @@ body { background-color: transparent !important; isolation: isolate; }
                     <section id="terminos-12"><h2>12. Saldos y premios de sorteos</h2><p>Los saldos del sistema automático o manual tienen una vigencia máxima de tres meses. Los premios de sorteos deben reclamarse dentro de los cuatro días posteriores a la notificación.</p></section>
                     <section id="terminos-13"><h2>13. Conducta</h2><p>Para mantener una atención ordenada, el spam o la insistencia excesiva mientras una entrega está en curso puede hacer que el pedido pase al final de la cola de atención o dar lugar a una suspensión temporal del servicio.</p></section>
                     <section id="terminos-14"><h2>14. Cambios en los términos</h2><p>Podemos actualizar estos términos cuando cambien los productos, los métodos de pago o la normativa aplicable. La versión vigente será la publicada en esta página, junto con su fecha de actualización. El uso de la tienda después de un cambio implica la aceptación de los términos actualizados, en la medida permitida por la ley.</p></section>
-                    <section id="terminos-15"><h2>15. Responsable y contacto</h2><p>Este sitio es gestionado por Yoel Limache. Para consultas sobre compras, entregas o estas condiciones, contáctanos por <a href="https://wa.me/18295392881" target="_blank" rel="noopener noreferrer">WhatsApp</a> o escribe a <a href="mailto:pagos@shegosstore.com">pagos@shegosstore.com</a>.</p></section>
+                    <section id="terminos-15"><h2>15. Responsable y contacto</h2><p>Este sitio es gestionado por Denisa Severino. Para consultas sobre compras, entregas o estas condiciones, contáctanos por <a href="https://wa.me/18295392881" target="_blank" rel="noopener noreferrer">WhatsApp</a> o escribe a <a href="mailto:pagos@shegosstore.com">pagos@shegosstore.com</a>.</p></section>
                 </article>
                 <p class="terms-legal-note">Estos términos se aplican en la medida permitida por las normas de protección al consumidor que correspondan a cada compra.</p>
                 <a class="terms-back" href="#" onclick="abrirPestana('inicio-landing'); return false;">Volver al inicio</a>
@@ -7760,7 +7679,7 @@ body { background-color: transparent !important; isolation: isolate; }
             if (d.cuentas) partes.push(E.account + ' *Cuenta agregada:* ' + d.cuentas);
             partes.push(
                 E.card + ' *M\u00e9todo de pago:* ' + d.metodo,
-                E.status + ' *Estado:* PROCESANDO',
+                E.status + ' *Estado:* ' + (d.estado || 'PROCESANDO'),
                 linea,
                 E.box + ' *PRODUCTOS (' + d.carrito.length + ')*',
                 '',
@@ -7972,19 +7891,34 @@ body { background-color: transparent !important; isolation: isolate; }
         }
 
         function pagoCompletadoCerrarModal() {
+            // Abrir WhatsApp dentro del clic evita que el navegador bloquee la pestaña.
+            const waCodigo = document.getElementById('cliente-whatsapp-codigo')?.value.trim() || '';
+            const waNumero = document.getElementById('cliente-whatsapp-numero')?.value.trim() || '';
+            const seleccionado = document.querySelector('input[name="metodo-pago"]:checked');
+            const cuentas = Array.from(document.querySelectorAll('#cuentas-seleccion input[type="checkbox"]:checked'))
+                .map(cb => cb.value).join(', ');
+            const mensaje = construirMensajePedidoWhatsApp({
+                whatsapp: waCodigo && waNumero ? waCodigo + ' ' + waNumero : '',
+                discord: document.getElementById('cliente-discord')?.value.trim() || '',
+                epicId: document.getElementById('cliente-epic')?.value.trim() || '—',
+                cuentas: cuentas,
+                metodo: seleccionado ? seleccionado.value.toUpperCase() : 'No especificado',
+                carrito: Array.isArray(carrito) ? carrito : [],
+                total: totalMostrado(),
+                divisa: divisaActual,
+                estado: 'PAGO MARCADO COMO COMPLETADO',
+                comprobante: 'Marqué el pago como completado. Subiré el comprobante al formulario para finalizar el pedido.'
+            });
+            abrirWhatsAppPedido(mensaje);
             cerrarModalInstrucciones();
-            // Scroll suave al área de comprobante
+            // Mantener visible el siguiente paso: adjuntar el comprobante al pedido.
             setTimeout(() => {
                 const uploadBox = document.getElementById('co-upload-box');
                 if (uploadBox) {
                     uploadBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Pulso visual para llamar la atención
                     uploadBox.style.borderColor = '#70ff00';
                     uploadBox.style.boxShadow = '0 0 0 4px rgba(112,255,0,0.2)';
-                    setTimeout(() => {
-                        uploadBox.style.boxShadow = '';
-                        uploadBox.style.borderColor = '';
-                    }, 2000);
+                    setTimeout(() => { uploadBox.style.boxShadow = ''; uploadBox.style.borderColor = ''; }, 2000);
                 }
             }, 300);
         }
@@ -9752,240 +9686,6 @@ function mostrarModalCapturaMovil(url) {
         </button>
     </div>
 
-    <!-- ══════ ALERTAS DE MISIÓN — SALVAR EL MUNDO ══════ -->
-    <script>
-    (function () {
-        // API pública de alertas de misión de Salvar el Mundo.
-        // Doc: GET /v1/stw/alertas (?category=<id>, ?locale=es-ES por defecto)
-        const STW_ENDPOINT = 'https://api.miadsc.xyz/v1/stw/alertas';
-
-        // La API devuelve la zona en inglés (m.zone). La mapeamos a la clase
-        // CSS/ícono que ya existe en la hoja de estilos. zoneGeoDisplay (en
-        // español) se usa tal cual para el texto visible.
-        const REGION_MAP = {
-            'Stonewood':    { clase: 'stonewood',    icono: 'fa-tree' },
-            'Plankerton':   { clase: 'plankerton',   icono: 'fa-leaf' },
-            'Canny Valley': { clase: 'canny_valley', icono: 'fa-sun' },
-            'Twine Peaks':  { clase: 'twine_peaks',  icono: 'fa-skull' },
-            'Ventures':     { clase: 'ventures',     icono: 'fa-compass' },
-            'Events':       { clase: 'events',       icono: 'fa-star' }
-        };
-
-        // Ícono por tipo de recompensa, según el prefijo de itemType
-        // (ej. "Hero:hid_xxx" -> Hero, "AccountResource:reagent_xxx" -> AccountResource).
-        const TIPO_MAP = {
-            Hero:            { icono: 'fa-user-ninja' },
-            Defender:        { icono: 'fa-shield-halved' },
-            Worker:          { icono: 'fa-people-carry-box' },
-            AccountResource: { icono: 'fa-flask' },
-            CardPack:        { icono: 'fa-box-open' }
-        };
-
-        // Íconos por categoría (usa el "id" que devuelve la API en /categories).
-        const CATEGORIA_ICONOS = {
-            'vbucks': 'fa-circle-dollar-to-slot',
-            'legendary-survivors': 'fa-user',
-            'pl-160': 'fa-shield-halved',
-            'legendary-heroes': 'fa-people-group',
-            'legendary-defenders': 'fa-shield',
-            'legendary-schematics': 'fa-scroll',
-            'evo-materials': 'fa-atom'
-        };
-
-        // Diccionario cosmético para limpiar/traducir los tokens más comunes
-        // de los IDs internos de Epic (no es exhaustivo, solo mejora la lectura).
-        const TRADUCCIONES = {
-            reagent: 'Reactivo', alteration: 'de Alteración', upgrade: 'de Mejora',
-            generic: 'Genérico', ele: 'Elemental', nature: 'Naturaleza', fire: 'Fuego',
-            water: 'Agua', basic: 'Básico', workerbasic: 'Trabajador', manager: 'Gerente'
-        };
-
-        let stwCache = {};       // { [categoryId]: respuestaDeLaApi }
-        let stwCatActual = null;
-
-        // Carga inicial: pide el set completo (sin filtro) para sacar
-        // estadísticas globales y la lista de categorías/pestañas.
-        window.cargarAlertasSTW = async function (forzar) {
-            if (stwCache.__todo__ && !forzar) return;
-            try {
-                const res = await fetch(STW_ENDPOINT, { cache: 'no-store' });
-                if (!res.ok) throw new Error('Respuesta no OK: ' + res.status);
-                const data = await res.json();
-                if (!data || data.success === false) throw new Error('La API devolvió un error');
-                stwCache.__todo__ = data;
-                actualizarStats(data);
-                construirTabs(data.categories || []);
-            } catch (err) {
-                console.error('[stw-alertas] Error al cargar:', err);
-                mostrarErrorSTW();
-            }
-        };
-
-        window.cambiarCategoriaSTW = async function (catId) {
-            stwCatActual = catId;
-            document.querySelectorAll('#stw-cat-tabs .stw-cat-tab').forEach(function (btn) {
-                btn.classList.toggle('activo', btn.getAttribute('data-cat') === catId);
-            });
-            await cargarCategoriaSTW(catId, false);
-        };
-
-        function construirTabs(categorias) {
-            const wrap = document.getElementById('stw-cat-tabs');
-            if (!wrap || !categorias.length) return;
-            if (!stwCatActual) stwCatActual = categorias[0].id;
-
-            wrap.innerHTML = categorias.map(function (c) {
-                const activo = c.id === stwCatActual ? ' activo' : '';
-                const icono = CATEGORIA_ICONOS[c.id] || 'fa-star';
-                return `<button class="stw-cat-tab${activo}" data-cat="${escapeHtml(c.id)}" onclick="cambiarCategoriaSTW('${escapeHtml(c.id)}')">
-                            <span class="stw-cat-icon"><i class="fas ${icono}"></i></span>
-                            ${escapeHtml(c.title || c.slug || c.id)} <span class="stw-cat-count">${c.count != null ? c.count : 0}</span>
-                        </button>`;
-            }).join('');
-
-            cargarCategoriaSTW(stwCatActual, false);
-        }
-
-        async function cargarCategoriaSTW(catId, forzar) {
-            const cont = document.getElementById('stw-content');
-            if (stwCache[catId] && !forzar) {
-                renderCategoriaSTW(stwCache[catId], catId);
-                return;
-            }
-            cont.innerHTML = '<div class="stw-loading"><i class="fas fa-spinner fa-spin"></i> Cargando alertas de misión...</div>';
-            try {
-                const url = STW_ENDPOINT + '?category=' + encodeURIComponent(catId);
-                const res = await fetch(url, { cache: 'no-store' });
-                if (!res.ok) throw new Error('Respuesta no OK: ' + res.status);
-                const data = await res.json();
-                if (!data || data.success === false) throw new Error('La API devolvió un error');
-                stwCache[catId] = data;
-                renderCategoriaSTW(data, catId);
-            } catch (err) {
-                console.error('[stw-alertas] Error al cargar categoría:', err);
-                mostrarErrorSTW();
-            }
-        }
-
-        function mostrarErrorSTW() {
-            const cont = document.getElementById('stw-content');
-            if (!cont) return;
-            cont.innerHTML = `
-                <div class="stw-error">
-                    <i class="fas fa-triangle-exclamation"></i>
-                    <p>No se pudieron cargar las alertas en este momento.</p>
-                    <button class="tab-btn" style="background:#70ff00;" onclick="cargarAlertasSTW(true)">Reintentar</button>
-                </div>`;
-        }
-
-        function actualizarStats(data) {
-            const misiones = data.missions || [];
-            const conAlerta = misiones.filter(function (m) { return !!m.hasAlerts; }).length;
-            const catVbucks = (data.categories || []).find(function (c) { return c.id === 'vbucks' || c.slug === 'vbucks'; });
-
-            document.getElementById('stw-stat-total').textContent = data.total != null ? data.total : misiones.length;
-            document.getElementById('stw-stat-alertas').textContent = conAlerta;
-            document.getElementById('stw-stat-vbucks').textContent = catVbucks ? catVbucks.count : 0;
-
-            const elUpd = document.getElementById('stw-stat-updated');
-            if (!data.updatedAt) { elUpd.textContent = 'Sin datos'; return; }
-            const fecha = new Date(data.updatedAt);
-            elUpd.textContent = fecha.toLocaleDateString('es-DO', { day: '2-digit', month: '2-digit', year: 'numeric' });
-        }
-
-        function renderCategoriaSTW(data, catId) {
-            const cont = document.getElementById('stw-content');
-            const misiones = data.missions || [];
-            const catInfo = (data.categories || []).find(function (c) { return c.id === catId; });
-            const titulo = catInfo ? (catInfo.title || catInfo.slug) : 'Misiones';
-            const icono = CATEGORIA_ICONOS[catId] || 'fa-map';
-            const fechaTexto = data.updatedAt
-                ? new Date(data.updatedAt).toLocaleDateString('es-DO', { day: '2-digit', month: '2-digit', year: 'numeric' })
-                : '—';
-
-            if (!misiones.length) {
-                cont.innerHTML = `
-                    <div class="stw-story-card">
-                        <div class="stw-story-icon"><i class="fas ${icono}"></i></div>
-                        <div class="stw-story-title">ALERTAS DE MISIONES | <span class="stw-story-date">${fechaTexto}</span></div>
-                        <div class="stw-story-cat"><i class="fas ${icono}"></i> ${escapeHtml(titulo)}</div>
-                        <div class="stw-empty">No hay misiones de ${escapeHtml(titulo)} disponibles hoy.</div>
-                    </div>`;
-                return;
-            }
-
-            const filas = misiones.map(renderFilaMision).join('');
-
-            cont.innerHTML = `
-                <div class="stw-story-card">
-                    <div class="stw-story-icon"><i class="fas ${icono}"></i></div>
-                    <div class="stw-story-title">ALERTAS DE MISIONES | <span class="stw-story-date">${fechaTexto}</span></div>
-                    <div class="stw-story-cat"><i class="fas ${icono}"></i> ${escapeHtml(titulo)} — ${misiones.length}</div>
-                </div>
-                <div class="stw-mission-list" style="margin-top:16px;">${filas}</div>`;
-        }
-
-        function renderFilaMision(m) {
-            const region = REGION_MAP[m.zone] || { clase: '', icono: 'fa-map' };
-            const zonaTexto = m.zoneGeoDisplay || m.zone || '';
-
-            let recompensas;
-            if (m.hasAlerts && m.alerts && m.alerts.length) {
-                recompensas = m.alerts.map(renderAlertaSTW).join('');
-            } else {
-                recompensas = '<div class="stw-alert-reward none">— Sin alerta —</div>';
-            }
-
-            return `
-                <div class="stw-mission-row ${region.clase}">
-                    <div class="stw-pl"><span class="num">${m.power != null ? m.power : '—'}</span><span class="label">PL</span></div>
-                    <div class="stw-mission-info">
-                        <div class="stw-mission-name">${escapeHtml(m.missionName || 'Misión')}</div>
-                        <div class="stw-mission-zone"><i class="fas ${region.icono}"></i> ${escapeHtml(zonaTexto)}</div>
-                    </div>
-                    <div class="stw-alertas-mision">${recompensas}</div>
-                </div>`;
-        }
-
-        function renderAlertaSTW(a) {
-            const tipo = (a.itemType || '').split(':')[0];
-            const icono = (TIPO_MAP[tipo] && TIPO_MAP[tipo].icono) || 'fa-gift';
-            const nombre = humanizarNombreSTW(a.name);
-            const cantidad = a.quantity ? ' x' + a.quantity : '';
-            return `<div class="stw-alert-reward legendary"><i class="fas ${icono}"></i> ${escapeHtml(nombre)}${cantidad}</div>`;
-        }
-
-        // Convierte IDs internos tipo "hid_constructor_011_sr_t01" en algo más
-        // legible ("Constructor 011"). Es cosmético, no un mapeo exacto —
-        // Epic no publica nombres "bonitos" para estos IDs vía API.
-        function humanizarNombreSTW(nombre) {
-            const tokensRareza = ['c', 'uc', 'r', 'vr', 'sr'];
-            const prefijosOmitir = ['hid', 'did', 'wid', 'sid'];
-            let partes = (nombre || '').split('_').filter(function (t) {
-                return t && !/^t\d+$/i.test(t) && tokensRareza.indexOf(t.toLowerCase()) === -1 && !/^\d+$/.test(t);
-            });
-            if (partes.length > 1 && prefijosOmitir.indexOf(partes[0].toLowerCase()) !== -1) partes.shift();
-            partes = partes.map(function (p) {
-                const t = TRADUCCIONES[p.toLowerCase()];
-                return t !== undefined ? t : p;
-            }).filter(Boolean);
-            if (!partes.length) return nombre || 'Recompensa';
-            return partes.map(function (w) {
-                return w.charAt(0).toUpperCase() + w.slice(1);
-            }).join(' ');
-        }
-
-        window.descargarCapturaSTW = function () {
-            const area = document.getElementById('stw-capture-area');
-            if (!area || typeof html2canvas === 'undefined') return;
-            html2canvas(area, { backgroundColor: '#0a0a0a', scale: 2 }).then(function (canvas) {
-                const link = document.createElement('a');
-                link.download = 'alertas-stw-' + (new Date().toISOString().slice(0, 10)) + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-        };
-
         function escapeHtml(str) {
             return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -10774,10 +10474,9 @@ function mostrarModalCapturaMovil(url) {
             }
         }
 
-        // Si el usuario entra directo a /alertas-stw, carga los datos apenas el DOM esté listo
+        // Carga los sprites si el usuario abre directamente su ruta.
         document.addEventListener('DOMContentLoaded', function () {
             var _ruta = location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
-            if (_ruta === 'alertas-stw') cargarAlertasSTW();
             if (_ruta === 'sprites') cargarSprites();
         });
     })();
