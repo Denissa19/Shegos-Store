@@ -5497,6 +5497,17 @@ const TIPO_CONFIG = {
   'Apartar cuentas':    { label:'Apartar',      color:'#fdba74', icon:'fa-bookmark', id:'vc-t-apartar'}
 };
 
+function compareVentasPorHora(a, b) {
+  const ta = Date.parse(a?.created_at || '') || 0;
+  const tb = Date.parse(b?.created_at || '') || 0;
+  if (ta !== tb) return tb - ta;
+  return String(b?.id || '').localeCompare(String(a?.id || ''), undefined, { numeric: true });
+}
+function ventaHoraLocal(iso) {
+  const date = new Date(iso || '');
+  return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
+}
+
 async function fetchVentas() {
   const area = document.getElementById('vc-table-area');
   if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando ventas...</p></div>`;
@@ -5514,7 +5525,7 @@ async function fetchVentas() {
       all = all.concat(data || []);
       if (!data || data.length < PAGE) break;
     }
-    currentVentas = all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    currentVentas = all.sort(compareVentasPorHora);
     renderVentas();
     updateStats(); // Refresh topbar total with ventas included
     renderAccounting();
@@ -5774,7 +5785,7 @@ function renderVentas() {
                       (v.cliente||'').toLowerCase().includes(query) ||
                       (v.notas||'').toLowerCase().includes(query);
     return true;
-  });
+  }).sort(compareVentasPorHora);
 
   updateVentasStats(filtered, periodRows);
   renderPurchasePatterns(periodRows);
@@ -5804,7 +5815,7 @@ function renderVentas() {
     const abiertos = rems.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length;
 
     let row = `<tr>
-      <td class="td-date">${vcLocalDay(v.created_at)}</td>
+      <td class="td-date">${vcLocalDay(v.created_at)}<small style="display:block;color:var(--text3);font-size:.72em;margin-top:3px">${ventaHoraLocal(v.created_at)}</small></td>
       <td><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
       <td>${paymentMethodIdentity(paymentMethodFromDb(v.metodo_pago))}</td>
@@ -6287,11 +6298,20 @@ window.saveVenta = async function() {
   const comision      = 0;
   const ganancia      = totalVenta - costoReal;
 
-  let fechaISO = new Date().toISOString();
+  const origVenta = window.editingVentaId ? currentVentas.find(x => String(x.id) === String(window.editingVentaId)) : null;
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
+  let fechaISO = new Date().toISOString();
   if (fechaVal) {
-    const parsed = new Date(`${fechaVal}T12:00:00`);
-    if (!isNaN(parsed.getTime())) fechaISO = parsed.toISOString();
+    // Conserva la hora original al editar el mismo día; en ventas nuevas usa la hora real de registro.
+    const mismoDiaEditado = origVenta && vcLocalDay(origVenta.created_at) === fechaVal;
+    if (mismoDiaEditado) {
+      fechaISO = origVenta.created_at;
+    } else {
+      const ahora = new Date();
+      const [year, month, day] = fechaVal.split('-').map(Number);
+      const fechaLocal = new Date(year, month - 1, day, ahora.getHours(), ahora.getMinutes(), ahora.getSeconds(), ahora.getMilliseconds());
+      if (!Number.isNaN(fechaLocal.getTime())) fechaISO = fechaLocal.toISOString();
+    }
   }
 
   const record = {
@@ -6318,7 +6338,6 @@ created_at:          fechaISO
   if ((document.getElementById('vm-rem-text')?.value || '').trim()) window.vmAddRemark(); // no perder un remark sin "Agregar"
   // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
   // así guardar una venta normal sigue funcionando aunque falten las columnas.
-  const origVenta = window.editingVentaId ? currentVentas.find(x => String(x.id) === String(window.editingVentaId)) : null;
   const fotoProd = document.getElementById('vc-f-prod-base64')?.value || '';
   if (fotoProd || origVenta?.foto_producto) record.foto_producto = fotoProd || null;
   if (vmRemarks.length || (Array.isArray(origVenta?.remarks) && origVenta.remarks.length)) record.remarks = vmRemarks;
