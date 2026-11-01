@@ -2332,7 +2332,7 @@ body, body.role-ceo {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.orderProdDrop(event)">
-          <input type="file" id="f-prod-file" accept="image/*" onchange="window.handleOrderProd(this)">
+          <input type="file" id="f-prod-file" accept="image/*" multiple onchange="window.handleOrderProd(this)">
           <div class="vm-receipt-idle" id="f-prod-idle">
             <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
             <div class="vm-receipt-text">
@@ -3025,7 +3025,7 @@ body, body.role-ceo {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.vmProdDrop(event)">
-          <input type="file" id="vc-f-prod-file" accept="image/*" onchange="window.handleVentaProd(this)">
+          <input type="file" id="vc-f-prod-file" accept="image/*" multiple onchange="window.handleVentaProd(this)">
           <div class="vm-receipt-idle" id="vc-prod-idle">
             <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
             <div class="vm-receipt-text">
@@ -3072,7 +3072,12 @@ body, body.role-ceo {
       <button class="mclose" onclick="window.closeImageViewer()"><i class="fas fa-times"></i></button>
     </div>
     <div class="mbody" style="text-align:center">
-      <img id="imgv-img" src="" alt="Comprobante" style="max-width:100%;max-height:70vh;border-radius:6px;border:1px solid var(--border2)">
+      <div id="imgv-gallery-count" style="display:none;color:var(--text2);font-size:.85rem;margin-bottom:8px"></div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:10px">
+        <button id="imgv-prev" class="btn btn-ghost" style="display:none" onclick="window.stepImageViewer(-1)" aria-label="Foto anterior"><i class="fas fa-chevron-left"></i></button>
+        <img id="imgv-img" src="" alt="Comprobante" style="max-width:100%;max-height:70vh;border-radius:6px;border:1px solid var(--border2)">
+        <button id="imgv-next" class="btn btn-ghost" style="display:none" onclick="window.stepImageViewer(1)" aria-label="Foto siguiente"><i class="fas fa-chevron-right"></i></button>
+      </div>
     </div>
     <div class="mfoot">
       <button class="btn btn-ghost" onclick="window.closeImageViewer()">Cerrar</button>
@@ -4658,11 +4663,9 @@ function editOrder(id) {
   }
 
   if (o.foto_producto) {
-    document.getElementById('f-prod-base64').value = o.foto_producto;
-    document.getElementById('f-prod-img').src = o.foto_producto;
-    document.getElementById('f-prod-idle').style.display = 'none';
-    document.getElementById('f-prod-preview').style.display = 'block';
-    document.getElementById('f-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
+    const photos = parseProductPhotos(o.foto_producto);
+    document.getElementById('f-prod-base64').value = saveProductPhotos(photos);
+    renderProductPhotoPreview('f-prod', photos, 'Fotos guardadas');
   } else {
     window.clearOrderProd();
   }
@@ -6006,11 +6009,9 @@ window.editVenta = function(id) {
     window.vmClearReceipt();
   }
   if (v.foto_producto) {
-    document.getElementById('vc-f-prod-base64').value = v.foto_producto;
-    document.getElementById('vc-prod-img').src = v.foto_producto;
-    document.getElementById('vc-prod-idle').style.display = 'none';
-    document.getElementById('vc-prod-preview').style.display = 'block';
-    document.getElementById('vc-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
+    const photos = parseProductPhotos(v.foto_producto);
+    document.getElementById('vc-f-prod-base64').value = saveProductPhotos(photos);
+    renderProductPhotoPreview('vc-prod', photos, 'Fotos guardadas');
   } else {
     window.vmClearProd();
   }
@@ -7603,18 +7604,59 @@ function _srcToBlob(src) {
   return fetch(src).then(r => r.blob());
 }
 
+let _imgViewerGallery = [], _imgViewerIndex = 0;
+function parseProductPhotos(value) {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(x => typeof x === 'string' && x);
+  if (typeof value !== 'string') return [];
+  try { const parsed = JSON.parse(value); if (Array.isArray(parsed)) return parsed.filter(x => typeof x === 'string' && x); } catch (_) {}
+  return [value];
+}
+function saveProductPhotos(photos) {
+  const clean = photos.filter(Boolean);
+  return clean.length > 1 ? JSON.stringify(clean) : (clean[0] || '');
+}
+function renderProductPhotoPreview(prefix, photos, label) {
+  const first = photos[0] || '';
+  const img = document.getElementById(prefix + '-img');
+  const idle = document.getElementById(prefix + '-idle');
+  const preview = document.getElementById(prefix + '-preview');
+  const name = document.getElementById(prefix + '-name');
+  if (!first) { if(img)img.src=''; if(idle)idle.style.display='flex'; if(preview)preview.style.display='none'; return; }
+  if(img)img.src=first;
+  if(idle)idle.style.display='none';
+  if(preview)preview.style.display='block';
+  if(name)name.innerHTML='<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>'+label+(photos.length>1?' · '+photos.length+' fotos':'');
+}
 window.openImageViewer = function(src, name, title) {
-  if (!src) { showToast('No hay imagen adjunta', true); return; }
-  _imgViewerSrc = src;
+  const photos = parseProductPhotos(src);
+  if (!photos.length) { showToast('No hay imagen adjunta', true); return; }
+  _imgViewerGallery = photos;
+  _imgViewerIndex = 0;
   _imgViewerName = name || 'comprobante';
-  document.getElementById('imgv-img').src = src;
   document.getElementById('imgv-title').innerHTML = '<i class="fas fa-image" style="margin-right:8px"></i>' + (title || 'Comprobante');
   document.getElementById('modal-imgviewer').classList.add('open');
+  window.renderImageViewerPhoto();
+};
+window.renderImageViewerPhoto = function() {
+  _imgViewerSrc = _imgViewerGallery[_imgViewerIndex] || '';
+  document.getElementById('imgv-img').src = _imgViewerSrc;
+  const multiple = _imgViewerGallery.length > 1;
+  document.getElementById('imgv-gallery-count').style.display = multiple ? 'block' : 'none';
+  document.getElementById('imgv-gallery-count').textContent = multiple ? 'Foto '+(_imgViewerIndex+1)+' de '+_imgViewerGallery.length : '';
+  document.getElementById('imgv-prev').style.display = multiple ? 'inline-flex' : 'none';
+  document.getElementById('imgv-next').style.display = multiple ? 'inline-flex' : 'none';
+};
+window.stepImageViewer = function(step) {
+  if (!_imgViewerGallery.length) return;
+  _imgViewerIndex = (_imgViewerIndex + step + _imgViewerGallery.length) % _imgViewerGallery.length;
+  window.renderImageViewerPhoto();
 };
 
 window.closeImageViewer = function() {
   document.getElementById('modal-imgviewer').classList.remove('open');
   document.getElementById('imgv-img').src = '';
+  _imgViewerGallery = []; _imgViewerIndex = 0;
 };
 
 window.openImageNewTab = async function() {
@@ -7648,7 +7690,7 @@ window.viewReceipt = function(kind, id, field) {
   if (!rec || !rec[key]) { showToast('Este registro no tiene esa imagen', true); return; }
   const ref = rec.id_pedido || String(rec.id).slice(0, 8);
   const esFoto = key === 'foto_producto';
-  window.openImageViewer(rec[key], (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
+  window.openImageViewer(esFoto ? saveProductPhotos(parseProductPhotos(rec[key])) : rec[key], (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
 };
 
 // Abre la imagen que se está cargando en el formulario (antes de guardar)
@@ -7683,18 +7725,17 @@ function readImageCompressed(file, maxDim = 1200, quality = 0.76) {
 
 // ── FOTO DEL PRODUCTO / PRUEBA DE ENTREGA ──
 window.handleVentaProd = async function(input) {
-  if (!(input.files && input.files[0])) return;
-  const fileName = input.files[0].name;
-  const data = await readImageCompressed(input.files[0]);
-  document.getElementById('vc-f-prod-base64').value = data;
-  document.getElementById('vc-prod-img').src = data;
-  document.getElementById('vc-prod-idle').style.display = 'none';
-  document.getElementById('vc-prod-preview').style.display = 'block';
-  document.getElementById('vc-prod-name').innerHTML = `<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>${fileName}`;
+  const files = Array.from(input.files || []).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  const photos = parseProductPhotos(document.getElementById('vc-f-prod-base64').value);
+  for (const file of files) photos.push(await readImageCompressed(file));
+  document.getElementById('vc-f-prod-base64').value = saveProductPhotos(photos);
+  renderProductPhotoPreview('vc-prod', photos, 'Fotos cargadas');
+  input.value = '';
 };
 window.vmProdDrop = function(event) {
-  const f = event.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) window.handleVentaProd({ files: [f] });
+  const files = Array.from(event.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+  if (files.length) window.handleVentaProd({ files });
 };
 window.vmClearProd = function() {
   document.getElementById('vc-f-prod-base64').value = '';
@@ -7909,18 +7950,17 @@ function remDetailHTML(kind, rec) {
 
 // ── Foto del producto / prueba de entrega en pedidos ──
 window.handleOrderProd = async function(input) {
-  if (!(input.files && input.files[0])) return;
-  const fileName = input.files[0].name;
-  const data = await readImageCompressed(input.files[0]);
-  document.getElementById('f-prod-base64').value = data;
-  document.getElementById('f-prod-img').src = data;
-  document.getElementById('f-prod-idle').style.display = 'none';
-  document.getElementById('f-prod-preview').style.display = 'block';
-  document.getElementById('f-prod-name').innerHTML = `<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>${remEsc(fileName)}`;
+  const files = Array.from(input.files || []).filter(f => f.type.startsWith('image/'));
+  if (!files.length) return;
+  const photos = parseProductPhotos(document.getElementById('f-prod-base64').value);
+  for (const file of files) photos.push(await readImageCompressed(file));
+  document.getElementById('f-prod-base64').value = saveProductPhotos(photos);
+  renderProductPhotoPreview('f-prod', photos, 'Fotos cargadas');
+  input.value = '';
 };
 window.orderProdDrop = function(event) {
-  const f = event.dataTransfer.files[0];
-  if (f && f.type.startsWith('image/')) window.handleOrderProd({ files: [f] });
+  const files = Array.from(event.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+  if (files.length) window.handleOrderProd({ files });
 };
 window.clearOrderProd = function() {
   document.getElementById('f-prod-base64').value = '';
