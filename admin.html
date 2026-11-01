@@ -5497,14 +5497,30 @@ const TIPO_CONFIG = {
   'Apartar cuentas':    { label:'Apartar',      color:'#fdba74', icon:'fa-bookmark', id:'vc-t-apartar'}
 };
 
+function ventaHoraDeId(id) {
+  const match = /^SHG-([0-9A-Z]{6})-/i.exec(String(id || ''));
+  if (!match) return 0;
+  const modulo = parseInt(match[1], 36);
+  if (!Number.isFinite(modulo)) return 0;
+  const ciclo = Math.pow(36, 6);
+  return modulo + Math.round((Date.now() - modulo) / ciclo) * ciclo;
+}
+function ventaFechaOrden(v) {
+  const registrada = Date.parse(v?.created_at || '') || 0;
+  const date = new Date(registrada);
+  // Las ventas guardadas por la versión anterior quedaron con hora fija 12:00.
+  // El ID SHG conserva el momento en que se agregaron.
+  const horaFijaAnterior = registrada && date.getHours() === 12 && date.getMinutes() === 0 && date.getSeconds() === 0;
+  return horaFijaAnterior ? (ventaHoraDeId(v?.id) || registrada) : registrada;
+}
 function compareVentasPorHora(a, b) {
-  const ta = Date.parse(a?.created_at || '') || 0;
-  const tb = Date.parse(b?.created_at || '') || 0;
+  const ta = ventaFechaOrden(a), tb = ventaFechaOrden(b);
   if (ta !== tb) return tb - ta;
   return String(b?.id || '').localeCompare(String(a?.id || ''), undefined, { numeric: true });
 }
-function ventaHoraLocal(iso) {
-  const date = new Date(iso || '');
+function ventaHoraLocal(v) {
+  const timestamp = ventaFechaOrden(v);
+  const date = new Date(timestamp);
   return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' });
 }
 
@@ -5815,7 +5831,7 @@ function renderVentas() {
     const abiertos = rems.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length;
 
     let row = `<tr>
-      <td class="td-date">${vcLocalDay(v.created_at)}<small style="display:block;color:var(--text3);font-size:.72em;margin-top:3px">${ventaHoraLocal(v.created_at)}</small></td>
+      <td class="td-date">${vcLocalDay(v.created_at)}<small style="display:block;color:var(--text3);font-size:.72em;margin-top:3px">${ventaHoraLocal(v)}</small></td>
       <td><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
       <td>${paymentMethodIdentity(paymentMethodFromDb(v.metodo_pago))}</td>
