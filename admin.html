@@ -5273,9 +5273,17 @@ window.fetchGestionAccounts = async function(forceToast=false) {
     return gestionAccounts;
   } catch(error) {
     console.error('Gestión de cuentas no disponible:',error);
-    if(state) { state.style.display='block'; state.innerHTML='<i class="fas fa-triangle-exclamation" style="color:var(--red)"></i><p>No se pudo cargar Gestión. Aplica la migración SQL de Supabase y vuelve a intentar.</p>'; }
-    notifySystemError('No se pudo cargar Gestión',`${error?.message||'Revisa Supabase y aplica la migración requerida.'}`, 'gestion:data-load');
-    if(forceToast) showToast(`No se pudo cargar Gestión: ${error?.message||'revisa Supabase y la migración requerida.'}`,true,7000);
+    const missingSchema=/PGRST205|Could not find the table.*public\.cuentas_gestion/i.test(error?.message||'');
+    if(state) {
+      state.style.display='block';
+      state.innerHTML=missingSchema
+        ? '<i class="fas fa-triangle-exclamation" style="color:var(--red)"></i><p>Falta habilitar las tablas de Gestión en Supabase. Ejecuta la <a href="https://github.com/Denissa19/Shegos-Store/blob/main/supabase/migrations/20261102_account_management.sql" target="_blank" rel="noopener">migración de Gestión</a> en el SQL Editor del proyecto boifqdoojssmofanhxhj y luego pulsa Actualizar.</p>'
+        : '<i class="fas fa-triangle-exclamation" style="color:var(--red)"></i><p>No se pudo cargar Gestión. Revisa la conexión con Supabase y vuelve a intentar.</p>';
+    }
+    // Una tabla pendiente de migración se explica dentro de Gestión sin repetir
+    // una alerta emergente cada vez que se abre el panel.
+    if(!missingSchema) notifySystemError('No se pudo cargar Gestión',`${error?.message||'Revisa Supabase y aplica la migración requerida.'}`, 'gestion:data-load');
+    if(forceToast) showToast(missingSchema?'Falta habilitar las tablas de Gestión en Supabase. Revisa el aviso dentro de Gestión.':`No se pudo cargar Gestión: ${error?.message||'revisa la conexión con Supabase.'}`,true,7000);
     return [];
   }
 };
