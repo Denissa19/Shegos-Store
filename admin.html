@@ -1828,6 +1828,22 @@ body, body.role-ceo {
   </div>
 </div>
 
+<style>
+.gestion-intro{color:var(--text2);margin:0 0 16px;line-height:1.6}.gestion-kpis{grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:18px}.gestion-kpis .stat-value{font-size:1.55em;color:var(--accent)}
+.gestion-account-table-wrap{width:100%;overflow-x:auto;border:1px solid var(--border);border-radius:14px;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}.gestion-account-table{min-width:1120px}.gestion-account-row{display:grid;grid-template-columns:1.35fr 1.25fr .72fr .95fr 1fr 1fr .82fr 108px;gap:10px;align-items:center;padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.075);background:rgba(12,17,13,.86)}#app.role-ceo .gestion-account-table{min-width:1250px}#app.role-ceo .gestion-account-row{grid-template-columns:1.35fr 1.25fr .72fr .95fr 1fr 1fr .82fr 1.2fr 108px}.gestion-account-row:last-child{border-bottom:0}.gestion-account-row:not(.gestion-account-header):hover{background:rgba(24,34,26,.94)}.gestion-account-header{position:sticky;top:0;z-index:2;background:rgba(7,11,8,.98);color:var(--text3);font-size:.76em;font-weight:800;letter-spacing:.05em;text-transform:uppercase}.gestion-account-cell{min-width:0;overflow-wrap:anywhere}.gestion-account-name{font-weight:800;color:var(--text);font-size:.91em}.gestion-account-name small{display:block;margin-top:5px;font-size:.68em;font-weight:600;color:var(--text3);letter-spacing:0;text-transform:none}.gestion-account-value{display:block;font-weight:700;color:var(--text);font-size:.84em}.gestion-account-value.dim{color:var(--text3);font-weight:500}.gestion-online{display:inline-flex;align-items:center;gap:5px;font-size:.69em;border-radius:30px;padding:4px 8px;background:rgba(34,197,94,.12);color:#86efac;white-space:nowrap}.gestion-online.offline{background:rgba(244,63,94,.12);color:#fda4af}.gestion-online.unknown{background:rgba(148,163,184,.12);color:var(--text2)}.gestion-financial-cell small{display:block;margin-top:4px;color:var(--text3);font-size:.72em}.gestion-card-actions{display:flex;justify-content:flex-end}.gestion-card-actions .btn{white-space:nowrap;padding:8px 10px}.gestion-modal-note{font-size:.78em;color:var(--text3);margin:6px 0 0}
+.gift-allocation{border:1px solid rgba(132,204,22,.28);background:rgba(12,21,13,.72);border-radius:14px;padding:15px;margin:4px 0 18px}.gift-allocation-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.gift-allocation-head strong{display:block}.gift-allocation-head strong i{color:var(--accent);margin-right:7px}.gift-allocation-head small{display:block;color:var(--text3);margin-top:5px}.gift-account-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:13px}.gift-account-row{border:1px solid var(--border);border-radius:11px;padding:10px;display:grid;grid-template-columns:auto 1fr 95px;align-items:center;gap:9px;min-width:0}.gift-account-row.selected{border-color:var(--accent);background:rgba(132,204,22,.07)}.gift-account-row input[type=checkbox]{accent-color:var(--accent);width:18px;height:18px}.gift-account-row label{min-width:0;cursor:pointer}.gift-account-row label strong,.gift-account-row label small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gift-account-row label small{color:var(--text3);font-size:.72em;margin-top:3px}.gift-account-row input[type=number]{width:100%;min-width:0}.gift-allocation-summary{margin-top:11px;color:var(--accent);font-size:.82em;font-weight:700}
+.system-alert-stack{position:fixed;z-index:10050;top:16px;right:16px;width:min(390px,calc(100vw - 32px));display:grid;gap:9px;pointer-events:none}.system-alert{pointer-events:auto;display:flex;align-items:flex-start;gap:11px;padding:13px 14px;border-radius:13px;background:rgba(22,27,24,.97);border:1px solid rgba(244,63,94,.48);box-shadow:0 12px 34px rgba(0,0,0,.34);color:var(--text);animation:sys-alert-in .22s ease-out}.system-alert.recovered{border-color:rgba(34,197,94,.45)}.system-alert>i{color:#fb7185;margin-top:3px}.system-alert.recovered>i{color:#4ade80}.system-alert-copy{flex:1;min-width:0}.system-alert-copy strong{display:block;margin-bottom:3px}.system-alert-copy span{font-size:.82em;line-height:1.4;color:var(--text2);overflow-wrap:anywhere}.system-alert button{border:0;background:transparent;color:var(--text3);font-size:1.1em;cursor:pointer;padding:0 2px}.system-alert.leaving{opacity:0;transform:translateX(12px);transition:.2s ease}@keyframes sys-alert-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1100px){.gestion-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:620px){.gestion-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.gestion-account-table{min-width:1120px}#app.role-ceo .gestion-account-table{min-width:1250px}.gestion-account-row{padding:12px 10px;gap:8px}.gift-account-list{grid-template-columns:1fr}.gift-account-row{grid-template-columns:auto 1fr 82px}.system-alert-stack{top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;width:calc(100vw - 20px)}}
+</style>
+
+<style id="desktop-loading-indicator-fix">
+/* Indicador de carga siempre legible en escritorio y móvil. */
+#app-load-status{position:fixed!important;z-index:10000!important;top:72px!important;right:22px!important;left:auto!important;display:none;align-items:center!important;gap:11px!important;width:max-content!important;max-width:min(420px,calc(100vw - 32px))!important;margin:0!important;padding:13px 17px!important;border:1px solid rgba(98,255,0,.5)!important;border-radius:13px!important;background:rgba(8,14,9,.97)!important;box-shadow:0 12px 34px rgba(0,0,0,.48),0 0 20px rgba(98,255,0,.12)!important;color:#f3f7f1!important;font-size:.9rem!important;font-weight:650!important;line-height:1.4!important}
+#app-load-status.visible{display:flex!important}#app-load-status i{flex:0 0 auto;color:var(--accent)!important;font-size:1.12rem!important}#app-load-status span{display:block!important;visibility:visible!important;opacity:1!important;color:#f3f7f1!important}
+@media(max-width:620px){#app-load-status{top:calc(env(safe-area-inset-top,0px) + 68px)!important;left:12px!important;right:12px!important;width:auto!important;max-width:none!important;font-size:.92rem!important;min-height:44px!important}}
+</style>
+
 <div id="app">
   <div class="topbar">
     <button type="button" class="sidebar-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="window.toggleAdminSidebar()"><i class="fas fa-bars"></i></button><div class="topbar-brand">Panel de gestión</div>
@@ -1849,6 +1865,7 @@ body, body.role-ceo {
     <div class="sidebar-section">
       <div class="sidebar-section-label">Operación diaria</div>
       <button class="tab-nav-btn active" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)"><i class="fas fa-coins"></i><span>Ventas</span></button>
+      <button class="tab-nav-btn" id="btn-tab-gestion" onclick="window.switchTab('gestion',this)"><i class="fas fa-boxes-stacked"></i><span>Gestión</span></button>
       <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i><span>Clientes</span></button>
     </div>
     <div class="sidebar-section">
@@ -1872,6 +1889,9 @@ body, body.role-ceo {
       </button>
       <button class="mnav-btn active" id="mnav-cuentas" onclick="window.switchTab('cuentas', document.getElementById('btn-tab-cuentas')); window.setActiveMNav('cuentas')">
         <i class="fas fa-coins"></i>Ventas
+      </button>
+      <button class="mnav-btn" id="mnav-gestion" onclick="window.switchTab('gestion', document.getElementById('btn-tab-gestion')); window.setActiveMNav('gestion')">
+        <i class="fas fa-boxes-stacked"></i>Gestión
       </button>
 <button class="mnav-btn" id="mnav-notas" onclick="window.switchTab('notas', document.getElementById('btn-tab-notas')); window.setActiveMNav('notas')">
         <i class="fas fa-sticky-note"></i>Notas
@@ -2091,6 +2111,29 @@ body, body.role-ceo {
       <div id="vc-table-area"></div>
     </div>
 
+    <!-- ── TAB GESTIÓN DE CUENTAS ─────────────── -->
+    <div class="tab-panel" id="tab-gestion">
+      <div class="sec-title"><h3>Gestión de cuentas</h3><div class="sec-line"></div>
+        <button class="btn btn-outline" type="button" onclick="window.fetchGestionAccounts(true)"><i class="fas fa-rotate"></i> Actualizar</button>
+        <button class="btn btn-accent" type="button" onclick="window.openGestionAccount()"><i class="fas fa-plus"></i> Agregar cuenta</button>
+      </div>
+      <p class="gestion-intro">Inventario de pavos, nivel de Poder y regalos disponibles por cuenta. Los regalos se reinician a 5 cada día.</p>
+      <div class="stats-row gestion-kpis">
+        <article class="stat-card"><div class="stat-label">Pavos disponibles</div><strong class="stat-value" id="gestion-total-vbucks">—</strong><div class="stat-sub">En todas las cuentas</div></article>
+        <article class="stat-card"><div class="stat-label">Pavos generados este mes</div><strong class="stat-value" id="gestion-month-generated">—</strong><div class="stat-sub">Dato actualizado por cuenta</div></article>
+        <article class="stat-card"><div class="stat-label">Pavos enviados este mes</div><strong class="stat-value" id="gestion-month-vbucks">—</strong><div class="stat-sub">Regalos registrados</div></article>
+        <article class="stat-card sec-ceo-only"><div class="stat-label">Ventas atribuidas este mes</div><strong class="stat-value" id="gestion-month-income">—</strong><div class="stat-sub">MXN, distribuidos por pavos enviados</div></article>
+        <article class="stat-card"><div class="stat-label">Regalos disponibles hoy</div><strong class="stat-value" id="gestion-gifts-left">—</strong><div class="stat-sub">De un máximo de 5 por cuenta</div></article>
+      </div>
+      <div id="gestion-load-state" class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Cargando inventario…</p></div>
+      <div id="gestion-account-grid" class="gestion-account-table-wrap"></div>
+      <section class="gift-clients-section" aria-labelledby="gift-clients-title">
+        <div class="sec-title"><h3 id="gift-clients-title"><i class="fas fa-gift" style="margin-right:8px;color:#ec4899"></i>Clientes vía regalo</h3><div class="sec-line"></div><span id="gift-client-count" class="gift-client-count">0</span></div>
+        <p class="gift-clients-note">Guarda juntos sus IDs de Epic y Discord y su WhatsApp para agilizar la entrega de regalos y cosméticos.</p>
+        <div id="gift-customer-area"><div class="gift-clients-empty"><i class="fas fa-circle-notch fa-spin"></i><span>Cargando clientes vía regalo…</span></div></div>
+      </section>
+    </div>
+
     <!-- ── TAB RECUPERACIÓN ─────────────────── -->
     
 
@@ -2130,11 +2173,6 @@ body, body.role-ceo {
 
       <div id="cli-table-area"></div>
 
-      <section class="gift-clients-section" aria-labelledby="gift-clients-title">
-        <div class="sec-title"><h3 id="gift-clients-title"><i class="fas fa-gift" style="margin-right:8px;color:#ec4899"></i>Clientes vía regalo</h3><div class="sec-line"></div><span id="gift-client-count" class="gift-client-count">0</span></div>
-        <p class="gift-clients-note">Guarda juntos sus IDs de Epic y Discord y su WhatsApp para agilizar la entrega de regalos y cosméticos.</p>
-        <div id="gift-customer-area"></div>
-      </section>
     </div>
 
     <div class="tab-panel" id="tab-informacion-util">
@@ -2747,6 +2785,12 @@ body, body.role-ceo {
         </div>
       </div>
 
+      <section id="vm-gift-allocation" class="gift-allocation" style="display:none" aria-labelledby="vm-gift-title">
+        <div class="gift-allocation-head"><div><strong id="vm-gift-title"><i class="fas fa-gift"></i> Cuenta(s) que enviaron el regalo</strong><small>Elige la cuenta y los pavos usados. Se descontará 1 regalo diario por cuenta.</small></div><button type="button" class="btn btn-outline" onclick="window.fetchGestionAccounts(true)"><i class="fas fa-rotate"></i></button></div>
+        <div id="vm-gift-account-list" class="gift-account-list"><div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>Cargando cuentas…</p></div></div>
+        <div id="vm-gift-allocation-summary" class="gift-allocation-summary">Selecciona al menos una cuenta.</div>
+      </section>
+
       <!-- ─── CALCULADORA DE FINANCIAMIENTO (Apartar Cuentas) ─── -->
       <div id="vm-apartar-fields" style="display:none">
         <div class="vm-sep">
@@ -2953,9 +2997,8 @@ body, body.role-ceo {
             <option value="MXN" selected>MXN</option>
             <option value="USD">USD</option>
           </select>
-          <input class="finput" id="vc-f-ingreso" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" aria-describedby="vc-f-ingreso-error" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
+          <input class="finput" id="vc-f-ingreso" type="text" inputmode="decimal" autocomplete="off" placeholder="0.00" oninput="window.calcVentaMargen();window.vmUpdateTotal()">
         </div>
-        <small id="vc-f-ingreso-error" role="alert" style="display:none;color:#ff4d6d;font-weight:700;margin-top:6px">Escribe un precio mayor que cero (puedes usar punto o coma decimal).</small>
         <small class="venta-conversion-note" id="vc-f-conversion-note">Se convertirá automáticamente a USD. Tasa: 1 USD = 18.67 MXN.</small>
       </div>
 
@@ -3136,6 +3179,25 @@ body, body.role-ceo {
   </div>
 </div>
 
+<div class="overlay" id="modal-gestion-cuenta" role="dialog" aria-modal="true" aria-labelledby="gestion-modal-title">
+  <div class="mcard" style="max-width:540px">
+    <div class="mhead"><h2 id="gestion-modal-title">Editar cuenta</h2><button class="mclose" type="button" onclick="window.closeGestionAccount()" aria-label="Cerrar">&times;</button></div>
+    <div class="mbody">
+      <input type="hidden" id="gestion-f-id">
+      <div class="fgroup"><label class="flabel" for="gestion-f-name">Nombre de cuenta</label><input class="finput" id="gestion-f-name" maxlength="80" required></div>
+      <div class="fgroup"><label class="flabel" for="gestion-f-epic">ID de Epic Games</label><input class="finput" id="gestion-f-epic" placeholder="Opcional" maxlength="120"></div>
+      <div class="frow">
+        <div class="fgroup"><label class="flabel" for="gestion-f-level">Nivel de Poder STW</label><input class="finput" id="gestion-f-level" type="number" min="0" step="1" placeholder="Sin dato"></div>
+        <div class="fgroup"><label class="flabel" for="gestion-f-vbucks">Pavos disponibles</label><input class="finput" id="gestion-f-vbucks" type="number" min="0" step="1" required></div>
+      </div>
+      <div class="fgroup"><label class="flabel" for="gestion-f-generated">Pavos generados este mes</label><input class="finput" id="gestion-f-generated" type="number" min="0" step="1" value="0"></div>
+      <div class="fgroup"><label class="flabel" for="gestion-f-gifts">Regalos disponibles hoy (0–5)</label><input class="finput" id="gestion-f-gifts" type="number" min="0" max="5" step="1" value="5" required></div>
+      <p class="gestion-modal-note">El historial mensual se conserva aunque cambies el inventario actual.</p>
+    </div>
+    <div class="mfoot"><button class="btn btn-outline" type="button" onclick="window.closeGestionAccount()">Cancelar</button><button class="btn btn-accent" type="button" id="gestion-save-btn" onclick="window.saveGestionAccount()">Guardar cuenta</button></div>
+  </div>
+</div>
+<div id="system-alert-stack" class="system-alert-stack" aria-live="polite" aria-atomic="false"></div>
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -3157,7 +3219,7 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 // que ahora pasa por RBAC + auditoría en vez de leer Supabase directo.
 // En local es localhost:4000; cuando publiques el backend en internet,
 // cambia esta línea por tu URL real (ej: "https://tu-backend.onrender.com").
-const API_BASE_URL = window.SHEGOS_API_BASE_URL || "http://localhost:4000";
+const API_BASE_URL = "http://localhost:4000";
 
 async function apiFetch(path, options = {}) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -3186,6 +3248,15 @@ let currentTags = [];
 let currentImportOrders = [];
 let importMode = 'merge';
 let toastTimer;
+let gestionAccounts = [];
+let gestionMonthly = new Map();
+let giftBotHealth = { state: 'unknown', online: new Set(), lastError: '' };
+let giftBotMonitorTimer = null;
+let realtimeHadError = false;
+let giftSelectedDraft = [];
+let lastOfflineAccountSignature = '';
+const BOT_STATUS_URL = 'https://shegos-bots-2.onrender.com/status/public';
+const SYSTEM_ALERT_DEDUPE = new Map();
 let catalogoProductos = [];   // Catálogo manual de productos (Supabase: tabla catalogo_productos)
 let editingCatalogoId = null; // Id del producto de catálogo en edición (null = nuevo)
 
@@ -3240,6 +3311,16 @@ window.addEventListener('DOMContentLoaded', async () => {
       } catch (e) { /* El gestor de contraseñas del navegador puede no estar disponible. */ }
     }
   }
+});
+
+window.addEventListener('error', event => {
+  const detail=event?.message||'Error inesperado de JavaScript.';
+  notifySystemError('Error en el panel',detail,`window-error:${detail}`);
+});
+window.addEventListener('unhandledrejection', event => {
+  const reason=event?.reason;
+  const detail=reason?.message||String(reason||'Fallo en una operación asíncrona.');
+  notifySystemError('Falló una operación del panel',detail,`promise-error:${detail}`);
 });
 
 function setupEventListeners() {
@@ -3322,8 +3403,23 @@ async function setupRealtime() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'notas_internas' }, () => {
       if (activeTab === 'notas') loadNotes();
     })
-    .subscribe();
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'cuentas_gestion' }, () => {
+      fetchGestionAccounts(false);
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'cuentas_gestion_ventas' }, () => {
+      fetchGestionAccounts(false);
+    })
+    .subscribe((status, error) => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        realtimeHadError = true;
+        notifySystemError('Conexión con Supabase interrumpida', error?.message || 'El panel no está recibiendo actualizaciones en tiempo real.', `realtime:${status}`);
+      } else if (status === 'SUBSCRIBED') {
+        if (realtimeHadError) notifySystemRecovered('Conexión con Supabase restablecida', 'Los cambios en tiempo real vuelven a sincronizarse.', 'realtime:recovered');
+        realtimeHadError = false;
+      }
+    });
 }
+
 
 // --- CLOUD CRUD VIA SUPABASE ---
 async function fetchOrders() {
@@ -3355,11 +3451,12 @@ async function fetchOrders() {
   } catch (err) {
     console.error(err);
     const msg = err?.message || 'Sin detalles';
+    notifySystemError('No se pudo cargar el registro de ventas',msg,'ventas:load');
     if (area) area.innerHTML = `
       <div class="empty">
         <i class="fas fa-cloud-slash" style="color:var(--red)"></i>
         <p style="color:var(--red);margin-bottom:8px">No se pudo conectar con Supabase</p>
-        <p style="font-size:0.75em;color:var(--text3);margin-bottom:16px">${msg}</p>
+        <p style="font-size:0.75em;color:var(--text3);margin-bottom:16px">${gestionEscape(msg)}</p>
         <button class="btn btn-outline" onclick="window.fetchOrders()"><i class="fas fa-rotate-right"></i> Reintentar</button>
       </div>`;
     showToast('Error al cargar datos — revisa la consola', true);
@@ -5075,6 +5172,13 @@ function switchTab(tab, btn) {
   if (tab === 'clientes') {
     window.renderClientesTab();
   }
+  if (tab === 'gestion') {
+    window.fetchGestionAccounts(false);
+    checkGiftBotHealth();
+    const giftArea = document.getElementById('gift-customer-area');
+    if (giftArea) giftArea.innerHTML = '<div class="gift-clients-empty"><i class="fas fa-circle-notch fa-spin"></i><span>Cargando clientes vía regalo…</span></div>';
+    fetchClientesFromDB().then(() => renderGiftCustomers()).catch(() => renderGiftCustomers());
+  }
   if (tab === 'informacion-util') populateUsefulInfo();
   // Al entrar a Contabilidad se recargan sus cifras y registros.
   if (tab === 'contabilidad') {
@@ -5111,8 +5215,194 @@ function showToast(msg, isErr = false, duration = 3500) {
   if (!t) return;
   t.textContent = msg;
   t.className = 'toast show' + (isErr ? ' err' : '');
+  if (isErr) notifySystemError('Error del panel', msg);
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function addSystemAlert(title, message, recovered = false, dedupeKey = '') {
+  const stack = document.getElementById('system-alert-stack');
+  if (!stack) return;
+  const now = Date.now();
+  const key = dedupeKey || `${title}:${message}`;
+  if (SYSTEM_ALERT_DEDUPE.get(key) > now) return;
+  SYSTEM_ALERT_DEDUPE.set(key, now + 60000);
+  const alert = document.createElement('div');
+  alert.className = `system-alert${recovered ? ' recovered' : ''}`;
+  const icon = document.createElement('i'); icon.className = `fas ${recovered ? 'fa-circle-check' : 'fa-triangle-exclamation'}`;
+  const copy = document.createElement('div'); copy.className = 'system-alert-copy';
+  const heading = document.createElement('strong'); heading.textContent = title;
+  const text = document.createElement('span'); text.textContent = message;
+  const close = document.createElement('button'); close.type = 'button'; close.setAttribute('aria-label', 'Cerrar notificación'); close.textContent = '×';
+  close.onclick = () => alert.remove();
+  copy.append(heading, text); alert.append(icon, copy, close); stack.append(alert);
+  setTimeout(() => { alert.classList.add('leaving'); setTimeout(() => alert.remove(), 250); }, recovered ? 7000 : 12000);
+}
+function notifySystemError(title, message, key) { addSystemAlert(title, message, false, key); }
+function notifySystemRecovered(title, message, key) { addSystemAlert(title, message, true, key); }
+
+function gestionEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function gestionCurrency(value) { return new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:2}).format(Number(value)||0); }
+function todayIso() { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+window.fetchGestionAccounts = async function(forceToast=false) {
+  const state=document.getElementById('gestion-load-state');
+  if(state) state.innerHTML='<i class="fas fa-circle-notch fa-spin"></i><p>Actualizando inventario…</p>';
+  try {
+    const monthStart=`${todayIso().slice(0,7)}-01`;
+    const [year,month]=todayIso().split('-').map(Number);
+    const monthEnd=`${month===12?year+1:year}-${String(month===12?1:month+1).padStart(2,'0')}-01`;
+    const [{data:accounts,error:accountsError},{data:movements,error:movementError}] = await Promise.all([
+      supabase.from('cuentas_gestion').select('*').order('nombre'),
+      supabase.from('cuentas_gestion_ventas').select('cuenta_id,pavos,ingreso_mxn,fecha_venta').gte('fecha_venta',monthStart).lt('fecha_venta',monthEnd)
+    ]);
+    if(accountsError) throw accountsError;
+    if(movementError) throw movementError;
+    const periodStart=`${todayIso().slice(0,7)}-01`;
+    gestionAccounts=(accounts||[]).map(a=>({...a, regalos_hoy:a.regalos_dia===todayIso()?Number(a.regalos_disponibles):5, pavos_generados_actual:a.pavos_generados_periodo===periodStart?Number(a.pavos_generados_mes)||0:0}));
+    gestionMonthly=new Map();
+    (movements||[]).forEach(m=>{
+      const curr=gestionMonthly.get(m.cuenta_id)||{pavos:0,ingreso_mxn:0};
+      curr.pavos+=Number(m.pavos)||0; curr.ingreso_mxn+=Number(m.ingreso_mxn)||0;
+      gestionMonthly.set(m.cuenta_id,curr);
+    });
+    renderGestionAccounts();
+    if(state) state.style.display=gestionAccounts.length?'none':'block';
+    renderGiftAccountSelector(giftSelectedDraft);
+    if(forceToast) showToast('Inventario actualizado.');
+    return gestionAccounts;
+  } catch(error) {
+    console.error('Gestión de cuentas no disponible:',error);
+    if(state) { state.style.display='block'; state.innerHTML='<i class="fas fa-triangle-exclamation" style="color:var(--red)"></i><p>No se pudo cargar Gestión. Aplica la migración SQL de Supabase y vuelve a intentar.</p>'; }
+    notifySystemError('No se pudo cargar Gestión',`${error?.message||'Revisa Supabase y aplica la migración requerida.'}`, 'gestion:data-load');
+    if(forceToast) showToast(`No se pudo cargar Gestión: ${error?.message||'revisa Supabase y la migración requerida.'}`,true,7000);
+    return [];
+  }
+};
+
+function renderGestionAccounts() {
+  const grid=document.getElementById('gestion-account-grid'); if(!grid)return;
+  const totalVB=gestionAccounts.reduce((n,a)=>n+Number(a.pavos_disponibles||0),0);
+  const generatedVB=gestionAccounts.reduce((n,a)=>n+Number(a.pavos_generados_actual||0),0);
+  const monthVB=[...gestionMonthly.values()].reduce((n,m)=>n+m.pavos,0);
+  const monthMoney=[...gestionMonthly.values()].reduce((n,m)=>n+m.ingreso_mxn,0);
+  const gifts=gestionAccounts.reduce((n,a)=>n+Number(a.regalos_hoy??5),0);
+  const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  set('gestion-total-vbucks',new Intl.NumberFormat('es-MX').format(totalVB));
+  set('gestion-month-generated',new Intl.NumberFormat('es-MX').format(generatedVB));
+  set('gestion-month-vbucks',new Intl.NumberFormat('es-MX').format(monthVB));
+  set('gestion-month-income',gestionCurrency(monthMoney));
+  set('gestion-gifts-left',`${gifts} / ${gestionAccounts.length*5}`);
+  const rows=gestionAccounts.map(a=>{
+    const m=gestionMonthly.get(a.id)||{pavos:0,ingreso_mxn:0};
+    const health=giftBotHealth.state==='ok'?(giftBotHealth.online.has(a.nombre.toLowerCase())?'online':'offline'):'unknown';
+    const label=health==='online'?'En línea':health==='offline'?'Desconectada':'Sin verificar';
+    return `<div class="gestion-account-row"><div class="gestion-account-cell gestion-account-name">ID: ${gestionEscape(a.nombre)}<small><span class="gestion-online ${health}"><i class="fas fa-circle" style="font-size:.58em"></i>${label}</span></small></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value ${a.epic_account_id?'':'dim'}">${gestionEscape(a.epic_account_id||'Sin registrar')}</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value ${a.stw_level==null?'dim':''}">${a.stw_level==null?'—':gestionEscape(a.stw_level)}</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(Number(a.pavos_disponibles)||0)}</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(a.pavos_generados_actual||0)}</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(m.pavos)}</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value">${a.regalos_hoy} / 5</span></div>
+      <div class="gestion-account-cell gestion-financial-cell sec-ceo-only"><span class="gestion-account-value">${gestionCurrency(m.ingreso_mxn)}</span><small>Venta · pavos: ${gestionCurrency(m.pavos*.10)}</small></div>
+      <div class="gestion-account-cell gestion-card-actions"><button type="button" class="btn btn-outline" onclick="window.openGestionAccount('${gestionEscape(a.id)}')"><i class="fas fa-pen"></i> Editar</button></div></div>`;
+  }).join('');
+  grid.innerHTML=`<div class="gestion-account-table"><div class="gestion-account-row gestion-account-header"><span>Cuenta / ID</span><span>ID de Epic Games</span><span>Poder STW</span><span>Pavos disponibles</span><span>Generados este mes</span><span>Usados en regalos</span><span>Regalos hoy</span><span class="sec-ceo-only">Ventas / valor pavos</span><span>Acciones</span></div>${rows}</div>`;
+}
+
+window.openGestionAccount=function(id='') {
+  const a=gestionAccounts.find(x=>String(x.id)===String(id));
+  document.getElementById('gestion-modal-title').textContent=a?'Editar cuenta':'Agregar cuenta';
+  document.getElementById('gestion-f-id').value=a?.id||'';
+  document.getElementById('gestion-f-name').value=a?.nombre||'';
+  document.getElementById('gestion-f-epic').value=a?.epic_account_id||'';
+  document.getElementById('gestion-f-level').value=a?.stw_level??'';
+  document.getElementById('gestion-f-vbucks').value=a?.pavos_disponibles??0;
+  document.getElementById('gestion-f-generated').value=a?.pavos_generados_actual??0;
+  document.getElementById('gestion-f-gifts').value=a?.regalos_hoy??5;
+  document.getElementById('modal-gestion-cuenta').classList.add('open');
+};
+window.closeGestionAccount=function(){document.getElementById('modal-gestion-cuenta')?.classList.remove('open');};
+window.saveGestionAccount=async function(){
+  const name=document.getElementById('gestion-f-name').value.trim();
+  const vbucks=Number(document.getElementById('gestion-f-vbucks').value);
+  const gifts=Number(document.getElementById('gestion-f-gifts').value);
+  const generated=Number(document.getElementById('gestion-f-generated').value);
+  const levelRaw=document.getElementById('gestion-f-level').value;
+  const level=levelRaw===''?null:Number(levelRaw);
+  if(!name||!Number.isInteger(vbucks)||vbucks<0||!Number.isInteger(generated)||generated<0||!Number.isInteger(gifts)||gifts<0||gifts>5||(level!==null&&(!Number.isInteger(level)||level<0))){showToast('Revisa el nombre y los valores: pavos enteros; regalos de 0 a 5.',true);return;}
+  const id=document.getElementById('gestion-f-id').value;
+  const btn=document.getElementById('gestion-save-btn'); if(btn){btn.disabled=true;btn.textContent='Guardando…';}
+  try{
+    let query=supabase.from('cuentas_gestion');
+    const record={nombre:name,epic_account_id:document.getElementById('gestion-f-epic').value.trim(),stw_level:level,pavos_disponibles:vbucks,pavos_generados_mes:generated,pavos_generados_periodo:`${todayIso().slice(0,7)}-01`,regalos_disponibles:gifts,regalos_dia:todayIso(),actualizado_en:new Date().toISOString()};
+    const result=id?await query.update(record).eq('id',id):await query.insert(record);
+    if(result.error)throw result.error;
+    window.closeGestionAccount(); await window.fetchGestionAccounts(false); showToast('Cuenta guardada.');
+  }catch(error){console.error(error);showToast(`No se pudo guardar la cuenta: ${error?.message||'error de Supabase'}`,true,7000);}
+  finally{if(btn){btn.disabled=false;btn.textContent='Guardar cuenta';}}
+};
+
+async function checkGiftBotHealth() {
+  const previous=giftBotHealth;
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),9000);
+  try {
+    const response=await fetch(BOT_STATUS_URL,{cache:'no-store',signal:controller.signal});
+    if(!response.ok) throw new Error(`El servicio respondió ${response.status}.`);
+    const body=await response.json();
+    if(!Array.isArray(body.online_bots)) throw new Error('La respuesta no incluye el estado de las cuentas.');
+    const online=new Set(body.online_bots.map(x=>String(typeof x==='string'?x:(x?.display_name||x?.name||x?.account_name||'')).trim().toLowerCase()).filter(Boolean));
+    giftBotHealth={state:'ok',online,lastError:''};
+    const offline=gestionAccounts.map(a=>a.nombre).filter(name=>!online.has(name.toLowerCase()));
+    const signature=offline.slice().sort().join('|');
+    if(offline.length) {
+      if(previous.state!=='ok'||signature!==lastOfflineAccountSignature) notifySystemError('Cuentas de entrega desconectadas',`${offline.join(', ')} no aparecen conectadas al servicio de regalos.`, `bots:offline:${signature}`);
+      lastOfflineAccountSignature=signature;
+    } else {
+      if(gestionAccounts.length&&(previous.state!=='ok'||lastOfflineAccountSignature)) notifySystemRecovered('Cuentas de entrega disponibles','Todas las cuentas registradas aparecen conectadas.','bots:all-online');
+      lastOfflineAccountSignature='';
+    }
+    renderGestionAccounts();
+  } catch(error) {
+    giftBotHealth={state:'unknown',online:new Set(),lastError:error?.message||'Error de conexión'};
+    if(previous.state!=='unknown') notifySystemError('No se pudo verificar el servicio de cuentas',`El estado de las cuentas no está disponible: ${giftBotHealth.lastError}`, 'bots:status-api');
+    renderGestionAccounts();
+  } finally { clearTimeout(timeout); }
+}
+function startGiftBotMonitor(){
+  if(giftBotMonitorTimer) clearInterval(giftBotMonitorTimer);
+  checkGiftBotHealth();
+  giftBotMonitorTimer=setInterval(checkGiftBotHealth,30000);
+}
+
+function renderGiftAccountSelector(selected=[]) {
+  const block=document.getElementById('vm-gift-allocation');
+  const list=document.getElementById('vm-gift-account-list');
+  if(!block||!list)return;
+  if(document.getElementById('vc-f-tipo')?.value!=='Venta via regalo'){block.style.display='none';return;}
+  if(selected.length) giftSelectedDraft=selected;
+  block.style.display='block';
+  if(!gestionAccounts.length){list.innerHTML='<div class="empty"><i class="fas fa-triangle-exclamation"></i><p>No se cargaron las cuentas. Abre Gestión y revisa la conexión a Supabase.</p></div>';return;}
+  list.innerHTML=gestionAccounts.map(a=>{
+    const prior=selected.find(x=>String(x.cuenta_id||x.id)===String(a.id));
+    const n=Number(prior?.pavos)||0;
+    const gifts=Number(a.regalos_hoy??5);
+    const online=giftBotHealth.state==='ok'?giftBotHealth.online.has(a.nombre.toLowerCase()):null;
+    const state=online===null?'estado sin verificar':online?'en línea':'desconectada';
+    return `<div class="gift-account-row ${prior?'selected':''}" data-gift-row="${gestionEscape(a.id)}"><input type="checkbox" class="gift-account-check" aria-label="Seleccionar ${gestionEscape(a.nombre)}" ${prior?'checked':''} ${gifts<1&&!prior?'disabled':''}><label><strong>${gestionEscape(a.nombre)}</strong><small>${new Intl.NumberFormat('es-MX').format(Number(a.pavos_disponibles)||0)} pavos · ${gifts}/5 regalos · ${state}</small></label><input class="finput gift-account-vbucks" type="number" min="1" step="1" max="${Number(a.pavos_disponibles)||0}" value="${prior?n:''}" placeholder="Pavos" ${prior?'':'disabled'} aria-label="Pavos usados de ${gestionEscape(a.nombre)}"></div>`;
+  }).join('');
+  list.querySelectorAll('.gift-account-check').forEach(check=>check.addEventListener('change',()=>{const row=check.closest('.gift-account-row');const input=row.querySelector('.gift-account-vbucks');input.disabled=!check.checked;row.classList.toggle('selected',check.checked);if(check.checked&&!input.value)input.value='';updateGiftAllocationSummary();}));
+  list.querySelectorAll('.gift-account-vbucks').forEach(input=>input.addEventListener('input',updateGiftAllocationSummary));
+  updateGiftAllocationSummary(false);
+}
+function getGiftAllocations(){
+  return [...document.querySelectorAll('#vm-gift-account-list .gift-account-row')].filter(row=>row.querySelector('.gift-account-check')?.checked).map(row=>({cuenta_id:row.dataset.giftRow,pavos:Math.floor(Number(row.querySelector('.gift-account-vbucks')?.value)||0)}));
+}
+function updateGiftAllocationSummary(autoPrice=true){
+  const allocations=getGiftAllocations();const total=allocations.reduce((n,a)=>n+a.pavos,0);
+  const msg=document.getElementById('vm-gift-allocation-summary');if(msg)msg.textContent=allocations.length?`${allocations.length} cuenta(s) · ${total.toLocaleString('es-MX')} pavos · valor sugerido ${gestionCurrency(total*.10)}`:'Selecciona al menos una cuenta.';
+  if(autoPrice&&allocations.length&&total>0){const input=document.getElementById('vc-f-ingreso');if(input){const currency=document.getElementById('vc-f-moneda')?.value||'MXN';const mxn=total*.10;input.value=(currency==='MXN'?mxn:mxn/VENTA_USD_MXN_RATE).toFixed(2);input.dataset.moneyCurrency=currency;recalculateVentaFinancialFields();}}
 }
 
 function populateUsefulInfo() {
@@ -5204,9 +5494,14 @@ function mostrarPanel(email, role) {
   setDefaultMonth();
   setDefaultVentasRange();
   const loadStatus = document.getElementById('app-load-status');
+  const loadMessage = loadStatus?.querySelector('span');
+  if (loadMessage) loadMessage.textContent = 'Cargando ventas, clientes y cuentas…';
   loadStatus?.classList.add('visible');
-  const initialLoads = [fetchVentas(), fetchOrders(), fetchCatalogo(), fetchTiendaHoy(), fetchClientesFromDB()];
-  Promise.allSettled(initialLoads).finally(() => loadStatus?.classList.remove('visible'));
+  // Esperar solo los datos principales; catálogo y tienda externa se actualizan en segundo plano.
+  const gestionLoad = window.fetchGestionAccounts(false).finally(() => startGiftBotMonitor());
+  const primaryLoads = [fetchVentas(), fetchClientesFromDB(), gestionLoad];
+  Promise.allSettled(primaryLoads).finally(() => loadStatus?.classList.remove('visible'));
+  Promise.allSettled([fetchOrders(), fetchCatalogo(), fetchTiendaHoy()]);
   setupRealtime();
   cargarSugerenciasClientes();
   loadSavedWallpaper();
@@ -5500,7 +5795,7 @@ async function fetchVentas() {
   try {
     // Supabase devuelve máx. 1000 filas por consulta: se pide por páginas
     // (ordenadas) hasta traer TODAS las ventas, para que el historial nunca se corte.
-    const PAGE = 100;
+    const PAGE = 1000;
     let all = [];
     for (let desde = 0; desde < 50000; desde += PAGE) {
       const { data, error } = await supabase.from('ventas').select('*')
@@ -5872,6 +6167,7 @@ function openVentaModal() {
   // Reset chips
   document.querySelectorAll('.vm-tipo-chip').forEach(c => c.classList.remove('active'));
   document.getElementById('vc-f-tipo').value = '';
+  giftSelectedDraft = [];
   document.getElementById('vm-cuenta-fields').style.display = 'block';
   const streamingBlock0 = document.getElementById('vm-streaming-fields');
   if (streamingBlock0) streamingBlock0.style.display = 'none';
@@ -5920,6 +6216,7 @@ function openVentaModal() {
   document.getElementById('vc-f-fecha').value = isoStr;
   updateVentaConversionNote();
   window.calcVentaMargen();
+  renderGiftAccountSelector([]);
   ventaModal.classList.add('open');
 }
 
@@ -5940,7 +6237,9 @@ window.editVenta = function(id) {
     c.classList.toggle('active', c.dataset.tipo === tipoVal);
   });
   document.getElementById('vc-f-tipo').value = tipoVal;
+  giftSelectedDraft = Array.isArray(v.cuentas_regalo) ? v.cuentas_regalo : [];
   window.toggleVentaFields();
+  renderGiftAccountSelector(giftSelectedDraft);
   // Restore fields
   document.getElementById('vc-f-cliente').value = v.cliente || '';
   const dropdown=document.getElementById('vc-cliente-dropdown'); if(dropdown)dropdown.classList.remove('open');
@@ -6049,18 +6348,11 @@ window.calcVentaMargen = function() { recalculateVentaFinancialFields(); };
 // vuelva a renderizarse o el dispositivo no ejecute el atributo inline.
 document.addEventListener('input', event => {
   if (!event.target?.matches?.('#vc-f-ingreso,#vc-f-costo-real,#vc-f-monto-recibido,#vc-f-pago-parcial,#vc-f-interes-pct')) return;
-  if (event.target.id === 'vc-f-ingreso' && parseVentaNumber(event.target.value) > 0) {
-    event.target.removeAttribute('aria-invalid');
-    event.target.style.borderColor = '';
-    event.target.style.boxShadow = '';
-    const amountError = document.getElementById('vc-f-ingreso-error');
-    if (amountError) amountError.style.display = 'none';
-  }
   try { recalculateVentaFinancialFields(); }
   catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
 }, true);
 document.addEventListener('change', event => {
-  if (event.target?.id === 'vc-f-moneda') syncVentaCurrencyFields();
+  if (event.target?.id === 'vc-f-moneda') { syncVentaCurrencyFields(); if(getGiftAllocations().length) updateGiftAllocationSummary(); }
   if (event.target?.id === 'vc-f-moneda' || event.target?.id === 'vc-f-metodo') {
     try { recalculateVentaFinancialFields(); }
     catch (error) { console.error('No se pudo recalcular el resumen de la venta:', error); }
@@ -6136,9 +6428,12 @@ window.toggleVentaFields = function() {
   const cuentaBlock = document.getElementById('vm-cuenta-fields');
   const apartarBlock = document.getElementById('vm-apartar-fields');
   const streamingBlock = document.getElementById('vm-streaming-fields');
+  const giftBlock=document.getElementById('vm-gift-allocation');
   if (cuentaBlock) cuentaBlock.style.display = 'block';
   if (apartarBlock) apartarBlock.style.display = 'none';
   if (streamingBlock) streamingBlock.style.display = 'none';
+  if (giftBlock) giftBlock.style.display = tipo === 'Venta via regalo' ? 'block' : 'none';
+  if (tipo === 'Venta via regalo') renderGiftAccountSelector(giftSelectedDraft);
   const labelProd = document.getElementById('label-vc-f-producto');
   if (labelProd) labelProd.textContent = isCuenta ? 'Cuenta / detalle editable' : 'Nombre del Producto';
   const product = document.getElementById('vc-f-producto');
@@ -6244,29 +6539,22 @@ window.saveVenta = async function() {
   const ingresoBase = ventaIngresoUsd();
   const tipo = document.getElementById('vc-f-tipo').value;
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
-  const amountInput = document.getElementById('vc-f-ingreso');
-  const amountError = document.getElementById('vc-f-ingreso-error');
-  if (!(saleAmount > 0)) {
-    if (amountInput) {
-      amountInput.setAttribute('aria-invalid', 'true');
-      amountInput.style.borderColor = '#ff4d6d';
-      amountInput.style.boxShadow = '0 0 0 2px rgba(255,77,109,.2)';
-      amountInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => amountInput.focus({ preventScroll: true }), 250);
+  const giftAllocations=tipo==='Venta via regalo'?getGiftAllocations():[];
+  if (!(saleAmount > 0) || !tipo || !paymentMethod) {
+    showToast('El precio de venta, el tipo y el método de pago son obligatorios.', true);
+    return;
+  }
+  if(tipo==='Venta via regalo'){
+    if(!giftAllocations.length||giftAllocations.some(a=>!Number.isInteger(a.pavos)||a.pavos<1)) { showToast('Para una venta vía regalo, selecciona al menos una cuenta y coloca los pavos enviados desde cada una.',true); return; }
+    const old=currentVentas.find(v=>String(v.id)===String(window.editingVentaId));
+    const oldAlloc=Array.isArray(old?.cuentas_regalo)?old.cuentas_regalo:[];
+    for(const allocation of giftAllocations){
+      const account=gestionAccounts.find(a=>String(a.id)===allocation.cuenta_id);
+      const refund=oldAlloc.find(a=>String(a.cuenta_id||a.id)===allocation.cuenta_id);
+      if(!account){showToast('No se reconoce una de las cuentas seleccionadas. Actualiza Gestión.',true);return;}
+      if(allocation.pavos>Number(account.pavos_disponibles||0)+Number(refund?.pavos||0)){showToast(`${account.nombre} no tiene suficientes pavos disponibles.`,true);return;}
+      if(Number(account.regalos_hoy||0)+(refund?1:0)<1){showToast(`${account.nombre} ya alcanzó sus 5 regalos diarios.`,true);return;}
     }
-    if (amountError) amountError.style.display = 'block';
-    showToast('Escribe un precio de venta mayor que cero.', true);
-    return;
-  }
-  if (amountInput) {
-    amountInput.removeAttribute('aria-invalid');
-    amountInput.style.borderColor = '';
-    amountInput.style.boxShadow = '';
-  }
-  if (amountError) amountError.style.display = 'none';
-  if (!tipo || !paymentMethod) {
-    showToast('El tipo de venta y el método de pago son obligatorios.', true);
-    return;
   }
   const saleDateInput = document.getElementById('vc-f-fecha');
   if (!saleDateInput.value || !window.validateCalendarInput(saleDateInput, 'date')) {
@@ -6322,6 +6610,7 @@ window.saveVenta = async function() {
     fin_num_cuotas:      parseInt(document.getElementById('fin-num-cuotas')?.value, 10)          || null,
     created_at:          fechaISO
   };
+  record.cuentas_regalo = giftAllocations;
   if ((document.getElementById('vm-rem-text')?.value || '').trim()) window.vmAddRemark(); // no perder un remark sin "Agregar"
   // Campos nuevos: solo se envían si tienen datos (o si había y se editaron),
   // así guardar una venta normal sigue funcionando aunque falten las columnas.
@@ -6352,13 +6641,16 @@ window.saveVenta = async function() {
     // El guardado ya terminó en Supabase; no dejar el botón girando por una
     // recarga lenta o caída de la consulta del historial.
     Promise.resolve().then(() => fetchVentas()).catch(error => console.error('Venta guardada; no se pudo actualizar la lista:', error));
+    if(giftAllocations.length) Promise.resolve().then(()=>window.fetchGestionAccounts(false));
     return true;
   } catch (err) {
     console.error('saveVenta error:', err);
     if (err?.name === 'AbortError') {
       showToast('Supabase tardó más de 15 segundos. Revisa la lista antes de volver a intentar para evitar duplicar la venta.', true, 7000);
+    } else if (err?.message?.includes('cuentas_regalo') || err?.message?.includes('cuentas_gestion')) {
+      showToast('Falta instalar la migración Gestión de cuentas en Supabase. Ejecuta supabase/migrations/20261102_account_management.sql y vuelve a intentar.', true, 8000);
     } else if (err?.message?.includes('column') || err?.code === '42703') {
-      showToast('Faltan columnas en Supabase (remarks / foto_producto) — corre el SQL de actualización', true);
+      showToast('Faltan columnas en Supabase para guardar esta venta. Revisa la migración más reciente.', true);
     } else {
       showToast('Error: ' + (err?.message || JSON.stringify(err)), true);
     }
@@ -6474,13 +6766,12 @@ function exportVentasCSV() {
   a.click();
 }
 
-window.exportVentasPDF = async function() {
+window.exportVentasPDF = function() {
   const {from,to}=ventasDateRange();
   const day=v=>vcLocalDay(v.created_at);
   const rows=currentVentas.filter(v=>day(v)&&day(v)>=from&&day(v)<=to).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));
   const popup=window.open('','_blank');
   if(!popup){showToast('El navegador bloqueó la ventana del informe. Permite ventanas emergentes e inténtalo de nuevo.',true);return;}
-  popup.document.write('<!doctype html><html lang="es"><meta charset="utf-8"><title>Preparando análisis</title><body style="font:16px Arial;background:#101510;color:#fff;padding:40px;text-align:center"><h2>Preparando el análisis estratégico con IA…</h2><p>Revisando resultados agregados del período.</p></body></html>');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const gross=rows.reduce((s,v)=>s+(parseFloat(v.ingreso)||0),0), net=rows.reduce((s,v)=>s+(parseFloat(v.monto_recibido??v.ingreso)||0),0), fees=rows.reduce((s,v)=>s+(parseFloat(v.comision)||0),0);
   const now=new Date(), monthStart=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`, today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
@@ -6497,62 +6788,34 @@ window.exportVentasPDF = async function() {
   const previousLabel=isCurrentMonth?prevStart.toLocaleDateString('es-DO',{month:'long',year:'numeric'}):`${formatDate(prevStart)} — ${formatDate(prevEnd)}`;
   const bar=(label,currentValue,previousValue,formatter)=>{const max=Math.max(1,currentValue,previousValue),a=Math.max(2,currentValue/max*100),b=Math.max(2,previousValue/max*100);return `<div class="compare-chart"><h3>${label}</h3><div class="compare-row"><span>Período actual</span><i><b class="current-bar" style="width:${a}%"></b></i><strong>${formatter(currentValue)}</strong></div><div class="compare-row"><span>${esc(previousLabel)}</span><i><b class="previous-bar" style="width:${b}%"></b></i><strong>${formatter(previousValue)}</strong></div></div>`;};
   const analysis=renderPurchasePatterns(rows);
-    const isCEO=currentRole==='CEO';
-  const avgTicket=rows.length?gross/rows.length:0,activeDays=new Set(rows.map(day).filter(Boolean)).size;
-  const productStats=new Map(),paymentStats=new Map(),customerStats=new Map();
-  rows.forEach(v=>{
-    const product=String(v.producto||v.tipo||'Sin especificar').trim()||'Sin especificar';
-    const stat=productStats.get(product)||{name:product,count:0,revenue:0};
-    stat.count++;stat.revenue+=parseFloat(v.ingreso)||0;productStats.set(product,stat);
-    const method=paymentMethodIdentityLabel(v.metodo_pago);paymentStats.set(method,(paymentStats.get(method)||0)+1);
-    const customer=String(v.cliente||'').trim();if(customer)customerStats.set(customer,(customerStats.get(customer)||0)+1);
-  });
-  const bestProduct=[...productStats.values()].sort((a,b)=>b.count-a.count||b.revenue-a.revenue)[0];
-  const topPayment=[...paymentStats].sort((a,b)=>b[1]-a[1])[0],repeatCustomers=[...customerStats.values()].filter(n=>n>1).length;
-  const aiInput={period:reportRange,previousPeriod:previousLabel,currency:'Importes guardados en el sistema; no convertir',current:{sales:rows.length,gross:gross,averageTicket:avgTicket,net:isCEO?net:0,fees:isCEO?fees:0,activeDays:activeDays,periodDays:periodDays},previous:{sales:previous.length,gross:previousGross,net:isCEO?previousNet:0},products:[...productStats.values()].sort((a,b)=>b.count-a.count||b.revenue-a.revenue).slice(0,8).map(x=>({name:x.name,sales:x.count,gross:Math.round(x.revenue*100)/100})),paymentMix:[...paymentStats].map(([method,sales])=>({method:method,sales:sales,sharePercent:rows.length?Math.round(sales/rows.length*1000)/10:0})).sort((a,b)=>b.sales-a.sales).slice(0,8),weekdayPattern:(analysis?.averages||[]).map(x=>({day:x.label,sales:x.count,occurrences:x.days,averageSales:x.average})),repeatCustomers:repeatCustomers};
-  let ai;try{ai=await apiFetch('/api/analytics/informe-ventas-ia',{method:'POST',body:JSON.stringify(aiInput)});}catch(error){popup.document.open();popup.document.write('<!doctype html><html lang="es"><meta charset="utf-8"><title>Análisis no disponible</title><body style="font:15px/1.6 Arial;background:#101510;color:#fff;padding:32px;max-width:680px;margin:40px auto"><h2 style="color:#70ff00">No se pudo generar el análisis con IA</h2><p>'+esc(error?.message||'No se pudo generar el análisis.')+'</p><p>Comprueba el backend y la clave OpenAI. No se generó un análisis automático de reemplazo.</p><button onclick="location.reload()">Reintentar</button></body></html>');popup.document.close();showToast('No se pudo generar el informe con IA.',true);return;}
-  const aiReport=ai.analysis;if(!aiReport||!Array.isArray(aiReport.actionPlan)){popup.close();showToast('La IA devolvió un informe incompleto.',true);return;}
-  const pct=(value,base)=>base>0?((value-base)/base)*100:null,grossChange=pct(gross,previousGross),salesChange=pct(rows.length,previous.length);
-  const money=value=>'$'+(Number(value)||0).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const insights=[];
-  if(grossChange!==null)insights.push('Los ingresos '+(grossChange>=0?'subieron ':'bajaron ')+Math.abs(grossChange).toFixed(1)+'% frente al período anterior ('+money(previousGross)+' → '+money(gross)+').');
-  else insights.push('No hay ventas en el período anterior comparable; este período servirá como línea base.');
-  if(salesChange!==null)insights.push('La cantidad de ventas '+(salesChange>=0?'aumentó ':'disminuyó ')+Math.abs(salesChange).toFixed(1)+'% frente al período anterior.');
-  if(bestProduct)insights.push('El producto con más ventas fue “'+esc(bestProduct.name)+'”, con '+bestProduct.count+' venta(s) y '+money(bestProduct.revenue)+' en ingresos.');
-  if(topPayment)insights.push('El método más utilizado fue '+esc(topPayment[0])+' ('+topPayment[1]+' de '+rows.length+' ventas, '+(topPayment[1]/rows.length*100).toFixed(1)+'%).');
-  if(activeDays)insights.push('Se registraron ventas en '+activeDays+' de '+periodDays+' días; promedio: '+money(gross/activeDays)+' por día con ventas.');
-  if(repeatCustomers)insights.push(repeatCustomers+' cliente(s) aparecen en más de una compra registrada.');
-  const actions=[];
-  if(!rows.length)actions.push('Completar el registro de cada venta (producto, importe, método y fecha) para identificar tendencias reales el próximo mes.');
-  else {
-    if(bestProduct)actions.push('Revisar disponibilidad y margen de “'+esc(bestProduct.name)+'” y destacarlo en la tienda si sigue siendo rentable.');
-    if(grossChange!==null&&grossChange<0)actions.push('Revisar precios, disponibilidad y promoción de los productos principales; evaluar descuentos con seguimiento semanal.');
-    else actions.push('Usar este período como referencia y comparar semanalmente ingresos, pedidos y ticket promedio.');
-    if(topPayment&&topPayment[1]/rows.length>=.5)actions.push('Mantener '+esc(topPayment[0])+' visible y comprobar que las alternativas de pago estén claras.');
-    if(!customerStats.size||rows.some(v=>!v.producto||!v.metodo_pago))actions.push('Completar cliente, producto y método de pago para mejorar el análisis del siguiente mes.');
-    if(analysis)actions.push('Probar una publicación o recordatorio en '+esc(analysis.best.label)+' y contrastar el resultado con '+esc(analysis.slow.label)+'.');
-  }
-  const tableRows=rows.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(vcLocalDay(v.created_at))}</td><td class='detail-cell'><strong>${esc(v.producto||'Venta')}</strong><small>${esc(v.cliente||'Cliente no especificado')} · ${esc(v.tipo||'Tipo no especificado')}</small></td><td>${esc(paymentMethodIdentityLabel(v.metodo_pago))}</td><td class='num'>${money(v.ingreso)}</td>${isCEO?`<td class='num'>${money(v.comision)}</td><td class='num'>${money(v.monto_recibido??v.ingreso)}</td>`:''}</tr>`).join('');
-  const renderAIList=(title,items,fields,kind)=>{if(!Array.isArray(items)||!items.length)return '';return '<section class="ai-card '+(kind||'')+'"><h3>'+title+'</h3><ul>'+items.map(item=>'<li><strong>'+esc(item[fields[0]])+'</strong><p>'+esc(item[fields[1]])+'</p>'+(fields[2]&&item[fields[2]]?'<p><b>'+fields[3]+':</b> '+esc(item[fields[2]])+'</p>':'')+(fields[4]&&item[fields[4]]?'<p><b>'+fields[5]+':</b> '+esc(item[fields[4]])+'</p>':'')+'</li>').join('')+'</ul></section>';};
-  const planHtml=(aiReport.actionPlan||[]).map(x=>'<article class="plan-item"><div class="plan-meta"><b>'+esc(x.timeframe)+'</b><span>'+esc(x.priority)+' prioridad</span></div><h4>'+esc(x.action)+'</h4><p>'+esc(x.successCriteria)+'</p><small>Responsable sugerido: '+esc(x.owner)+' · Indicador: '+esc(x.metric)+'</small></article>').join('');
-  const insightReport='<section class="section ai-overview"><div class="ai-kicker">ANÁLISIS ESTRATÉGICO · IA</div><h2>Lectura ejecutiva del período</h2><p>'+esc(aiReport.executiveSummary)+'</p><div class="analysis-metrics"><div><span>Ticket promedio</span><b>'+money(avgTicket)+'</b></div><div><span>Días con ventas</span><b>'+activeDays+' / '+periodDays+'</b></div><div><span>Ingreso diario con ventas</span><b>'+money(activeDays?gross/activeDays:0)+'</b></div><div><span>Clientes recurrentes*</span><b>'+repeatCustomers+'</b></div></div><small>*Conteo agregado; no se enviaron identidades al análisis.</small></section><div class="ai-grid">'+renderAIList('Puntos fuertes',aiReport.strengths,['finding','evidence','action','Acción'],'positive')+renderAIList('Puntos débiles',aiReport.weaknesses,['finding','evidence','risk','Riesgo'],'caution')+renderAIList('Oportunidades',aiReport.opportunities,['idea','basis','test','Prueba','successMetric','Éxito si'])+renderAIList('Riesgos y mitigación',aiReport.risks,['risk','evidence','mitigation','Mitigación'],'caution')+renderAIList('Estrategias de mercado',aiReport.marketStrategies,['strategy','target','experiment','Experimento','kpi','KPI'])+'</div><section class="section action-plan"><h2>Plan de acción priorizado · 90 días</h2><div class="plan-grid">'+(planHtml||'<p>Sin acciones disponibles.</p>')+'</div></section>'+(aiReport.watchNextPeriod?.length?'<section class="section"><h2>Indicadores a vigilar</h2><ul>'+aiReport.watchNextPeriod.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section>':'')+(aiReport.dataLimitations?.length?'<section class="section data-notes"><h2>Alcance y limitaciones</h2><ul>'+aiReport.dataLimitations.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul></section>':'');
-
+  const isCEO=currentRole==='CEO';
+  const tableRows=rows.map((v,i)=>`<tr><td>${i+1}</td><td>${esc(vcLocalDay(v.created_at))}</td><td>${esc(v.tipo)}</td><td>${esc(v.producto)}</td><td>${esc(v.cliente)}</td><td>${esc(paymentMethodIdentityLabel(v.metodo_pago))}</td><td class="num">$${(parseFloat(v.ingreso)||0).toFixed(2)}</td>${isCEO?`<td class="num">$${(parseFloat(v.comision)||0).toFixed(2)}</td><td class="num">$${(parseFloat(v.monto_recibido??v.ingreso)||0).toFixed(2)}</td>`:''}</tr>`).join('');
   const pattern=analysis?`<section class="section"><h2>Patrones de compra por día</h2><p>Mayor promedio: <b>${esc(analysis.best.label)}</b> (${analysis.best.average.toFixed(2)} ventas por ocurrencia). Menor promedio: <b>${esc(analysis.slow.label)}</b> (${analysis.slow.average.toFixed(2)}).</p><div class="weekdays">${analysis.averages.map(x=>`<span>${esc(x.label)}<b>${x.average.toFixed(2)}</b><small>${x.count} ventas · ${x.days} días</small></span>`).join('')}</div></section>`:'';
   const rankChart=(title,key)=>{const counts=new Map();rows.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';counts.set(name,(counts.get(name)||0)+1);});const items=[...counts].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count).slice(0,5),max=Math.max(1,...items.map(x=>x.count));return `<div class="rank-chart"><h3>${title}</h3>${items.length?items.map(x=>`<div class="rank-row"><span title="${esc(x.name)}">${esc(x.name)}</span><i><b style="width:${Math.max(3,x.count/max*100)}%"></b></i><strong>${x.count}</strong></div>`).join(''):'<p>Sin datos en el período.</p>'}</div>`;};
   const rankings=`<section class="section ranking-grid"><h2>Productos y tipos más vendidos del período</h2>${rankChart('Productos','producto')}${rankChart('Tipos de venta','tipo')}</section>`;
-  const logoUrl=new URL('assets/shegos-logo-pdf.jpg',window.location.href).href;
+  const logoUrl=new URL('assets/logo-horizontal.webp',window.location.href).href;
   popup.document.open();
   popup.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Ventas Shegos Store · ${esc(reportRange)}</title><style>
-    @page{size:A4 portrait;margin:10mm 9mm}*{box-sizing:border-box}body{font:10px/1.42 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;gap:14px;border-radius:10px;background:#080c08;color:#fff;border-bottom:3px solid #70ff00;padding:12px 14px;margin-bottom:12px}header p{color:#d4dfd0}.brand-mark{display:flex;align-items:center;justify-content:center;background:#030503;border-radius:8px;padding:4px 8px;flex:0 0 116px}.logo{display:block;width:100%;height:70px;object-fit:contain}h1{font-size:20px;margin:0 0 4px}h2{font-size:14px;margin:0 0 8px}h3{font-size:11px;margin:0 0 7px}p{margin:3px 0;color:#536052}.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:10px 0}.metric{padding:8px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:8px;text-transform:uppercase;letter-spacing:.5px}.metric strong{font-size:15px;display:block;margin-top:3px}.comparison{display:grid;grid-template-columns:1fr;gap:7px;margin:10px 0 12px}.compare-chart{padding:8px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:90px 1fr 65px;align-items:center;gap:6px;margin:6px 0;font-size:8px}.compare-row i,.rank-row i{height:8px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:11px 0;break-inside:auto}.ranking-grid{display:grid;grid-template-columns:1fr;gap:8px}.ranking-grid h2{grid-column:1}.rank-chart{padding:8px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.rank-row{display:grid;grid-template-columns:minmax(80px,1.2fr) 1fr 20px;align-items:center;gap:6px;margin:6px 0;font-size:8px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.weekdays span{padding:6px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:8px}.weekdays b{display:block;color:#2d8209;font-size:12px}.weekdays small{display:block;color:#586157;font-size:7px}.analysis-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.analysis-metrics>div{padding:7px;border-radius:7px;background:#f2f7ef}.analysis-metrics span{display:block;color:#586157;font-size:8px}.analysis-metrics b{display:block;margin-top:2px;color:#236e0a;font-size:12px}.insight-list,.action-plan ol{padding-left:17px;margin:8px 0}.ai-kicker{font-size:8px;letter-spacing:1.5px;font-weight:800;color:#359b10;margin-bottom:4px}.ai-overview{padding:11px;border:1px solid #cfe6c4;border-radius:9px;background:#f7fbf5}.ai-overview>p{font-size:10px;line-height:1.55;color:#233020}.ai-overview>small{font-size:7px;color:#6d786b}.ai-grid{display:grid;grid-template-columns:1fr;gap:7px;margin:9px 0}.ai-card{border:1px solid #dce5d8;border-radius:8px;padding:9px;break-inside:avoid}.ai-card h3{font-size:10px;color:#214a17}.ai-card ul{padding-left:15px}.ai-card li{margin:5px 0}.ai-card p{font-size:8px;line-height:1.4;color:#4d584a}.ai-card.positive{border-left:3px solid #42bd13}.ai-card.caution{border-left:3px solid #e0a100}.plan-grid{display:grid;grid-template-columns:1fr;gap:6px}.plan-item{padding:8px;border:1px solid #dce5d8;border-radius:7px;break-inside:avoid}.plan-meta{display:flex;justify-content:space-between;font-size:8px;color:#33860f}.plan-item h4{font-size:9px;margin:4px 0}.plan-item p{font-size:8px;color:#354334}.plan-item small{font-size:7px;color:#687366}.data-notes{font-size:8px}.insight-list li,.action-plan li{margin:5px 0}.action-plan{padding:10px;border-left:3px solid #42bd13;background:#f7faf5;border-radius:0 7px 7px 0}.action-plan p{font-size:8px}table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:5px}td{padding:4px;border-bottom:1px solid #e1e7df;vertical-align:top;overflow-wrap:anywhere}tr{break-inside:avoid}.detail-cell strong,.detail-cell small{display:block}.detail-cell small{margin-top:2px;color:#596358;font-size:6.5px}.num{text-align:right;white-space:nowrap}.foot{margin-top:12px;color:#778176;font-size:8px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}.section,.metric,.analysis-metrics>div,.ai-card,.plan-item{break-inside:avoid}table{break-inside:auto}}
-  .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}</style></head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><div class="brand-mark"><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"></div><div><h1>Informe de ventas · Shegos Store</h1><p>Período: ${esc(reportRange)}</p><p style="color:#70ff00;font-weight:bold">Análisis estratégico generado con IA · ${esc(ai.model||'OpenAI')}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
+    @page{size:A4 landscape;margin:13mm}*{box-sizing:border-box}body{font:11px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #62ff00;padding-bottom:10px;margin-bottom:14px}.logo{width:185px;height:auto;max-height:95px;object-fit:contain}h1{font-size:21px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}h3{font-size:12px;margin:0 0 8px}p{margin:3px 0;color:#536052}.summary{display:flex;gap:10px;margin:12px 0}.metric{flex:1;padding:9px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:9px;text-transform:uppercase;letter-spacing:.6px}.metric strong{font-size:17px;display:block;margin-top:4px}.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}.compare-chart{padding:10px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:100px 1fr 65px;align-items:center;gap:7px;margin:8px 0;font-size:9px}.compare-row i,.rank-row i{height:10px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:15px 0;break-inside:avoid}.ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ranking-grid h2{grid-column:1/-1}.rank-chart{padding:9px;border:1px solid #d8e2d4;border-radius:8px}.rank-row{display:grid;grid-template-columns:150px 1fr 25px;align-items:center;gap:7px;margin:7px 0;font-size:9px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:7px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:9px}.weekdays b{display:block;color:#2d8209;font-size:13px}.weekdays small{display:block;color:#586157}table{width:100%;border-collapse:collapse;font-size:9px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:6px}td{padding:5px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}
+  
+</style></head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
-  <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>money(x))}${isCEO?bar('Recibido neto',net,previousNet,x=>money(x)):''}</div></section>${insightReport}${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
-  <section class="section"><h2>Detalle del registro</h2><table><thead><tr><th style="width:4%">#</th><th style="width:${isCEO?11:12}%">Fecha</th><th style="width:${isCEO?29:39}%">Producto · cliente · tipo</th><th style="width:${isCEO?14:19}%">Método</th><th style="width:${isCEO?12:16}%">Ingreso</th>${isCEO?'<th style="width:10%">Comisión</th><th style="width:14%">Recibido</th>':''}</tr></thead><tbody>${tableRows||`<tr><td colspan="${isCEO?7:5}">No hay ventas registradas en el período seleccionado.</td></tr>`}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div></body></html>`);
+  <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>`$${x.toFixed(2)}`)}${isCEO?bar('Recibido neto',net,previousNet,x=>`$${x.toFixed(2)}`):''}</div></section>${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
+  <section class="section"><h2>Detalle del registro</h2><table><thead><tr><th>#</th><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cliente</th><th>Método</th><th>Ingreso</th>${isCEO?'<th>Comisión</th><th>Recibido</th>':''}</tr></thead><tbody>${tableRows||`<tr><td colspan="${isCEO?9:7}">No hay ventas registradas en el período seleccionado.</td></tr>`}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div></body></html>`);
   popup.document.close();
-  const printReport=()=>setTimeout(()=>{try{popup.focus();popup.print();}catch(err){showToast('El informe se abrió, pero el navegador no pudo iniciar la impresión.',true);}},350);
+  let printStarted=false;
+  const printReport=()=>{
+    if(printStarted)return;
+    printStarted=true;
+    setTimeout(()=>{
+      try{if(!popup.closed){popup.focus();popup.print();}}
+      catch(err){showToast('El informe se abrió. Usa “Imprimir / Guardar como PDF” en la ventana del informe.',true);}
+    },250);
+  };
   const logo=popup.document.getElementById('report-logo');
   if(!logo||logo.complete) printReport();
-  else {logo.addEventListener('load',printReport,{once:true});logo.addEventListener('error',printReport,{once:true});}
+  else {logo.addEventListener('load',printReport,{once:true});logo.addEventListener('error',printReport,{once:true});setTimeout(printReport,1200);}
 };
 function paymentMethodIdentityLabel(method){const item=PAYMENT_METHODS.find(x=>x.value===method)||LEGACY_PAYMENT_METHODS[method];return item?.label||String(method||'—').replaceAll('_',' ');}
 
@@ -7996,6 +8259,7 @@ async function fetchClientesFromDB() {
   } catch (err) {
     window._clientesLoadError = err?.message || String(err);
     console.error('No se pudieron cargar los clientes:', err?.message || err);
+    notifySystemError('No se pudo cargar la base de clientes',window._clientesLoadError,'clientes:load');
   }
   return clientesCache;
   })();
@@ -8383,6 +8647,7 @@ window.renderClientesTab = async function(mode) {
 function renderGiftCustomers(list=getClientes()) {
   const area=document.getElementById('gift-customer-area'), count=document.getElementById('gift-client-count');
   if(!area)return;
+  if(window._clientesLoadError){if(count)count.textContent='—';area.innerHTML='<div class="gift-clients-empty"><i class="fas fa-triangle-exclamation"></i><span>No se pudieron cargar los clientes. <button class="btn btn-outline" type="button" onclick="window.renderClientesTab()">Reintentar</button></span></div>';return;}
   const clients=list.filter(c=>c.regalo||c.cosmeticosRegalo);
   if(count)count.textContent=String(clients.length);
   if(!clients.length){area.innerHTML='<div class="gift-clients-empty"><i class="fas fa-address-card"></i><span>Aún no hay clientes clasificados por compras vía regalo.</span></div>';return;}
