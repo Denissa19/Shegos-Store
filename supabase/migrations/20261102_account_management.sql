@@ -168,6 +168,70 @@ create trigger ventas_sync_cuentas_gestion
 grant select, insert, update on public.cuentas_gestion to authenticated;
 grant select, insert, update, delete on public.cuentas_gestion_ventas to authenticated;
 
+-- Historial de ingresos de pavos: STW no genera costo y las recargas guardan su inversión.
+create table if not exists public.cuentas_gestion_pavos (
+  id uuid primary key default gen_random_uuid(),
+  cuenta_id uuid not null references public.cuentas_gestion(id) on delete cascade,
+  fecha date not null default current_date,
+  origen text not null check (origen in ('stw','recarga')),
+  pavos integer not null check (pavos > 0),
+  costo_mxn numeric(12,2) not null default 0 check (costo_mxn >= 0),
+  creado_en timestamptz not null default now(),
+  check (origen <> 'stw' or costo_mxn = 0)
+);
+create index if not exists cuentas_gestion_pavos_cuenta_fecha_idx
+  on public.cuentas_gestion_pavos (cuenta_id, fecha desc);
+alter table public.cuentas_gestion_pavos enable row level security;
+drop policy if exists "Panel autenticado puede leer entradas de pavos" on public.cuentas_gestion_pavos;
+create policy "Panel autenticado puede leer entradas de pavos"
+  on public.cuentas_gestion_pavos for select to authenticated
+  using ((auth.jwt() ->> 'email') in ('codedenissa19@gmail.com', 'carlos.arteaga.milan.2008@gmail.com'));
+grant select on public.cuentas_gestion_pavos to authenticated;
+
+create or replace function public.registrar_movimiento_pavos(
+  p_cuenta_id uuid,
+  p_pavos integer,
+  p_origen text,
+  p_costo_mxn numeric default 0
+) returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_periodo date := date_trunc('month', current_date)::date;
+  v_costo numeric(12,2) := coalesce(p_costo_mxn, 0);
+begin
+  if coalesce(auth.jwt() ->> 'email', '') not in ('codedenissa19@gmail.com', 'carlos.arteaga.milan.2008@gmail.com') then
+    raise exception 'No tienes permiso para modificar el inventario de pavos.';
+  end if;
+  if p_pavos is null or p_pavos <= 0 then
+    raise exception 'La cantidad de pavos debe ser mayor que cero.';
+  end if;
+  if p_origen not in ('stw','recarga') then
+    raise exception 'Selecciona STW o recarga como origen de los pavos.';
+  end if;
+  if v_costo < 0 or (p_origen = 'stw' and v_costo <> 0) then
+    raise exception 'El costo debe ser cero para STW y no puede ser negativo.';
+  end if;
+  perform 1 from public.cuentas_gestion where id = p_cuenta_id for update;
+  if not found then raise exception 'No se encontró la cuenta de Gestión seleccionada.'; end if;
+
+  insert into public.cuentas_gestion_pavos (cuenta_id, fecha, origen, pavos, costo_mxn)
+    values (p_cuenta_id, current_date, p_origen, p_pavos, v_costo);
+  update public.cuentas_gestion
+    set pavos_disponibles = pavos_disponibles + p_pavos,
+        pavos_generados_mes = case
+          when p_origen = 'stw' then (case when pavos_generados_periodo = v_periodo then pavos_generados_mes else 0 end) + p_pavos
+          when pavos_generados_periodo = v_periodo then pavos_generados_mes else 0 end,
+        pavos_generados_periodo = v_periodo,
+        actualizado_en = now()
+    where id = p_cuenta_id;
+end;
+$$;
+revoke all on function public.registrar_movimiento_pavos(uuid, integer, text, numeric) from public;
+grant execute on function public.registrar_movimiento_pavos(uuid, integer, text, numeric) to authenticated;
+
 -- Activa la sincronización inmediata del panel si Supabase usa su publicación estándar.
 do $$
 begin
@@ -177,6 +241,9 @@ begin
     end if;
     if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'cuentas_gestion_ventas') then
       execute 'alter publication supabase_realtime add table public.cuentas_gestion_ventas';
+    end if;
+    if not exists (select 1 from pg_publication_tables where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'cuentas_gestion_pavos') then
+      execute 'alter publication supabase_realtime add table public.cuentas_gestion_pavos';
     end if;
   end if;
 end;
