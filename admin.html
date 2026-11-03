@@ -1844,6 +1844,11 @@ body, body.role-ceo {
 @media(max-width:620px){#app-load-status{top:calc(env(safe-area-inset-top,0px) + 68px)!important;left:12px!important;right:12px!important;width:auto!important;max-width:none!important;font-size:.92rem!important;min-height:44px!important}}
 </style>
 
+<style id="coupon-styles">
+.coupon-intro{color:var(--text2);margin:-4px 0 18px;line-height:1.6}.coupon-layout{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(360px,1.2fr);gap:18px;align-items:start}.coupon-panel{padding:20px;border:1px solid var(--border2);border-radius:16px;background:rgba(10,14,11,.86);box-shadow:0 12px 30px #0004}.coupon-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:18px;color:var(--accent)}.coupon-panel-heading>i{font-size:1.2rem}.coupon-panel-heading strong,.coupon-panel-heading small{display:block}.coupon-panel-heading strong{color:var(--text);font-size:1rem}.coupon-panel-heading small{color:var(--text2);font-size:.78rem;margin-top:3px}.coupon-panel .frow{gap:12px}.coupon-create-btn{width:100%;justify-content:center;margin-top:4px}.coupon-created-card{margin-top:18px}.coupon-created-card img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--accent);background:#000}.coupon-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.coupon-list-panel{min-height:280px}.coupon-loading,.coupon-empty{padding:34px 12px;text-align:center;color:var(--text2)}.coupon-loading i{color:var(--accent);margin-right:7px}.coupon-table-wrap{overflow:auto}.coupon-table{width:100%;border-collapse:collapse;min-width:640px}.coupon-table th,.coupon-table td{padding:11px 9px;border-bottom:1px solid var(--border2);text-align:left;font-size:.82rem}.coupon-table th{color:var(--text2);font-size:.69rem;text-transform:uppercase;letter-spacing:.06em}.coupon-code{font-weight:800;letter-spacing:.07em;color:var(--accent)}.coupon-status{display:inline-flex;padding:4px 8px;border:1px solid currentColor;border-radius:999px;font-size:.7rem;font-weight:700}.coupon-status.activo{color:var(--accent)}.coupon-status.usado{color:#fbbf24}.coupon-status.anulado,.coupon-status.vencido{color:var(--red)}.coupon-sale-box{margin:16px 0;padding:14px;border:1px solid rgba(98,255,0,.26);border-radius:12px;background:rgba(98,255,0,.035)}.coupon-sale-box .flabel{display:block;margin-bottom:8px}.coupon-sale-box .flabel i{color:var(--accent);margin-right:5px}.coupon-sale-row{display:flex;gap:8px}.coupon-sale-row .finput{flex:1;min-width:0;text-transform:uppercase}.coupon-sale-hint{display:block;color:var(--text2);margin-top:7px}.coupon-sale-hint[data-kind="error"]{color:var(--red)}.coupon-sale-hint[data-kind="success"]{color:var(--accent)}
+@media(max-width:850px){.coupon-layout{grid-template-columns:1fr}.coupon-panel{padding:16px}}
+@media(max-width:520px){.coupon-sale-row{flex-wrap:wrap}.coupon-sale-row .finput{flex-basis:100%}.coupon-card-actions>*{flex:1;justify-content:center}.coupon-panel .frow{display:grid;grid-template-columns:1fr 1fr}}
+</style>
 <div id="app">
   <div class="topbar">
     <button type="button" class="sidebar-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="window.toggleAdminSidebar()"><i class="fas fa-bars"></i></button><div class="topbar-brand">Panel de gestión</div>
@@ -1871,6 +1876,7 @@ body, body.role-ceo {
     <div class="sidebar-section">
       <div class="sidebar-section-label">Finanzas y control</div>
       <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)" style="display:none"><i class="fas fa-chart-bar"></i><span>Contabilidad</span></button>
+      <button class="tab-nav-btn" id="btn-tab-descuentos" onclick="window.switchTab('descuentos',this)"><i class="fas fa-ticket"></i><span>Descuentos</span></button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Espacio de trabajo</div>
@@ -2235,6 +2241,26 @@ body, body.role-ceo {
           </div>
           <textarea class="note-textarea" id="note-content-input" placeholder="Escribe tu idea, dinámica de sorteo, borrador..." style="display:none"></textarea>
         </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-descuentos">
+      <div class="sec-title"><h3>Descuentos</h3><div class="sec-line"></div><button class="btn btn-outline" type="button" onclick="window.loadCoupons(true)"><i class="fas fa-rotate"></i> Actualizar</button></div>
+      <p class="coupon-intro">Crea tarjetas de descuento para clientes. Cada código dura 30 días y se puede usar una vez en una compra de al menos MX$600 (aprox. US$32.14).</p>
+      <div class="coupon-layout">
+        <section class="coupon-panel">
+          <div class="coupon-panel-heading"><i class="fas fa-wand-magic-sparkles"></i><div><strong>Crear tarjeta</strong><small>El diseño se asigna automáticamente según tu rol.</small></div></div>
+          <div class="fgroup"><label class="flabel" for="coupon-category">Categoría</label><select class="fsel" id="coupon-category"><option value="satisfaccion">Atención al cliente</option><option value="volumen">Compra más, paga menos</option><option value="fidelidad">Fidelidad / referidos</option><option value="otro">Otro</option></select></div>
+          <div class="frow">
+            <div class="fgroup"><label class="flabel" for="coupon-percent">Descuento</label><select class="fsel" id="coupon-percent"><option value="5">5 %</option><option value="6">6 %</option><option value="7">7 %</option><option value="8">8 %</option><option value="9">9 %</option><option value="10">10 %</option></select></div>
+            <div class="fgroup"><label class="flabel" for="coupon-minimum">Compra mínima (MXN)</label><input class="finput" id="coupon-minimum" type="number" min="600" step="50" value="600"></div>
+          </div>
+          <div class="fgroup"><label class="flabel" for="coupon-customer">Cliente (opcional)</label><input class="finput" id="coupon-customer" maxlength="120" placeholder="Nombre del cliente"></div>
+          <div class="fgroup"><label class="flabel" for="coupon-reason">Motivo (opcional)</label><input class="finput" id="coupon-reason" maxlength="240" placeholder="Ej. compensación por demora"></div>
+          <button class="btn btn-accent coupon-create-btn" id="coupon-create-btn" type="button" onclick="window.createCoupon()"><i class="fas fa-ticket"></i> Generar cupón y tarjeta</button>
+          <div id="coupon-created-card" class="coupon-created-card" hidden><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><div class="coupon-card-actions"><button class="btn btn-outline" type="button" onclick="window.downloadCouponCard()"><i class="fas fa-download"></i> Descargar tarjeta</button><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
+        </section>
+        <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
     </div>
 
@@ -3025,6 +3051,12 @@ body, body.role-ceo {
       <div class="vm-total-row">
         <span class="vm-total-label"><i class="fas fa-dollar-sign" style="color:var(--accent);margin-right:6px"></i>Total de Venta</span>
         <span class="vm-total-val" id="vm-total-display">MX$0.00 MXN</span>
+      </div>
+
+      <div class="coupon-sale-box" id="sale-coupon-box">
+        <label class="flabel" for="sale-coupon-code"><i class="fas fa-ticket"></i> Código de descuento</label>
+        <div class="coupon-sale-row"><input class="finput" id="sale-coupon-code" maxlength="24" autocomplete="off" placeholder="Ingresa el código"><button class="btn btn-outline" id="sale-coupon-apply" type="button" onclick="window.applySaleCoupon()">Aplicar</button><button class="btn btn-ghost" id="sale-coupon-clear" type="button" onclick="window.clearSaleCoupon()" hidden aria-label="Quitar cupón"><i class="fas fa-times"></i></button></div>
+        <small class="coupon-sale-hint" id="sale-coupon-status">Compra mínima: $600 MXN. Cupón de un solo uso.</small>
       </div>
 
       <!-- Notas internas -->
@@ -5206,6 +5238,98 @@ function exportAccounting() {
 }
 
 // --- NAVEGACIÓN GENERAL ---
+let activeSaleCoupon = null;
+let lastCouponCardUrl = '';
+let lastCouponCode = '';
+const couponTemplates = { CEO: 'assets/descuento-deni.png', ADMIN: 'assets/descuento-maidas.png' };
+const couponCategoryNames = { satisfaccion:'Atención al cliente', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };
+function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
+function couponStatusLabel(status) { return ({activo:'Disponible',usado:'Usado',anulado:'Anulado',vencido:'Vencido'})[status] || status; }
+function couponMakeCode() {
+  const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const bytes=new Uint8Array(10); crypto.getRandomValues(bytes);
+  let out='SHG-'; for (const b of bytes) out+=alphabet[b%alphabet.length];
+  return out;
+}
+function couponDrawCard(coupon) {
+  return new Promise((resolve,reject)=>{
+    const image=new Image(); image.onload=()=>{
+      const canvas=document.createElement('canvas'); canvas.width=image.naturalWidth; canvas.height=image.naturalHeight;
+      const ctx=canvas.getContext('2d'); ctx.drawImage(image,0,0);
+      const isDeni=coupon.plantilla==='deni';
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#101010'; ctx.strokeStyle='#fff'; ctx.lineWidth=2;
+      ctx.font=`900 ${Math.round(canvas.width*.061)}px Arial, sans-serif`;
+      ctx.fillText(`${Number(coupon.porcentaje)}`,isDeni ? canvas.width*.675 : canvas.width*.755,isDeni ? canvas.height*.651 : canvas.height*.154,canvas.width*.30);
+      ctx.font=`900 ${Math.round(canvas.width*.031)}px Arial, sans-serif`;
+      ctx.fillText(coupon.codigo,canvas.width*(isDeni ? .705 : .786),canvas.height*(isDeni ? .84 : .819),canvas.width*.40);
+      canvas.toBlob(blob=>blob?resolve(URL.createObjectURL(blob)):reject(new Error('No se pudo preparar la tarjeta.')),'image/png');
+    }; image.onerror=()=>reject(new Error('No se pudo cargar la plantilla de tarjeta.')); image.src=coupon.plantilla==='deni'?couponTemplates.CEO:couponTemplates.ADMIN;
+  });
+}
+window.downloadCouponCard=function(){ if(!lastCouponCardUrl)return; const a=document.createElement('a');a.href=lastCouponCardUrl;a.download=`tarjeta-${lastCouponCode.toLowerCase()}.png`;a.click(); };
+window.showCouponCard=async function(template,percent,code){try{if(lastCouponCardUrl)URL.revokeObjectURL(lastCouponCardUrl);lastCouponCode=code;lastCouponCardUrl=await couponDrawCard({plantilla:template,porcentaje:Number(percent),codigo:code});document.getElementById('coupon-card-preview').src=lastCouponCardUrl;document.getElementById('coupon-created-card').hidden=false;document.getElementById('coupon-created-card').scrollIntoView({behavior:'smooth',block:'nearest'});}catch(error){showToast(error.message||'No se pudo generar la tarjeta.',true);}};
+window.copyCouponCode=async function(){ if(!lastCouponCode)return; try{await navigator.clipboard.writeText(lastCouponCode);showToast('Código copiado ✓');}catch{showToast(`Código: ${lastCouponCode}`);} };
+window.loadCoupons=async function(showLoading=false){
+  const area=document.getElementById('coupon-list'); if(!area)return;
+  if(showLoading||!area.dataset.loaded)area.innerHTML='<div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div>';
+  try{
+    const {data,error}=await supabase.from('cupones_descuento').select('id,codigo,categoria,porcentaje,compra_minima_mxn,creador_rol,plantilla,cliente,motivo,estado,creado_en,expira_en,usos').order('creado_en',{ascending:false}).limit(200);
+    if(error)throw error; area.dataset.loaded='1';
+    if(!data?.length){area.innerHTML='<div class="coupon-empty">Aún no hay cupones. Genera el primero desde aquí.</div>';return;}
+    area.innerHTML=`<div class="coupon-table-wrap"><table class="coupon-table"><thead><tr><th>Código</th><th>Descuento / compra mínima</th><th>Cliente</th><th>Estado</th><th>Vence</th><th>Tarjeta / acción</th></tr></thead><tbody>${data.map(c=>{const status=couponStatus(c);return `<tr><td><span class="coupon-code">${couponEscape(c.codigo)}</span><small style="display:block;color:var(--text3)">${couponEscape(c.creador_rol)} · ${couponEscape(couponCategoryNames[c.categoria]||c.categoria)}</small></td><td>${Number(c.porcentaje)} %<small style="display:block;color:var(--text2)">Desde MX$${Number(c.compra_minima_mxn).toLocaleString('es-MX')}</small></td><td>${couponEscape(c.cliente||'—')}</td><td><span class="coupon-status ${status}">${couponStatusLabel(status)}</span></td><td>${new Date(c.expira_en).toLocaleDateString('es-MX')}</td><td><div style="display:flex;gap:5px"><button class="ibtn" type="button" title="Volver a generar tarjeta" onclick="window.showCouponCard('${c.plantilla}',${Number(c.porcentaje)},'${couponEscape(c.codigo)}')"><i class="fas fa-image"></i></button>${status==='activo'?`<button class="ibtn del" type="button" title="Anular cupón" onclick="window.cancelCoupon('${c.id}')"><i class="fas fa-ban"></i></button>`:''}</div></td></tr>`;}).join('')}</tbody></table></div>`;
+  }catch(error){console.error('No se pudieron cargar cupones:',error);area.innerHTML=`<div class="coupon-empty"><i class="fas fa-triangle-exclamation" style="color:var(--red)"></i><br>No se pudieron cargar Descuentos.<br><small>${couponEscape(error.message||'')}</small><br><button class="btn btn-outline" onclick="window.loadCoupons(true)">Reintentar</button></div>`;}
+};
+window.createCoupon=async function(){
+  const button=document.getElementById('coupon-create-btn');
+  const minimum=parseVentaNumber(document.getElementById('coupon-minimum')?.value), percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;
+  if(minimum<600){showToast('La compra mínima debe ser de al menos MX$600.',true);return;}
+  if(!Number.isInteger(percent)||percent<5||percent>10){showToast('El descuento debe estar entre 5 % y 10 %.',true);return;}
+  if(button){button.disabled=true;button.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Generando…';}
+  try{
+    const code=couponMakeCode();
+    const {data,error}=await supabase.rpc('crear_cupon_descuento',{p_codigo:code,p_categoria:document.getElementById('coupon-category').value,p_porcentaje:percent,p_compra_minima_mxn:minimum,p_cliente:customer,p_motivo:reason});
+    if(error)throw error;
+    const coupon=Array.isArray(data)?data[0]:data;
+    lastCouponCode=coupon.codigo; if(lastCouponCardUrl)URL.revokeObjectURL(lastCouponCardUrl);
+    const card=document.getElementById('coupon-created-card');
+    try{lastCouponCardUrl=await couponDrawCard(coupon);document.getElementById('coupon-card-preview').src=lastCouponCardUrl;card.hidden=false;}
+    catch(imageError){card.hidden=true;showToast(`Cupón creado (${coupon.codigo}), pero no se pudo generar la imagen: ${imageError.message}`,true,7000);}
+    if(!card.hidden)showToast(`Cupón ${coupon.codigo} generado ✓`);
+    await window.loadCoupons(true);
+    document.getElementById('coupon-customer').value='';document.getElementById('coupon-reason').value='';
+  }catch(error){console.error('No se pudo generar el cupón:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
+  finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar cupón y tarjeta';}}
+};
+window.cancelCoupon=async function(id){
+  if(!confirm('¿Anular este cupón? Ya no se podrá aplicar a una venta.'))return;
+  const {error}=await supabase.from('cupones_descuento').update({estado:'anulado',actualizado_en:new Date().toISOString()}).eq('id',id).eq('estado','activo');
+  if(error){showToast(error.message||'No se pudo anular el cupón.',true);return;} showToast('Cupón anulado');window.loadCoupons(true);
+};
+window.clearSaleCoupon=function(){
+  activeSaleCoupon=null;const input=document.getElementById('sale-coupon-code');if(input){input.disabled=false;input.value='';}
+  const button=document.getElementById('sale-coupon-apply');if(button)button.hidden=false;
+  const clear=document.getElementById('sale-coupon-clear');if(clear)clear.hidden=true;
+  const status=document.getElementById('sale-coupon-status');if(status){status.textContent='Compra mínima: MX$600 (aprox. US$32.14). Cupón de un solo uso.';status.dataset.kind='';}
+  window.calcVentaMargen?.();
+};
+window.applySaleCoupon=async function(){
+  const code=(document.getElementById('sale-coupon-code')?.value||'').trim().toUpperCase(), status=document.getElementById('sale-coupon-status');
+  const fail=message=>{status.textContent=message;status.dataset.kind='error';};
+  if(!code){fail('Escribe el código del cupón.');return;}
+  try{
+    const {data,error}=await supabase.from('cupones_descuento').select('codigo,categoria,porcentaje,compra_minima_mxn,cliente,estado,expira_en,usos,usos_maximos').eq('codigo',code).maybeSingle();
+    if(error)throw error;if(!data){fail('No encontramos ese código.');return;}
+    if(data.estado!=='activo'||Number(data.usos)>=Number(data.usos_maximos)){fail('Ese cupón ya fue usado o anulado.');return;}
+    if(new Date(data.expira_en)<=new Date()){fail('Ese cupón ya venció.');return;}
+    const subtotal=ventaIngresoUsd()*(1+ventaNumber('vc-f-interes-pct')/100);
+    if(subtotal*VENTA_USD_MXN_RATE<Number(data.compra_minima_mxn)){fail(`La compra mínima es MX$${Number(data.compra_minima_mxn).toLocaleString('es-MX')}.`);return;}
+    activeSaleCoupon=data;document.getElementById('sale-coupon-code').value=data.codigo;document.getElementById('sale-coupon-code').disabled=true;
+    document.getElementById('sale-coupon-apply').hidden=true;document.getElementById('sale-coupon-clear').hidden=false;
+    status.textContent=`${data.porcentaje}% aplicado · descuento estimado $${(subtotal*Number(data.porcentaje)/100).toFixed(2)} USD`;status.dataset.kind='success';window.calcVentaMargen?.();
+  }catch(error){console.error('Validación de cupón falló:',error);fail(error.message?.includes('cupones_descuento')?'Falta aplicar la migración de Descuentos en Supabase.':(error.message||'No se pudo validar el código.'));}
+};
+
 function switchTab(tab, btn) {
   const panel = document.getElementById(`tab-${tab}`);
   if (!panel || panel.hidden) return;
@@ -5236,6 +5360,7 @@ function switchTab(tab, btn) {
     if (giftArea) giftArea.innerHTML = '<div class="gift-clients-empty"><i class="fas fa-circle-notch fa-spin"></i><span>Cargando clientes vía regalo…</span></div>';
     fetchClientesFromDB().then(() => renderGiftCustomers()).catch(() => renderGiftCustomers());
   }
+  if (tab === 'descuentos') window.loadCoupons(false);
   if (tab === 'informacion-util') populateUsefulInfo();
   // Al entrar a Contabilidad se recargan sus cifras y registros.
   if (tab === 'contabilidad') {
@@ -5909,14 +6034,18 @@ async function fetchVentas() {
   try {
     // El historial carga solo datos de texto y cifras. Los comprobantes y fotos
     // se descargan únicamente al abrirlos para reducir egreso de Supabase.
-    const listColumns='id,id_pedido,tipo,cliente,ingreso,costo,costo_real,monto_recibido,comision,ganancia_neta,margen,notas,estado,whatsapp,metodo_pago,producto,pago_parcial,pago_pendiente,cuota_adicional,interes_porcentaje,tipo_pago_apartar,apartado_anticipo,apartado_total,apartado_pendiente,fin_plazo,fin_cuota,fin_num_cuotas,created_at,cuentas_regalo,remarks';
+    const listColumns='id,id_pedido,tipo,cliente,ingreso,costo,costo_real,monto_recibido,comision,ganancia_neta,margen,notas,estado,whatsapp,metodo_pago,producto,pago_parcial,pago_pendiente,cuota_adicional,interes_porcentaje,tipo_pago_apartar,apartado_anticipo,apartado_total,apartado_pendiente,fin_plazo,fin_cuota,fin_num_cuotas,created_at,cuentas_regalo,remarks,cupon_codigo,descuento_porcentaje,descuento_usd,precio_original_usd';
     const PAGE = 1000;
     let all = [];
     for (let desde = 0; desde < 50000; desde += PAGE) {
-      const { data, error } = await supabase.from('ventas').select(listColumns)
+      let { data, error } = await supabase.from('ventas').select(listColumns)
         .order('created_at', { ascending: false })
         .order('id', { ascending: false })
         .range(desde, desde + PAGE - 1);
+      if (error && (error.code === '42703' || /cupon_codigo|descuento_porcentaje|descuento_usd|precio_original_usd/.test(error.message||''))) {
+        ({ data, error } = await supabase.from('ventas').select(listColumns.replace(',cupon_codigo,descuento_porcentaje,descuento_usd,precio_original_usd',''))
+          .order('created_at', { ascending: false }).order('id', { ascending: false }).range(desde, desde + PAGE - 1));
+      }
       if (error) throw error;
       all = all.concat(data || []);
       if (!data || data.length < PAGE) break;
@@ -6194,7 +6323,7 @@ function renderVentas() {
   }
 
   // Role-aware table headers
-  let headers = `<th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Método de pago</th><th>Precio de venta</th>`;
+  let headers = `<th>Fecha</th><th>Tipo</th><th>Cliente</th><th>Método de pago</th><th>Precio de venta</th><th>Descuento</th>`;
   if (isCEO) headers += `<th style="color:var(--red)">Costo</th><th style="color:var(--gold)">Ganancia neta</th>`;
   headers += `<th style="text-align:right">Acciones</th>`;
 
@@ -6215,7 +6344,8 @@ function renderVentas() {
       <td><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
       <td>${paymentMethodIdentity(paymentMethodFromDb(v.metodo_pago))}</td>
-      <td class="td-money" style="color:var(--accent)">$${ingresoVal.toFixed(2)} USD</td>`;
+      <td class="td-money" style="color:var(--accent)">$${ingresoVal.toFixed(2)} USD</td>
+      <td>${v.cupon_codigo ? `<span class="coupon-code">-${Number(v.descuento_porcentaje||0)}% ${couponEscape(v.cupon_codigo)}</span>` : '—'}</td>`;
 
     if (isCEO) {
       row += `<td style="color:var(--red)">$${costoVal.toFixed(2)} USD</td>
@@ -6277,6 +6407,8 @@ function openVentaModal() {
   if (!ventaModal) { showToast('No se encontró el formulario de venta', true); return; }
   ventaModal.classList.add('open');
   window.editingVentaId = null;
+  window.clearSaleCoupon();
+  const couponBox=document.getElementById('sale-coupon-box');if(couponBox)couponBox.style.display='';
   document.getElementById('vc-m-title').textContent = 'Nueva Venta';
   document.getElementById('vc-f-parse').value = '';
   // Reset chips
@@ -6350,6 +6482,9 @@ window.editVenta = async function(id) {
   ventaModal.classList.add('open');
   window.editingVentaId = String(id);
   document.getElementById('vc-m-title').textContent = `Editar Venta`;
+  window.clearSaleCoupon();
+  const saleCouponBox=document.getElementById('sale-coupon-box');
+  if(saleCouponBox){saleCouponBox.style.display='';const status=document.getElementById('sale-coupon-status');if(v.cupon_codigo){document.getElementById('sale-coupon-code').value=v.cupon_codigo;document.getElementById('sale-coupon-code').disabled=true;document.getElementById('sale-coupon-apply').hidden=true;status.textContent=`Cupón existente: -${Number(v.descuento_porcentaje||0)}% (${Number(v.descuento_usd||0).toFixed(2)} USD). No se puede cambiar al editar.`;status.dataset.kind='success';}else{saleCouponBox.style.display='none';}}
   document.getElementById('vc-f-parse').value = '';
   // Restore tipo via chips
   const tipoVal = v.tipo || '';
@@ -6500,7 +6635,9 @@ function recalculateVentaFinancialFields() {
   syncVentaCurrencyFields(false);
   const precio = ventaNumber('vc-f-ingreso');
   const interestPct = ventaNumber('vc-f-interes-pct');
-  const total = precio * (1 + interestPct / 100);
+  const subtotal = precio * (1 + interestPct / 100);
+  const percent = activeSaleCoupon ? Number(activeSaleCoupon.porcentaje)||0 : 0;
+  const total = subtotal * (1 - percent / 100);
   const cost = ventaNumber('vc-f-costo-real');
   const feeNote = document.getElementById('vc-payment-fee-note');
   if (feeNote) feeNote.style.display = 'none';
@@ -6511,18 +6648,19 @@ function recalculateVentaFinancialFields() {
     profitField.style.color = profit >= 0 ? 'var(--gold)' : 'var(--red)';
   }
   const extraFee = document.getElementById('vc-f-cuota-adicional');
-  if (extraFee) extraFee.value = (total - precio).toFixed(2);
+  if (extraFee) extraFee.value = (subtotal - precio).toFixed(2);
   const pending = document.getElementById('vc-f-pago-pendiente');
   if (pending) pending.value = Math.max(0, total - ventaNumber('vc-f-pago-parcial')).toFixed(2);
   updateVentaConversionNote();
-  window.vmUpdateTotal(total);
+  window.vmUpdateTotal(subtotal);
 }
 
 // Todos los eventos existentes del panel usan esta misma fórmula y divisa.
 window.calcVentaMargen = recalculateVentaFinancialFields;
 
 window.vmUpdateTotal = function(val) {
-  const ingreso = val !== undefined ? val : ventaNumber('vc-f-ingreso');
+  const base = val !== undefined ? val : ventaNumber('vc-f-ingreso');
+  const ingreso = base * (1 - (activeSaleCoupon ? Number(activeSaleCoupon.porcentaje)||0 : 0) / 100);
   const disp = document.getElementById('vm-total-display');
   if (disp) disp.textContent = (document.getElementById('vc-f-moneda')?.value==='MXN'?'MX$':'$') + ingreso.toFixed(2) + (document.getElementById('vc-f-moneda')?.value==='USD'?' USD':' MXN');
 };
@@ -6750,6 +6888,9 @@ window.saveVenta = async function() {
       delete updateRecord.created_at;
       const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId).abortSignal(saveController.signal);
       if (err) throw err;
+    } else if (activeSaleCoupon) {
+      const { error: err } = await supabase.rpc('registrar_venta_con_cupon', {p_codigo:activeSaleCoupon.codigo,p_venta:record,p_tasa_usd_mxn:VENTA_USD_MXN_RATE}).abortSignal(saveController.signal);
+      if (err) throw err;
     } else {
       const { error: err } = await supabase.from('ventas').insert([record]).abortSignal(saveController.signal);
       if (err) throw err;
@@ -6769,6 +6910,8 @@ window.saveVenta = async function() {
       showToast('Supabase tardó más de 15 segundos. Revisa la lista antes de volver a intentar para evitar duplicar la venta.', true, 7000);
     } else if (err?.message?.includes('cuentas_regalo') || err?.message?.includes('cuentas_gestion')) {
       showToast('Falta instalar la migración Gestión de cuentas en Supabase. Ejecuta supabase/migrations/20261102_account_management.sql y vuelve a intentar.', true, 8000);
+    } else if (activeSaleCoupon && /registrar_venta_con_cupon|cupones_descuento|cupon_codigo/.test(err?.message||'')) {
+      showToast(/function .* does not exist|schema cache|cupones_descuento/.test(err?.message||'') ? 'Falta aplicar la migración de Descuentos en Supabase.' : (err.message||'El cupón ya no está disponible.'), true, 8000);
     } else if (err?.message?.includes('column') || err?.code === '42703') {
       showToast('Faltan columnas en Supabase para guardar esta venta. Revisa la migración más reciente.', true);
     } else {
@@ -9680,3 +9823,4 @@ document.addEventListener('pointerdown', function (e) {
 </script>
 </body>
 </html>
+
