@@ -5759,36 +5759,52 @@ async function doLogin() {
   const errEl = document.getElementById('login-err');
   const btn = document.querySelector('.login-btn');
 
+  if (!errEl || !btn) return;
   if (!email || !pwd) {
     errEl.textContent = 'Completa todos los campos';
     errEl.style.display = 'block';
     return;
   }
-
   if (!ROLE_MAP[email]) {
     errEl.textContent = 'Usuario no autorizado';
     errEl.style.display = 'block';
     return;
   }
 
-  btn.textContent = 'Entrando...';
+  btn.textContent = 'Conectando…';
   btn.style.opacity = '0.7';
+  btn.disabled = true;
+  btn.setAttribute('aria-busy', 'true');
   errEl.style.display = 'none';
 
   let error = null;
+  let session = null;
+  let loginTimer;
   try {
-    ({ error } = await supabase.auth.signInWithPassword({ email, password: pwd }));
+    const result = await Promise.race([
+      supabase.auth.signInWithPassword({ email, password: pwd }),
+      new Promise((_, reject) => {
+        loginTimer = setTimeout(() => reject(Object.assign(new Error('login_timeout'), { code: 'login_timeout' })), 15000);
+      })
+    ]);
+    error = result.error;
+    session = result.data?.session || null;
   } catch (loginError) {
     error = loginError;
+  } finally {
+    clearTimeout(loginTimer);
+    btn.textContent = 'ENTRAR';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+    btn.removeAttribute('aria-busy');
   }
-
-  btn.textContent = 'ENTRAR';
-  btn.style.opacity = '1';
 
   if (error) {
     const authCode = String(error.code || '').toLowerCase();
     const authMessage = String(error.message || '');
-    if (/fetch|network|load failed|failed to fetch/i.test(authMessage)) {
+    if (authCode === 'login_timeout') {
+      errEl.textContent = 'Supabase tardó demasiado en responder. Revisa tu conexión y vuelve a intentarlo.';
+    } else if (/fetch|network|load failed|failed to fetch|timeout/i.test(authMessage)) {
       errEl.textContent = 'No se pudo conectar con Supabase. Revisa tu conexión e inténtalo de nuevo.';
     } else if (error.status === 429 || /too_many_requests|rate limit/i.test(authCode + ' ' + authMessage)) {
       errEl.textContent = 'Se hicieron muchos intentos. Espera un momento antes de volver a iniciar sesión.';
@@ -5803,10 +5819,15 @@ async function doLogin() {
     errEl.style.display = 'block';
     return;
   }
+  if (!session?.user) {
+    errEl.textContent = 'Supabase no devolvió una sesión. Confirma el correo de la cuenta e inténtalo de nuevo.';
+    errEl.style.display = 'block';
+    return;
+  }
 
   if (document.getElementById('remember-login')?.checked && navigator.credentials?.store && window.PasswordCredential) {
     try { await navigator.credentials.store(new PasswordCredential(document.getElementById('login-form'))); }
-    catch (e) { /* No guardar la contraseña fuera del gestor seguro del navegador. */ }
+    catch (e) { /* El gestor seguro del navegador puede no estar disponible. */ }
   }
 
   const role = ROLE_MAP[email] || 'ADMIN';
@@ -5816,7 +5837,6 @@ async function doLogin() {
   const welcomeDuration = window.matchMedia('(max-width: 768px)').matches ? 1400 : 3500;
   showToast('Sesión iniciada', false, welcomeDuration);
 }
-
 async function doLogout() {
   await supabase.auth.signOut();
   sessionStorage.clear();
