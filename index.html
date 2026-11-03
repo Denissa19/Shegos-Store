@@ -6070,11 +6070,62 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
             });
         }
 
-        async function cargarTienda() {
+        const CACHE_TIENDA_KEY = 'shegos-shop-cache-v1';
+        const CACHE_TIENDA_MAX_AGE = 6 * 60 * 60 * 1000;
+        const CACHE_TIENDA_RECHECK = 10 * 60 * 1000;
+
+        function iniciarCargaTiendaOptimizada() {
+            const cont = document.getElementById('contenedor-tienda');
+            let cache = null;
+            try {
+                const guardado = JSON.parse(localStorage.getItem(CACHE_TIENDA_KEY) || 'null');
+                if (guardado && guardado.data?.data?.entries?.length && Date.now() - guardado.savedAt < CACHE_TIENDA_MAX_AGE) {
+                    cache = guardado;
+                    cargarTienda(cache.data);
+                }
+            } catch (error) {
+                console.info('[tienda] No se pudo leer la copia local; se cargarán datos actuales.', error);
+            }
+            if (!cache && cont) {
+                cont.innerHTML = '<div role="status" style="display:flex;align-items:center;justify-content:center;gap:12px;min-height:180px;color:#c7d0ca"><i class="fas fa-circle-notch fa-spin" aria-hidden="true"></i><span>Cargando artículos de hoy…</span></div>';
+            }
+
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 7000);
+            fetch('https://fortnite-api.com/v2/shop?language=es', { cache: 'no-cache', signal: controller.signal })
+                .then(res => {
+                    if (!res.ok) throw new Error(`La tienda respondió ${res.status}.`);
+                    return res.json();
+                })
+                .then(datos => {
+                    if (!datos?.data?.entries?.length) throw new Error('La respuesta no contiene los artículos de hoy.');
+                    try { localStorage.setItem(CACHE_TIENDA_KEY, JSON.stringify({ savedAt: Date.now(), data: datos })); } catch (error) {
+                        console.info('[tienda] La copia rápida no se pudo guardar en este dispositivo.', error);
+                    }
+                    const cacheVencida = !cache || Date.now() - cache.savedAt >= CACHE_TIENDA_RECHECK;
+                    const fechaCambio = cache?.data?.data?.date !== datos?.data?.date;
+                    if (cacheVencida || fechaCambio) cargarTienda(datos);
+                })
+                .catch(error => {
+                    console.warn('[tienda] No se pudo actualizar el catálogo en segundo plano:', error);
+                    if (!cache && cont) cont.innerHTML = 'No se pudo conectar con la tienda. Revisa tu conexión e inténtalo de nuevo.';
+                })
+                .finally(() => clearTimeout(timeout));
+        }
+
+        async function cargarTienda(datosPrecargados = null) {
             const cont = document.getElementById('contenedor-tienda');
             try {
-                const res = await fetch('https://fortnite-api.com/v2/shop?language=es');
-                const datos = await res.json();
+                let datos = datosPrecargados;
+                if (!datos) {
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 7000);
+                    try {
+                        const res = await fetch('https://fortnite-api.com/v2/shop?language=es', { cache: 'no-cache', signal: controller.signal });
+                        if (!res.ok) throw new Error(`La tienda respondió ${res.status}.`);
+                        datos = await res.json();
+                    } finally { clearTimeout(timeout); }
+                }
                 console.log("Datos de la tienda recibidos:", datos); // Punto 1: Verificación
                 
                 if (!datos.data || !datos.data.entries) throw new Error("Datos inválidos");
@@ -7230,7 +7281,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                                 ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : ''}
                                 <div class="skin-art-stage">
                                     <span class="skin-art-label"><i class="fas fa-sparkles"></i> Item shop</span>
-                                    <img src="${p.imagen}" class="card-img" loading="lazy" alt="${p.nombre}" onerror="this.onerror=null;this.src='assets/logo-shegos.png';this.style.objectFit='contain';this.style.padding='18%';this.style.background='rgba(0,0,0,0.45)';">
+                                    <img src="${p.imagen}" class="card-img" loading="lazy" decoding="async" fetchpriority="low" alt="${p.nombre}" onerror="this.onerror=null;this.src='assets/logo-shegos.png';this.style.objectFit='contain';this.style.padding='18%';this.style.background='rgba(0,0,0,0.45)';">
                                     <div class="card-vbucks-overlay">
                                         <img loading="lazy" decoding="async" src="https://logodix.com/logo/803916.png" alt="V-Bucks">
                                         <span>${parseInt(p.vbucks).toLocaleString()}</span>
@@ -8508,7 +8559,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
-            cargarTienda(); 
+            iniciarCargaTiendaOptimizada(); 
             inicializarDivisa();
             actualizarRelojTienda();
             setInterval(actualizarRelojTienda, 1000);
@@ -10769,3 +10820,4 @@ function mostrarModalCapturaMovil(url) {
 
 </body>
 </html>
+
