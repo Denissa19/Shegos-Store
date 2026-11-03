@@ -1821,7 +1821,10 @@ window.doLogin = async function () {
     if (document.getElementById('remember-login')?.checked && navigator.credentials?.store && window.PasswordCredential) {
       try { Promise.resolve(navigator.credentials.store(new PasswordCredential(document.getElementById('login-form')))).catch(() => {}); } catch (_) {}
     }
-    location.reload();
+    // El módulo del panel detecta esta sesión cuando termina de cargarse.
+    // Recargar aquí podía volver a mostrar el formulario si el CDN aún estaba cargando.
+    document.dispatchEvent(new CustomEvent('shegos-session-ready'));
+    if (button) { button.disabled = false; button.removeAttribute('aria-busy'); button.textContent = 'Sesión iniciada'; }
   } catch (error) {
     console.error('Error de acceso Shegos:', error);
     showError(error.message || 'No se pudo iniciar sesión. Inténtalo de nuevo.');
@@ -3329,7 +3332,28 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabaseUrl = SUPABASE_URL;
 const supabaseKey = SUPABASE_KEY;
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+async function loadSupabaseLibrary() {
+  if (window.supabase?.createClient) return window.supabase;
+  await new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-shegos-supabase-fallback]');
+    if (existing) {
+      existing.addEventListener('load', resolve, { once: true });
+      existing.addEventListener('error', () => reject(new Error('No se pudo cargar Supabase.')), { once: true });
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+    script.dataset.shegosSupabaseFallback = 'true';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('No se pudo cargar Supabase.'));
+    document.head.appendChild(script);
+  });
+  if (!window.supabase?.createClient) throw new Error('Supabase no está disponible.');
+  return window.supabase;
+}
+
+const supabaseLibrary = await loadSupabaseLibrary();
+const supabase = supabaseLibrary.createClient(supabaseUrl, supabaseKey);
 // Publica la acción del formulario en cuanto Auth está listo, sin esperar a inicializar todo el panel.
 window.doLogin = doLogin;
 
