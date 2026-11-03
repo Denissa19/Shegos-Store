@@ -2078,14 +2078,14 @@ body, body.role-ceo {
         </select>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-from" title="Desde · formato AAAA-MM-DD" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
+            <input type="text" class="month-input" id="vc-date-from" name="sales-period-start" autocomplete="off" data-lpignore="true" data-form-type="other" title="Desde · formato AAAA-MM-DD" placeholder="Desde" onclick="window.openCal('vc-date-from','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-from"></div>
         </div>
         <div class="date-picker-wrap" style="position:relative">
           <div class="date-picker-input-row">
-            <input type="text" class="month-input" id="vc-date-to" title="Hasta · formato AAAA-MM-DD" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
+            <input type="text" class="month-input" id="vc-date-to" name="sales-period-end" autocomplete="off" data-lpignore="true" data-form-type="other" title="Hasta · formato AAAA-MM-DD" placeholder="Hasta" onclick="window.openCal('vc-date-to','date')" onchange="window.validateCalendarInput(this,'date')">
             <i class="fas fa-calendar-alt date-picker-icon"></i>
           </div>
           <div class="cal-popup" id="cal-vc-date-to"></div>
@@ -3319,8 +3319,11 @@ window.addEventListener('DOMContentLoaded', async () => {
   } else {
     // No hay sesión — mostrar pantalla de login con fade-in
     const ls = document.getElementById('login-screen');
+    ls.style.display = 'flex';
     ls.style.visibility = 'visible';
     ls.style.opacity = '1';
+    const loginForm=document.getElementById('login-form');
+    if(loginForm)loginForm.autocomplete='on';
     if (navigator.credentials?.get && window.PasswordCredential) {
       try {
         const saved = await navigator.credentials.get({ password: true, mediation: 'optional' });
@@ -5560,6 +5563,11 @@ function mostrarPanel(email, role) {
   const ls = document.getElementById('login-screen');
   ls.style.opacity = '0';
   ls.style.visibility = 'hidden';
+  // Quita los campos de acceso del árbol visible mientras se usa el panel;
+  // algunos gestores del navegador ofrecían las credenciales al enfocar fechas.
+  ls.style.display = 'none';
+  const loginForm=document.getElementById('login-form');
+  if(loginForm)loginForm.autocomplete='off';
   document.getElementById('app').style.display = 'block';
   document.getElementById('topbar-user').innerHTML = `<i class="fas fa-circle" style="color:var(--accent);font-size:.55em;vertical-align:middle"></i> <strong style="color:var(--text)">${email}</strong>`;
   aplicarRestriccionesRol(role);
