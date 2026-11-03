@@ -8,25 +8,7 @@
 <link rel="shortcut icon" href="https://img.icons8.com/?size=48&id=XnHBz2LnhELw&format=png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<script>
-window.supabaseReady = new Promise(resolve => {
-  const sources = [
-    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-    'https://unpkg.com/@supabase/supabase-js@2'
-  ];
-  const loadSource = index => {
-    if (window.supabase?.createClient) return resolve(true);
-    if (index >= sources.length) return resolve(false);
-    const script = document.createElement('script');
-    script.src = sources[index];
-    script.crossOrigin = 'anonymous';
-    script.onload = () => window.supabase?.createClient ? resolve(true) : loadSource(index + 1);
-    script.onerror = () => loadSource(index + 1);
-    document.head.appendChild(script);
-  };
-  loadSource(0);
-});
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 @font-face {
   font-family: 'BurbankBigCondensed';
@@ -3277,20 +3259,6 @@ body, body.role-ceo {
 <div class="toast" id="toast"></div>
 
 <script type="module">
-const supabaseReady = await window.supabaseReady;
-if (!supabaseReady || !window.supabase?.createClient) {
-  const loginError = document.getElementById('login-err');
-  if (loginError) {
-    loginError.textContent = 'No se pudo cargar Supabase. Comprueba tu conexión y recarga el panel.';
-    loginError.style.display = 'block';
-  }
-  window.doLogin = () => {
-    const error = document.getElementById('login-err');
-    if (error) { error.textContent = 'No se pudo cargar Supabase. Comprueba tu conexión y recarga el panel.'; error.style.display = 'block'; }
-  };
-  throw new Error('No se pudo cargar la biblioteca de Supabase desde los CDN disponibles.');
-}
-
 // Mapa de rol por correo real
 const ROLE_MAP = {
   'codedenissa19@gmail.com': 'CEO',
