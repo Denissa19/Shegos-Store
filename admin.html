@@ -3408,9 +3408,6 @@ async function setupRealtime() {
   console.log("Activando monitoreo en tiempo real...");
   supabase
     .channel('custom-all-channel')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
-      fetchOrders();
-    })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'ventas' }, () => {
       fetchVentas();
     })
@@ -3793,7 +3790,7 @@ async function fetchCatalogo() {
   try {
     const { data, error } = await supabase
       .from('catalogo_productos')
-      .select('*')
+      .select('id,categoria,nombre,precio_usd')
       .order('categoria', { ascending: true })
       .order('nombre', { ascending: true });
     if (error) throw error;
@@ -5576,7 +5573,8 @@ function mostrarPanel(email, role) {
   const gestionLoad = window.fetchGestionAccounts(false).finally(() => startGiftBotMonitor());
   const primaryLoads = [fetchVentas(), fetchClientesFromDB(), gestionLoad];
   Promise.allSettled(primaryLoads).finally(() => loadStatus?.classList.remove('visible'));
-  Promise.allSettled([fetchOrders(), fetchCatalogo(), fetchTiendaHoy()]);
+  // Pedidos se unificó con Ventas: no descargar la tabla antigua al iniciar.
+  Promise.allSettled([fetchCatalogo(), fetchTiendaHoy()]);
   setupRealtime();
   cargarSugerenciasClientes();
   loadSavedWallpaper();
@@ -5868,12 +5866,13 @@ async function fetchVentas() {
   const area = document.getElementById('vc-table-area');
   if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando ventas...</p></div>`;
   try {
-    // Supabase devuelve máx. 1000 filas por consulta: se pide por páginas
-    // (ordenadas) hasta traer TODAS las ventas, para que el historial nunca se corte.
+    // El historial carga solo datos de texto y cifras. Los comprobantes y fotos
+    // se descargan únicamente al abrirlos para reducir egreso de Supabase.
+    const listColumns='id,id_pedido,tipo,cliente,ingreso,costo,costo_real,monto_recibido,comision,ganancia_neta,margen,notas,estado,whatsapp,metodo_pago,producto,pago_parcial,pago_pendiente,cuota_adicional,interes_porcentaje,tipo_pago_apartar,apartado_anticipo,apartado_total,apartado_pendiente,fin_plazo,fin_cuota,fin_num_cuotas,created_at,cuentas_regalo,remarks';
     const PAGE = 1000;
     let all = [];
     for (let desde = 0; desde < 50000; desde += PAGE) {
-      const { data, error } = await supabase.from('ventas').select('*')
+      const { data, error } = await supabase.from('ventas').select(listColumns)
         .order('created_at', { ascending: false })
         .order('id', { ascending: false })
         .range(desde, desde + PAGE - 1);
@@ -6184,8 +6183,8 @@ function renderVentas() {
 
     row += `<td style="text-align:right">
         <div class="td-act" style="justify-content:flex-end">
-          <button class="ibtn" type="button" title="${v.comprobante ? 'Ver / descargar comprobante' : 'Esta venta no tiene comprobante'}" aria-label="Ver comprobante" ${v.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${v.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>
-          <button class="ibtn" type="button" title="${v.foto_producto ? 'Ver foto del producto' : 'Esta venta no tiene foto del producto'}" aria-label="Ver foto del producto" ${v.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${v.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('venta','${v.id}','foto_producto')"><i class="fas fa-box-open"></i></button>
+          <button class="ibtn" type="button" title="Consultar comprobante" aria-label="Consultar comprobante" style="color:var(--gold);border-color:rgba(255,215,0,.4)" onclick="window.viewReceipt('venta','${v.id}')"><i class="fas fa-paperclip"></i></button>
+          <button class="ibtn" type="button" title="Consultar foto del producto" aria-label="Consultar foto del producto" style="color:var(--accent);border-color:rgba(40,254,182,.4)" onclick="window.viewReceipt('venta','${v.id}','foto_producto')"><i class="fas fa-box-open"></i></button>
           ${remFlagBtn('venta', v)}
           ${rvBtn('venta', v)}
           <button class="ibtn" type="button" data-edit-venta="${String(v.id).replaceAll('&','&amp;').replaceAll('"','&quot;')}" title="Editar venta"><i class="fas fa-pen"></i></button>
@@ -6297,9 +6296,14 @@ function openVentaModal() {
 
 window.openVentaModal = openVentaModal;
 
-window.editVenta = function(id) {
+window.editVenta = async function(id) {
   const v = currentVentas.find(x => String(x.id) === String(id));
   if (!v) { showToast('No se encontró la venta para editar. Actualiza la lista e inténtalo de nuevo.',true); return; }
+  // Las evidencias se descargan solo para la venta que se está editando.
+  try {
+    const {data,error}=await supabase.from('ventas').select('comprobante,foto_producto').eq('id',id).maybeSingle();
+    if(!error&&data)Object.assign(v,data);
+  } catch(error) { console.warn('No se pudieron cargar las imágenes de la venta:',error?.message||error); }
   const ventaModal=document.getElementById('modal-venta');
   if(!ventaModal){showToast('No se encontró el formulario de venta.',true);return;}
   ventaModal.classList.add('open');
@@ -7985,15 +7989,27 @@ window.downloadViewerImage = async function() {
 };
 
 // Abre el comprobante guardado de una venta o un pedido
-window.viewReceipt = function(kind, id, field) {
+window.viewReceipt = async function(kind, id, field) {
   const key = field || 'comprobante';
   const rec = kind === 'venta'
     ? currentVentas.find(x => String(x.id) === String(id))
     : currentOrders.find(x => String(x.id) === String(id));
-  if (!rec || !rec[key]) { showToast('Este registro no tiene esa imagen', true); return; }
-  const ref = rec.id_pedido || String(rec.id).slice(0, 8);
+  let image=rec?.[key];
+  if(!image){
+    const table=kind==='venta'?'ventas':'pedidos';
+    const idColumn=kind==='venta'?'id':'id_pedido';
+    try{
+      let {data,error}=await supabase.from(table).select(key).eq(idColumn,id).maybeSingle();
+      if((error||!data)&&kind==='pedido')({data,error}=await supabase.from(table).select(key).eq('id',id).maybeSingle());
+      if(error)throw error;
+      image=data?.[key]||null;
+      if(rec&&image)rec[key]=image;
+    }catch(error){showToast(`No se pudo cargar la imagen: ${error?.message||'error de Supabase'}`,true);return;}
+  }
+  if (!image) { showToast('Este registro no tiene esa imagen', true); return; }
+  const ref = rec?.id_pedido || String(rec?.id || id).slice(0, 8);
   const esFoto = key === 'foto_producto';
-  window.openImageViewer(rec[key], (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
+  window.openImageViewer(image, (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
 };
 
 // Abre la imagen que se está cargando en el formulario (antes de guardar)
