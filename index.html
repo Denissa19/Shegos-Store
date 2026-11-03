@@ -7199,8 +7199,10 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
         // Filtra y renderiza la tienda por SECCIÓN (no por tipo de cosmético)
         function aplicarFiltros() {
             const cont = document.getElementById('contenedor-tienda');
-            let busqueda = document.getElementById('buscador-tienda').value.toLowerCase();
-            cont.innerHTML = '';
+            const inputBusqueda = document.getElementById('buscador-tienda');
+            if (!cont || !inputBusqueda) return;
+            const busqueda = inputBusqueda.value.trim().toLowerCase();
+            cont.replaceChildren();
 
             const filtrados = tiendaItems.filter(item => {
                 const matchCat = (categoriaActual === 'Todas' || (item.sectionName && item.sectionName.trim().toLowerCase() === categoriaActual.trim().toLowerCase()));
@@ -7209,121 +7211,117 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 return matchCat && matchTipo && matchSearch;
             });
 
-            if (filtrados.length === 0) {
-                cont.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #fff; font-size: 1.1em; border: 1px dashed #333; border-radius: 15px; margin: 20px 0;">
-                    <i class="fas fa-search" style="display:block; font-size:2em; margin-bottom:15px; color:#444;"></i>
+            if (!filtrados.length) {
+                cont.innerHTML = `<div style="text-align:center;padding:60px 20px;color:#fff;font-size:1.1em;border:1px dashed #333;border-radius:15px;margin:20px 0">
+                    <i class="fas fa-search" style="display:block;font-size:2em;margin-bottom:15px;color:#444"></i>
                     No se encontraron artículos en esta sección.</div>`;
                 return;
             }
 
             const grouped = {};
-            filtrados.forEach(i => {
-                let sName = i.sectionName || "Otros";
-                if (!grouped[sName]) grouped[sName] = [];
-                grouped[sName].push(i);
+            filtrados.forEach(item => {
+                const section = item.sectionName || 'Otros';
+                (grouped[section] ||= []).push(item);
             });
 
-            // Ordenar secciones por el rank oficial que devuelve la API (layout.rank)
             const rankPorSeccion = {};
-            tiendaItems.forEach(i => {
-                if (!(i.sectionName in rankPorSeccion)) {
-                    rankPorSeccion[i.sectionName] = i.sectionRank;
-                }
+            tiendaItems.forEach(item => {
+                if (!(item.sectionName in rankPorSeccion)) rankPorSeccion[item.sectionName] = item.sectionRank;
             });
 
-            // Ordenar secciones: "Se Va Hoy" siempre primera, autos al final, pistas penúltima
             const seccionesOrdenadas = Object.keys(grouped).sort((a, b) => {
-                const esSeVaHoyA = a === 'Se Va Hoy';
-                const esSeVaHoyB = b === 'Se Va Hoy';
-                if (esSeVaHoyA && !esSeVaHoyB) return -1;
-                if (esSeVaHoyB && !esSeVaHoyA) return 1;
-
-                const esAutosA = a.toLowerCase().includes('auto') || a.toLowerCase().includes('vehícul') || a.toLowerCase().includes('vehicul');
-                const esAutosB = b.toLowerCase().includes('auto') || b.toLowerCase().includes('vehícul') || b.toLowerCase().includes('vehicul');
-                const esPistasA = a.toLowerCase().includes('pistas de improvisación') || a.toLowerCase().includes('pistas de improvisacion') || a.toLowerCase().includes('jam');
-                const esPistasB = b.toLowerCase().includes('pistas de improvisación') || b.toLowerCase().includes('pistas de improvisacion') || b.toLowerCase().includes('jam');
-
-                // Autos siempre al final
-                if (esAutosA && !esAutosB) return 1;
-                if (esAutosB && !esAutosA) return -1;
-                // Pistas siempre penúltima (antes de autos)
-                if (esPistasA && !esPistasB && !esAutosB) return 1;
-                if (esPistasB && !esPistasA && !esAutosA) return -1;
-
-                // Por defecto: más items arriba, luego por rank de la API
-                const countA = grouped[a].length;
-                const countB = grouped[b].length;
-                if (countA !== countB) return countB - countA;
-                return (rankPorSeccion[a] ?? 999) - (rankPorSeccion[b] ?? 999);
+                const esSeVaHoyA = a === 'Se Va Hoy', esSeVaHoyB = b === 'Se Va Hoy';
+                if (esSeVaHoyA !== esSeVaHoyB) return esSeVaHoyA ? -1 : 1;
+                const esAutosA = /auto|vehícul|vehicul/i.test(a), esAutosB = /auto|vehícul|vehicul/i.test(b);
+                const esPistasA = /pistas de improvisaci[oó]n|jam/i.test(a), esPistasB = /pistas de improvisaci[oó]n|jam/i.test(b);
+                if (esAutosA !== esAutosB) return esAutosA ? 1 : -1;
+                if (esPistasA !== esPistasB && !esAutosA && !esAutosB) return esPistasA ? 1 : -1;
+                return grouped[b].length - grouped[a].length || (rankPorSeccion[a] ?? 999) - (rankPorSeccion[b] ?? 999);
             });
 
-            const tiempo = getTiempoTxt();
             const tasa = tasas[divisaActual] || 1;
-            const simbolo = { USD: '$', EUR: '€', MXN: '$', ARS: '$', COP: '$', CLP: '$', DOP: '$', USDT: '$', PEN: 'S/' }[divisaActual] || '$';
+            const simbolo = { USD:'$', EUR:'€', MXN:'$', ARS:'$', COP:'$', CLP:'$', DOP:'$', USDT:'$', PEN:'S/' }[divisaActual] || '$';
+            const batchSize = 28;
+            let renderObserver = null;
+            if ('IntersectionObserver' in window) {
+                renderObserver = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) return;
+                        const sentinel = entry.target;
+                        const state = sentinel._shopRenderState;
+                        if (!state) return;
+                        const next = state.items.slice(state.offset, state.offset + batchSize);
+                        if (next.length) {
+                            state.grid.insertAdjacentHTML('beforeend', next.map(renderCard).join(''));
+                            state.offset += next.length;
+                        }
+                        if (state.offset >= state.items.length) {
+                            renderObserver.unobserve(sentinel);
+                            sentinel.remove();
+                        }
+                    });
+                }, { rootMargin: '900px 0px' });
+            }
+
+            function renderCard(p) {
+                const precioConvertido = (parseFloat(p.usd) * tasa).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits:0 });
+                const rarityLabel = {
+                    legendary:'LEGENDARIO', epic:'ÉPICO', rare:'RARO', uncommon:'POCO COMÚN', common:'COMÚN',
+                    marvel:'MARVEL', dc:'DC', icon:'SERIE DE ÍDOLOS', gaminglegends:'GAMING LEGENDS'
+                }[p.rarityClass] || p.rarityClass.toUpperCase();
+                return `<div class="cosmetic-card ${p.rarityClass}">
+                    ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : ''}
+                    <div class="skin-art-stage">
+                        <span class="skin-art-label"><i class="fas fa-sparkles"></i> Item shop</span>
+                        <img src="${p.imagen}" class="card-img" loading="lazy" decoding="async" fetchpriority="low" alt="${p.nombre}" onerror="this.onerror=null;this.src='assets/logo-shegos.png';this.style.objectFit='contain';this.style.padding='18%';this.style.background='rgba(0,0,0,0.45)';">
+                        <div class="card-vbucks-overlay">
+                            <img loading="lazy" decoding="async" src="https://logodix.com/logo/803916.png" alt="V-Bucks">
+                            <span>${parseInt(p.vbucks).toLocaleString()}</span>
+                        </div>
+                        ${p.seVaHoy && p.outDateTs ? `<div class="card-time-left time-bottom"><i class="fas fa-clock"></i><span class="card-time-left-value" data-out-date="${p.outDateTs}">00:00:00</span></div>` : ''}
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title" title="${p.nombre}">${p.nombre}</h3>
+                        <div class="card-bottom-row"><span class="card-rarity-text">${rarityLabel}</span><span class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</span></div>
+                        <button class="btn-add-cart" data-item-nombre="${p.nombreSeguro}" onclick="event.stopPropagation(); agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda', event, '${p.rarityClass}')"><i class="fas fa-plus"></i> AGREGAR</button>
+                    </div>
+                </div>`;
+            }
 
             seccionesOrdenadas.forEach(cat => {
-
+                const items = grouped[cat];
                 const sec = document.createElement('div');
                 sec.className = 'shop-section';
-                sec.innerHTML = `
-                    <div class="shop-section-header">
-                        <div class="shop-section-header-left">
-                            <h2 class="section-title">${cat}</h2>
-                            <span class="section-item-count">${grouped[cat].length} ${grouped[cat].length === 1 ? 'artículo' : 'artículos'}</span>
-                        </div>
-                        <div class="shop-section-line"></div>
-                    </div>
-                    ${(() => {
-                        const cards = grouped[cat].map(p => {
-                            const precioConvertido = (parseFloat(p.usd) * tasa).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-                            const rarityLabel = {
-                                legendary: 'LEGENDARIO', epic: 'ÉPICO', rare: 'RARO', uncommon: 'POCO COMÚN', common: 'COMÚN',
-                                marvel: 'MARVEL', dc: 'DC', icon: 'SERIE DE ÍDOLOS', gaminglegends: 'GAMING LEGENDS'
-                            }[p.rarityClass] || p.rarityClass.toUpperCase();
-                            return `
-                            <div class="cosmetic-card ${p.rarityClass}">
-                                ${p.seVaHoy ? '<div class="overlay-se-va-hoy">🔥 Se va hoy</div>' : ''}
-                                <div class="skin-art-stage">
-                                    <span class="skin-art-label"><i class="fas fa-sparkles"></i> Item shop</span>
-                                    <img src="${p.imagen}" class="card-img" loading="lazy" decoding="async" fetchpriority="low" alt="${p.nombre}" onerror="this.onerror=null;this.src='assets/logo-shegos.png';this.style.objectFit='contain';this.style.padding='18%';this.style.background='rgba(0,0,0,0.45)';">
-                                    <div class="card-vbucks-overlay">
-                                        <img loading="lazy" decoding="async" src="https://logodix.com/logo/803916.png" alt="V-Bucks">
-                                        <span>${parseInt(p.vbucks).toLocaleString()}</span>
-                                    </div>
-                                    ${p.seVaHoy && p.outDateTs ? `<div class="card-time-left ${p.seVaHoy ? 'time-bottom' : 'time-top'}"><i class="fas fa-clock"></i><span class="card-time-left-value" data-out-date="${p.outDateTs}">00:00:00</span></div>` : ''}
-                                </div>
-                                <div class="card-info">
-                                    <h3 class="card-title" title="${p.nombre}">${p.nombre}</h3>
-                                    <div class="card-bottom-row">
-                                        <span class="card-rarity-text">${rarityLabel}</span>
-                                        <span class="card-price-fiat precio-producto" data-precio-usd="${p.usd}">${simbolo}${precioConvertido}</span>
-                                    </div>
-                                    <button class="btn-add-cart" data-item-nombre="${p.nombreSeguro}" onclick="event.stopPropagation(); agregarAlCarrito('${p.nombreSeguro}', '${p.usd}', '${p.imagen}', '${p.vbucks}', 'tienda', event, '${p.rarityClass}')">
-                                        <i class="fas fa-plus"></i> AGREGAR
-                                    </button>
-                                </div>
-                            </div>`;
-                        }).join('');
+                const head = `<div class="shop-section-header"><div class="shop-section-header-left"><h2 class="section-title">${cat}</h2><span class="section-item-count">${items.length} ${items.length === 1 ? 'artículo' : 'artículos'}</span></div><div class="shop-section-line"></div></div>`;
 
-                        if (cat === 'Se Va Hoy') {
-                            return `<div class="carrusel-se-va-hoy-wrap">
-                                <div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}${cards}</div>
-                            </div>
-                            <div class="carrusel-scrollbar-wrap">
-                                <div class="carrusel-scrollbar-track" id="seva-scrollbar-track">
-                                    <div class="carrusel-scrollbar-thumb" id="seva-scrollbar-thumb"></div>
-                                </div>
-                            </div>`;
-                        }
-                        return `<div class="grid-productos">${cards}</div>`;
-                    })()}`;
+                if (cat === 'Se Va Hoy') {
+                    // El carrusel conserva su bucle, y suele contener pocos artículos.
+                    const cards = items.map(renderCard).join('');
+                    sec.innerHTML = head + `<div class="carrusel-se-va-hoy-wrap"><div class="carrusel-se-va-hoy" id="carrusel-seva-hoy">${cards}${cards}</div></div>
+                        <div class="carrusel-scrollbar-wrap"><div class="carrusel-scrollbar-track" id="seva-scrollbar-track"><div class="carrusel-scrollbar-thumb" id="seva-scrollbar-thumb"></div></div></div>`;
+                } else {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-productos';
+                    const initial = items.slice(0, batchSize);
+                    grid.innerHTML = initial.map(renderCard).join('');
+                    sec.appendChild(document.createRange().createContextualFragment(head));
+                    sec.appendChild(grid);
+                    if (items.length > initial.length) {
+                        const sentinel = document.createElement('div');
+                        sentinel.className = 'shop-render-sentinel';
+                        sentinel.setAttribute('aria-hidden', 'true');
+                        sentinel._shopRenderState = { items, offset:initial.length, grid };
+                        sec.appendChild(sentinel);
+                        if (renderObserver) renderObserver.observe(sentinel);
+                        else sentinel._shopRenderState = null;
+                    }
+                }
                 cont.appendChild(sec);
             });
 
             actualizarPreciosGlobales();
             sincronizarBotonesCarrito();
         }
-
         async function enviarAvisoDiscord() {
             const idInput = document.getElementById('aviso-epic-id').value.trim();
             const cuentaDestino = document.getElementById('aviso-cuenta-destino').value;
