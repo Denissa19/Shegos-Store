@@ -5513,7 +5513,7 @@ function renderGestionAccounts() {
     const health=giftBotHealth.state==='ok'?(giftBotHealth.online.has(a.nombre.toLowerCase())?'online':'offline'):'unknown';
     const label=health==='online'?'En línea':health==='offline'?'Desconectada':'Sin verificar';
     return `<div class="gestion-account-row"><div class="gestion-account-cell gestion-account-name">${gestionEscape(a.nombre)}<small><span class="gestion-online ${health}"><i class="fas fa-circle" style="font-size:.58em"></i>${label}</span></small></div>
-      <div class="gestion-account-cell"><span class="gestion-account-value ${a.stw_level==null?'dim':''}">${a.stw_level==null?'—':gestionEscape(a.stw_level)} ⚡</span></div>
+      <div class="gestion-account-cell"><span class="gestion-account-value ${a.stw_level==null?'dim':''}">${a.stw_level==null?'—':`${gestionEscape(a.stw_level)} ⚡`}</span></div>
       <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(Number(a.pavos_disponibles)||0)}</span></div>
       <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(a.pavos_generados_actual||0)}</span></div>
       <div class="gestion-account-cell"><span class="gestion-account-value">${new Intl.NumberFormat('es-MX').format(p.recarga)} recargados</span><small class="gestion-account-value dim sec-ceo-only">Costo: ${gestionCurrency(p.costo_mxn)}</small></div>
@@ -5603,8 +5603,7 @@ window.saveGestionAccount=async function(){
   const btn=document.getElementById('gestion-save-btn'); if(btn){btn.disabled=true;btn.textContent='Guardando…';}
   try{
     let query=supabase.from('cuentas_gestion');
-    const targetBalance=added>0?original:vbucks;
-    const record={nombre:name,stw_level:level,pavos_disponibles:targetBalance,pavos_generados_mes:generated,pavos_generados_periodo:`${todayIso().slice(0,7)}-01`,regalos_disponibles:gifts,regalos_dia:todayIso(),actualizado_en:new Date().toISOString()};
+    const record={nombre:name,stw_level:level,...(added>0?{}:{pavos_disponibles:vbucks}),pavos_generados_mes:generated,pavos_generados_periodo:`${todayIso().slice(0,7)}-01`,regalos_disponibles:gifts,regalos_dia:todayIso(),actualizado_en:new Date().toISOString()};
     const result=id?await query.update(record).eq('id',id):await query.insert(record).select('id').single();
     if(result.error)throw result.error;
     if(added>0){
