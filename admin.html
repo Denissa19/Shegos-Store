@@ -7160,6 +7160,64 @@ window.doLogin = async function() {
   }
 };
 </script>
+<script>
+// Controles del acceso disponibles aunque falle la carga del módulo principal.
+window.togglePwd = function () {
+  const input = document.getElementById('pwd-input');
+  const icon = document.getElementById('pwd-eye-icon');
+  if (!input) return;
+  const show = input.type === 'password';
+  input.type = show ? 'text' : 'password';
+  if (icon) icon.className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+  const button = document.getElementById('pwd-eye');
+  if (button) button.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+};
+window.doLogin = async function () {
+  const email = (document.getElementById('email-input')?.value || '').trim().toLowerCase();
+  const password = document.getElementById('pwd-input')?.value || '';
+  const message = document.getElementById('login-err');
+  const button = document.querySelector('.login-btn');
+  const roles = { 'codedenissa19@gmail.com': 'CEO', 'carlos.arteaga.milan.2008@gmail.com': 'ADMIN' };
+  const showError = text => { if (message) { message.textContent = text; message.style.display = 'block'; } };
+  if (!email || !password) return showError('Completa todos los campos.');
+  if (!roles[email]) return showError('Usuario no autorizado.');
+  if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); button.textContent = 'Conectando…'; }
+  if (message) message.style.display = 'none';
+  try {
+    if (!window.supabase?.createClient) {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+        script.onload = resolve;
+        script.onerror = () => reject(new Error('No se pudo cargar la conexión segura con Supabase.'));
+        document.head.appendChild(script);
+        setTimeout(() => reject(new Error('La conexión con Supabase tardó demasiado.')), 12000);
+      });
+    }
+    if (!window.supabase?.createClient) throw new Error('No se pudo cargar Supabase. Recarga la página e inténtalo de nuevo.');
+    const client = window.__shegosLoginClient || (window.__shegosLoginClient = window.supabase.createClient(
+      'https://boifqdoojssmofanhxhj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaWZxZG9vanNzbW9mYW5oeGhqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NzY1MDgsImV4cCI6MjA5NTA1MjUwOH0.oOJ4ntJDxiADFaBnGeSggfiDaQLMLeueDAXg7chqA2w'
+    ));
+    const result = await Promise.race([
+      client.auth.signInWithPassword({ email, password }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase tardó demasiado en responder. Revisa tu conexión.')), 15000))
+    ]);
+    if (result.error) throw result.error;
+    if (!result.data?.session?.user) throw new Error('Supabase no devolvió una sesión válida.');
+    sessionStorage.setItem('shegos_role', roles[email]);
+    sessionStorage.setItem('shegos_email', email);
+    if (document.getElementById('remember-login')?.checked && navigator.credentials?.store && window.PasswordCredential) {
+      try { Promise.resolve(navigator.credentials.store(new PasswordCredential(document.getElementById('login-form')))).catch(() => {}); } catch (_) {}
+    }
+    location.reload();
+  } catch (error) {
+    console.error('Error de acceso Shegos:', error);
+    showError(error.message || 'No se pudo iniciar sesión. Inténtalo de nuevo.');
+    if (button) { button.disabled = false; button.removeAttribute('aria-busy'); button.textContent = 'ENTRAR'; }
+  }
+};
+</script>
 </head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
   <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>`$${x.toFixed(2)}`)}${isCEO?bar('Recibido neto',net,previousNet,x=>`$${x.toFixed(2)}`):''}</div></section>${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
