@@ -147,7 +147,7 @@ begin
   if p_tasa_usd_mxn is null or p_tasa_usd_mxn <= 0 then
     raise exception 'La tasa de cambio no es válida.' using errcode = '22023';
   end if;
-  if jsonb_typeof(p_venta) <> 'object' or coalesce(p_venta ->> 'ingreso','') !~ '^\d+(\.\d{1,2})?$' then
+  if jsonb_typeof(p_venta) <> 'object' or coalesce(p_venta ->> 'ingreso','') !~ '^\d+(\.\d+)?$' then
     raise exception 'El precio de la venta no es válido.' using errcode = '22023';
   end if;
 
