@@ -2246,7 +2246,7 @@ body, body.role-ceo {
 
     <div class="tab-panel" id="tab-descuentos">
       <div class="sec-title"><h3>Descuentos</h3><div class="sec-line"></div><button class="btn btn-outline" type="button" onclick="window.loadCoupons(true)"><i class="fas fa-rotate"></i> Actualizar</button></div>
-      <p class="coupon-intro">Crea tarjetas de descuento para clientes. Cada código dura 30 días y se puede usar una vez en compras desde MX$600 o US$30, según la moneda seleccionada.</p>
+      <p class="coupon-intro">Crea tarjetas de descuento para clientes. Cada código dura 30 días y se puede usar una vez en compras desde MX$385 o US$20, según la moneda seleccionada.</p>
       <div class="coupon-layout">
         <section class="coupon-panel">
           <div class="coupon-panel-heading"><i class="fas fa-wand-magic-sparkles"></i><div><strong>Crear tarjeta</strong><small>El diseño se asigna automáticamente según tu rol.</small></div></div>
@@ -2258,8 +2258,8 @@ body, body.role-ceo {
 </div><input type="hidden" id="coupon-category" value=""></div></div>
           <div class="frow">
             <div class="fgroup"><label class="flabel" for="coupon-percent">Descuento</label><select class="fsel" id="coupon-percent"><option value="5">5 %</option><option value="6">6 %</option><option value="7">7 %</option><option value="8">8 %</option><option value="9">9 %</option><option value="10">10 %</option></select></div>
-            <div class="fgroup"><label class="flabel" for="coupon-minimum">Compra mínima (MXN)</label><input class="finput" id="coupon-minimum" type="number" min="600" step="50" value="600"></div>
-            <div class="fgroup"><label class="flabel" for="coupon-minimum-usd">Compra mínima (USD)</label><input class="finput" id="coupon-minimum-usd" type="number" min="30" step="5" value="30"></div>
+            <div class="fgroup"><label class="flabel" for="coupon-minimum">Compra mínima (MXN)</label><input class="finput" id="coupon-minimum" type="number" min="385" step="5" value="385"></div>
+            <div class="fgroup"><label class="flabel" for="coupon-minimum-usd">Compra mínima (USD)</label><input class="finput" id="coupon-minimum-usd" type="number" min="20" step="1" value="20"></div>
           </div>
           <div class="fgroup"><label class="flabel" for="coupon-customer">Cliente (opcional)</label><input class="finput" id="coupon-customer" maxlength="120" placeholder="Nombre del cliente"></div>
           <div class="fgroup"><label class="flabel" for="coupon-reason">Motivo (opcional)</label><input class="finput" id="coupon-reason" maxlength="240" placeholder="Ej. compensación por demora"></div>
@@ -3062,7 +3062,7 @@ body, body.role-ceo {
       <div class="coupon-sale-box" id="sale-coupon-box">
         <label class="flabel" for="sale-coupon-code"><i class="fas fa-ticket"></i> Código de descuento</label>
         <div class="coupon-sale-row"><input class="finput" id="sale-coupon-code" maxlength="24" autocomplete="off" placeholder="Ingresa el código"><button class="btn btn-outline" id="sale-coupon-apply" type="button" onclick="window.applySaleCoupon()">Aplicar</button><button class="btn btn-ghost" id="sale-coupon-clear" type="button" onclick="window.clearSaleCoupon()" hidden aria-label="Quitar cupón"><i class="fas fa-times"></i></button></div>
-        <small class="coupon-sale-hint" id="sale-coupon-status">Compra mínima: MX$600 o US$30, según la moneda. Cupón de un solo uso.</small>
+        <small class="coupon-sale-hint" id="sale-coupon-status">Compra mínima: MX$385 o US$20, según la moneda. Cupón de un solo uso.</small>
       </div>
 
       <!-- Notas internas -->
@@ -5253,10 +5253,8 @@ function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch
 function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
 function couponStatusLabel(status) { return ({activo:'Disponible',usado:'Usado',anulado:'Anulado',vencido:'Vencido'})[status] || status; }
 function couponMakeCode() {
-  const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const bytes=new Uint8Array(10); crypto.getRandomValues(bytes);
-  let out='SHG-'; for (const b of bytes) out+=alphabet[b%alphabet.length];
-  return out;
+  const value=new Uint32Array(1);crypto.getRandomValues(value);
+  return `SHG-${String(value[0]%1000000).padStart(6,'0')}`;
 }
 function couponDrawCard(coupon) {
   return new Promise((resolve,reject)=>{
@@ -5289,12 +5287,16 @@ window.loadCoupons=async function(showLoading=false){
 window.createCoupon=async function(){
   const button=document.getElementById('coupon-create-btn');
   const minimum=parseVentaNumber(document.getElementById('coupon-minimum')?.value), minimumUsd=parseVentaNumber(document.getElementById('coupon-minimum-usd')?.value), percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;\n  if(!['satisfaccion','promocion','referidos','lealtad'].includes(document.getElementById('coupon-category')?.value)){showToast('Selecciona una categoría para el cupón.',true);return;}
-  if(minimum<600||minimumUsd<30){showToast('Los mínimos no pueden ser menores a MX$600 ni US$30.',true);return;}
+  if(minimum<385||minimumUsd<20){showToast('Los mínimos no pueden ser menores a MX$385 ni US$20.',true);return;}
   if(!Number.isInteger(percent)||percent<5||percent>10){showToast('El descuento debe estar entre 5 % y 10 %.',true);return;}
   if(button){button.disabled=true;button.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Generando…';}
   try{
-    const code=couponMakeCode();
-    const {data,error}=await supabase.rpc('crear_cupon_descuento',{p_codigo:code,p_categoria:document.getElementById('coupon-category').value,p_porcentaje:percent,p_compra_minima_mxn:minimum,p_compra_minima_usd:minimumUsd,p_cliente:customer,p_motivo:reason});
+    let data,error;
+    for(let attempt=0;attempt<5;attempt++){
+      const code=couponMakeCode();
+      ({data,error}=await supabase.rpc('crear_cupon_descuento',{p_codigo:code,p_categoria:document.getElementById('coupon-category').value,p_porcentaje:percent,p_compra_minima_mxn:minimum,p_compra_minima_usd:minimumUsd,p_cliente:customer,p_motivo:reason}));
+      if(error?.code!=='23505')break;
+    }
     if(error)throw error;
     const coupon=Array.isArray(data)?data[0]:data;
     lastCouponCode=coupon.codigo; if(lastCouponCardUrl)URL.revokeObjectURL(lastCouponCardUrl);
@@ -5316,7 +5318,7 @@ window.clearSaleCoupon=function(){
   activeSaleCoupon=null;const input=document.getElementById('sale-coupon-code');if(input){input.disabled=false;input.value='';}
   const button=document.getElementById('sale-coupon-apply');if(button)button.hidden=false;
   const clear=document.getElementById('sale-coupon-clear');if(clear)clear.hidden=true;
-  const status=document.getElementById('sale-coupon-status');if(status){status.textContent='Compra mínima: MX$600 o US$30, según la moneda. Cupón de un solo uso.';status.dataset.kind='';}
+  const status=document.getElementById('sale-coupon-status');if(status){status.textContent='Compra mínima: MX$385 o US$20, según la moneda. Cupón de un solo uso.';status.dataset.kind='';}
   window.calcVentaMargen?.();
 };
 window.applySaleCoupon=async function(){
