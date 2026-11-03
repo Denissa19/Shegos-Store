@@ -9432,7 +9432,9 @@ function mostrarModalCapturaMovil(url) {
             try {
                 var { data: pedidos, error } = await supabaseClient
                     .from("pedidos")
-                    .select("*")
+                    // El historial no muestra comprobantes ni fotos; pedir solo
+                    // estas columnas evita descargar adjuntos base64 desde PostgREST.
+                    .select("id,created_at,productos,total,estado")
                     .eq("email_cliente", email)
                     .order("created_at", { ascending: false });
 
