@@ -5241,7 +5241,7 @@ function exportAccounting() {
 let activeSaleCoupon = null;
 let lastCouponCardUrl = '';
 let lastCouponCode = '';
-const couponTemplates = { CEO: 'assets/descuento-deni.png', ADMIN: 'assets/descuento-maidas.png' };
+const couponTemplates = { CEO: 'assets/descuento-deni.svg', ADMIN: 'assets/descuento-maidas.svg' };
 const couponCategoryNames = { satisfaccion:'Atención al cliente', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };
 function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
