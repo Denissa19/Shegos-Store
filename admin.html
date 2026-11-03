@@ -5860,8 +5860,12 @@ async function doLogin() {
   }
 
   if (document.getElementById('remember-login')?.checked && navigator.credentials?.store && window.PasswordCredential) {
-    try { await navigator.credentials.store(new PasswordCredential(document.getElementById('login-form'))); }
-    catch (e) { /* El gestor seguro del navegador puede no estar disponible. */ }
+    try {
+      const savedCredential = new PasswordCredential(document.getElementById('login-form'));
+      // No esperar al gestor de contraseñas: algunos navegadores dejan esta promesa pendiente
+      // y bloquean la apertura del panel aunque Supabase ya haya iniciado sesión.
+      Promise.resolve(navigator.credentials.store(savedCredential)).catch(() => {});
+    } catch (e) { /* El gestor seguro del navegador puede no estar disponible. */ }
   }
 
   const role = ROLE_MAP[email] || 'ADMIN';
