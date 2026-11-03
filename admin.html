@@ -1844,7 +1844,7 @@ body, body.role-ceo {
 @media(max-width:620px){#app-load-status{top:calc(env(safe-area-inset-top,0px) + 68px)!important;left:12px!important;right:12px!important;width:auto!important;max-width:none!important;font-size:.92rem!important;min-height:44px!important}}
 </style>
 
-<style id="coupon-styles">
+<style id="multi-origin-and-coupon-category-styles">\n.gestion-source-options{grid-template-columns:repeat(2,minmax(0,1fr))}.gestion-source-entry{min-width:0;display:grid;gap:7px}.gestion-source-option input[type="checkbox"]{position:absolute;opacity:0;pointer-events:none}.gestion-source-amount{width:100%;min-width:0}.gestion-source-entry[hidden],.coupon-category-popover[hidden],.coupon-category-info[hidden]{display:none!important}.coupon-category-picker{position:relative}.coupon-category-trigger{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left}.coupon-category-popover{position:absolute;z-index:25;top:calc(100% + 7px);left:0;right:0;padding:7px;border:1px solid var(--border2);border-radius:13px;background:#101510;box-shadow:0 14px 36px #000b}.coupon-category-option{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;gap:5px}.coupon-category-option+.coupon-category-option{margin-top:4px}.coupon-category-choice,.coupon-category-info-btn{border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text);cursor:pointer}.coupon-category-choice{min-height:42px;padding:8px 11px;text-align:left;font:inherit;font-weight:650}.coupon-category-choice:hover,.coupon-category-choice[aria-pressed="true"]{background:rgba(98,255,0,.1);border-color:rgba(98,255,0,.35)}.coupon-category-info-btn{width:32px;height:32px;border-color:var(--border);color:var(--accent);font-weight:800}.coupon-category-info-btn:hover,.coupon-category-info-btn[aria-expanded="true"]{background:rgba(98,255,0,.12);border-color:var(--accent)}.coupon-category-info{padding:9px 11px 10px;margin:3px 0 6px;border-left:2px solid var(--accent);color:var(--text2);font-size:.78rem;line-height:1.5}.coupon-category-info strong{color:var(--text)}\n@media(max-width:620px){.gestion-source-options{grid-template-columns:repeat(2,minmax(0,1fr))}.gestion-source-option span{min-height:70px}.coupon-category-popover{position:fixed;top:auto;left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));max-height:70vh;overflow:auto}}\n</style>\n<style id="coupon-styles">
 .coupon-intro{color:var(--text2);margin:-4px 0 18px;line-height:1.6}.coupon-layout{display:grid;grid-template-columns:minmax(300px,.8fr) minmax(360px,1.2fr);gap:18px;align-items:start}.coupon-panel{padding:20px;border:1px solid var(--border2);border-radius:16px;background:rgba(10,14,11,.86);box-shadow:0 12px 30px #0004}.coupon-panel-heading{display:flex;align-items:center;gap:12px;margin-bottom:18px;color:var(--accent)}.coupon-panel-heading>i{font-size:1.2rem}.coupon-panel-heading strong,.coupon-panel-heading small{display:block}.coupon-panel-heading strong{color:var(--text);font-size:1rem}.coupon-panel-heading small{color:var(--text2);font-size:.78rem;margin-top:3px}.coupon-panel .frow{gap:12px}.coupon-create-btn{width:100%;justify-content:center;margin-top:4px}.coupon-created-card{margin-top:18px}.coupon-created-card img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid var(--accent);background:#000}.coupon-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.coupon-list-panel{min-height:280px}.coupon-loading,.coupon-empty{padding:34px 12px;text-align:center;color:var(--text2)}.coupon-loading i{color:var(--accent);margin-right:7px}.coupon-table-wrap{overflow:auto}.coupon-table{width:100%;border-collapse:collapse;min-width:640px}.coupon-table th,.coupon-table td{padding:11px 9px;border-bottom:1px solid var(--border2);text-align:left;font-size:.82rem}.coupon-table th{color:var(--text2);font-size:.69rem;text-transform:uppercase;letter-spacing:.06em}.coupon-code{font-weight:800;letter-spacing:.07em;color:var(--accent)}.coupon-status{display:inline-flex;padding:4px 8px;border:1px solid currentColor;border-radius:999px;font-size:.7rem;font-weight:700}.coupon-status.activo{color:var(--accent)}.coupon-status.usado{color:#fbbf24}.coupon-status.anulado,.coupon-status.vencido{color:var(--red)}.coupon-sale-box{margin:16px 0;padding:14px;border:1px solid rgba(98,255,0,.26);border-radius:12px;background:rgba(98,255,0,.035)}.coupon-sale-box .flabel{display:block;margin-bottom:8px}.coupon-sale-box .flabel i{color:var(--accent);margin-right:5px}.coupon-sale-row{display:flex;gap:8px}.coupon-sale-row .finput{flex:1;min-width:0;text-transform:uppercase}.coupon-sale-hint{display:block;color:var(--text2);margin-top:7px}.coupon-sale-hint[data-kind="error"]{color:var(--red)}.coupon-sale-hint[data-kind="success"]{color:var(--accent)}
 @media(max-width:850px){.coupon-layout{grid-template-columns:1fr}.coupon-panel{padding:16px}}
 @media(max-width:520px){.coupon-sale-row{flex-wrap:wrap}.coupon-sale-row .finput{flex-basis:100%}.coupon-card-actions>*{flex:1;justify-content:center}.coupon-panel .frow{display:grid;grid-template-columns:1fr 1fr}}
@@ -2250,7 +2250,12 @@ body, body.role-ceo {
       <div class="coupon-layout">
         <section class="coupon-panel">
           <div class="coupon-panel-heading"><i class="fas fa-wand-magic-sparkles"></i><div><strong>Crear tarjeta</strong><small>El diseño se asigna automáticamente según tu rol.</small></div></div>
-          <div class="fgroup"><label class="flabel" for="coupon-category">Categoría</label><select class="fsel" id="coupon-category"><option value="satisfaccion">Atención al cliente</option><option value="volumen">Compra más, paga menos</option><option value="fidelidad">Fidelidad / referidos</option><option value="otro">Otro</option></select></div>
+          <div class="fgroup"><label class="flabel" id="coupon-category-label">Categoría</label><div class="coupon-category-picker" id="coupon-category-picker"><button class="fsel coupon-category-trigger" id="coupon-category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="coupon-category-summary">Seleccionar categoría</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="coupon-category-popover" id="coupon-category-popover" role="listbox" hidden>
+<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="satisfaccion" aria-pressed="false">Satisfacción</button><button class="coupon-category-info-btn" type="button" data-info="satisfaccion" aria-label="Información sobre Satisfacción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-satisfaccion" hidden><strong>Satisfacción luego de una mala o buena experiencia.</strong><br>Buena: premia una compra satisfactoria cuando el cliente confirma que recibió su cuenta correctamente o completa una encuesta. Mala: si la cuenta se revierte dentro de una semana o menos, ofrece el descuento antes de entregarlo.</div></div>
+<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="promocion" aria-pressed="false">Promoción</button><button class="coupon-category-info-btn" type="button" data-info="promocion" aria-label="Información sobre Promoción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-promocion" hidden><strong>Impulsar las ventas.</strong><br>Para lanzamientos de cuentas, ofertas de temporada, liquidaciones, descuentos por tiempo limitado o días especiales.</div></div>
+<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="referidos" aria-pressed="false">Referidos</button><button class="coupon-category-info-btn" type="button" data-info="referidos" aria-label="Información sobre Referidos" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-referidos" hidden><strong>Conseguir nuevos clientes.</strong><br>Para clientes que recomienden la tienda a amigos que nunca hayan comprado.</div></div>
+<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="lealtad" aria-pressed="false">Lealtad</button><button class="coupon-category-info-btn" type="button" data-info="lealtad" aria-label="Información sobre Lealtad" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-lealtad" hidden><strong>Lograr que vuelvan a comprar.</strong><br>Para compradores frecuentes, clientes con varias compras completadas o miembros que llevan mucho tiempo comprando en el servidor.</div></div>
+</div><input type="hidden" id="coupon-category" value=""></div></div>
           <div class="frow">
             <div class="fgroup"><label class="flabel" for="coupon-percent">Descuento</label><select class="fsel" id="coupon-percent"><option value="5">5 %</option><option value="6">6 %</option><option value="7">7 %</option><option value="8">8 %</option><option value="9">9 %</option><option value="10">10 %</option></select></div>
             <div class="fgroup"><label class="flabel" for="coupon-minimum">Compra mínima (MXN)</label><input class="finput" id="coupon-minimum" type="number" min="600" step="50" value="600"></div>
@@ -3225,13 +3230,7 @@ body, body.role-ceo {
       </div>
       <div class="fgroup" id="gestion-edit-origin-group" hidden>
         <label class="flabel">Origen de los pavos agregados</label>
-        <div class="gestion-source-options" role="radiogroup" aria-label="Origen de los pavos agregados">
-          <label class="gestion-source-option"><input type="radio" name="gestion-edit-source" value="diarias"><span><i class="fas fa-sun"></i><b>Diarias</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-edit-source" value="alertas"><span><i class="fas fa-triangle-exclamation"></i><b>Alertas</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-edit-source" value="pase"><span><i class="fas fa-ticket"></i><b>Pase</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-edit-source" value="recarga"><span><i class="fas fa-cart-shopping"></i><b>Recarga de pavos</b></span></label>
-        </div>
-      </div>
+        <div class="gestion-source-options" aria-label="Selecciona uno o varios orígenes de los pavos agregados"><div class="gestion-source-entry" data-source-entry="gestion-edit-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-edit-source" value="diarias"><span><i class="fas fa-sun"></i><b>Diarias</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="diarias" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-edit-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-edit-source" value="alertas"><span><i class="fas fa-triangle-exclamation"></i><b>Alertas</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="alertas" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-edit-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-edit-source" value="pase"><span><i class="fas fa-ticket"></i><b>Pase</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="pase" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-edit-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-edit-source" value="recarga"><span><i class="fas fa-cart-shopping"></i><b>Recarga de pavos</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="recarga" placeholder="Cantidad de pavos" hidden></div></div>
       <div class="fgroup" id="gestion-edit-cost-group" hidden><label class="flabel" for="gestion-edit-cost">Costo de la recarga (MXN)</label><input class="finput" id="gestion-edit-cost" type="number" min="0.01" step="0.01" placeholder="0.00"></div>
       <div class="fgroup"><label class="flabel" for="gestion-f-generated">Pavos generados este mes</label><input class="finput" id="gestion-f-generated" type="number" min="0" step="50" value="0"></div>
       <div class="fgroup"><label class="flabel" for="gestion-f-gifts">Regalos disponibles hoy (0–5)</label><input class="finput" id="gestion-f-gifts" type="number" min="0" max="5" step="1" value="5" required></div>
@@ -3248,12 +3247,7 @@ body, body.role-ceo {
       <p class="gestion-modal-note" id="gestion-pavos-account-name"></p>
       <div class="fgroup"><label class="flabel" for="gestion-pavos-amount">Cantidad de pavos</label><input class="finput" id="gestion-pavos-amount" type="number" min="50" step="50" placeholder="Ej. 1000" required></div>
       <div class="fgroup"><span class="flabel">¿De dónde provienen?</span>
-        <div class="gestion-source-options" role="radiogroup" aria-label="Origen de los pavos">
-          <label class="gestion-source-option"><input type="radio" name="gestion-pavos-source" value="diarias"><span><i class="fas fa-sun"></i><b>Diarias</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-pavos-source" value="alertas"><span><i class="fas fa-triangle-exclamation"></i><b>Alertas</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-pavos-source" value="pase"><span><i class="fas fa-ticket"></i><b>Pase</b></span></label>
-          <label class="gestion-source-option"><input type="radio" name="gestion-pavos-source" value="recarga"><span><i class="fas fa-cart-shopping"></i><b>Recarga de pavos</b><small>Registrar el costo de la compra</small></span></label>
-        </div>
+        <div class="gestion-source-options" aria-label="Selecciona uno o varios orígenes de los pavos"><div class="gestion-source-entry" data-source-entry="gestion-pavos-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-pavos-source" value="diarias"><span><i class="fas fa-sun"></i><b>Diarias</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="diarias" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-pavos-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-pavos-source" value="alertas"><span><i class="fas fa-triangle-exclamation"></i><b>Alertas</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="alertas" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-pavos-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-pavos-source" value="pase"><span><i class="fas fa-ticket"></i><b>Pase</b></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="pase" placeholder="Cantidad de pavos" hidden></div><div class="gestion-source-entry" data-source-entry="gestion-pavos-source"><label class="gestion-source-option"><input type="checkbox" name="gestion-pavos-source" value="recarga"><span><i class="fas fa-cart-shopping"></i><b>Recarga de pavos</b><small>Registrar el costo de la compra</small></span></label><input class="finput gestion-source-amount" type="number" min="50" step="50" data-source-amount="recarga" placeholder="Cantidad de pavos" hidden></div></div>
       </div>
       <div class="fgroup" id="gestion-pavos-cost-group" hidden><label class="flabel" for="gestion-pavos-cost">Costo de la recarga (MXN)</label><div class="vm-price-wrap"><span class="vm-price-prefix">$</span><input class="finput" id="gestion-pavos-cost" type="number" min="0" step="0.01" placeholder="0.00"></div></div>
       <p class="gestion-modal-note">El saldo se sumará al inventario y quedará un registro mensual por cuenta y origen.</p>
@@ -5254,7 +5248,7 @@ let activeSaleCoupon = null;
 let lastCouponCardUrl = '';
 let lastCouponCode = '';
 const couponTemplates = { CEO: 'assets/descuento-deni.svg', ADMIN: 'assets/descuento-maidas.svg' };
-const couponCategoryNames = { satisfaccion:'Atención al cliente', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };
+const couponCategoryNames = { satisfaccion:'Satisfacción', promocion:'Promoción', referidos:'Referidos', lealtad:'Lealtad', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };\nconst couponCategoryTrigger=document.getElementById('coupon-category-trigger');const couponCategoryPopover=document.getElementById('coupon-category-popover');couponCategoryTrigger?.addEventListener('click',()=>{const open=couponCategoryPopover.hidden;couponCategoryPopover.hidden=!open;couponCategoryTrigger.setAttribute('aria-expanded',String(open));});document.querySelectorAll('.coupon-category-choice').forEach(button=>button.addEventListener('click',()=>{const value=button.dataset.category;document.getElementById('coupon-category').value=value;document.getElementById('coupon-category-summary').textContent=couponCategoryNames[value];document.querySelectorAll('.coupon-category-choice').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}));document.querySelectorAll('.coupon-category-info-btn').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();const info=document.getElementById(`coupon-category-info-${button.dataset.info}`);const open=info.hidden;info.hidden=!open;button.setAttribute('aria-expanded',String(open));}));document.addEventListener('click',event=>{if(couponCategoryPopover&&!document.getElementById('coupon-category-picker').contains(event.target)){couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}});
 function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
 function couponStatusLabel(status) { return ({activo:'Disponible',usado:'Usado',anulado:'Anulado',vencido:'Vencido'})[status] || status; }
@@ -5294,7 +5288,7 @@ window.loadCoupons=async function(showLoading=false){
 };
 window.createCoupon=async function(){
   const button=document.getElementById('coupon-create-btn');
-  const minimum=parseVentaNumber(document.getElementById('coupon-minimum')?.value), minimumUsd=parseVentaNumber(document.getElementById('coupon-minimum-usd')?.value), percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;
+  const minimum=parseVentaNumber(document.getElementById('coupon-minimum')?.value), minimumUsd=parseVentaNumber(document.getElementById('coupon-minimum-usd')?.value), percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;\n  if(!['satisfaccion','promocion','referidos','lealtad'].includes(document.getElementById('coupon-category')?.value)){showToast('Selecciona una categoría para el cupón.',true);return;}
   if(minimum<600||minimumUsd<30){showToast('Los mínimos no pueden ser menores a MX$600 ni US$30.',true);return;}
   if(!Number.isInteger(percent)||percent<5||percent>10){showToast('El descuento debe estar entre 5 % y 10 %.',true);return;}
   if(button){button.disabled=true;button.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Generando…';}
@@ -5525,37 +5519,15 @@ function renderGestionAccounts() {
   grid.innerHTML=`<div class="gestion-account-table"><div class="gestion-account-row gestion-account-header"><span>Cuenta</span><span>Poder STW ⚡</span><span>Pavos disponibles</span><span>Generados este mes</span><span>Recargas del mes</span><span>Usados en regalos</span><span>Regalos hoy</span><span class="sec-ceo-only">Ventas / valor pavos</span><span>Acciones</span></div>${rows}</div>`;
 }
 
-window.openGestionPavos=function(id){
-  const account=gestionAccounts.find(x=>String(x.id)===String(id));if(!account)return;
-  document.getElementById('gestion-pavos-account-id').value=account.id;
-  document.getElementById('gestion-pavos-account-name').textContent=`Cuenta: ${account.nombre} · Saldo actual: ${new Intl.NumberFormat('es-MX').format(Number(account.pavos_disponibles)||0)} pavos`;
-  document.getElementById('gestion-pavos-amount').value='';
-  document.getElementById('gestion-pavos-cost').value='';
-  document.querySelectorAll('input[name="gestion-pavos-source"]').forEach(input=>input.checked=false);
-  document.getElementById('gestion-pavos-cost-group').hidden=true;
-  document.getElementById('modal-gestion-pavos').classList.add('open');
-};
+function resetPavoOriginInputs(groupName){document.querySelectorAll(`input[name="${groupName}"]`).forEach(input=>{input.checked=false;const amount=input.closest('.gestion-source-entry')?.querySelector('[data-source-amount]');if(amount){amount.value='';amount.hidden=true;}});}
+function collectPavoMovements(groupName,costId){const cost=Number(document.getElementById(costId)?.value||0);const selected=[...document.querySelectorAll(`input[name="${groupName}"]:checked`)];const movements=[];let total=0;let valid=selected.length>0;for(const input of selected){const amountInput=input.closest('.gestion-source-entry')?.querySelector('[data-source-amount]');const pavos=Number(amountInput?.value);if(!Number.isInteger(pavos)||pavos<50||pavos%50!==0)valid=false;else total+=pavos;movements.push({origen:input.value,pavos,costo_mxn:input.value==='recarga'?cost:0});}if(selected.some(input=>input.value==='recarga')&&(!Number.isFinite(cost)||cost<=0))valid=false;if(!selected.some(input=>input.value==='recarga')&&cost!==0)valid=false;return {movements,total,valid};}
+function bindPavoOriginGroup(groupName,costGroupId){document.querySelectorAll(`input[name="${groupName}"]`).forEach(input=>input.addEventListener('change',()=>{const entry=input.closest('.gestion-source-entry');const amount=entry?.querySelector('[data-source-amount]');if(amount){amount.hidden=!input.checked;if(!input.checked)amount.value='';}const hasRecharge=!!document.querySelector(`input[name="${groupName}"][value="recarga"]:checked`);const costGroup=document.getElementById(costGroupId);if(costGroup)costGroup.hidden=!hasRecharge;if(!hasRecharge){const cost=document.getElementById(costGroupId.replace('-group',''));if(cost)cost.value='';}}));}
+bindPavoOriginGroup('gestion-edit-source','gestion-edit-cost-group');bindPavoOriginGroup('gestion-pavos-source','gestion-pavos-cost-group');
+window.openGestionPavos=function(id){const account=gestionAccounts.find(x=>String(x.id)===String(id));if(!account)return;document.getElementById('gestion-pavos-account-id').value=account.id;document.getElementById('gestion-pavos-account-name').textContent=`Cuenta: ${account.nombre} · Saldo actual: ${new Intl.NumberFormat('es-MX').format(Number(account.pavos_disponibles)||0)} pavos`;document.getElementById('gestion-pavos-amount').value='';document.getElementById('gestion-pavos-cost').value='';resetPavoOriginInputs('gestion-pavos-source');document.getElementById('gestion-pavos-cost-group').hidden=true;document.getElementById('modal-gestion-pavos').classList.add('open');};
 window.closeGestionPavos=function(){document.getElementById('modal-gestion-pavos')?.classList.remove('open');};
-document.querySelectorAll('input[name="gestion-pavos-source"]').forEach(input=>input.addEventListener('change',()=>{
-  const isRecharge=document.querySelector('input[name="gestion-pavos-source"]:checked')?.value==='recarga';
-  const group=document.getElementById('gestion-pavos-cost-group');if(group)group.hidden=!isRecharge;
-}));
-window.saveGestionPavos=async function(){
-  const accountId=document.getElementById('gestion-pavos-account-id').value;
-  const amount=Number(document.getElementById('gestion-pavos-amount').value);
-  const source=document.querySelector('input[name="gestion-pavos-source"]:checked')?.value||'';
-  const cost=source==='recarga'?Number(document.getElementById('gestion-pavos-cost').value):0;
-  if(!accountId||!Number.isInteger(amount)||amount<50||amount%50!==0||!['diarias','alertas','pase','recarga'].includes(source)||!Number.isFinite(cost)||cost<0||(source==='recarga'&&cost<=0)){showToast('Indica pavos en múltiplos de 50, elige su origen y registra el costo si es una recarga.',true);return;}
-  const btn=document.getElementById('gestion-pavos-save-btn');if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Guardando…';}
-  try{
-    const {error}=await supabase.rpc('registrar_movimiento_pavos',{p_cuenta_id:accountId,p_pavos:amount,p_origen:source,p_costo_mxn:cost});
-    if(error)throw error;
-    window.closeGestionPavos();await window.fetchGestionAccounts(false);showToast('Pavos agregados y registrados.');
-  }catch(error){console.error('No se pudo registrar el ingreso de pavos:',error);showToast(`No se pudieron agregar pavos: ${error?.message||'revisa Supabase y aplica la migración actualizada.'}`,true,8000);}
-  finally{if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-plus"></i> Agregar pavos';}}
+window.saveGestionPavos=async function(){const accountId=document.getElementById('gestion-pavos-account-id').value;const amount=Number(document.getElementById('gestion-pavos-amount').value);const batch=collectPavoMovements('gestion-pavos-source','gestion-pavos-cost');if(!accountId||!Number.isInteger(amount)||amount<50||amount%50!==0||!batch.valid||batch.total!==amount){showToast('Selecciona uno o varios orígenes, indica pavos en múltiplos de 50 y comprueba que sus cantidades sumen el total. Para Recarga registra también el costo.',true);return;}const btn=document.getElementById('gestion-pavos-save-btn');if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Guardando…';}try{const {error}=await supabase.rpc('registrar_movimientos_pavos_lote',{p_cuenta_id:accountId,p_movimientos:batch.movements});if(error)throw error;window.closeGestionPavos();await window.fetchGestionAccounts(false);showToast('Pavos agregados y registrados por origen.');}catch(error){console.error('No se pudo registrar el ingreso de pavos:',error);showToast(`No se pudieron agregar pavos: ${error?.message||'revisa Supabase y aplica la migración actualizada.'}`,true,8000);}finally{if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-plus"></i> Agregar pavos';}}
 };
-
-window.openGestionAccount=function(id='') {
+\nwindow.openGestionAccount=function(id='') {
   const a=gestionAccounts.find(x=>String(x.id)===String(id));
   document.getElementById('gestion-modal-title').textContent=a?'Editar cuenta':'Agregar cuenta';
   document.getElementById('gestion-f-id').value=a?.id||'';
@@ -5568,8 +5540,7 @@ window.openGestionAccount=function(id='') {
   const costGroup=document.getElementById('gestion-edit-cost-group');
   if(originGroup)originGroup.hidden=true;
   if(costGroup)costGroup.hidden=true;
-  document.querySelectorAll('input[name="gestion-edit-source"]').forEach(input=>input.checked=false);
-  document.getElementById('gestion-edit-cost').value='';
+  resetPavoOriginInputs('gestion-edit-source');document.getElementById('gestion-edit-cost').value='';
   document.getElementById('gestion-f-generated').value=a?.pavos_generados_actual??0;
   document.getElementById('gestion-f-gifts').value=a?.regalos_hoy??5;
   document.getElementById('modal-gestion-cuenta').classList.add('open');
@@ -5580,12 +5551,8 @@ document.getElementById('gestion-f-vbucks')?.addEventListener('input',event=>{
   const costGroup=document.getElementById('gestion-edit-cost-group');
   const increase=Number(input.value)>Number(input.dataset.original||0);
   if(group)group.hidden=!increase;
-  if(!increase){document.querySelectorAll('input[name="gestion-edit-source"]').forEach(r=>r.checked=false);if(costGroup)costGroup.hidden=true;}
+  if(!increase){resetPavoOriginInputs('gestion-edit-source');if(costGroup)costGroup.hidden=true;document.getElementById('gestion-edit-cost').value='';}
 });
-document.querySelectorAll('input[name="gestion-edit-source"]').forEach(input=>input.addEventListener('change',()=>{
-  const costGroup=document.getElementById('gestion-edit-cost-group');
-  if(costGroup)costGroup.hidden=document.querySelector('input[name="gestion-edit-source"]:checked')?.value!=='recarga';
-}));
 window.closeGestionAccount=function(){document.getElementById('modal-gestion-cuenta')?.classList.remove('open');};
 window.saveGestionAccount=async function(){
   const name=document.getElementById('gestion-f-name').value.trim();
@@ -5596,10 +5563,8 @@ window.saveGestionAccount=async function(){
   const level=levelRaw===''?null:Number(levelRaw);
   const id=document.getElementById('gestion-f-id').value;
   const original=Number(document.getElementById('gestion-f-vbucks').dataset.original)||0;
-  const source=document.querySelector('input[name="gestion-edit-source"]:checked')?.value||'';
-  const added=vbucks-original;
-  const cost=source==='recarga'?Number(document.getElementById('gestion-edit-cost').value):0;
-  if(!name||!Number.isInteger(vbucks)||vbucks<0||vbucks%50!==0||!Number.isInteger(generated)||generated<0||generated%50!==0||!Number.isInteger(gifts)||gifts<0||gifts>5||(level!==null&&(!Number.isInteger(level)||level<0))||(added>0&&(!Number.isInteger(added)||added<50||added%50!==0||!['diarias','alertas','pase','recarga'].includes(source)||(source==='recarga'&&(!Number.isFinite(cost)||cost<=0))))){showToast('Los pavos deben ser múltiplos de 50. Si aumentas el saldo, selecciona el origen y agrega el costo cuando sea una recarga.',true);return;}
+  const added=vbucks-original;\r\n  const batch=collectPavoMovements('gestion-edit-source','gestion-edit-cost');
+  if(!name||!Number.isInteger(vbucks)||vbucks<0||vbucks%50!==0||!Number.isInteger(generated)||generated<0||generated%50!==0||!Number.isInteger(gifts)||gifts<0||gifts>5||(level!==null&&(!Number.isInteger(level)||level<0))||(added>0&&(!Number.isInteger(added)||added<50||added%50!==0||!batch.valid||batch.total!==added))){showToast('Los pavos deben ser múltiplos de 50. Al aumentar el saldo, selecciona uno o varios orígenes y distribuye entre ellos exactamente la cantidad agregada; registra el costo si hay Recarga.',true);return;}
   const btn=document.getElementById('gestion-save-btn'); if(btn){btn.disabled=true;btn.textContent='Guardando…';}
   try{
     let query=supabase.from('cuentas_gestion');
@@ -5608,7 +5573,7 @@ window.saveGestionAccount=async function(){
     if(result.error)throw result.error;
     if(added>0){
       const accountId=id||result.data?.id;
-      const movement=await supabase.rpc('registrar_movimiento_pavos',{p_cuenta_id:accountId,p_pavos:added,p_origen:source,p_costo_mxn:cost});
+      const movement=await supabase.rpc('registrar_movimientos_pavos_lote',{p_cuenta_id:accountId,p_movimientos:batch.movements});
       if(movement.error)throw movement.error;
     }
     window.closeGestionAccount(); await window.fetchGestionAccounts(false); showToast('Cuenta guardada.');
