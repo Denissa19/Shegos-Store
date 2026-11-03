@@ -1605,6 +1605,7 @@
         }
 
         .shop-section { margin: 50px 0; animation: fadeIn 0.8s ease-in forwards; content-visibility: auto; contain-intrinsic-size: auto 720px; }
+        .shop-render-sentinel { height: 1px; width: 100%; pointer-events: none; }
 
         /* Cabecera de sección estilo tienda in-game */
         .shop-section-header {
@@ -7304,7 +7305,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                     grid.className = 'grid-productos';
                     const initial = items.slice(0, batchSize);
                     grid.innerHTML = initial.map(renderCard).join('');
-                    sec.appendChild(document.createRange().createContextualFragment(head));
+                    sec.innerHTML = head;
                     sec.appendChild(grid);
                     if (items.length > initial.length) {
                         const sentinel = document.createElement('div');
@@ -7313,7 +7314,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                         sentinel._shopRenderState = { items, offset:initial.length, grid };
                         sec.appendChild(sentinel);
                         if (renderObserver) renderObserver.observe(sentinel);
-                        else sentinel._shopRenderState = null;
+                        else grid.insertAdjacentHTML('beforeend', items.slice(initial.length).map(renderCard).join(''));
                     }
                 }
                 cont.appendChild(sec);
