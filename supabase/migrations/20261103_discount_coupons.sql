@@ -12,6 +12,7 @@ create table if not exists public.cupones_descuento (
   categoria text not null check (categoria in ('satisfaccion','volumen','fidelidad','otro')),
   porcentaje numeric(5,2) not null check (porcentaje between 5 and 10),
   compra_minima_mxn numeric(12,2) not null default 600 check (compra_minima_mxn >= 600),
+  compra_minima_usd numeric(12,2) not null default 30 check (compra_minima_usd >= 30),
   creador_email text not null,
   creador_rol text not null check (creador_rol in ('CEO','ADMIN')),
   plantilla text not null check (plantilla in ('deni','maidas')),
@@ -24,6 +25,9 @@ create table if not exists public.cupones_descuento (
   expira_en timestamptz not null default (now() + interval '30 days'),
   actualizado_en timestamptz not null default now()
 );
+
+alter table public.cupones_descuento
+  add column if not exists compra_minima_usd numeric(12,2) not null default 30 check (compra_minima_usd >= 30);
 
 create table if not exists public.cupones_redenciones (
   id uuid primary key default gen_random_uuid(),
@@ -66,11 +70,13 @@ revoke all on public.cupones_redenciones from anon, public;
 grant select, update on public.cupones_descuento to authenticated;
 grant select on public.cupones_redenciones to authenticated;
 
+drop function if exists public.crear_cupon_descuento(text,text,numeric,numeric,text,text);
 create or replace function public.crear_cupon_descuento(
   p_codigo text,
   p_categoria text,
   p_porcentaje numeric,
   p_compra_minima_mxn numeric default 600,
+  p_compra_minima_usd numeric default 30,
   p_cliente text default null,
   p_motivo text default null
 )
@@ -104,21 +110,26 @@ begin
   if p_compra_minima_mxn < 600 then
     raise exception 'La compra mínima debe ser de al menos 600 MXN.' using errcode = '22023';
   end if;
+  if p_compra_minima_usd < 30 then
+    raise exception 'La compra mínima debe ser de al menos 30 USD.' using errcode = '22023';
+  end if;
 
   insert into public.cupones_descuento
-    (codigo,categoria,porcentaje,compra_minima_mxn,creador_email,creador_rol,plantilla,cliente,motivo)
+    (codigo,categoria,porcentaje,compra_minima_mxn,compra_minima_usd,creador_email,creador_rol,plantilla,cliente,motivo)
   values
-    (upper(p_codigo),p_categoria,p_porcentaje,p_compra_minima_mxn,v_email,v_rol,v_plantilla,
+    (upper(p_codigo),p_categoria,p_porcentaje,p_compra_minima_mxn,p_compra_minima_usd,v_email,v_rol,v_plantilla,
      nullif(trim(coalesce(p_cliente,'')),''),nullif(trim(coalesce(p_motivo,'')),''))
   returning * into v_row;
   return v_row;
 end;
 $$;
 
+drop function if exists public.registrar_venta_con_cupon(text,jsonb,numeric);
 create or replace function public.registrar_venta_con_cupon(
   p_codigo text,
   p_venta jsonb,
-  p_tasa_usd_mxn numeric default 18.67
+  p_tasa_usd_mxn numeric default 18.67,
+  p_moneda_venta text default 'MXN'
 )
 returns jsonb
 language plpgsql
@@ -147,6 +158,9 @@ begin
   if p_tasa_usd_mxn is null or p_tasa_usd_mxn <= 0 then
     raise exception 'La tasa de cambio no es válida.' using errcode = '22023';
   end if;
+  if p_moneda_venta not in ('MXN','USD') then
+    raise exception 'La moneda de venta no es válida.' using errcode = '22023';
+  end if;
   if jsonb_typeof(p_venta) <> 'object' or coalesce(p_venta ->> 'ingreso','') !~ '^\d+(\.\d+)?$' then
     raise exception 'El precio de la venta no es válido.' using errcode = '22023';
   end if;
@@ -164,7 +178,9 @@ begin
   end if;
 
   v_subtotal := (p_venta ->> 'ingreso')::numeric;
-  if v_subtotal * p_tasa_usd_mxn < v_cupon.compra_minima_mxn then
+  if p_moneda_venta = 'USD' and v_subtotal < v_cupon.compra_minima_usd then
+    raise exception 'El subtotal no alcanza la compra mínima de % USD.',v_cupon.compra_minima_usd using errcode = 'P0001';
+  elsif p_moneda_venta = 'MXN' and v_subtotal * p_tasa_usd_mxn < v_cupon.compra_minima_mxn then
     raise exception 'El subtotal no alcanza la compra mínima de % MXN.',v_cupon.compra_minima_mxn using errcode = 'P0001';
   end if;
   v_descuento := round(v_subtotal * v_cupon.porcentaje / 100,2);
@@ -212,10 +228,10 @@ begin
 end;
 $$;
 
-revoke all on function public.crear_cupon_descuento(text,text,numeric,numeric,text,text) from public, anon;
-revoke all on function public.registrar_venta_con_cupon(text,jsonb,numeric) from public, anon;
-grant execute on function public.crear_cupon_descuento(text,text,numeric,numeric,text,text) to authenticated;
-grant execute on function public.registrar_venta_con_cupon(text,jsonb,numeric) to authenticated;
+revoke all on function public.crear_cupon_descuento(text,text,numeric,numeric,numeric,text,text) from public, anon;
+revoke all on function public.registrar_venta_con_cupon(text,jsonb,numeric,text) from public, anon;
+grant execute on function public.crear_cupon_descuento(text,text,numeric,numeric,numeric,text,text) to authenticated;
+grant execute on function public.registrar_venta_con_cupon(text,jsonb,numeric,text) to authenticated;
 
 notify pgrst, 'reload schema';
 commit;
