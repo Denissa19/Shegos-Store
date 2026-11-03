@@ -1912,7 +1912,7 @@ window.doLogin = async function () {
 @media(max-width:520px){.coupon-sale-row{flex-wrap:wrap}.coupon-sale-row .finput{flex-basis:100%}.coupon-card-actions>*{flex:1;justify-content:center}.coupon-panel .frow{display:grid;grid-template-columns:1fr 1fr}}
 </style>
 <style id="coupon-mobile-fix">
-.coupon-category-info{grid-column:1/-1;padding:11px 12px 12px;margin:3px 0 8px;border-left:2px solid var(--accent);border-radius:0 9px 9px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.8rem;line-height:1.55}.coupon-category-info strong{display:block;color:var(--text);margin-bottom:8px}.coupon-category-info p{margin:7px 0 0}.coupon-category-info b{color:var(--accent)}.coupon-amount-control{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}.coupon-card-preview-wrap{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--accent);background:#000;isolation:isolate}.coupon-card-preview-wrap img{display:block;width:100%;height:auto;background:#000}.coupon-card-percent,.coupon-card-code{position:absolute;z-index:1;display:block;color:#101010;text-align:center;font-family:Arial,sans-serif;font-weight:900;letter-spacing:.03em;text-shadow:0 1px 0 #fff}.coupon-card-percent{font-size:clamp(1.8rem,7vw,4.2rem);width:26%;line-height:1}.coupon-card-code{font-size:clamp(.75rem,3vw,1.8rem);width:38%;white-space:nowrap}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-percent{left:54.5%;top:59%}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-code{left:51%;top:79%}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-percent{left:66%;top:10%}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-code{left:61%;top:78%}@media(max-width:520px){.coupon-panel .frow{display:grid;grid-template-columns:1fr}.coupon-amount-control{grid-template-columns:minmax(0,1fr) 88px}.coupon-category-popover{max-width:calc(100vw - 32px)}.coupon-table-wrap{margin:0 -4px}.coupon-panel{overflow:hidden}}
+.coupon-category-info{grid-column:1/-1;padding:11px 12px 12px;margin:3px 0 8px;border-left:2px solid var(--accent);border-radius:0 9px 9px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.8rem;line-height:1.55}.coupon-category-info strong{display:block;color:var(--text);margin-bottom:8px}.coupon-category-info p{margin:7px 0 0}.coupon-category-info b{color:var(--accent)}.coupon-amount-control{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}.coupon-card-preview-wrap{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--accent);background:#000;isolation:isolate;container-type:inline-size}.coupon-card-preview-wrap img{display:block;width:100%;height:auto;aspect-ratio:3/2;background:#000}.coupon-card-preview-wrap.is-loading::after{content:"Preparando tarjeta…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:.9rem;font-weight:700;z-index:2}.coupon-card-percent,.coupon-card-code{position:absolute;z-index:1;display:flex;align-items:center;color:#0b0b0b;font-family:"Arial Black",Arial,Helvetica,sans-serif;font-weight:900;line-height:1;white-space:nowrap;overflow:hidden}.coupon-card-percent{justify-content:flex-end}.coupon-card-code{justify-content:center}.coupon-card-preview-wrap.is-rendered .coupon-card-percent,.coupon-card-preview-wrap.is-rendered .coupon-card-code{display:none}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-percent{left:47.5%;width:30.9%;top:54.7%;height:19.4%;font-size:12.8cqw}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-code{left:49.2%;width:42.7%;top:79.3%;height:8.8%;font-size:4cqw}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-percent{left:67.3%;width:18%;top:3%;height:18.8%;font-size:13.4cqw}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-code{left:62%;width:34%;top:77.1%;height:10.2%;font-size:4.2cqw}@media(max-width:520px){.coupon-panel .frow{display:grid;grid-template-columns:1fr}.coupon-amount-control{grid-template-columns:minmax(0,1fr) 88px}.coupon-category-popover{max-width:calc(100vw - 32px)}.coupon-table-wrap{margin:0 -4px}.coupon-panel{overflow:hidden}}
 </style>
 <style id="gestion-mobile-menu-styles">
 @media(max-width:620px){.gestion-account-table-wrap{border:0;background:transparent;overflow:visible}.gestion-account-table{min-width:0;display:grid;gap:10px}.gestion-account-header{display:none}.gestion-account-row{display:grid;grid-template-columns:1fr auto;gap:5px;padding:14px;border:1px solid var(--border);border-radius:13px;background:rgba(12,17,13,.9);cursor:pointer}.gestion-account-row:not(.gestion-account-header):active{transform:scale(.99);border-color:var(--accent)}.gestion-account-row>.gestion-account-cell:not(.gestion-account-name):not(.gestion-card-actions){display:none}.gestion-account-row .gestion-card-actions{grid-column:2;grid-row:1;align-self:center}.gestion-account-row .gestion-card-actions .btn{display:none}.gestion-account-row .gestion-card-actions:after{content:'Ver detalles';font-size:.75em;color:var(--accent);font-weight:700}.gestion-mobile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.gestion-mobile-item{padding:11px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.025)}.gestion-mobile-item small{display:block;color:var(--text3);font-size:.68em;text-transform:uppercase;letter-spacing:.04em}.gestion-mobile-item strong{display:block;margin-top:4px;font-size:.9em;color:var(--text)}.gestion-mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.gestion-mobile-actions .btn{justify-content:center}.gestion-mobile-status{margin:0 0 13px;color:var(--text2);font-size:.86em}.gestion-mobile-status .gestion-online{margin-left:5px}}
@@ -2331,7 +2331,7 @@ window.doLogin = async function () {
           <div class="fgroup"><label class="flabel" for="coupon-customer">Cliente (opcional)</label><input class="finput" id="coupon-customer" maxlength="120" placeholder="Nombre del cliente"></div>
           <div class="fgroup"><label class="flabel" for="coupon-reason">Motivo (opcional)</label><input class="finput" id="coupon-reason" maxlength="240" placeholder="Ej. compensación por demora"></div>
           <button class="btn btn-accent coupon-create-btn" id="coupon-create-btn" type="button" onclick="window.createCoupon()"><i class="fas fa-ticket"></i> Generar código</button>
-          <div id="coupon-created-card" class="coupon-created-card" hidden><div class="coupon-card-preview-wrap"><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><b id="coupon-card-percent" class="coupon-card-percent"></b><b id="coupon-card-code" class="coupon-card-code"></b></div><div class="coupon-card-actions"><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
+          <div id="coupon-created-card" class="coupon-created-card" hidden><div class="coupon-card-preview-wrap"><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><b id="coupon-card-percent" class="coupon-card-percent"></b><b id="coupon-card-code" class="coupon-card-code"></b></div><div class="coupon-card-actions"><button class="btn btn-accent" type="button" id="coupon-download-btn" onclick="window.downloadCouponCard()"><i class="fas fa-download"></i> Descargar imagen</button><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
         </section>
         <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
@@ -5344,7 +5344,6 @@ function exportAccounting() {
 let activeSaleCoupon = null;
 let lastCouponCardUrl = '';
 let lastCouponCode = '';
-const couponTemplates = { CEO: 'assets/descuento-deni.png', ADMIN: 'assets/descuento-maidas.png' };
 const couponCategoryNames = { satisfaccion:'Satisfacción', promocion:'Promoción', referidos:'Referidos', lealtad:'Lealtad', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };
 const couponCategoryTrigger=document.getElementById('coupon-category-trigger');const couponCategoryPopover=document.getElementById('coupon-category-popover');couponCategoryTrigger?.addEventListener('click',()=>{const open=couponCategoryPopover.hidden;couponCategoryPopover.hidden=!open;couponCategoryTrigger.setAttribute('aria-expanded',String(open));});document.querySelectorAll('.coupon-category-choice').forEach(button=>button.addEventListener('click',()=>{const value=button.dataset.category;document.getElementById('coupon-category').value=value;document.getElementById('coupon-category-summary').textContent=couponCategoryNames[value];document.querySelectorAll('.coupon-category-choice').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}));document.querySelectorAll('.coupon-category-info-btn').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();const info=document.getElementById(`coupon-category-info-${button.dataset.info}`);const open=info.hidden;document.querySelectorAll('.coupon-category-info').forEach(item=>{if(item!==info)item.hidden=true;});document.querySelectorAll('.coupon-category-info-btn').forEach(item=>{if(item!==button)item.setAttribute('aria-expanded','false');});info.hidden=!open;button.setAttribute('aria-expanded',String(open));}));document.addEventListener('click',event=>{if(couponCategoryPopover&&!document.getElementById('coupon-category-picker').contains(event.target)){couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}});
 const couponCurrency=document.getElementById('coupon-currency'),couponAmount=document.getElementById('coupon-amount'),couponAmountHelp=document.getElementById('coupon-amount-help');
@@ -5353,16 +5352,194 @@ couponCurrency?.addEventListener('change',syncCouponAmountCurrency);syncCouponAm
 function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
 function couponStatusLabel(status) { return ({activo:'Disponible',usado:'Usado',anulado:'Anulado',vencido:'Vencido'})[status] || status; }
+// ─────────────────────────────────────────────────────────────
+// TARJETAS DE DESCUENTO
+// La imagen final se compone en un <canvas> (plantilla JPG + porcentaje + código)
+// y se entrega igual que la imagen de la tienda: canvas.toBlob → JPEG.
+// En PC se descarga directo; en móvil se abre un popup para guardarla.
+// ─────────────────────────────────────────────────────────────
+const couponTemplateSources = {
+  deni: ['assets/descuento-deni.jpg', 'assets/descuento-deni.png', 'assets/descuento-deni.svg'],
+  maidas: ['assets/descuento-maidas.jpg', 'assets/descuento-maidas.png', 'assets/descuento-maidas.svg']
+};
+// Medidas en px sobre la plantilla de 1536×1024. Las plantillas ya traen el símbolo % impreso:
+// solo se dibuja el número a su izquierda y el código dentro de la caja blanca inferior.
+const couponCardLayout = {
+  deni: { pct: { right: 1204, centerY: 656, digitH: 141, maxW: 440 }, code: { x: 755, y: 812, w: 656, h: 90 } },
+  maidas: { pct: { right: 1310, centerY: 134.5, digitH: 147, maxW: 262 }, code: { x: 952, y: 790, w: 522, h: 104 } }
+};
+const couponCardState = { token: 0, template: '', percent: 0, code: '', blob: null, url: '', error: null };
+const couponTemplateCache = {};
+
 function couponMakeCode() {
-  const value=new Uint32Array(1);crypto.getRandomValues(value);
-  return `SHG-${String(value[0]%1000000).padStart(6,'0')}`;
+  // SHG- + 6 caracteres entre letras y números. Sin I, O, 0 ni 1 para evitar confusiones al dictarlo o copiarlo.
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 32 caracteres: 256 es múltiplo de 32, así que no hay sesgo
+  for (;;) {
+    const bytes = new Uint8Array(6);
+    crypto.getRandomValues(bytes);
+    const body = Array.from(bytes, b => alphabet[b % 32]).join('');
+    if (/[A-Z]/.test(body) && /[2-9]/.test(body)) return `SHG-${body}`;
+  }
 }
+
+function couponLoadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => img.naturalWidth ? resolve(img) : reject(new Error(`La plantilla ${src} está vacía.`));
+    img.onerror = () => reject(new Error(`No se encontró ${src}`));
+    img.src = src;
+  });
+}
+
+async function couponLoadTemplate(template) {
+  if (couponTemplateCache[template]) return couponTemplateCache[template];
+  const errors = [];
+  for (const src of couponTemplateSources[template] || []) {
+    try { return couponTemplateCache[template] = await couponLoadImage(src); }
+    catch (error) { errors.push(error.message); }
+  }
+  throw new Error(`No se pudo cargar la plantilla de la tarjeta. Sube assets/descuento-${template}.jpg al repositorio. (${errors.join(' · ')})`);
+}
+
+function couponFitFont(ctx, text, weight, family, startSize, maxWidth) {
+  let size = Math.max(12, Math.round(startSize));
+  ctx.font = `${weight} ${size}px ${family}`;
+  while (size > 12 && ctx.measureText(text).width > maxWidth) {
+    size -= 2;
+    ctx.font = `${weight} ${size}px ${family}`;
+  }
+  return size;
+}
+
+async function couponRenderCard(template, percent, code) {
+  const img = await couponLoadTemplate(template);
+  const width = img.naturalWidth || 1536, height = img.naturalHeight || Math.round(width * 1024 / 1536), k = width / 1536;
+  const canvas = document.createElement('canvas');
+  canvas.width = width; canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
+  const layout = couponCardLayout[template] || couponCardLayout.maidas;
+  const family = '"Arial Black", Arial, Helvetica, sans-serif';
+  ctx.fillStyle = '#0b0b0b';
+  ctx.textBaseline = 'alphabetic';
+  // Número del descuento, pegado a la izquierda del % impreso
+  const number = String(Math.round(Number(percent)));
+  ctx.textAlign = 'right';
+  let size = couponFitFont(ctx, number, 900, family, layout.pct.digitH * k / 0.716, layout.pct.maxW * k);
+  let ascent = ctx.measureText('0').actualBoundingBoxAscent || size * 0.716;
+  ctx.fillText(number, layout.pct.right * k, layout.pct.centerY * k + ascent / 2);
+  // Código de canje, centrado en la caja blanca
+  const box = layout.code;
+  ctx.textAlign = 'center';
+  size = couponFitFont(ctx, code, 900, family, box.h * k * 0.7, box.w * k * 0.9);
+  ascent = ctx.measureText('0').actualBoundingBoxAscent || size * 0.716;
+  ctx.fillText(code, (box.x + box.w / 2) * k, (box.y + box.h / 2) * k + ascent / 2);
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('El navegador no pudo generar la imagen.')), 'image/jpeg', 0.92);
+  });
+}
+
+function couponCardReset() {
+  if (couponCardState.url) { try { URL.revokeObjectURL(couponCardState.url); } catch (_) {} }
+  Object.assign(couponCardState, { blob: null, url: '', error: null });
+}
+
+async function couponPrepareCard(template, percent, code, image, wrap) {
+  const token = ++couponCardState.token;
+  couponCardReset();
+  Object.assign(couponCardState, { template, percent, code });
+  wrap.classList.remove('is-rendered');
+  wrap.classList.add('is-loading');
+  try {
+    const blob = await couponRenderCard(template, percent, code);
+    if (token !== couponCardState.token) return;
+    const url = URL.createObjectURL(blob);
+    couponCardState.blob = blob; couponCardState.url = url;
+    image.src = url;
+    wrap.classList.add('is-rendered');
+  } catch (error) {
+    if (token !== couponCardState.token) return;
+    console.error('No se pudo componer la tarjeta:', error);
+    couponCardState.error = error;
+    // Respaldo: plantilla con el texto superpuesto por CSS, solo para poder verla.
+    try { const base = await couponLoadTemplate(template); image.src = base.src; }
+    catch (baseError) { image.removeAttribute('src'); showToast(baseError.message, true, 9000); }
+  } finally {
+    if (token === couponCardState.token) wrap.classList.remove('is-loading');
+  }
+}
+
 function couponShowCard(coupon) {
-  const card=document.getElementById('coupon-created-card'),image=document.getElementById('coupon-card-preview'),percent=document.getElementById('coupon-card-percent'),code=document.getElementById('coupon-card-code'),wrap=card?.querySelector('.coupon-card-preview-wrap');
-  if(!card||!image||!percent||!code||!wrap)throw new Error('No se encontró el área de tarjeta.');
-  const template=coupon.plantilla==='deni'?'deni':'maidas';lastCouponCode=coupon.codigo;wrap.dataset.template=template;image.src=template==='deni'?couponTemplates.CEO:couponTemplates.ADMIN;percent.textContent=`${Number(coupon.porcentaje)}%`;code.textContent=coupon.codigo;card.hidden=false;card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const card = document.getElementById('coupon-created-card'), image = document.getElementById('coupon-card-preview'), percent = document.getElementById('coupon-card-percent'), code = document.getElementById('coupon-card-code'), wrap = card?.querySelector('.coupon-card-preview-wrap');
+  if (!card || !image || !percent || !code || !wrap) throw new Error('No se encontró el área de tarjeta.');
+  const template = coupon.plantilla === 'deni' ? 'deni' : 'maidas', percentValue = Number(coupon.porcentaje);
+  lastCouponCode = coupon.codigo; wrap.dataset.template = template;
+  percent.textContent = String(percentValue); code.textContent = coupon.codigo;
+  card.hidden = false; card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  couponPrepareCard(template, percentValue, coupon.codigo, image, wrap);
 }
-window.downloadCouponCard=function(){showToast('La tarjeta se muestra lista para captura o compartir desde este dispositivo.');};
+
+function couponIsMobile() {
+  return /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+// Móvil: mismo método que la imagen de la tienda. Se muestra la tarjeta lista para guardarla
+// con pulsación larga y, además, un botón de compartir (gesto de usuario nuevo).
+function couponShowSaveModal(url, blob, fileName) {
+  document.getElementById('popup-descarga-cupon')?.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'popup-descarga-cupon';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10050;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;';
+  overlay.innerHTML = `<div style="position:relative;background:#101310;border:2px solid #70ff00;border-radius:15px;padding:20px 18px;width:100%;max-width:420px;max-height:92vh;overflow-y:auto;text-align:center;box-sizing:border-box;">
+    <button type="button" data-close aria-label="Cerrar" style="position:absolute;top:8px;right:12px;background:none;border:none;color:#888;font-size:1.6em;cursor:pointer;line-height:1;">&times;</button>
+    <i class="fas fa-circle-check" style="color:#70ff00;font-size:2em;margin:6px 0 8px;display:block;"></i>
+    <h3 style="color:#fff;margin:0 0 8px;font-size:1.15em;">¡Tu tarjeta está lista!</h3>
+    <p style="color:#ccc;font-size:.85em;line-height:1.45;margin:0 0 14px;">Mantén presionada la imagen de abajo y elige <strong>"Guardar imagen"</strong> (o "Descargar imagen").</p>
+    <img src="${url}" alt="Tarjeta de descuento ${couponEscape(couponCardState.code)}" style="width:100%;height:auto;border-radius:10px;border:1px solid rgba(112,255,0,.4);display:block;margin-bottom:14px;-webkit-user-select:auto;user-select:auto;-webkit-touch-callout:default;">
+    <button type="button" data-share style="display:block;width:100%;background:#70ff00;color:#070907;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border:none;padding:12px;border-radius:10px;font-size:.9em;cursor:pointer;margin-bottom:10px;"><i class="fas fa-share-nodes"></i> Compartir / Guardar</button>
+    <a href="${url}" target="_blank" rel="noopener" style="display:block;color:#70ff00;font-size:.8em;text-decoration:underline;">Abrir en una pestaña nueva</a>
+  </div>`;
+  document.body.appendChild(overlay);
+  const close = () => { overlay.remove(); try { URL.revokeObjectURL(url); } catch (_) {} };
+  overlay.querySelector('[data-close]').addEventListener('click', close);
+  overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+  overlay.querySelector('[data-share]').addEventListener('click', async () => {
+    try {
+      const file = new File([blob], fileName, { type: 'image/jpeg' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Tarjeta de descuento Shegos Store', text: `Código: ${couponCardState.code}` });
+        return;
+      }
+    } catch (error) { console.warn('No se pudo compartir:', error); return; }
+    alert('Tu navegador no permite compartir directamente. Mantén presionada la imagen de arriba y elige "Guardar imagen".');
+  });
+}
+
+window.downloadCouponCard = async function () {
+  const state = couponCardState, button = document.getElementById('coupon-download-btn');
+  if (!state.code) { showToast('Genera un código o abre una tarjeta primero.', true); return; }
+  const original = button ? button.innerHTML : '';
+  if (button) { button.disabled = true; button.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Preparando…'; }
+  try {
+    const blob = state.blob || await couponRenderCard(state.template, state.percent, state.code);
+    const fileName = `tarjeta-descuento-${state.code}.jpg`, url = URL.createObjectURL(blob);
+    if (couponIsMobile()) {
+      couponShowSaveModal(url, blob, fileName);
+    } else {
+      const link = document.createElement('a');
+      link.href = url; link.download = fileName;
+      document.body.appendChild(link); link.click(); link.remove();
+      setTimeout(() => { try { URL.revokeObjectURL(url); } catch (_) {} }, 60000);
+      showToast('Tarjeta descargada ✓');
+    }
+  } catch (error) {
+    console.error('No se pudo descargar la tarjeta:', error);
+    showToast(`No se pudo generar la imagen: ${error?.name ? error.name + ' — ' : ''}${error?.message || error}`, true, 9000);
+  } finally {
+    if (button) { button.disabled = false; button.innerHTML = original; }
+  }
+};
+
 window.showCouponCard=function(template,percent,code){try{couponShowCard({plantilla:template,porcentaje:Number(percent),codigo:code});}catch(error){showToast(error.message||'No se pudo mostrar la tarjeta.',true);}};
 window.copyCouponCode=async function(){ if(!lastCouponCode)return; try{await navigator.clipboard.writeText(lastCouponCode);showToast('Código copiado ✓');}catch{showToast(`Código: ${lastCouponCode}`);} };
 window.loadCoupons=async function(showLoading=false){
