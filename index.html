@@ -7289,6 +7289,19 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 </div>`;
             }
 
+            // Completa la carga progresiva solo cuando el usuario exporta el catálogo.
+            // Así la imagen descargada incluye todos los artículos, aunque no se haya desplazado hasta abajo.
+            window.completarRenderTienda = () => {
+                if (renderObserver) renderObserver.disconnect();
+                cont.querySelectorAll('.shop-render-sentinel').forEach(sentinel => {
+                    const state = sentinel._shopRenderState;
+                    if (!state) return;
+                    const remaining = state.items.slice(state.offset);
+                    if (remaining.length) state.grid.insertAdjacentHTML('beforeend', remaining.map(renderCard).join(''));
+                    sentinel.remove();
+                });
+            };
+
             seccionesOrdenadas.forEach(cat => {
                 const items = grouped[cat];
                 const sec = document.createElement('div');
@@ -8620,13 +8633,16 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
     const btn = document.getElementById('btn-exportar-catalogo');
     const originalText = btn.innerHTML;
 
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Imagen...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando catálogo...';
     btn.style.opacity = '0.7';
     btn.disabled = true;
 
     try {
+        window.completarRenderTienda?.();
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando Imagen...';
         // ── Tamaño dinámico: tarjetas grandes pero con tope para que el canvas se pueda generar ──
-        const ANCHO_EXPORT = 2000, COLS_EXPORT = 6, PAD_EXPORT = 28, GAP_EXPORT = 8;
+        const ANCHO_EXPORT = 5400, COLS_EXPORT = 18, PAD_EXPORT = 36, GAP_EXPORT = 8;
         const ancho_card = (ANCHO_EXPORT - PAD_EXPORT * 2 - GAP_EXPORT * (COLS_EXPORT - 1)) / COLS_EXPORT;
         const alto_card = ancho_card * 4 / 3;
         let filasEst = 0;
@@ -8645,6 +8661,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
             logging: false,
             onclone: (clonedDoc) => {
                 const clonedTienda = clonedDoc.getElementById('contenedor-tienda');
+                clonedTienda.querySelectorAll('img[loading="lazy"]').forEach(img => { img.loading = 'eager'; });
 
                 // ── ANCHO FIJO, ALTO AUTOMÁTICO ──────────────────────────
                 clonedTienda.style.width = ANCHO_EXPORT + "px";
@@ -8674,7 +8691,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                     const titleEl = sec.querySelector('.section-title');
                     if (!titleEl) return;
                     const cat = titleEl.textContent.trim().toUpperCase();
-                    const cards = Array.from(sec.querySelectorAll('.cosmetic-card'));
+                    const carousel = sec.querySelector('.carrusel-se-va-hoy');
+                    const allCards = Array.from(sec.querySelectorAll('.cosmetic-card'));
+                    const cards = carousel ? allCards.slice(0, Math.ceil(allCards.length / 2)) : allCards;
                     if (cards.length > 0) byCategory[cat] = cards;
                 });
 
@@ -8724,7 +8743,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                     `;
                     clonedTienda.appendChild(label);
 
-                    // Grid de 6 columnas (tarjetas más grandes)
+                    // Grid de 18 columnas; las filas se adaptan a la cantidad de artículos.
                     const grid = clonedDoc.createElement('div');
                     grid.style.cssText = `
                         display: grid;
