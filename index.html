@@ -39,7 +39,7 @@
     <link rel="dns-prefetch" href="https://fortnite-api.com">
     <!-- Precarga la PRIMERA imagen de fondo del hero con máxima prioridad, para que
          no tarde en aparecer al refrescar (antes se cargaban 6 fondos en fila) -->
-    <link rel="preload" as="image" href="https://wallpapers.com/images/hd/2560x1440-gaming-fortnite-save-the-world-uslvhawx8fkqax1w.jpg" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/fondo-stw-1.webp" fetchpriority="high">
     <meta property="og:title" content="Shegos Store - Tu tienda Fortnite de Confianza">
     <meta property="og:description" content="Shegos Store | Fortnite">
     <meta property="og:type" content="website">
@@ -129,7 +129,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: -1;
+            z-index: 0;
             pointer-events: none;
             overflow: hidden;
         }
@@ -2651,7 +2651,7 @@
             cursor: pointer;
         }
 
-        footer { background-color: transparent; padding: 30px 20px; text-align: center; border-top: none; margin-top: auto; }
+        footer { position: relative; z-index: 1; background-color: transparent; padding: 30px 20px; text-align: center; border-top: none; margin-top: auto; }
         .footer-logo { font-size: 1.5em; font-weight: bold; color: #fff; margin-bottom: 10px; display: block; transition: text-shadow 0.3s; }
         .footer-logo:hover { text-shadow: 0 0 15px rgba(112,255,0, 0.6); }
         .footer-logo span { color: #70ff00; }
@@ -4705,7 +4705,8 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
         // Imagen de fondo de Fortnite Salvar el Mundo elegida para el sitio.
         // Se mantiene fija para conservar la imagen seleccionada.
         const IMAGENES_RESPALDO = [
-            'https://wallpapers.com/images/hd/2560x1440-gaming-fortnite-save-the-world-uslvhawx8fkqax1w.jpg'
+            'assets/fondo-stw-1.webp',
+            'assets/fondo-stw-2.webp'
         
         ];
         const INTERVALO = 8000; // 8 segundos entre cambios
