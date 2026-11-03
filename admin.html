@@ -3450,9 +3450,12 @@ async function fetchOrders() {
   const area = document.getElementById('table-area');
   if (area) area.innerHTML = `<div class="empty"><i class="fas fa-spinner fa-spin"></i><p>Cargando pedidos desde la nube...</p></div>`;
   try {
-    const { data, error } = await supabase
-      .from('pedidos')
-      .select('*');
+    let { data, error } = await supabase.rpc('admin_pedidos_sin_adjuntos');
+    // Mantiene disponible el panel mientras se aplica la migración de ahorro de Egress.
+    if (error && /PGRST202|admin_pedidos_sin_adjuntos/i.test(`${error.code || ''} ${error.message || ''}`)) {
+      console.warn('Aplica supabase/migrations/20261102_reduce_postgrest_egress.sql para excluir adjuntos del listado de pedidos.');
+      ({ data, error } = await supabase.from('pedidos').select('*'));
+    }
 
     if (error) throw error;
     
@@ -3465,6 +3468,8 @@ async function fetchOrders() {
       fecha: o.fecha || o.creado_en || o.completado_en || o.created_at || '',
       created_at: o.created_at || o.creado_en || o.fecha || '',
       comprobante: o.comprobante || o.comprobante_url || null,
+      tiene_comprobante: o.tiene_comprobante ?? Boolean(o.comprobante || o.comprobante_url),
+      tiene_foto_producto: o.tiene_foto_producto ?? Boolean(o.foto_producto),
       notas: o.notas || o.notes || '',
       metodo_pago: paymentMethodFromDb(o.metodo_pago),
       cuentas_agregadas: o.cuentas_agregadas || []
@@ -4381,8 +4386,8 @@ function getTableRow(o) {
     </td>
     <td style="text-align:right">
       <div class="td-act" style="justify-content:flex-end">
-        <button class="ibtn" type="button" title="${o.comprobante ? 'Ver / descargar comprobante' : 'Este pedido no tiene comprobante'}" aria-label="Ver comprobante" ${o.comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${o.comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>
-        <button class="ibtn" type="button" title="${o.foto_producto ? 'Ver foto del producto' : 'Este pedido no tiene foto del producto'}" aria-label="Ver foto del producto" ${o.foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${o.foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i></button>
+        <button class="ibtn" type="button" title="${o.tiene_comprobante ? 'Ver / descargar comprobante' : 'Este pedido no tiene comprobante'}" aria-label="Ver comprobante" ${o.tiene_comprobante ? '' : 'disabled'} style="color:var(--gold);border-color:rgba(255,215,0,.4);${o.tiene_comprobante ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i></button>
+        <button class="ibtn" type="button" title="${o.tiene_foto_producto ? 'Ver foto del producto' : 'Este pedido no tiene foto del producto'}" aria-label="Ver foto del producto" ${o.tiene_foto_producto ? '' : 'disabled'} style="color:var(--accent);border-color:rgba(40,254,182,.4);${o.tiene_foto_producto ? '' : 'opacity:.38;cursor:not-allowed'}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i></button>
         ${remFlagBtn('pedido', o)}
         ${o.estado === 'Completado' ? rvBtn('pedido', o) : ''}
         <button class="ibtn" onclick="window.viewDetail('${o.id}')" title="Ver Detalle"><i class="fas fa-eye"></i></button>
@@ -4736,9 +4741,25 @@ function openModal() {
 
 window.openModal = openModal;
 
-function editOrder(id) {
+async function editOrder(id) {
   const o = currentOrders.find(item => String(item.id) === String(id));
   if (!o) return;
+
+  // Descarga los adjuntos solo al editar ese pedido; el listado no los recibe.
+  if (o.tiene_comprobante && !o.comprobante) {
+    try {
+      const { data, error } = await supabase.rpc('admin_pedido_adjunto', { p_id: String(id), p_tipo: 'comprobante' });
+      if (error) throw error;
+      o.comprobante = data || null;
+    } catch (error) { showToast(`No se pudo cargar el comprobante: ${error?.message || 'error de Supabase'}`, true); return; }
+  }
+  if (o.tiene_foto_producto && !o.foto_producto) {
+    try {
+      const { data, error } = await supabase.rpc('admin_pedido_adjunto', { p_id: String(id), p_tipo: 'foto_producto' });
+      if (error) throw error;
+      o.foto_producto = data || null;
+    } catch (error) { showToast(`No se pudo cargar la foto: ${error?.message || 'error de Supabase'}`, true); return; }
+  }
 
   editingOrderId = id;
   document.getElementById('m-title').textContent = `Editar Pedido: ${o.id_pedido}`;
@@ -4796,9 +4817,21 @@ function closeModal() {
   document.getElementById('modal-order').classList.remove('open');
 }
 
-function viewDetail(id) {
+async function viewDetail(id) {
   const o = currentOrders.find(item => String(item.id) === String(id));
   if (!o) return;
+  if (o.tiene_comprobante && !o.comprobante) {
+    try {
+      const { data, error } = await supabase.rpc('admin_pedido_adjunto', { p_id: String(id), p_tipo: 'comprobante' });
+      if (!error) o.comprobante = data || null;
+    } catch (_) { /* El detalle textual sigue disponible si falla una imagen. */ }
+  }
+  if (o.tiene_foto_producto && !o.foto_producto) {
+    try {
+      const { data, error } = await supabase.rpc('admin_pedido_adjunto', { p_id: String(id), p_tipo: 'foto_producto' });
+      if (!error) o.foto_producto = data || null;
+    } catch (_) { /* El detalle textual sigue disponible si falla una imagen. */ }
+  }
   document.getElementById('modal-detail')?.classList.add('open');
 
   document.getElementById('det-id').textContent = `Detalle del Pedido ${o.id}`;
@@ -4837,13 +4870,13 @@ function viewDetail(id) {
         <div class="flabel">Comprobante Digital Adjunto:</div>
         <img src="${o.comprobante}" onclick="window.viewReceipt('pedido','${o.id}')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
         <div style="margin-top:8px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-expand"></i> Ampliar / Descargar</button></div>
-      </div>` : ''}
+      </div>` : o.tiene_comprobante ? `<div style="margin-top:14px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i> Abrir comprobante guardado</button></div>` : ''}
 
     ${o.foto_producto ? `
       <div style="margin-top:14px">
         <div class="flabel">Foto del Producto / Prueba de Entrega:</div>
         <img src="${o.foto_producto}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
-      </div>` : ''}
+      </div>` : o.tiene_foto_producto ? `<div style="margin-top:14px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i> Abrir foto de entrega</button></div>` : ''}
 
     ${remDetailHTML('pedido', o)}
   </div>`;
@@ -8004,13 +8037,16 @@ window.viewReceipt = async function(kind, id, field) {
     : currentOrders.find(x => String(x.id) === String(id));
   let image=rec?.[key];
   if(!image){
-    const table=kind==='venta'?'ventas':'pedidos';
-    const idColumn=kind==='venta'?'id':'id_pedido';
     try{
-      let {data,error}=await supabase.from(table).select(key).eq(idColumn,id).maybeSingle();
-      if((error||!data)&&kind==='pedido')({data,error}=await supabase.from(table).select(key).eq('id',id).maybeSingle());
+      let data, error;
+      if (kind === 'pedido') {
+        ({ data, error } = await supabase.rpc('admin_pedido_adjunto', { p_id: String(id), p_tipo: key }));
+        image = data || null;
+      } else {
+        ({ data, error } = await supabase.from('ventas').select(key).eq('id',id).maybeSingle());
+        image = data?.[key] || null;
+      }
       if(error)throw error;
-      image=data?.[key]||null;
       if(rec&&image)rec[key]=image;
     }catch(error){showToast(`No se pudo cargar la imagen: ${error?.message||'error de Supabase'}`,true);return;}
   }
