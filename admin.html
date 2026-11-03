@@ -2312,20 +2312,19 @@ window.doLogin = async function () {
         <section class="coupon-panel">
           <div class="coupon-panel-heading"><i class="fas fa-wand-magic-sparkles"></i><div><strong>Crear tarjeta</strong><small>El diseño se asigna automáticamente según tu rol.</small></div></div>
           <div class="fgroup"><label class="flabel" id="coupon-category-label">Categoría</label><div class="coupon-category-picker" id="coupon-category-picker"><button class="fsel coupon-category-trigger" id="coupon-category-trigger" type="button" aria-haspopup="listbox" aria-expanded="false"><span id="coupon-category-summary">Seleccionar categoría</span><i class="fas fa-chevron-down" aria-hidden="true"></i></button><div class="coupon-category-popover" id="coupon-category-popover" role="listbox" hidden>
-<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="satisfaccion" aria-pressed="false">Satisfacción</button><button class="coupon-category-info-btn" type="button" data-info="satisfaccion" aria-label="Información sobre Satisfacción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-satisfaccion" hidden><strong>Satisfacción luego de una mala o buena experiencia.</strong><br>Buena: premia una compra satisfactoria cuando el cliente confirma que recibió su cuenta correctamente o completa una encuesta. Mala: si la cuenta se revierte dentro de una semana o menos, ofrece el descuento antes de entregarlo.</div></div>
-<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="promocion" aria-pressed="false">Promoción</button><button class="coupon-category-info-btn" type="button" data-info="promocion" aria-label="Información sobre Promoción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-promocion" hidden><strong>Impulsar las ventas.</strong><br>Para lanzamientos de cuentas, ofertas de temporada, liquidaciones, descuentos por tiempo limitado o días especiales.</div></div>
+<div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="satisfaccion" aria-pressed="false">Satisfacción</button><button class="coupon-category-info-btn" type="button" data-info="satisfaccion" aria-label="Información sobre Satisfacción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-satisfaccion" hidden><strong>Satisfacción luego de una buena o mala experiencia</strong><p><b>Buena:</b> premia una compra satisfactoria cuando el cliente confirma que recibió su cuenta correctamente o completa una encuesta.</p><p><b>Mala:</b> si la cuenta se revierte dentro de una semana o menos, ofrece el descuento antes de entregarlo.</p></div></div>
+            <div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="promocion" aria-pressed="false">Promoción</button><button class="coupon-category-info-btn" type="button" data-info="promocion" aria-label="Información sobre Promoción" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-promocion" hidden><strong>Impulsar las ventas.</strong><br>Para lanzamientos de cuentas, ofertas de temporada, liquidaciones, descuentos por tiempo limitado o días especiales.</div></div>
 <div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="referidos" aria-pressed="false">Referidos</button><button class="coupon-category-info-btn" type="button" data-info="referidos" aria-label="Información sobre Referidos" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-referidos" hidden><strong>Conseguir nuevos clientes.</strong><br>Para clientes que recomienden la tienda a amigos que nunca hayan comprado.</div></div>
 <div class="coupon-category-option"><button class="coupon-category-choice" type="button" data-category="lealtad" aria-pressed="false">Lealtad</button><button class="coupon-category-info-btn" type="button" data-info="lealtad" aria-label="Información sobre Lealtad" aria-expanded="false">i</button><div class="coupon-category-info" id="coupon-category-info-lealtad" hidden><strong>Lograr que vuelvan a comprar.</strong><br>Para compradores frecuentes, clientes con varias compras completadas o miembros que llevan mucho tiempo comprando en el servidor.</div></div>
 </div><input type="hidden" id="coupon-category" value=""></div></div>
           <div class="frow">
             <div class="fgroup"><label class="flabel" for="coupon-percent">Descuento</label><select class="fsel" id="coupon-percent"><option value="5">5 %</option><option value="6">6 %</option><option value="7">7 %</option><option value="8">8 %</option><option value="9">9 %</option><option value="10">10 %</option></select></div>
-            <div class="fgroup"><label class="flabel" for="coupon-minimum">Compra mínima (MXN)</label><input class="finput" id="coupon-minimum" type="number" min="385" step="5" value="385"></div>
-            <div class="fgroup"><label class="flabel" for="coupon-minimum-usd">Compra mínima (USD)</label><input class="finput" id="coupon-minimum-usd" type="number" min="20" step="1" value="20"></div>
+            <div class="fgroup"><label class="flabel" for="coupon-amount">Monto de la compra</label><div class="coupon-amount-control"><input class="finput" id="coupon-amount" type="number" min="385" step="1" value="385" inputmode="decimal"><select class="fsel" id="coupon-currency" aria-label="Moneda del monto"><option value="MXN">MXN</option><option value="USD">USD</option></select></div><small id="coupon-amount-help" style="display:block;color:var(--text2);margin-top:6px">Mínimo: MX$385</small></div>
           </div>
           <div class="fgroup"><label class="flabel" for="coupon-customer">Cliente (opcional)</label><input class="finput" id="coupon-customer" maxlength="120" placeholder="Nombre del cliente"></div>
           <div class="fgroup"><label class="flabel" for="coupon-reason">Motivo (opcional)</label><input class="finput" id="coupon-reason" maxlength="240" placeholder="Ej. compensación por demora"></div>
-          <button class="btn btn-accent coupon-create-btn" id="coupon-create-btn" type="button" onclick="window.createCoupon()"><i class="fas fa-ticket"></i> Generar cupón y tarjeta</button>
-          <div id="coupon-created-card" class="coupon-created-card" hidden><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><div class="coupon-card-actions"><button class="btn btn-outline" type="button" onclick="window.downloadCouponCard()"><i class="fas fa-download"></i> Descargar tarjeta</button><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
+          <button class="btn btn-accent coupon-create-btn" id="coupon-create-btn" type="button" onclick="window.createCoupon()"><i class="fas fa-ticket"></i> Generar código</button>
+          <div id="coupon-created-card" class="coupon-created-card" hidden><div class="coupon-card-preview-wrap"><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><b id="coupon-card-percent" class="coupon-card-percent"></b><b id="coupon-card-code" class="coupon-card-code"></b></div><div class="coupon-card-actions"><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
         </section>
         <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
@@ -5331,8 +5330,11 @@ function exportAccounting() {
 let activeSaleCoupon = null;
 let lastCouponCardUrl = '';
 let lastCouponCode = '';
-const couponTemplates = { CEO: 'assets/descuento-deni.svg', ADMIN: 'assets/descuento-maidas.svg' };
+const couponTemplates = { CEO: 'assets/descuento-deni.png', ADMIN: 'assets/descuento-maidas.png' };
 const couponCategoryNames = { satisfaccion:'Satisfacción', promocion:'Promoción', referidos:'Referidos', lealtad:'Lealtad', volumen:'Compra más, paga menos', fidelidad:'Fidelidad / referidos', otro:'Otro' };\nconst couponCategoryTrigger=document.getElementById('coupon-category-trigger');const couponCategoryPopover=document.getElementById('coupon-category-popover');couponCategoryTrigger?.addEventListener('click',()=>{const open=couponCategoryPopover.hidden;couponCategoryPopover.hidden=!open;couponCategoryTrigger.setAttribute('aria-expanded',String(open));});document.querySelectorAll('.coupon-category-choice').forEach(button=>button.addEventListener('click',()=>{const value=button.dataset.category;document.getElementById('coupon-category').value=value;document.getElementById('coupon-category-summary').textContent=couponCategoryNames[value];document.querySelectorAll('.coupon-category-choice').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}));document.querySelectorAll('.coupon-category-info-btn').forEach(button=>button.addEventListener('click',event=>{event.stopPropagation();const info=document.getElementById(`coupon-category-info-${button.dataset.info}`);const open=info.hidden;document.querySelectorAll('.coupon-category-info').forEach(item=>{if(item!==info)item.hidden=true;});document.querySelectorAll('.coupon-category-info-btn').forEach(item=>{if(item!==button)item.setAttribute('aria-expanded','false');});info.hidden=!open;button.setAttribute('aria-expanded',String(open));}));document.addEventListener('click',event=>{if(couponCategoryPopover&&!document.getElementById('coupon-category-picker').contains(event.target)){couponCategoryPopover.hidden=true;couponCategoryTrigger?.setAttribute('aria-expanded','false');}});
+const couponCurrency=document.getElementById('coupon-currency'),couponAmount=document.getElementById('coupon-amount'),couponAmountHelp=document.getElementById('coupon-amount-help');
+function syncCouponAmountCurrency(){if(!couponCurrency||!couponAmount)return;const isUsd=couponCurrency.value==='USD';couponAmount.min=isUsd?'20':'385';couponAmount.step=isUsd?'0.01':'1';if(Number(couponAmount.value)<Number(couponAmount.min))couponAmount.value=couponAmount.min;if(couponAmountHelp)couponAmountHelp.textContent=isUsd?'Mínimo: US$20':'Mínimo: MX$385';}
+couponCurrency?.addEventListener('change',syncCouponAmountCurrency);syncCouponAmountCurrency();
 function couponEscape(value) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
 function couponStatus(c) { return c.estado === 'activo' && new Date(c.expira_en) <= new Date() ? 'vencido' : c.estado; }
 function couponStatusLabel(status) { return ({activo:'Disponible',usado:'Usado',anulado:'Anulado',vencido:'Vencido'})[status] || status; }
@@ -5340,23 +5342,13 @@ function couponMakeCode() {
   const value=new Uint32Array(1);crypto.getRandomValues(value);
   return `SHG-${String(value[0]%1000000).padStart(6,'0')}`;
 }
-function couponDrawCard(coupon) {
-  return new Promise((resolve,reject)=>{
-    const image=new Image(); image.onload=()=>{
-      const canvas=document.createElement('canvas'); canvas.width=image.naturalWidth; canvas.height=image.naturalHeight;
-      const ctx=canvas.getContext('2d'); ctx.drawImage(image,0,0);
-      const isDeni=coupon.plantilla==='deni';
-      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillStyle='#101010'; ctx.strokeStyle='#fff'; ctx.lineWidth=2;
-      ctx.font=`900 ${Math.round(canvas.width*.061)}px Arial, sans-serif`;
-      ctx.fillText(`${Number(coupon.porcentaje)}`,isDeni ? canvas.width*.675 : canvas.width*.755,isDeni ? canvas.height*.651 : canvas.height*.154,canvas.width*.30);
-      ctx.font=`900 ${Math.round(canvas.width*.031)}px Arial, sans-serif`;
-      ctx.fillText(coupon.codigo,canvas.width*(isDeni ? .705 : .786),canvas.height*(isDeni ? .84 : .819),canvas.width*.40);
-      canvas.toBlob(blob=>blob?resolve(URL.createObjectURL(blob)):reject(new Error('No se pudo preparar la tarjeta.')),'image/png');
-    }; image.onerror=()=>reject(new Error('No se pudo cargar la plantilla de tarjeta.')); image.src=coupon.plantilla==='deni'?couponTemplates.CEO:couponTemplates.ADMIN;
-  });
+function couponShowCard(coupon) {
+  const card=document.getElementById('coupon-created-card'),image=document.getElementById('coupon-card-preview'),percent=document.getElementById('coupon-card-percent'),code=document.getElementById('coupon-card-code'),wrap=card?.querySelector('.coupon-card-preview-wrap');
+  if(!card||!image||!percent||!code||!wrap)throw new Error('No se encontró el área de tarjeta.');
+  const template=coupon.plantilla==='deni'?'deni':'maidas';lastCouponCode=coupon.codigo;wrap.dataset.template=template;image.src=template==='deni'?couponTemplates.CEO:couponTemplates.ADMIN;percent.textContent=`${Number(coupon.porcentaje)}%`;code.textContent=coupon.codigo;card.hidden=false;card.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-window.downloadCouponCard=function(){ if(!lastCouponCardUrl)return; const a=document.createElement('a');a.href=lastCouponCardUrl;a.download=`tarjeta-${lastCouponCode.toLowerCase()}.png`;a.click(); };
-window.showCouponCard=async function(template,percent,code){try{if(lastCouponCardUrl)URL.revokeObjectURL(lastCouponCardUrl);lastCouponCode=code;lastCouponCardUrl=await couponDrawCard({plantilla:template,porcentaje:Number(percent),codigo:code});document.getElementById('coupon-card-preview').src=lastCouponCardUrl;document.getElementById('coupon-created-card').hidden=false;document.getElementById('coupon-created-card').scrollIntoView({behavior:'smooth',block:'nearest'});}catch(error){showToast(error.message||'No se pudo generar la tarjeta.',true);}};
+window.downloadCouponCard=function(){showToast('La tarjeta se muestra lista para captura o compartir desde este dispositivo.');};
+window.showCouponCard=function(template,percent,code){try{couponShowCard({plantilla:template,porcentaje:Number(percent),codigo:code});}catch(error){showToast(error.message||'No se pudo mostrar la tarjeta.',true);}};
 window.copyCouponCode=async function(){ if(!lastCouponCode)return; try{await navigator.clipboard.writeText(lastCouponCode);showToast('Código copiado ✓');}catch{showToast(`Código: ${lastCouponCode}`);} };
 window.loadCoupons=async function(showLoading=false){
   const area=document.getElementById('coupon-list'); if(!area)return;
@@ -5370,8 +5362,10 @@ window.loadCoupons=async function(showLoading=false){
 };
 window.createCoupon=async function(){
   const button=document.getElementById('coupon-create-btn');
-  const minimum=parseVentaNumber(document.getElementById('coupon-minimum')?.value), minimumUsd=parseVentaNumber(document.getElementById('coupon-minimum-usd')?.value), percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;\n  if(!['satisfaccion','promocion','referidos','lealtad'].includes(document.getElementById('coupon-category')?.value)){showToast('Selecciona una categoría para el cupón.',true);return;}
-  if(minimum<385||minimumUsd<20){showToast('Los mínimos no pueden ser menores a MX$385 ni US$20.',true);return;}
+  const amount=parseVentaNumber(document.getElementById('coupon-amount')?.value), currency=document.getElementById('coupon-currency')?.value||'MXN', percent=Number(document.getElementById('coupon-percent')?.value), customer=document.getElementById('coupon-customer')?.value.trim()||null, reason=document.getElementById('coupon-reason')?.value.trim()||null;
+  const minimum=currency==='MXN'?amount:Math.round(amount*18.67), minimumUsd=currency==='USD'?amount:Number((amount/18.67).toFixed(2));
+  if(!['satisfaccion','promocion','referidos','lealtad'].includes(document.getElementById('coupon-category')?.value)){showToast('Selecciona una categoría para el cupón.',true);return;}
+  if((currency==='MXN'&&amount<385)||(currency==='USD'&&amount<20)){showToast(currency==='MXN'?'El monto no puede ser menor de MX$385.':'El monto no puede ser menor de US$20.',true);return;}
   if(!Number.isInteger(percent)||percent<5||percent>10){showToast('El descuento debe estar entre 5 % y 10 %.',true);return;}
   if(button){button.disabled=true;button.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Generando…';}
   try{
@@ -5383,15 +5377,12 @@ window.createCoupon=async function(){
     }
     if(error)throw error;
     const coupon=Array.isArray(data)?data[0]:data;
-    lastCouponCode=coupon.codigo; if(lastCouponCardUrl)URL.revokeObjectURL(lastCouponCardUrl);
-    const card=document.getElementById('coupon-created-card');
-    try{lastCouponCardUrl=await couponDrawCard(coupon);document.getElementById('coupon-card-preview').src=lastCouponCardUrl;card.hidden=false;}
-    catch(imageError){card.hidden=true;showToast(`Cupón creado (${coupon.codigo}), pero no se pudo generar la imagen: ${imageError.message}`,true,7000);}
-    if(!card.hidden)showToast(`Cupón ${coupon.codigo} generado ✓`);
+    couponShowCard(coupon);
+    showToast(`Cupón ${coupon.codigo} generado ✓`);
     await window.loadCoupons(true);
     document.getElementById('coupon-customer').value='';document.getElementById('coupon-reason').value='';
   }catch(error){console.error('No se pudo generar el cupón:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
-  finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar cupón y tarjeta';}}
+  finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar código';}}
 };
 window.cancelCoupon=async function(id){
   if(!confirm('¿Anular este cupón? Ya no se podrá aplicar a una venta.'))return;
@@ -7242,6 +7233,9 @@ window.doLogin = async function() {
 };
 </script>
 
+<style id="coupon-mobile-fix">
+.coupon-category-info{grid-column:1/-1;padding:11px 12px 12px;margin:3px 0 8px;border-left:2px solid var(--accent);border-radius:0 9px 9px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.8rem;line-height:1.55}.coupon-category-info strong{display:block;color:var(--text);margin-bottom:8px}.coupon-category-info p{margin:7px 0 0}.coupon-category-info b{color:var(--accent)}.coupon-amount-control{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}.coupon-card-preview-wrap{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--accent);background:#000;isolation:isolate}.coupon-card-preview-wrap img{display:block;width:100%;height:auto;background:#000}.coupon-card-percent,.coupon-card-code{position:absolute;z-index:1;display:block;color:#101010;text-align:center;font-family:Arial,sans-serif;font-weight:900;letter-spacing:.03em;text-shadow:0 1px 0 #fff}.coupon-card-percent{font-size:clamp(1.8rem,7vw,4.2rem);width:26%;line-height:1}.coupon-card-code{font-size:clamp(.75rem,3vw,1.8rem);width:38%;white-space:nowrap}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-percent{left:54.5%;top:59%}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-code{left:51%;top:79%}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-percent{left:66%;top:10%}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-code{left:61%;top:78%}@media(max-width:520px){.coupon-panel .frow{display:grid;grid-template-columns:1fr}.coupon-amount-control{grid-template-columns:minmax(0,1fr) 88px}.coupon-category-popover{max-width:calc(100vw - 32px)}.coupon-table-wrap{margin:0 -4px}.coupon-panel{overflow:hidden}}
+</style>
 </head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
   <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>`$${x.toFixed(2)}`)}${isCEO?bar('Recibido neto',net,previousNet,x=>`$${x.toFixed(2)}`):''}</div></section>${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
