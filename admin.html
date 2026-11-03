@@ -3304,6 +3304,8 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseUrl = SUPABASE_URL;
 const supabaseKey = SUPABASE_KEY;
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+// Publica la acción del formulario en cuanto Auth está listo, sin esperar a inicializar todo el panel.
+window.doLogin = doLogin;
 
 // 2.1 Backend propio (Node.js) — usado SOLO para la pestaña Contabilidad,
 // que ahora pasa por RBAC + auditoría en vez de leer Supabase directo.
