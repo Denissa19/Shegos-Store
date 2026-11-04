@@ -2335,6 +2335,11 @@ window.doLogin = async function () {
         </section>
         <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
+      <section class="coupon-panel coupon-validator" style="margin-top:18px">
+        <div class="coupon-panel-heading"><i class="fas fa-magnifying-glass"></i><div><strong>Validar cupón</strong><small>Consulta si un código está disponible, usado, vencido o anulado, y en qué venta se usó.</small></div></div>
+        <div class="cv-row"><input class="finput" id="cv-code" maxlength="20" placeholder="SHG-XXXXXX" autocomplete="off" onkeydown="if(event.key==='Enter')window.validateCouponCode()"><button class="btn btn-accent" type="button" onclick="window.validateCouponCode()"><i class="fas fa-circle-check"></i> Validar</button></div>
+        <div id="cv-result" class="cv-result" hidden></div>
+      </section>
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
@@ -5593,6 +5598,41 @@ window.createCoupon=async function(){
   }catch(error){console.error('No se pudo generar el cupón:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
   finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar código';}}
 };
+window.validateCouponCode=async function(){
+  const input=document.getElementById('cv-code'), box=document.getElementById('cv-result');
+  const code=(input?.value||'').trim().toUpperCase();
+  const show=(kind,label,html)=>{box.hidden=false;box.innerHTML=`<span class="cv-badge" data-k="${kind}">${label}</span>${html}`;};
+  if(!code){show('error','Falta el código','<p>Escribe el código del cupón (SHG-XXXXXX).</p>');return;}
+  input.value=code;box.hidden=false;box.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Validando…';
+  try{
+    const {data:c,error}=await supabase.from('cupones_descuento').select('*').eq('codigo',code).maybeSingle();
+    if(error)throw error;
+    if(!c){show('error','No encontrado',`<p>No existe ningún cupón con el código <b>${couponEscape(code)}</b>.</p>`);return;}
+    const sale=await findCouponSale(code);
+    let status=couponStatus(c);
+    if(sale&&status==='activo')status='usado';
+    const fd=d=>d?new Date(d).toLocaleString('es-DO',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
+    const cell=(l,v)=>`<div><small>${l}</small><b>${v}</b></div>`;
+    const mxn=Number(c.compra_minima_mxn),usd=Number(c.compra_minima_usd);
+    const labels={activo:'Disponible · se puede usar',usado:'Ya usado',vencido:'Vencido',anulado:'Anulado'};
+    let html='<div class="cv-grid">'+
+      cell('Código',couponEscape(c.codigo))+
+      cell('Descuento',`${Number(c.porcentaje)}%`)+
+      cell('Compra mínima',`${isFinite(mxn)?'MX$'+mxn.toLocaleString('es-MX'):'—'} / ${isFinite(usd)?'US$'+usd.toLocaleString('en-US'):'—'}`)+
+      cell('Categoría',couponEscape(couponCategoryNames[c.categoria]||c.categoria||'—'))+
+      cell('Generado el',fd(c.creado_en))+
+      cell('Vence el',fd(c.expira_en))+
+      cell('Cliente',couponEscape(c.cliente||'Cualquiera'))+
+      cell('Motivo',couponEscape(c.motivo||'—'))+
+      cell('Creado por',couponEscape(c.creador_rol||'—'))+
+      cell('Usos',`${Number(c.usos)||0} de ${Number(c.usos_maximos)||1}`)+
+    '</div>';
+    if(sale)html+=`<div class="cv-note"><i class="fas fa-receipt"></i> Usado en <b>${couponEscape(couponSaleLabel(sale))}</b>.</div>`;
+    else if(status==='usado')html+='<div class="cv-note"><i class="fas fa-receipt"></i> Marcado como usado, pero no encontramos la venta vinculada.</div>';
+    if(status==='vencido')html+=`<div class="cv-note">Venció el ${fd(c.expira_en)}.</div>`;
+    show(status,labels[status]||status,html);
+  }catch(e){console.error(e);show('error','Error',`<p>${couponEscape(e.message||'No se pudo validar el cupón.')}</p>`);}
+};
 window.cancelCoupon=function(id){
   window.openConfirmModal('Anular cupón','¿Anular este cupón? Ya no se podrá aplicar a una venta.',async function(){
     const {error}=await supabase.from('cupones_descuento').update({estado:'anulado',actualizado_en:new Date().toISOString()}).eq('id',id).eq('estado','activo');
@@ -5615,10 +5655,24 @@ window.clearSaleCoupon=function(){
   window.calcVentaMargen?.();
 };
 // Devuelve el motivo por el que un cupón NO se puede usar ('' si está disponible). Mismas reglas que la base de datos.
-function saleCouponProblem(c){
+// Busca la venta (si existe) que ya tiene registrado este código, aunque la fila del cupón no esté sincronizada.
+async function findCouponSale(code){
+  try{
+    const {data,error}=await supabase.from('ventas').select('id,id_pedido,cliente,created_at').eq('cupon_codigo',code).order('created_at',{ascending:true}).limit(1);
+    if(error)return null;
+    return (data&&data[0])||null;
+  }catch(e){return null;}
+}
+function couponSaleLabel(v){
+  if(!v)return '';
+  const fmt=d=>d?new Date(d).toLocaleDateString('es-DO',{day:'numeric',month:'long',year:'numeric'}):'';
+  return `${v.id_pedido?('venta '+v.id_pedido):'una venta'}${v.cliente?(' de '+v.cliente):''}${v.created_at?(' el '+fmt(v.created_at)):''}`;
+}
+function saleCouponProblem(c,usedSale){
   if(!c)return 'No encontramos ese código.';
   const fmt=d=>new Date(d).toLocaleDateString('es-DO',{day:'numeric',month:'long',year:'numeric'});
   if(c.estado==='anulado')return 'Ese cupón fue anulado. No se puede usar.';
+  if(usedSale)return `Ese cupón ya fue usado en ${couponSaleLabel(usedSale)}. No se puede usar otra vez.`;
   if(c.estado==='usado'||Number(c.usos)>=Number(c.usos_maximos))return 'Ese cupón ya fue usado. No se puede usar otra vez.';
   if(c.estado!=='activo')return 'Ese cupón no está disponible.';
   if(c.expira_en&&new Date(c.expira_en)<=new Date())return `Ese cupón venció el ${fmt(c.expira_en)}. No se puede usar.`;
@@ -5633,7 +5687,8 @@ window.applySaleCoupon=async function(){
   try{
     const {data,error}=await supabase.from('cupones_descuento').select('codigo,categoria,porcentaje,compra_minima_mxn,compra_minima_usd,cliente,estado,expira_en,usos,usos_maximos').eq('codigo',code).maybeSingle();
     if(error)throw error;
-    const problem=saleCouponProblem(data);if(problem){fail(problem);return;}
+    const usedSale=data?await findCouponSale(data.codigo):null;
+    const problem=saleCouponProblem(data,usedSale);if(problem){fail(problem);return;}
     const subtotal=ventaIngresoUsd()*(1+ventaNumber('vc-f-interes-pct')/100), currency=document.getElementById('vc-f-moneda')?.value||'MXN';
     if(currency==='USD'&&subtotal<Number(data.compra_minima_usd)){fail(`La compra mínima es US$${Number(data.compra_minima_usd).toLocaleString('en-US')}.`);return;}
     if(currency==='MXN'&&subtotal*VENTA_USD_MXN_RATE<Number(data.compra_minima_mxn)){fail(`La compra mínima es MX$${Number(data.compra_minima_mxn).toLocaleString('es-MX')}.`);return;}
@@ -7183,7 +7238,7 @@ window.saveVenta = async function() {
       try {
         const { data, error } = await supabase.from('cupones_descuento').select('codigo,estado,expira_en,usos,usos_maximos,cliente').eq('codigo', activeSaleCoupon.codigo).maybeSingle();
         if (error) throw error;
-        problem = saleCouponProblem(data);
+        problem = saleCouponProblem(data, data ? await findCouponSale(data.codigo) : null);
       } catch (couponError) {
         console.error('No se pudo verificar el cupón:', couponError);
         showToast('No se pudo verificar el cupón. Revisa tu conexión e inténtalo de nuevo.', true, 6000);
@@ -7621,7 +7676,20 @@ window.exportVentasPDFImprimible = function() {
     @page{size:A4 landscape;margin:13mm}*{box-sizing:border-box}body{font:11px/1.45 Arial,sans-serif;color:#172017;margin:0}header{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #62ff00;padding-bottom:10px;margin-bottom:14px}.logo{width:185px;height:auto;max-height:95px;object-fit:contain}h1{font-size:21px;margin:0 0 4px}h2{font-size:15px;margin:0 0 8px}h3{font-size:12px;margin:0 0 8px}p{margin:3px 0;color:#536052}.summary{display:flex;gap:10px;margin:12px 0}.metric{flex:1;padding:9px;border:1px solid #d8e2d4;border-radius:8px}.metric span{display:block;color:#586157;font-size:9px;text-transform:uppercase;letter-spacing:.6px}.metric strong{font-size:17px;display:block;margin-top:4px}.comparison{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 18px}.compare-chart{padding:10px;border:1px solid #d8e2d4;border-radius:8px;break-inside:avoid}.compare-row{display:grid;grid-template-columns:100px 1fr 65px;align-items:center;gap:7px;margin:8px 0;font-size:9px}.compare-row i,.rank-row i{height:10px;border-radius:8px;background:#edf1eb;overflow:hidden}.compare-row i b,.rank-row i b{display:block;height:100%;border-radius:8px}.current-bar,.rank-row i b{background:#42bd13}.previous-bar{background:#89958a}.compare-row strong{text-align:right;white-space:nowrap}.section{margin:15px 0;break-inside:avoid}.ranking-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ranking-grid h2{grid-column:1/-1}.rank-chart{padding:9px;border:1px solid #d8e2d4;border-radius:8px}.rank-row{display:grid;grid-template-columns:150px 1fr 25px;align-items:center;gap:7px;margin:7px 0;font-size:9px}.rank-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.weekdays span{padding:7px;border-radius:6px;background:#f2f7ef;text-align:center;font-size:9px}.weekdays b{display:block;color:#2d8209;font-size:13px}.weekdays small{display:block;color:#586157}table{width:100%;border-collapse:collapse;font-size:9px}thead{display:table-header-group}th{background:#111a10;color:white;text-align:left;padding:6px}td{padding:5px;border-bottom:1px solid #e1e7df;vertical-align:top}tr{break-inside:avoid}.num{text-align:right;white-space:nowrap}.foot{margin-top:14px;color:#778176;font-size:9px}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}
   
-</style></head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
+</style><style>
+.cv-row{display:flex;gap:10px;flex-wrap:wrap}.cv-row .finput{flex:1;min-width:180px;text-transform:uppercase;letter-spacing:1px}
+.cv-result{margin-top:14px;border:1px solid var(--border,rgba(255,255,255,.12));border-radius:12px;padding:14px}
+.cv-badge{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.85rem;margin-bottom:10px}
+.cv-badge[data-k=activo]{background:rgba(46,204,113,.18);color:#2ecc71}
+.cv-badge[data-k=usado]{background:rgba(231,76,60,.18);color:#e74c3c}
+.cv-badge[data-k=vencido]{background:rgba(243,156,18,.18);color:#f39c12}
+.cv-badge[data-k=anulado]{background:rgba(149,165,166,.2);color:#95a5a6}
+.cv-badge[data-k=error]{background:rgba(231,76,60,.18);color:#e74c3c}
+.cv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.cv-grid div{display:flex;flex-direction:column;gap:2px}.cv-grid small{color:var(--text2);font-size:.75rem}.cv-grid b{font-size:.95rem;word-break:break-word}
+.cv-note{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(231,76,60,.1);font-size:.9rem}
+</style>
+</head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
   <section class="section"><h2>Comparativa con ${esc(previousLabel)}</h2><div class="comparison">${bar('Cantidad de ventas',rows.length,previous.length,x=>String(x))}${bar('Ingresos brutos',gross,previousGross,x=>`$${x.toFixed(2)}`)}${isCEO?bar('Recibido neto',net,previousNet,x=>`$${x.toFixed(2)}`):''}</div></section>${rankings}${pattern||'<p>No hay suficientes ventas para mostrar el patrón de compras.</p>'}
   <section class="section"><h2>Detalle del registro</h2><table><thead><tr><th>#</th><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cliente</th><th>Método</th><th>Ingreso</th>${isCEO?'<th>Comisión</th><th>Recibido</th>':''}</tr></thead><tbody>${tableRows||`<tr><td colspan="${isCEO?9:7}">No hay ventas registradas en el período seleccionado.</td></tr>`}</tbody></table></section><div class="foot">Documento generado desde el panel de Shegos Store.</div></body></html>`);
