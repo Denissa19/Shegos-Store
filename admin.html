@@ -2333,13 +2333,13 @@ window.doLogin = async function () {
           <button class="btn btn-accent coupon-create-btn" id="coupon-create-btn" type="button" onclick="window.createCoupon()"><i class="fas fa-ticket"></i> Generar código</button>
           <div id="coupon-created-card" class="coupon-created-card" hidden><div class="coupon-card-preview-wrap"><img id="coupon-card-preview" alt="Tarjeta de descuento generada"><b id="coupon-card-percent" class="coupon-card-percent"></b><b id="coupon-card-code" class="coupon-card-code"></b></div><div class="coupon-card-actions"><button class="btn btn-accent" type="button" id="coupon-download-btn" onclick="window.downloadCouponCard()"><i class="fas fa-download"></i> Descargar imagen</button><button class="btn btn-ghost" type="button" onclick="window.copyCouponCode()"><i class="fas fa-copy"></i> Copiar código</button></div></div>
         </section>
-        <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
-      </div>
-      <section class="coupon-panel coupon-validator" style="margin-top:18px">
+        <section class="coupon-panel coupon-validator">
         <div class="coupon-panel-heading"><i class="fas fa-magnifying-glass"></i><div><strong>Validar cupón</strong><small>Consulta si un código está disponible, usado, vencido o anulado, y en qué venta se usó.</small></div></div>
         <div class="cv-row"><input class="finput" id="cv-code" maxlength="20" placeholder="SHG-XXXXXX" autocomplete="off" onkeydown="if(event.key==='Enter')window.validateCouponCode()"><button class="btn btn-accent" type="button" onclick="window.validateCouponCode()"><i class="fas fa-circle-check"></i> Validar</button></div>
         <div id="cv-result" class="cv-result" hidden></div>
       </section>
+        <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
+      </div>
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
@@ -7677,6 +7677,7 @@ window.exportVentasPDFImprimible = function() {
   .print-action{position:sticky;top:0;display:block;margin:10px auto;padding:10px 18px;border:0;border-radius:7px;background:#36b900;color:#fff;font-weight:bold;cursor:pointer}@media print{.print-action{display:none}}
   
 </style><style>
+.coupon-layout{grid-template-columns:1fr;max-width:860px}
 .cv-row{display:flex;gap:10px;flex-wrap:wrap}.cv-row .finput{flex:1;min-width:180px;text-transform:uppercase;letter-spacing:1px}
 .cv-result{margin-top:14px;border:1px solid var(--border,rgba(255,255,255,.12));border-radius:12px;padding:14px}
 .cv-badge{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.85rem;margin-bottom:10px}
