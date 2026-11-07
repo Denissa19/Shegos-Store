@@ -1913,6 +1913,14 @@ window.doLogin = async function () {
 @media(max-width:850px){.coupon-layout{grid-template-columns:1fr}.coupon-panel{padding:16px}}
 @media(max-width:520px){.coupon-sale-row{flex-wrap:wrap}.coupon-sale-row .finput{flex-basis:100%}.coupon-card-actions>*{flex:1;justify-content:center}.coupon-panel .frow{display:grid;grid-template-columns:1fr 1fr}}
 </style>
+<style id="multi-image-styles">
+.vm-receipt-preview{z-index:2}
+.mi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;padding:10px}
+.mi-thumb{position:relative;aspect-ratio:1}
+.vm-receipt-preview .mi-thumb img{width:100%;height:100%;max-height:none;object-fit:cover;border-radius:8px;border:1px solid var(--border2);cursor:zoom-in;display:block}
+.mi-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(0,0,0,.72);color:#fff;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+.mi-x:hover{background:var(--red);color:#000}
+</style>
 <style id="coupon-pc-layout">
 .coupon-more-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}.coupon-more-row small{color:var(--text3)}.coupon-more-row span{display:flex;gap:8px;flex-wrap:wrap}
 @media(min-width:1000px){
@@ -2457,12 +2465,12 @@ window.doLogin = async function () {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.orderHandleDrop(event)">
-          <input type="file" id="f-receipt-file" accept="image/*" onchange="window.handleReceiptUpload(this)">
+          <input type="file" id="f-receipt-file" accept="image/*" multiple onchange="window.handleReceiptUpload(this)">
           <div class="vm-receipt-idle" id="order-receipt-idle">
             <div class="vm-receipt-icon"><i class="fas fa-cloud-upload-alt"></i></div>
             <div class="vm-receipt-text">
               <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
-              <small>Captura de pantalla, foto del comprobante — PNG, JPG, WEBP</small>
+              <small>Captura de pantalla, foto del comprobante — PNG, JPG, WEBP · puedes subir varias</small>
             </div>
           </div>
           <div class="vm-receipt-preview" id="order-receipt-preview">
@@ -2486,12 +2494,12 @@ window.doLogin = async function () {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.orderProdDrop(event)">
-          <input type="file" id="f-prod-file" accept="image/*" onchange="window.handleOrderProd(this)">
+          <input type="file" id="f-prod-file" accept="image/*" multiple onchange="window.handleOrderProd(this)">
           <div class="vm-receipt-idle" id="f-prod-idle">
             <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
             <div class="vm-receipt-text">
               <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
-              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP</small>
+              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP · puedes subir varias</small>
             </div>
           </div>
           <div class="vm-receipt-preview" id="f-prod-preview">
@@ -3161,12 +3169,12 @@ window.doLogin = async function () {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.vmHandleDrop(event)">
-          <input type="file" id="vc-f-receipt-file" accept="image/*" onchange="window.handleVentaReceipt(this)">
+          <input type="file" id="vc-f-receipt-file" accept="image/*" multiple onchange="window.handleVentaReceipt(this)">
           <div class="vm-receipt-idle" id="vc-receipt-idle">
             <div class="vm-receipt-icon"><i class="fas fa-cloud-upload-alt"></i></div>
             <div class="vm-receipt-text">
               <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
-              <small>Captura de pantalla, foto del comprobante — PNG, JPG, WEBP</small>
+              <small>Captura de pantalla, foto del comprobante — PNG, JPG, WEBP · puedes subir varias</small>
             </div>
           </div>
           <div class="vm-receipt-preview" id="vc-receipt-preview">
@@ -3190,12 +3198,12 @@ window.doLogin = async function () {
           ondragover="event.preventDefault();this.classList.add('drag-over')"
           ondragleave="this.classList.remove('drag-over')"
           ondrop="event.preventDefault();this.classList.remove('drag-over');window.vmProdDrop(event)">
-          <input type="file" id="vc-f-prod-file" accept="image/*" onchange="window.handleVentaProd(this)">
+          <input type="file" id="vc-f-prod-file" accept="image/*" multiple onchange="window.handleVentaProd(this)">
           <div class="vm-receipt-idle" id="vc-prod-idle">
             <div class="vm-receipt-icon"><i class="fas fa-box-open"></i></div>
             <div class="vm-receipt-text">
               <p>Arrastra aquí o <span style="color:var(--accent)">haz clic para subir</span></p>
-              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP</small>
+              <small>Foto de lo vendido o captura de la entrega — PNG, JPG, WEBP · puedes subir varias</small>
             </div>
           </div>
           <div class="vm-receipt-preview" id="vc-prod-preview">
@@ -4940,25 +4948,8 @@ async function editOrder(id) {
     addProdRow();
   }
 
-  if (o.comprobante) {
-    document.getElementById('f-receipt-base64').value = o.comprobante;
-    document.getElementById('order-receipt-img').src = o.comprobante;
-    document.getElementById('order-receipt-idle').style.display = 'none';
-    document.getElementById('order-receipt-preview').style.display = 'block';
-    document.getElementById('order-receipt-name').innerHTML = '<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>Comprobante guardado';
-  } else {
-    clearReceipt();
-  }
-
-  if (o.foto_producto) {
-    document.getElementById('f-prod-base64').value = o.foto_producto;
-    document.getElementById('f-prod-img').src = o.foto_producto;
-    document.getElementById('f-prod-idle').style.display = 'none';
-    document.getElementById('f-prod-preview').style.display = 'block';
-    document.getElementById('f-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
-  } else {
-    window.clearOrderProd();
-  }
+  imgZoneSet('order-receipt', o.comprobante || '');
+  imgZoneSet('order-prod', o.foto_producto || '');
   window.RemEd.ord.load(o.remarks);
 
   document.getElementById('modal-order').classList.add('open');
@@ -5019,14 +5010,14 @@ async function viewDetail(id) {
     ${o.comprobante ? `
       <div style="margin-top:14px">
         <div class="flabel">Comprobante Digital Adjunto:</div>
-        <img src="${o.comprobante}" onclick="window.viewReceipt('pedido','${o.id}')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
+        ${imgParse(o.comprobante).map((u,i)=>`<img src="${u.replace(/"/g,'&quot;')}" onclick="window.viewReceipt('pedido','${o.id}','comprobante',${i})" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">`).join('')}
         <div style="margin-top:8px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-expand"></i> Ampliar / Descargar</button></div>
       </div>` : o.tiene_comprobante ? `<div style="margin-top:14px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}')"><i class="fas fa-paperclip"></i> Abrir comprobante guardado</button></div>` : ''}
 
     ${o.foto_producto ? `
       <div style="margin-top:14px">
         <div class="flabel">Foto del Producto / Prueba de Entrega:</div>
-        <img src="${o.foto_producto}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">
+        ${imgParse(o.foto_producto).map((u,i)=>`<img src="${u.replace(/"/g,'&quot;')}" onclick="window.viewReceipt('pedido','${o.id}','foto_producto',${i})" style="max-width:100%;border-radius:6px;border:1px solid var(--border2);margin-top:6px;cursor:zoom-in">`).join('')}
       </div>` : o.tiene_foto_producto ? `<div style="margin-top:14px"><button class="btn btn-outline" onclick="window.viewReceipt('pedido','${o.id}','foto_producto')"><i class="fas fa-box-open"></i> Abrir foto de entrega</button></div>` : ''}
 
     ${remDetailHTML('pedido', o)}
@@ -6498,7 +6489,15 @@ async function fetchVentas() {
       all = all.concat(data || []);
       if (!data || data.length < PAGE) break;
     }
-    currentVentas = all.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    // Más recientes primero. Si dos ventas tienen la misma fecha y hora exactas (ventas viejas guardadas
+    // a las 12:00), se desempata por el código SHG-… que lleva la hora en que se creó.
+    const saleStamp = v => { const m = /^SHG-([0-9A-Z]{6})-/i.exec(v.id_pedido || ''); return m ? parseInt(m[1], 36) : -1; };
+    currentVentas = all.sort((a, b) => {
+      const t = new Date(b.created_at || 0) - new Date(a.created_at || 0);
+      if (t) return t;
+      const d = saleStamp(b) - saleStamp(a);
+      return d || String(b.id).localeCompare(String(a.id));
+    });
     renderVentas();
     updateStats(); // Refresh topbar total with ventas included
     renderAccounting();
@@ -6997,25 +6996,9 @@ window.editVenta = async function(id) {
     const aaEl = document.getElementById('vc-f-apartar-abono'); if (aaEl) aaEl.value = v.apartado_abono || '';
     const apEl2 = document.getElementById('vc-f-apartar-pendiente'); if (apEl2) apEl2.value = v.apartado_pendiente || '';
   }
-  // Restore receipt preview if exists
-  if (v.comprobante) {
-    document.getElementById('vc-f-receipt-base64').value = v.comprobante;
-    document.getElementById('vc-receipt-img').src = v.comprobante;
-    document.getElementById('vc-receipt-idle').style.display = 'none';
-    document.getElementById('vc-receipt-preview').style.display = 'block';
-    document.getElementById('vc-receipt-name').innerHTML = '<i class="fas fa-image" style="margin-right:5px;color:var(--accent)"></i>Comprobante guardado';
-  } else {
-    window.vmClearReceipt();
-  }
-  if (v.foto_producto) {
-    document.getElementById('vc-f-prod-base64').value = v.foto_producto;
-    document.getElementById('vc-prod-img').src = v.foto_producto;
-    document.getElementById('vc-prod-idle').style.display = 'none';
-    document.getElementById('vc-prod-preview').style.display = 'block';
-    document.getElementById('vc-prod-name').innerHTML = '<i class="fas fa-box-open" style="margin-right:5px;color:var(--accent)"></i>Foto guardada';
-  } else {
-    window.vmClearProd();
-  }
+  // Restore saved images (one or several)
+  imgZoneSet('vc-receipt', v.comprobante || '');
+  imgZoneSet('vc-prod', v.foto_producto || '');
   vmRemarks = Array.isArray(v.remarks) ? v.remarks.map(r => ({ ...r })) : [];
   vmRemTipo = 'nota';
   vmRenderRemarks();
@@ -7317,7 +7300,10 @@ window.saveVenta = async function() {
   let fechaISO = new Date().toISOString();
   const fechaVal = (document.getElementById('vc-f-fecha')?.value || '').trim();
   if (fechaVal) {
-    const parsed = new Date(`${fechaVal}T12:00:00`);
+    // Se conserva la hora real del registro (no las 12:00 fijas) para que las ventas
+    // del mismo día queden ordenadas por el momento en que se anotaron.
+    const now = new Date(), pad = n => String(n).padStart(2, '0');
+    const parsed = new Date(`${fechaVal}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`);
     if (!isNaN(parsed.getTime())) fechaISO = parsed.toISOString();
   }
 
@@ -8802,7 +8788,7 @@ window.vcClearDates = vcClearDates;
 window.vcQuickRange = vcQuickRange;
 
 // ── VISOR DE COMPROBANTES / FOTOS (abrir y descargar) ──
-let _imgViewerSrc = '', _imgViewerName = 'comprobante';
+let _imgViewerSrc = '', _imgViewerName = 'comprobante', _imgViewerList = [], _imgViewerIdx = 0, _imgViewerTitle = 'Comprobante';
 
 function _srcToBlob(src) {
   if (src.startsWith('data:')) {
@@ -8816,13 +8802,32 @@ function _srcToBlob(src) {
   return fetch(src).then(r => r.blob());
 }
 
-window.openImageViewer = function(src, name, title) {
-  if (!src) { showToast('No hay imagen adjunta', true); return; }
-  _imgViewerSrc = src;
+window.openImageViewer = function(src, name, title, index) {
+  const list = imgParse(src);
+  if (!list.length) { showToast('No hay imagen adjunta', true); return; }
+  _imgViewerList = list; _imgViewerIdx = Math.min(Math.max(0, index || 0), list.length - 1);
   _imgViewerName = name || 'comprobante';
-  document.getElementById('imgv-img').src = src;
-  document.getElementById('imgv-title').innerHTML = '<i class="fas fa-image" style="margin-right:8px"></i>' + (title || 'Comprobante');
+  _imgViewerTitle = title || 'Comprobante';
+  window.imgViewerShow();
   document.getElementById('modal-imgviewer').classList.add('open');
+};
+window.imgViewerShow = function() {
+  const list = _imgViewerList, i = _imgViewerIdx;
+  _imgViewerSrc = list[i] || '';
+  document.getElementById('imgv-img').src = _imgViewerSrc;
+  document.getElementById('imgv-title').innerHTML = '<i class="fas fa-image" style="margin-right:8px"></i>' + _imgViewerTitle + (list.length > 1 ? ` (${i + 1} de ${list.length})` : '');
+  let nav = document.getElementById('imgv-nav');
+  if (!nav) {
+    nav = document.createElement('div'); nav.id = 'imgv-nav';
+    nav.style.cssText = 'display:flex;justify-content:center;gap:10px;margin-bottom:10px';
+    nav.innerHTML = '<button type="button" class="btn btn-outline" onclick="window.imgViewerStep(-1)"><i class="fas fa-chevron-left"></i> Anterior</button><button type="button" class="btn btn-outline" onclick="window.imgViewerStep(1)">Siguiente <i class="fas fa-chevron-right"></i></button>';
+    const img = document.getElementById('imgv-img'); img.parentNode.insertBefore(nav, img);
+  }
+  nav.style.display = list.length > 1 ? 'flex' : 'none';
+};
+window.imgViewerStep = function(d) {
+  const n = _imgViewerList.length; if (n < 2) return;
+  _imgViewerIdx = (_imgViewerIdx + d + n) % n; window.imgViewerShow();
 };
 
 window.closeImageViewer = function() {
@@ -8853,7 +8858,7 @@ window.downloadViewerImage = async function() {
 };
 
 // Abre el comprobante guardado de una venta o un pedido
-window.viewReceipt = async function(kind, id, field) {
+window.viewReceipt = async function(kind, id, field, index) {
   const key = field || 'comprobante';
   const rec = kind === 'venta'
     ? currentVentas.find(x => String(x.id) === String(id))
@@ -8876,13 +8881,60 @@ window.viewReceipt = async function(kind, id, field) {
   if (!image) { showToast('Este registro no tiene esa imagen', true); return; }
   const ref = rec?.id_pedido || String(rec?.id || id).slice(0, 8);
   const esFoto = key === 'foto_producto';
-  window.openImageViewer(image, (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante');
+  window.openImageViewer(image, (esFoto ? 'producto-' : 'comprobante-') + kind + '-' + ref, esFoto ? 'Foto del producto' : 'Comprobante', index);
 };
 
 // Abre la imagen que se está cargando en el formulario (antes de guardar)
 window.viewFormReceipt = function(hiddenInputId, title) {
   window.openImageViewer(document.getElementById(hiddenInputId)?.value, (title || 'comprobante').toLowerCase().replace(/\s+/g, '-'), title || 'Comprobante');
 };
+
+// ── VARIAS IMÁGENES POR CAMPO ──
+// El campo guardado sigue siendo texto: una sola imagen = la imagen sola (formato anterior);
+// varias imágenes = lista JSON. Así lo ya guardado sigue funcionando.
+function imgParse(v) {
+  if (typeof v !== 'string') return [];
+  const t = v.trim(); if (!t) return [];
+  if (t.startsWith('[')) { try { const a = JSON.parse(t); if (Array.isArray(a)) return a.filter(x => typeof x === 'string' && x); } catch (_) {} }
+  return [t];
+}
+function imgSerialize(list) { return !list.length ? '' : list.length === 1 ? list[0] : JSON.stringify(list); }
+const IMG_MAX = 6;
+const IMG_ZONES = {
+  'vc-receipt':    { hidden:'vc-f-receipt-base64', file:'vc-f-receipt-file', idle:'vc-receipt-idle', preview:'vc-receipt-preview', title:'Comprobante', icon:'fa-image' },
+  'vc-prod':       { hidden:'vc-f-prod-base64',    file:'vc-f-prod-file',    idle:'vc-prod-idle',    preview:'vc-prod-preview',    title:'Foto del producto', icon:'fa-box-open' },
+  'order-receipt': { hidden:'f-receipt-base64',    file:'f-receipt-file',    idle:'order-receipt-idle', preview:'order-receipt-preview', title:'Comprobante', icon:'fa-image' },
+  'order-prod':    { hidden:'f-prod-base64',       file:'f-prod-file',       idle:'f-prod-idle',     preview:'f-prod-preview',     title:'Foto del producto', icon:'fa-box-open' }
+};
+function imgZoneList(key) { return imgParse(document.getElementById(IMG_ZONES[key].hidden)?.value); }
+function imgZoneRender(key) {
+  const z = IMG_ZONES[key], list = imgZoneList(key);
+  const hidden = document.getElementById(z.hidden); if (hidden) hidden.value = imgSerialize(list);
+  const idle = document.getElementById(z.idle), prev = document.getElementById(z.preview);
+  if (idle) idle.style.display = list.length ? 'none' : 'flex';
+  if (!prev) return;
+  prev.style.display = list.length ? 'block' : 'none';
+  if (!list.length) { prev.innerHTML = ''; return; }
+  prev.innerHTML = `<div class="mi-grid">${list.map((u, i) => `<div class="mi-thumb"><img src="${u.replace(/"/g, '&quot;')}" alt="${z.title} ${i + 1}" onclick="event.stopPropagation();window.imgZoneView('${key}',${i})"><button type="button" class="mi-x" title="Quitar esta imagen" onclick="event.stopPropagation();window.imgZoneRemove('${key}',${i})"><i class="fas fa-xmark"></i></button></div>`).join('')}</div>
+    <div class="vm-receipt-preview-bar"><span class="vm-receipt-preview-name"><i class="fas ${z.icon}" style="margin-right:5px;color:var(--accent)"></i>${list.length} ${list.length === 1 ? 'imagen' : 'imágenes'}</span>
+    <span style="display:flex;gap:6px">${list.length < IMG_MAX ? `<button type="button" class="vm-receipt-view" onclick="event.stopPropagation();window.imgZoneAddMore('${key}')"><i class="fas fa-plus"></i> Agregar más</button>` : ''}<button type="button" class="vm-receipt-remove" onclick="event.stopPropagation();window.imgZoneClear('${key}')"><i class="fas fa-trash-alt"></i> Quitar todas</button></span></div>`;
+}
+function imgZoneSet(key, value) { const h = document.getElementById(IMG_ZONES[key].hidden); if (h) h.value = value || ''; imgZoneRender(key); }
+window.imgZoneAdd = async function(key, files) {
+  const z = IMG_ZONES[key], list = imgZoneList(key);
+  const imgs = [...(files || [])].filter(f => f && (f.type || '').startsWith('image/'));
+  if (!imgs.length) return;
+  const room = IMG_MAX - list.length;
+  if (room <= 0) { showToast(`Máximo ${IMG_MAX} imágenes por campo.`, true); return; }
+  if (imgs.length > room) showToast(`Máximo ${IMG_MAX} imágenes por campo: se agregaron ${room}.`, true);
+  for (const f of imgs.slice(0, room)) { try { list.push(await readImageCompressed(f)); } catch (_) { showToast('No se pudo leer una de las imágenes.', true); } }
+  imgZoneSet(key, imgSerialize(list));
+  const fi = document.getElementById(z.file); if (fi) fi.value = '';
+};
+window.imgZoneAddMore = function(key) { document.getElementById(IMG_ZONES[key].file)?.click(); };
+window.imgZoneRemove = function(key, i) { const l = imgZoneList(key); l.splice(i, 1); imgZoneSet(key, imgSerialize(l)); };
+window.imgZoneClear = function(key) { imgZoneSet(key, ''); const fi = document.getElementById(IMG_ZONES[key].file); if (fi) fi.value = ''; };
+window.imgZoneView = function(key, i) { const z = IMG_ZONES[key]; window.openImageViewer(imgSerialize(imgZoneList(key)), z.title.toLowerCase().replace(/\s+/g, '-'), z.title, i); };
 
 // Reduce el peso de las fotos (máx. 1600px, JPEG) antes de guardarlas
 function readImageCompressed(file, maxDim = 1200, quality = 0.76) {
@@ -10355,6 +10407,21 @@ window.resetWallpaper = function() {
 };
 
 
+
+// ── Manejadores de imágenes (varias por campo) ──
+window.handleVentaReceipt = input => window.imgZoneAdd('vc-receipt', input.files);
+window.vmHandleDrop = e => window.imgZoneAdd('vc-receipt', e.dataTransfer.files);
+window.vmClearReceipt = () => window.imgZoneClear('vc-receipt');
+window.handleVentaProd = input => window.imgZoneAdd('vc-prod', input.files);
+window.vmProdDrop = e => window.imgZoneAdd('vc-prod', e.dataTransfer.files);
+window.vmClearProd = () => window.imgZoneClear('vc-prod');
+handleReceiptUpload = input => window.imgZoneAdd('order-receipt', input.files);
+clearReceipt = () => window.imgZoneClear('order-receipt');
+window.handleReceiptUpload = handleReceiptUpload; window.clearReceipt = clearReceipt;
+window.orderHandleDrop = e => window.imgZoneAdd('order-receipt', e.dataTransfer.files);
+window.handleOrderProd = input => window.imgZoneAdd('order-prod', input.files);
+window.orderProdDrop = e => window.imgZoneAdd('order-prod', e.dataTransfer.files);
+window.clearOrderProd = () => window.imgZoneClear('order-prod');
 </script>
 
 <!-- ── MODAL AGREGAR / EDITAR CLIENTE ──────────── -->
