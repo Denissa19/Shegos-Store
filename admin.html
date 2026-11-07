@@ -1930,6 +1930,38 @@ window.doLogin = async function () {
   #tab-descuentos .coupon-layout>.coupon-list-panel{grid-column:2;grid-row:2;min-width:0}
 }
 </style>
+<style id="payment-logo-images">
+.pay-logo:has(.pay-logo-img:not([hidden])){background:#fff!important;border-color:rgba(255,255,255,.55)!important}
+.pay-logo-img{width:23px!important;height:23px!important;border-radius:5px;object-fit:contain}
+.pay-logo{width:34px!important;height:34px!important;flex-basis:34px!important}
+@media(max-width:420px){.client-payment-grid .pay-logo{width:30px!important;height:30px!important;flex-basis:30px!important}.client-payment-grid .pay-logo-img{width:20px!important;height:20px!important}}
+</style>
+<style id="mobile-latest-changes">
+.vm-receipt-preview-bar{flex-wrap:wrap;gap:8px}
+@media(max-width:620px){
+  /* Cupones: lista en tarjetas, sin scroll horizontal */
+  .coupon-table-wrap{margin:0;overflow:visible}
+  .coupon-table{min-width:0;display:block}.coupon-table thead{display:none}.coupon-table tbody{display:grid;gap:10px}
+  #tab-descuentos .coupon-table tbody tr{display:grid!important;grid-template-columns:1fr 1fr;gap:8px 12px;padding:13px;border:1px solid var(--border2);border-radius:13px;background:rgba(12,17,13,.9)}
+  .coupon-table td{display:block;padding:0;border:0;min-width:0;overflow-wrap:anywhere}
+  .coupon-table td::before{content:attr(data-label);display:block;margin-bottom:3px;color:var(--text3);font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+  .coupon-table td[data-label="Código"],.coupon-table td[data-label="Acciones"]{grid-column:1/-1}
+  .coupon-table td[data-label="Acciones"] .ibtn{width:44px;height:44px}
+  .coupon-more-row{flex-direction:column;align-items:stretch;text-align:center}.coupon-more-row span{display:grid;grid-template-columns:1fr;gap:8px}.coupon-more-row .btn{width:100%;min-height:44px;justify-content:center}
+  /* Buscador de clientes del cupón */
+  #coupon-customer-dropdown{position:static;margin-top:8px;max-height:34vh}
+  /* Varias imágenes */
+  .mi-grid{grid-template-columns:repeat(3,1fr);gap:7px;padding:9px}
+  .mi-x{width:30px;height:30px;font-size:.82rem}
+  .vm-receipt-preview-bar{padding:9px}.vm-receipt-preview-bar>span:last-child{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
+  .vm-receipt-preview-bar .vm-receipt-view,.vm-receipt-preview-bar .vm-receipt-remove{min-height:40px}
+  #imgv-nav{gap:8px!important}#imgv-nav .btn{flex:1;justify-content:center;min-height:44px}
+  /* Ganancia por tipo de venta */
+  #vc-ganancia-chart{gap:5px!important;padding:0!important}
+  #vc-ganancia-chart>div>div:first-child{font-size:.56rem!important}
+  #vc-ganancia-chart>div>div:last-child{font-size:.52rem!important;letter-spacing:-.2px}
+}
+</style>
 <style id="coupon-mobile-fix">
 .coupon-category-info{grid-column:1/-1;padding:11px 12px 12px;margin:3px 0 8px;border-left:2px solid var(--accent);border-radius:0 9px 9px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.8rem;line-height:1.55}.coupon-category-info strong{display:block;color:var(--text);margin-bottom:8px}.coupon-category-info p{margin:7px 0 0}.coupon-category-info b{color:var(--accent)}.coupon-amount-control{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px}.coupon-card-preview-wrap{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--accent);background:#000;isolation:isolate;container-type:inline-size}.coupon-card-preview-wrap img{display:block;width:100%;height:auto;aspect-ratio:3/2;background:#000}.coupon-card-preview-wrap.is-loading::after{content:"Preparando tarjeta…";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.55);color:#fff;font-size:.9rem;font-weight:700;z-index:2}.coupon-card-percent,.coupon-card-code{position:absolute;z-index:1;display:flex;align-items:center;color:#0b0b0b;font-family:"Arial Black",Arial,Helvetica,sans-serif;font-weight:900;line-height:1;white-space:nowrap;overflow:hidden}.coupon-card-percent{justify-content:flex-end}.coupon-card-code{justify-content:center}.coupon-card-preview-wrap.is-rendered .coupon-card-percent,.coupon-card-preview-wrap.is-rendered .coupon-card-code{display:none}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-percent{left:67.3%;width:18%;top:3%;height:18.8%;font-size:13.4cqw}.coupon-card-preview-wrap[data-template="deni"] .coupon-card-code{left:62%;width:34%;top:77.1%;height:10.2%;font-size:4.2cqw}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-percent{left:67.3%;width:18%;top:3%;height:18.8%;font-size:13.4cqw}.coupon-card-preview-wrap[data-template="maidas"] .coupon-card-code{left:62%;width:34%;top:77.1%;height:10.2%;font-size:4.2cqw}@media(max-width:520px){.coupon-panel .frow{display:grid;grid-template-columns:1fr}.coupon-amount-control{grid-template-columns:minmax(0,1fr) 88px}.coupon-category-popover{max-width:calc(100vw - 32px)}.coupon-table-wrap{margin:0 -4px}.coupon-panel{overflow:hidden}}
 </style>
@@ -1959,11 +1991,11 @@ window.doLogin = async function () {
       <button class="tab-nav-btn active" id="btn-tab-cuentas" onclick="window.switchTab('cuentas',this)"><i class="fas fa-coins"></i><span>Ventas</span></button>
       <button class="tab-nav-btn" id="btn-tab-gestion" onclick="window.switchTab('gestion',this)"><i class="fas fa-boxes-stacked"></i><span>Gestión</span></button>
       <button class="tab-nav-btn" id="btn-tab-clientes" onclick="window.switchTab('clientes',this)"><i class="fas fa-users"></i><span>Clientes</span></button>
+      <button class="tab-nav-btn" id="btn-tab-descuentos" onclick="window.switchTab('descuentos',this)"><i class="fas fa-ticket"></i><span>Descuentos</span></button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Finanzas y control</div>
       <button class="tab-nav-btn" id="btn-tab-contabilidad" onclick="window.switchTab('contabilidad',this)" style="display:none"><i class="fas fa-chart-bar"></i><span>Contabilidad</span></button>
-      <button class="tab-nav-btn" id="btn-tab-descuentos" onclick="window.switchTab('descuentos',this)"><i class="fas fa-ticket"></i><span>Descuentos</span></button>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Espacio de trabajo</div>
@@ -4613,24 +4645,27 @@ function paymentMethodIdentity(method) {
   return '<span class="meth-identity" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '<span class="meth-name">' + item.label + '</span></span>';
 }
 
+// Logos de los métodos de pago (Get Logo). El token pub_ es público y está pensado para usarse en el navegador.
+const GETLOGO_TOKEN = 'pub_d8afba65caa8b467e85e71014b83bce1';
+const getLogo = domain => `https://getlogo.dev/logos/${domain}?token=${GETLOGO_TOKEN}`;
 const PAYMENT_METHODS = [
-  {value:'binance',label:'Binance',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
-  {value:'binance_giftcard',label:'Binance Giftcard',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'},
-  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:'https://cdn.simpleicons.org/xbox/107c10',fallback:'X',color:'#107c10'},
-  {value:'remitly',label:'Remitly',logo:'https://cdn.simpleicons.org/remitly/2f6bed',fallback:'R',color:'#2f6bed'},
-  {value:'bybit',label:'Bybit',logo:'https://cdn.simpleicons.org/bybit/f7a600',fallback:'B',color:'#f7a600'},
-  {value:'airtm',label:'Airtm',logo:'https://cdn.simpleicons.org/airtm/0067ff',fallback:'A',color:'#1685ff'},
+  {value:'binance',label:'Binance',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
+  {value:'binance_giftcard',label:'Binance Giftcard',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
+  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:getLogo('xbox.com'),fallback:'X',color:'#107c10'},
+  {value:'remitly',label:'Remitly',logo:getLogo('remitly.com'),fallback:'R',color:'#2f6bed'},
+  {value:'bybit',label:'Bybit',logo:getLogo('bybit.com'),fallback:'B',color:'#f7a600'},
+  {value:'airtm',label:'Airtm',logo:getLogo('airtm.com'),fallback:'A',color:'#1685ff'},
   {value:'transferencia_mx',label:'Transferencia MX',fallback:'MX',color:'#38bdf8'},
-  {value:'spei',label:'SPEI',fallback:'S',color:'#61a5ff'},
-  {value:'oxxo',label:'OXXO',logo:'https://cdn.simpleicons.org/oxxogas/e31837',fallback:'O',color:'#e31837'},
-  {value:'mercado_pago',label:'Mercado Pago',logo:'https://cdn.simpleicons.org/mercadopago/00a0e3',fallback:'MP',color:'#00a0e3'},
-  {value:'cripto',label:'Cripto',logo:'https://cdn.simpleicons.org/bitcoin/f7931a',fallback:'₿',color:'#f7931a'}
+  {value:'spei',label:'SPEI',logo:getLogo('banxico.org.mx'),fallback:'S',color:'#61a5ff'},
+  {value:'oxxo',label:'OXXO',logo:getLogo('oxxo.com'),fallback:'O',color:'#e31837'},
+  {value:'mercado_pago',label:'Mercado Pago',logo:getLogo('mercadopago.com.mx'),fallback:'MP',color:'#00a0e3'},
+  {value:'cripto',label:'Cripto',logo:getLogo('bitcoin.org'),fallback:'₿',color:'#f7931a'}
 ];
 const isTransferPayment = method => method === 'transferencia_mx' || method === 'spei';
 const LEGACY_PAYMENT_METHODS = {
   link:{label:'Link de Pago (histórico)',fallback:'↗',color:'#77808a'}, paypal:{label:'PayPal (histórico)',fallback:'P',color:'#0070ba'},
   popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
-  binance_pay:{label:'Binance Pay',logo:'https://cdn.simpleicons.org/binance/f0b90b',fallback:'B',color:'#f0b90b'}
+  binance_pay:{label:'Binance Pay',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'}
 };
 function paymentMethodToDb(method) {
   const labels={binance:'Binance',binance_giftcard:'Binance Giftcard',xbox_giftcard:'Xbox Giftcard',remitly:'Remitly',bybit:'Bybit',airtm:'Airtm',transferencia_mx:'Transferencia MX',spei:'SPEI',oxxo:'OXXO',mercado_pago:'Mercado Pago',cripto:'Cripto',paypal:'PayPal',popular:'Banco Popular'};
@@ -5573,7 +5608,7 @@ window.renderCouponList=function(){
   const data=window._couponData||[];
   const visible=Math.max(COUPON_PAGE_SIZE,window._couponVisible||COUPON_PAGE_SIZE), rows=data.slice(0,visible);
   const more=data.length-rows.length;
-  area.innerHTML=`<div class="coupon-table-wrap"><table class="coupon-table"><thead><tr><th>Código</th><th>Descuento / monto</th><th>Cliente</th><th>Estado</th><th>Vence</th><th>Acciones</th></tr></thead><tbody>${rows.map(c=>{const status=couponStatus(c);return `<tr><td><span class="coupon-code">${couponEscape(c.codigo)}</span><small style="display:block;color:var(--text3)">${couponEscape(c.creador_rol)} · ${couponEscape(couponCategoryNames[c.categoria]||c.categoria)}</small></td><td>${Number(c.porcentaje)} %<small style="display:block;color:var(--text2)">Desde MX${Number(c.compra_minima_mxn).toLocaleString('es-MX')} · US${Number(c.compra_minima_usd).toLocaleString('en-US')}</small></td><td>${couponEscape(c.cliente||'—')}</td><td><span class="coupon-status ${status}">${couponStatusLabel(status)}</span></td><td>${new Date(c.expira_en).toLocaleDateString('es-MX')}</td><td><div style="display:flex;gap:5px"><button class="ibtn" type="button" title="Ver tarjeta" onclick="window.showCouponCard('${c.plantilla}',${Number(c.porcentaje)},'${couponEscape(c.codigo)}')"><i class="fas fa-image"></i></button>${status==='activo'?`<button class="ibtn del" type="button" title="Anular cupón" onclick="window.cancelCoupon('${c.id}')"><i class="fas fa-ban"></i></button>`:''}<button class="ibtn del" type="button" title="Eliminar cupón" onclick="window.deleteCoupon('${c.id}','${couponEscape(c.codigo)}')"><i class="fas fa-trash"></i></button></div></td></tr>`;}).join('')}</tbody></table></div>`
+  area.innerHTML=`<div class="coupon-table-wrap"><table class="coupon-table"><thead><tr><th>Código</th><th>Descuento / monto</th><th>Cliente</th><th>Estado</th><th>Vence</th><th>Acciones</th></tr></thead><tbody>${rows.map(c=>{const status=couponStatus(c);return `<tr><td data-label="Código"><span class="coupon-code">${couponEscape(c.codigo)}</span><small style="display:block;color:var(--text3)">${couponEscape(c.creador_rol)} · ${couponEscape(couponCategoryNames[c.categoria]||c.categoria)}</small></td><td data-label="Descuento">${Number(c.porcentaje)} %<small style="display:block;color:var(--text2)">Desde MX${Number(c.compra_minima_mxn).toLocaleString('es-MX')} · US${Number(c.compra_minima_usd).toLocaleString('en-US')}</small></td><td data-label="Cliente">${couponEscape(c.cliente||'—')}</td><td data-label="Estado"><span class="coupon-status ${status}">${couponStatusLabel(status)}</span></td><td data-label="Vence">${new Date(c.expira_en).toLocaleDateString('es-MX')}</td><td data-label="Acciones"><div style="display:flex;gap:5px"><button class="ibtn" type="button" title="Ver tarjeta" onclick="window.showCouponCard('${c.plantilla}',${Number(c.porcentaje)},'${couponEscape(c.codigo)}')"><i class="fas fa-image"></i></button>${status==='activo'?`<button class="ibtn del" type="button" title="Anular cupón" onclick="window.cancelCoupon('${c.id}')"><i class="fas fa-ban"></i></button>`:''}<button class="ibtn del" type="button" title="Eliminar cupón" onclick="window.deleteCoupon('${c.id}','${couponEscape(c.codigo)}')"><i class="fas fa-trash"></i></button></div></td></tr>`;}).join('')}</tbody></table></div>`
   +(data.length>COUPON_PAGE_SIZE?`<div class="coupon-more-row"><small>Mostrando ${rows.length} de ${data.length}</small><span>${more>0?`<button class="btn btn-outline" type="button" onclick="window.couponShowMore()"><i class="fas fa-chevron-down"></i> Mostrar más</button>`:''}${visible>COUPON_PAGE_SIZE?`<button class="btn btn-ghost" type="button" onclick="window.couponShowLess()"><i class="fas fa-chevron-up"></i> Mostrar menos</button>`:''}</span></div>`:'');
 };
 window.couponShowMore=function(){window._couponVisible=(window._couponVisible||COUPON_PAGE_SIZE)+5;window.renderCouponList();};
@@ -6664,10 +6699,10 @@ function renderGananciaChart(sumGanancia) {
         <div style="
           width:70%;
           height:${pct}px;
-          background:linear-gradient(180deg,${barColor},${barColor}55);
+          background:linear-gradient(180deg,${barColor},color-mix(in srgb,${barColor} 35%,transparent));
           border-radius:4px 4px 0 0;
           transition:height .5s cubic-bezier(.4,0,.2,1);
-          box-shadow:0 0 8px ${barColor}44
+          box-shadow:0 0 8px color-mix(in srgb,${barColor} 27%,transparent)
         "></div>
       </div>
       <div style="font-size:0.6em;color:var(--text2);font-weight:600;text-align:center;line-height:1.2;word-break:break-word">${v.label}</div>
