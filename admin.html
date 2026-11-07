@@ -7247,7 +7247,10 @@ window.saveVenta = async function() {
   const paymentMethod = document.getElementById('vc-f-metodo')?.value || '';
   const giftAllocations=tipo==='Venta via regalo'?getGiftAllocations():[];
   if (!(saleAmount > 0) || !tipo || !paymentMethod) {
-    showToast('El precio de venta, el tipo y el método de pago son obligatorios.', true);
+    const missing = [!(saleAmount > 0) && ['precio de venta','vc-f-ingreso'], !tipo && ['tipo de venta','vc-f-tipo'], !paymentMethod && ['método de pago','vc-f-metodo']].filter(Boolean);
+    showToast('Falta completar: ' + missing.map(m => m[0]).join(', ') + '.', true);
+    const target = document.getElementById(missing[0][1]);
+    try { target?.scrollIntoView({ block: 'center', behavior: 'smooth' }); target?.focus?.({ preventScroll: true }); } catch (_) {}
     return;
   }
   if(tipo==='Venta via regalo'){
@@ -9372,7 +9375,7 @@ window.ventaClientSearch = function(val) {
       if (discordEl) discordEl.value = c.discordId || '';
       const methodValue=paymentMethodFromDb(c.metodo);
       const methodSelect=document.getElementById('vc-f-metodo');
-      if(methodSelect){methodSelect.value=PAYMENT_METHODS.some(item=>item.value===methodValue)?methodValue:'';methodSelect.dispatchEvent(new Event('change',{bubbles:true}));}
+      if(methodSelect&&PAYMENT_METHODS.some(item=>item.value===methodValue)){methodSelect.value=methodValue;methodSelect.dispatchEvent(new Event('change',{bubbles:true}));}
       syncPaymentPicker('vc-f-metodo');
       try{recalculateVentaFinancialFields();}catch(error){console.error('No se pudo actualizar el método de pago del cliente:',error);}
       setTimeout(()=>dropEl.classList.remove('open'),260);
