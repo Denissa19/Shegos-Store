@@ -2126,21 +2126,6 @@ window.doLogin = async function () {
           <div class="stat-value" style="color:#c084fc;font-size:1.8em" id="vc-t-club">0</div>
           <div class="stat-sub sec-ceo-only" id="vc-t-club-sum">$0.00</div>
         </div>
-        <div class="stat-card" style="--accent-c:#fbbf24">
-          <div class="stat-label" style="color:#fbbf24"><i class="fas fa-bolt"></i> Pavos</div>
-          <div class="stat-value" style="color:#fbbf24;font-size:1.8em" id="vc-t-pavos">0</div>
-          <div class="stat-sub sec-ceo-only" id="vc-t-pavos-sum">$0.00</div>
-        </div>
-        <div class="stat-card" style="--accent-c:#2dd4bf">
-          <div class="stat-label" style="color:#2dd4bf"><i class="fas fa-box-open"></i> Packs</div>
-          <div class="stat-value" style="color:#2dd4bf;font-size:1.8em" id="vc-t-packs">0</div>
-          <div class="stat-sub sec-ceo-only" id="vc-t-packs-sum">$0.00</div>
-        </div>
-        <div class="stat-card" style="--accent-c:#4ade80">
-          <div class="stat-label" style="color:#4ade80"><i class="fas fa-tv"></i> Streaming</div>
-          <div class="stat-value" style="color:#4ade80;font-size:1.8em" id="vc-t-streaming">0</div>
-          <div class="stat-sub sec-ceo-only" id="vc-t-streaming-sum">$0.00</div>
-        </div>
         <div class="stat-card" style="--accent-c:#fb7185">
           <div class="stat-label" style="color:#fb7185"><i class="fas fa-gift"></i> Regalo</div>
           <div class="stat-value" style="color:#fb7185;font-size:1.8em" id="vc-t-regalo">0</div>
@@ -2173,7 +2158,7 @@ window.doLogin = async function () {
         <div class="month-chart" style="margin-bottom:0">
           <div class="chart-title" style="display:flex;align-items:center;gap:8px">
             <span>GANANCIA POR TIPO DE VENTA</span>
-            <span style="background:rgba(255,215,0,.1);color:var(--gold);font-size:0.7em;padding:2px 8px;border-radius:10px;border:1px solid rgba(255,215,0,.25)">Solo CEO</span>
+            <span style="background:rgba(98,255,0,.1);color:var(--accent);font-size:0.7em;padding:2px 8px;border-radius:10px;border:1px solid rgba(98,255,0,.28)">Solo CEO</span>
           </div>
           <div id="vc-ganancia-chart" style="display:flex;align-items:flex-end;gap:16px;height:100px;margin-top:12px;padding:0 4px"></div>
         </div>
@@ -2909,7 +2894,7 @@ window.doLogin = async function () {
           <select class="fsel" id="vc-f-status">
               <option>Pendiente</option>
               <option>En Proceso</option>
-              <option>Completado</option>
+              <option selected>Completado</option>
               <option>Cancelado</option>
           </select>
         </div>
@@ -4655,7 +4640,7 @@ const PAYMENT_METHODS = [
   {value:'remitly',label:'Remitly',logo:getLogo('remitly.com'),fallback:'R',color:'#2f6bed'},
   {value:'bybit',label:'Bybit',logo:getLogo('bybit.com'),fallback:'B',color:'#f7a600'},
   {value:'airtm',label:'Airtm',logo:getLogo('airtm.com'),fallback:'A',color:'#1685ff'},
-  {value:'transferencia_mx',label:'Transferencia MX',fallback:'MX',color:'#38bdf8'},
+  {value:'transferencia_mx',label:'Transferencia MX',logo:getLogo('banxico.org.mx'),fallback:'MX',color:'#38bdf8'},
   {value:'spei',label:'SPEI',logo:getLogo('banxico.org.mx'),fallback:'S',color:'#61a5ff'},
   {value:'oxxo',label:'OXXO',logo:getLogo('oxxo.com'),fallback:'O',color:'#e31837'},
   {value:'mercado_pago',label:'Mercado Pago',logo:getLogo('mercadopago.com.mx'),fallback:'MP',color:'#00a0e3'},
@@ -6495,9 +6480,9 @@ let currentRole = 'ADMIN'; // Bug 9 fix: global role state
 const TIPO_CONFIG = {
   'Cuenta de fortnite': { label:'Cuenta FN',   color:'#60a5fa', icon:'fa-gamepad',  id:'vc-t-cuenta' },
   'Club de fortnite':   { label:'Club FN',      color:'#c084fc', icon:'fa-crown', id:'vc-t-club'   },
-  'Recarga de pavos':   { label:'Pavos',        color:'#fbbf24', icon:'fa-bolt',     id:'vc-t-pavos'  },
-  'Packs':              { label:'Packs',        color:'#2dd4bf', icon:'fa-box-open', id:'vc-t-packs' },
-  'Streaming':          { label:'Streaming',    color:'#4ade80', icon:'fa-tv',       id:'vc-t-streaming' },
+  'Recarga de pavos':   { oculto:true, label:'Pavos',        color:'#fbbf24', icon:'fa-bolt',     id:'vc-t-pavos'  },
+  'Packs':              { oculto:true, label:'Packs',        color:'#2dd4bf', icon:'fa-box-open', id:'vc-t-packs' },
+  'Streaming':          { oculto:true, label:'Streaming',    color:'#4ade80', icon:'fa-tv',       id:'vc-t-streaming' },
   'Venta via regalo':   { label:'Regalo',       color:'#fb7185', icon:'fa-gift',     id:'vc-t-regalo' },
   'Apartar cuentas':    { label:'Apartar',      color:'#fdba74', icon:'fa-bookmark', id:'vc-t-apartar'}
 };
@@ -6674,25 +6659,28 @@ function renderSalesInsights(periodRows) {
   renderRank('sales-types-chart',group('tipo'));
 }
 
+// Colores de la gráfica por tipo de venta (sin amarillos)
+const GANANCIA_CHART_COLORS = { 'Pavos':'#818cf8', 'Apartar':'#f0abfc' };
 function renderGananciaChart(sumGanancia) {
   const container = document.getElementById('vc-ganancia-chart');
   if (!container) return;
 
   const vals = Object.entries(TIPO_CONFIG).map(([tipo, cfg]) => ({
+    oculto: !!cfg.oculto,
     label: cfg.label,
     color: cfg.color,
     ganancia: sumGanancia[tipo] || 0
-  })).filter(v => v.ganancia !== 0 || true); // show all types
+  })).filter(v => !v.oculto || v.ganancia !== 0); // tipos descontinuados: solo si tienen historial
 
   const maxVal = Math.max(...vals.map(v => Math.abs(v.ganancia)), 1);
 
   container.innerHTML = vals.map(v => {
     const pct = Math.max((Math.abs(v.ganancia) / maxVal) * 88, 2);
     const isNeg = v.ganancia < 0;
-    const barColor = isNeg ? 'var(--red)' : 'var(--gold)';
+    const barColor = isNeg ? 'var(--red)' : (GANANCIA_CHART_COLORS[v.label] || v.color || 'var(--accent)');
     return `
     <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;min-width:0">
-      <div style="font-size:0.62em;font-weight:800;color:${isNeg ? 'var(--red)' : 'var(--gold)'}">
+      <div style="font-size:0.62em;font-weight:800;color:${barColor}">
         ${isNeg ? '-' : ''}$${Math.abs(v.ganancia).toFixed(0)}
       </div>
       <div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:88px">
@@ -6912,7 +6900,7 @@ function openVentaModal() {
     if (el) el.value = '';
   });
   const statusEl = document.getElementById('vc-f-status');
-  if (statusEl) statusEl.value = 'Pendiente';
+  if (statusEl) statusEl.value = 'Completado';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
   const monedaEl=document.getElementById('vc-f-moneda'); if(monedaEl)monedaEl.value='MXN';
@@ -6992,7 +6980,7 @@ window.editVenta = async function(id) {
   const idEl = document.getElementById('vc-f-id');
   if (idEl) idEl.value = v.id_pedido || '';
   const statusEl = document.getElementById('vc-f-status');
-  if (statusEl) statusEl.value = v.estado || 'Pendiente';
+  if (statusEl) statusEl.value = v.estado || 'Completado';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = paymentMethodFromDb(v.metodo_pago);
   syncPaymentPicker('vc-f-metodo');
