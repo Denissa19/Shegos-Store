@@ -1983,19 +1983,19 @@ window.doLogin = async function () {
 .sug-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .dorm-sec{margin-bottom:26px}
 .dorm-sub{margin:-6px 0 14px;color:var(--text3);font-size:.78rem;line-height:1.45}
-.dorm-list{display:grid;gap:8px}
-.dorm-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid var(--border2);border-radius:12px;background:var(--surface)}
-.dorm-main{flex:1 1 190px;min-width:0}
+.dorm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dorm-row{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"main days" "act act";align-items:center;gap:8px 12px;padding:11px 12px;border:1px solid var(--border2);border-radius:12px;background:var(--surface)}
+.dorm-main{grid-area:main;min-width:0}
 .dorm-name{font-weight:700;color:var(--text);overflow-wrap:anywhere}
 .dorm-meta{margin-top:2px;color:var(--text3);font-size:.74rem;line-height:1.4}
-.dorm-days{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;border:1px solid}
+.dorm-days{grid-area:days;font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:20px;white-space:nowrap;border:1px solid}
 .dorm-d1{color:#ff9f0a;background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.3)}
 .dorm-d2{color:#f97316;background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.3)}
 .dorm-d3{color:var(--red);background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.3)}
-.dorm-act{display:flex;gap:6px;flex-wrap:wrap}
+.dorm-act{grid-area:act;display:flex;gap:6px;flex-wrap:wrap}
 .dorm-act .btn{padding:7px 12px;font-size:.75rem}
 .dorm-empty{padding:18px;border:1px dashed var(--border2);border-radius:12px;color:var(--text2);text-align:center;font-size:.85rem}
-.dorm-more{margin-top:10px}
+.dorm-more{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:10px;min-height:42px}
 .sug-item{display:flex;gap:11px;min-width:0;padding:12px;border:1px solid var(--border2);border-radius:13px;background:rgba(5,9,6,.55)}
 .sug-item>i{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;font-size:.9rem;background:color-mix(in srgb,var(--sug-c) 14%,transparent);color:var(--sug-c)}
 .sug-item strong{display:block;color:var(--text);font-size:.88rem;line-height:1.3}.sug-item p{margin:4px 0 0;color:var(--text2);font-size:.8rem;line-height:1.45;overflow-wrap:anywhere}
@@ -2006,7 +2006,7 @@ window.doLogin = async function () {
 .vc-focus-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 14px;border:1px solid rgba(251,113,133,.35);border-radius:12px;background:rgba(251,113,133,.07);color:var(--text2);font-size:.82rem}.vc-focus-banner[hidden]{display:none}.vc-focus-banner>i{color:#fb7185}.vc-focus-banner span{flex:1 1 200px;min-width:0}.vc-focus-banner strong{color:var(--text)}.vc-focus-banner .btn{padding:6px 12px;font-size:.74rem}
 .sug-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;display:inline-grid;place-items:center;border-radius:999px;background:#fb7185;color:#1a0508;font-style:normal;font-size:.68rem;font-weight:800;line-height:1}.sug-badge[hidden]{display:none}
 #tab-sugerencias .sug-card{margin-bottom:0}
-@media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{grid-template-columns:1fr;gap:8px}.sug-item{padding:10px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}}
+@media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{grid-template-columns:1fr;gap:8px}.sug-item{padding:10px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}.dorm-list{grid-template-columns:1fr}.dorm-row{padding:11px}.dorm-act .btn{min-height:38px}.dorm-sub{margin-bottom:11px}}
 </style>
 <style id="mobile-latest-changes">
 .vm-receipt-preview-bar{flex-wrap:wrap;gap:8px}
@@ -2112,7 +2112,7 @@ window.doLogin = async function () {
 .notif-filters button{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:transparent;color:var(--text2);font:600 .7rem var(--font-body,sans-serif);cursor:pointer;white-space:nowrap}
 .notif-filters button b{font-weight:700;color:var(--text3)}
 .notif-filters button.active{background:rgba(255,255,255,.09);color:var(--text);border-color:rgba(255,255,255,.2)}
-.notif-clear{flex:0 0 auto;border:0;background:transparent;color:var(--text3);font:600 .7rem var(--font-body,sans-serif);cursor:pointer;padding:6px 4px}
+.notif-clear,.notif-mark-all{flex:0 0 auto;border:0;background:transparent;color:var(--text3);font:600 .7rem var(--font-body,sans-serif);cursor:pointer;padding:6px 4px}.notif-mark-all{color:var(--accent)}.notif-clear:hover,.notif-mark-all:hover{color:var(--text);text-decoration:underline}.notif-mark-all:disabled{opacity:.45;cursor:default;text-decoration:none}
 .notif-clear:hover:not(:disabled){color:var(--text)}
 .notif-clear:disabled{opacity:.35;cursor:default}
 .notif-list{list-style:none;margin:0;padding:6px;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:4px;align-content:start}
@@ -2128,7 +2128,7 @@ window.doLogin = async function () {
 .notif-body p{margin:3px 0 4px;font-size:.74rem;line-height:1.45;color:var(--text2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .notif-item.expanded .notif-body p{-webkit-line-clamp:unset;display:block}
 .notif-body time{font-size:.66rem;color:var(--text3)}
-.notif-x{width:28px;height:28px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--text3);cursor:pointer;opacity:.7}
+.notif-actions{display:flex;align-items:flex-start;gap:2px}.notif-read,.notif-x{width:28px;height:28px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--text3);cursor:pointer;opacity:.7}.notif-read{color:var(--accent);opacity:1}.notif-read:hover,.notif-x:hover{background:rgba(255,255,255,.08);color:var(--text);opacity:1}
 .notif-x:hover{background:rgba(255,255,255,.08);color:var(--text);opacity:1}
 .notif-empty{display:grid;justify-items:center;gap:4px;padding:34px 20px;text-align:center;color:var(--text3)}
 .notif-empty i{font-size:1.4rem;margin-bottom:4px;opacity:.7}
@@ -2139,6 +2139,10 @@ window.doLogin = async function () {
   .notif-bell{width:36px;height:36px;flex-basis:36px}
 }
 @media(prefers-reduced-motion:reduce){.notif-bell.ring i,.notif-bell.loading::after{animation:none}}
+</style>
+<style id="coupon-validator-layout">
+/* Resultado del validador: ficha clara en PC y móvil. */
+.coupon-validator .cv-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.coupon-validator .cv-row .finput{flex:1 1 240px;min-width:0;text-transform:uppercase;letter-spacing:.06em}.coupon-validator .cv-row .btn{min-height:48px;white-space:nowrap}.coupon-validator .cv-result{margin-top:18px;padding:16px;border:1px solid var(--border2);border-radius:14px;background:rgba(2,8,3,.48)}.coupon-validator .cv-result[hidden]{display:none}.coupon-validator .cv-result>i{color:var(--accent);margin-right:8px}.coupon-validator .cv-badge{display:inline-flex;align-items:center;gap:7px;margin:0 0 14px;padding:7px 11px;border-radius:999px;font-size:.82rem;font-weight:800;letter-spacing:.01em}.coupon-validator .cv-badge[data-k=activo]{background:rgba(98,255,0,.13);color:var(--accent);border:1px solid rgba(98,255,0,.32)}.coupon-validator .cv-badge[data-k=usado],.coupon-validator .cv-badge[data-k=error]{background:rgba(255,84,118,.12);color:#ff91a7;border:1px solid rgba(255,84,118,.32)}.coupon-validator .cv-badge[data-k=vencido]{background:rgba(255,184,59,.12);color:#ffd166;border:1px solid rgba(255,184,59,.32)}.coupon-validator .cv-badge[data-k=anulado]{background:rgba(170,170,170,.12);color:#c6cec8;border:1px solid rgba(170,170,170,.28)}.coupon-validator .cv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.coupon-validator .cv-field{display:grid;gap:5px;min-width:0;padding:12px 13px;border:1px solid rgba(152,183,151,.17);border-radius:10px;background:rgba(255,255,255,.025)}.coupon-validator .cv-field small{color:var(--text3);font-size:.66rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.coupon-validator .cv-field b{color:var(--text);font-size:.9rem;line-height:1.42;overflow-wrap:anywhere}.coupon-validator .cv-field:first-child b{color:var(--accent);letter-spacing:.06em}.coupon-validator .cv-note{display:flex;align-items:flex-start;gap:9px;margin-top:12px;padding:12px 13px;border-left:3px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.83rem;line-height:1.5}.coupon-validator .cv-note i{color:var(--accent);margin-top:2px}@media(max-width:560px){.coupon-validator .cv-row{display:grid;grid-template-columns:1fr}.coupon-validator .cv-row .btn{width:100%;justify-content:center}.coupon-validator .cv-result{padding:13px}.coupon-validator .cv-grid{grid-template-columns:1fr}.coupon-validator .cv-field{padding:11px 12px}.coupon-validator .cv-badge{margin-bottom:11px}}
 </style>
 <div id="app">
   <div class="topbar">
@@ -3481,9 +3485,9 @@ window.doLogin = async function () {
     <div class="mbody">
       <div id="rv-cliente" style="font-weight:700;font-size:1em;margin-bottom:16px"></div>
       <div class="fgroup">
-        <label class="flabel">Calificación *</label>
+        <label class="flabel">Calificación <span style="color:var(--text3);font-size:.85em">(opcional)</span></label>
         <div class="star-pick" id="rv-stars"></div>
-        <div style="font-size:0.72em;color:var(--text3)">1 = Malo, 5 = Muy bueno</div>
+        <div style="font-size:0.72em;color:var(--text3)">Marca estrellas si quieres guardar la calificación. Puedes dejarla vacía y solo confirmar que la reseña fue recibida.</div>
       </div>
       <div class="fgroup">
         <label class="flabel">Comentario <span style="color:var(--text3);font-size:.85em">(opcional)</span></label>
@@ -3497,7 +3501,7 @@ window.doLogin = async function () {
     <div class="mfoot">
       <button class="btn btn-danger" id="rv-quitar" onclick="window.quitarResena()" style="margin-right:auto;display:none"><i class="fas fa-trash-alt"></i> Quitar reseña</button>
       <button class="btn btn-ghost" onclick="window.closeResenaModal()">Cancelar</button>
-      <button class="btn btn-accent" onclick="window.saveResena()"><i class="fas fa-save"></i> Guardar reseña</button>
+      <button class="btn btn-accent" onclick="window.saveResena()"><i class="fas fa-check"></i> Marcar como recibida</button>
     </div>
   </div>
 </div>
@@ -3560,6 +3564,7 @@ window.doLogin = async function () {
       <button type="button" role="tab" data-filter="error" aria-selected="false">Errores <b id="notif-n-error">0</b></button>
       <button type="button" role="tab" data-filter="ok" aria-selected="false">Resueltas <b id="notif-n-ok">0</b></button>
     </div>
+    <button type="button" class="notif-mark-all" id="notif-mark-all" onclick="window.markAllNotificationsRead()"><i class="fas fa-check-double"></i> Marcar leídas</button>
     <button type="button" class="notif-clear" id="notif-clear" onclick="window.clearNotifications()"><i class="fas fa-broom"></i> Limpiar</button>
   </div>
   <ul class="notif-list" id="notif-list"></ul>
@@ -5839,7 +5844,7 @@ window.createCoupon=async function(){
 window.validateCouponCode=async function(){
   const input=document.getElementById('cv-code'), box=document.getElementById('cv-result');
   const code=(input?.value||'').trim().toUpperCase();
-  const show=(kind,label,html)=>{box.hidden=false;box.innerHTML=`<span class="cv-badge" data-k="${kind}">${label}</span>${html}`;};
+    const show=(kind,label,html)=>{box.hidden=false;box.innerHTML=`<span class="cv-badge" data-k="${kind}"><i class="fas ${kind==='activo'?'fa-circle-check':kind==='vencido'?'fa-clock':kind==='anulado'?'fa-ban':kind==='usado'?'fa-circle-xmark':'fa-triangle-exclamation'}"></i>${label}</span>${html}`;};
   if(!code){show('error','Falta el código','<p>Escribe el código del cupón (SHG-XXXXXX).</p>');return;}
   input.value=code;box.hidden=false;box.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Validando…';
   try{
@@ -5850,7 +5855,7 @@ window.validateCouponCode=async function(){
     let status=couponStatus(c);
     if(sale&&status==='activo')status='usado';
     const fd=d=>d?new Date(d).toLocaleString('es-DO',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}):'—';
-    const cell=(l,v)=>`<div><small>${l}</small><b>${v}</b></div>`;
+    const cell=(l,v)=>`<div class="cv-field"><small>${l}</small><b>${v}</b></div>`;
     const mxn=Number(c.compra_minima_mxn),usd=Number(c.compra_minima_usd);
     const labels={activo:'Disponible · se puede usar',usado:'Ya usado',vencido:'Vencido',anulado:'Anulado'};
     let html='<div class="cv-grid">'+
@@ -6085,17 +6090,18 @@ function notifRender() {
   Object.entries(counts).forEach(([k, v]) => { const el = document.getElementById('notif-n-' + k); if (el) el.textContent = v; });
   document.querySelectorAll('#notif-panel .notif-filters button').forEach(b => { const on = b.dataset.filter === st.filter; b.classList.toggle('active', on); b.setAttribute('aria-selected', String(on)); });
   const clear = document.getElementById('notif-clear'); if (clear) clear.disabled = !st.items.length;
+  const markAll = document.getElementById('notif-mark-all'); if (markAll) markAll.disabled = unread === 0;
   if (!list) return;
   const items = st.items.filter(n => st.filter === 'all' || n.level === st.filter);
   list.innerHTML = items.length ? items.map(n => `
-    <li class="notif-item ${n.level}${n._fresh ? ' unread' : ''}" data-id="${notifEsc(n.id)}">
+    <li class="notif-item ${n.level}${!n.read ? ' unread' : ''}" data-id="${notifEsc(n.id)}">
       <span class="notif-ico"><i class="fas ${n.level === 'ok' ? 'fa-circle-check' : n.level === 'news' ? 'fa-bullhorn' : 'fa-triangle-exclamation'}"></i></span>
       <div class="notif-body">
         <div class="notif-line"><strong>${n.level === 'news' && n.tag ? `<span class="notif-tag">${notifEsc(n.tag)}</span>` : ''}${notifEsc(n.title)}</strong>${n.count > 1 ? `<em class="notif-count">×${n.count}</em>` : ''}</div>
         <p>${notifEsc(n.msg)}</p>
         <time>${notifAgo(n.t)}</time>
       </div>
-      <button type="button" class="notif-x" aria-label="Descartar notificación" data-act="dismiss"><i class="fas fa-xmark"></i></button>
+      <div class="notif-actions">${!n.read ? `<button type="button" class="notif-read" aria-label="Marcar como leída" title="Marcar como leída" data-act="read"><i class="fas fa-check"></i></button>` : ''}<button type="button" class="notif-x" aria-label="Descartar notificación" title="Descartar" data-act="dismiss"><i class="fas fa-xmark"></i></button></div>
     </li>`).join('')
     : `<li class="notif-empty"><i class="fas fa-bell-slash"></i><strong>${st.items.length ? 'Sin resultados en este filtro' : 'Todo en orden'}</strong><span>${st.items.length ? 'Prueba con otra categoría.' : 'Cuando haya novedades, errores o avisos del panel aparecerán aquí.'}</span></li>`;
 }
@@ -6111,6 +6117,7 @@ function notifInit() {
   list?.addEventListener('click', e => {
     const item = e.target.closest('.notif-item'); if (!item) return;
     if (e.target.closest('[data-act="dismiss"]')) { st.items = st.items.filter(n => String(n.id) !== item.dataset.id); notifSave(); notifRender(); return; }
+    if (e.target.closest('[data-act="read"]')) { const note = st.items.find(n => String(n.id) === item.dataset.id); if (note) note.read = true; notifSave(); notifRender(); return; }
     item.classList.toggle('expanded');
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && st.open) window.closeNotifCenter(); });
@@ -6126,7 +6133,6 @@ function notifInit() {
 window.toggleNotifCenter = function (e) { e?.stopPropagation?.(); notifState().open ? window.closeNotifCenter() : window.openNotifCenter(); };
 window.openNotifCenter = function () {
   const st = notifState(); notifInit();
-  st.items.forEach(n => { n._fresh = !n.read; n.read = true; });
   st.open = true; notifSave(); notifRender();
   document.getElementById('notif-panel')?.removeAttribute('hidden');
   document.getElementById('notif-overlay')?.removeAttribute('hidden');
@@ -6142,6 +6148,7 @@ window.closeNotifCenter = function () {
   notifRender();
 };
 window.clearNotifications = function () { const st = notifState(); st.items = []; notifSave(); notifRender(); };
+window.markAllNotificationsRead = function () { const st = notifState(); st.items.forEach(n => { n.read = true; delete n._fresh; }); notifSave(); notifRender(); };
 function addSystemAlert(title, message, recovered = false, dedupeKey = '') {
   const st = notifState(), now = Date.now(), level = recovered ? 'ok' : 'error';
   const key = dedupeKey || `${title}:${message}`;
@@ -10314,11 +10321,10 @@ async function rvRefreshAll() {
 window.saveResena = async function() {
   const c = getClientes().find(x => String(x.id) === String(rvEditId));
   if (!c) return;
-  if (!rvStarVal) { showToast('Elige la calificación (1 a 5 estrellas)', true); return; }
   const patch = {
     resena_estado: 'recibida',
     resena_recibida_en: c.resena === 'recibida' && c.resenaRecibidaEn ? c.resenaRecibidaEn : new Date().toISOString(),
-    resena_calificacion: rvStarVal,
+    resena_calificacion: rvStarVal || null,
     resena_comentario: document.getElementById('rv-comentario').value.trim() || null,
     recompensa_estado: c.recompensa === 'entregada' ? 'entregada' : 'ganada'
   };
