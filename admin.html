@@ -2441,9 +2441,9 @@ window.doLogin = async function () {
     <!-- ── TAB SUGERENCIAS ────────────────────── -->
     <div class="tab-panel" id="tab-sugerencias">
       <section class="sug-card" id="sug-card" aria-labelledby="sug-title">
-        <div class="sug-head"><div><span class="dash-eyebrow">Sugerencias</span><h2 id="sug-title">Ideas para hoy</h2><p>Basadas en tus ventas, clientes y seguimientos.</p></div><button type="button" class="sug-refresh" onclick="window.renderSuggestions(true)" aria-label="Cambiar frase y actualizar" title="Actualizar"><i class="fas fa-rotate"></i></button></div>
+        <div class="sug-head"><div><span class="dash-eyebrow">Sugerencias</span><h2 id="sug-title">Ideas para hoy</h2><p>Basadas en las ventas, clientes y seguimientos.</p></div><button type="button" class="sug-refresh" onclick="window.renderSuggestions(true)" aria-label="Cambiar frase y actualizar" title="Actualizar"><i class="fas fa-rotate"></i></button></div>
         <blockquote class="sug-quote" id="sug-quote"></blockquote>
-        <div class="sug-list" id="sug-list"><div class="sug-empty">Analizando tus datos…</div></div>
+        <div class="sug-list" id="sug-list"><div class="sug-empty">Analizando los datos…</div></div>
         <button type="button" class="sug-more" id="sug-more" onclick="window.sugToggle()" hidden>Ver más ideas</button>
       </section>
     </div>
@@ -6658,7 +6658,9 @@ async function fetchVentas() {
   try {
     // El historial carga solo datos de texto y cifras. Los comprobantes y fotos
     // se descargan únicamente al abrirlos para reducir egreso de Supabase.
-    const listColumns='id,id_pedido,tipo,cliente,ingreso,costo,costo_real,monto_recibido,comision,ganancia_neta,margen,notas,estado,whatsapp,metodo_pago,producto,pago_parcial,pago_pendiente,cuota_adicional,interes_porcentaje,tipo_pago_apartar,apartado_anticipo,apartado_total,apartado_pendiente,fin_plazo,fin_cuota,fin_num_cuotas,created_at,cuentas_regalo,remarks,cupon_codigo,descuento_porcentaje,descuento_usd,precio_original_usd';
+    const listColumnsFull='id,id_pedido,tipo,cliente,ingreso,costo,costo_real,monto_recibido,comision,ganancia_neta,margen,notas,estado,whatsapp,metodo_pago,producto,pago_parcial,pago_pendiente,cuota_adicional,interes_porcentaje,tipo_pago_apartar,apartado_anticipo,apartado_total,apartado_pendiente,fin_plazo,fin_cuota,fin_num_cuotas,created_at,cuentas_regalo,remarks,cupon_codigo,descuento_porcentaje,descuento_usd,precio_original_usd';
+    // ADMIN no recibe columnas de costo/ganancia en el navegador; solo el CEO.
+    const listColumns = currentRole === 'CEO' ? listColumnsFull : listColumnsFull.replace('costo,costo_real,monto_recibido,comision,ganancia_neta,margen,', '');
     const PAGE = 1000;
     let all = [];
     for (let desde = 0; desde < 50000; desde += PAGE) {
@@ -7482,6 +7484,8 @@ window.saveVenta = async function() {
       const updateRecord = { ...record };
       delete updateRecord.id;
       delete updateRecord.created_at;
+      // Un ADMIN no ve ni captura costos: al editar no se sobrescriben los del CEO.
+      if (currentRole !== 'CEO') ['costo','costo_real','monto_recibido','comision','ganancia_neta','margen'].forEach(k => delete updateRecord[k]);
       const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId).abortSignal(saveController.signal);
       if (err) throw err;
     } else if (activeSaleCoupon) {
@@ -10583,9 +10587,9 @@ document.addEventListener('click', e => {
 const SUG_DAYS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const SUG_QUOTES = {
   start: ['Todo gran negocio empezó con una primera venta. Hoy puede ser esa.','Un buen servicio hoy es la recomendación de mañana.'],
-  great: ['Las rachas se construyen un cliente satisfecho a la vez. ¡Sigue así!','Tu constancia se nota en los números: hoy es buen día para superar tu mejor semana.','Cuando el servicio es bueno, las ventas se repiten solas. Lo estás logrando.','Celebra lo que va bien y repítelo: eso es crecer.'],
-  steady: ['La constancia gana: cada venta bien atendida es tu mejor publicidad.','Pequeños detalles con cada cliente, grandes resultados al final del mes.','Un cliente bien tratado vale más que diez anuncios.','Avanzar un poco cada día también es avanzar.'],
-  slow: ['Los días tranquilos son buenos para cuidar a tus clientes actuales y preparar ofertas.','Una semana floja no define tu negocio; lo que hagas hoy sí.','Cuando las ventas bajan, la confianza de tus clientes es tu mejor activo: escríbeles.','Cada "no" de hoy te acerca a un "sí" de mañana. Sigue en movimiento.']
+  great: ['Las rachas se construyen un cliente satisfecho a la vez. ¡A seguir así!','La constancia se nota en los números: hoy es buen día para superar el mejor mes.','Cuando el servicio es bueno, las ventas se repiten solas. Va por muy buen camino.','Celebra lo que va bien y repítelo: eso es crecer.'],
+  steady: ['La constancia gana: cada venta bien atendida es la mejor publicidad.','Pequeños detalles con cada cliente, grandes resultados al final del mes.','Un cliente bien tratado vale más que diez anuncios.','Avanzar un poco cada día también es avanzar.'],
+  slow: ['Los días tranquilos son buenos para cuidar a los clientes actuales y preparar ofertas.','Un tramo flojo no define el negocio; lo que se haga hoy sí.','Cuando las ventas bajan, la confianza de los clientes es el mejor activo: conviene escribirles.','Cada "no" de hoy acerca a un "sí" de mañana. Hay que seguir en movimiento.']
 };
 window._sugExpanded = false; window._sugShuffle = 0;
 
@@ -10605,25 +10609,30 @@ function sugBuild() {
   const items = [];
   const add = (p, tone, icon, title, text, tab, cta, focus) => items.push({ p, tone, icon, title, text, tab, cta, focus });
 
-  // ── Ritmo de la semana ──
-  const w0 = ventas.filter(v => ago(v) >= 0 && ago(v) <= 6), w1 = ventas.filter(v => ago(v) >= 7 && ago(v) <= 13);
-  const monthV = ventas.filter(v => vcLocalDay(v.created_at).slice(0, 7) === `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`);
+  // ── Ritmo del mes (mismo tramo del mes anterior) ──
+  const dayOfMonth = now.getDate();
+  const ymKey = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  const curKey = ymKey(now), prevKey = ymKey(new Date(now.getFullYear(), now.getMonth() - 1, 1));
+  const dom = v => parseInt(vcLocalDay(v.created_at).slice(8, 10), 10);
+  const monthV = ventas.filter(v => vcLocalDay(v.created_at).slice(0, 7) === curKey);
+  const m0 = monthV.filter(v => dom(v) <= dayOfMonth);
+  const m1 = ventas.filter(v => vcLocalDay(v.created_at).slice(0, 7) === prevKey && dom(v) <= dayOfMonth);
   let mood = 'steady';
   if (!ventas.length) mood = 'start';
-  else if (w1.length >= 3) {
-    const ch = (w0.length - w1.length) / w1.length;
-    if (ch >= 0.15) { mood = 'great'; add(60, 'good', 'fa-arrow-trend-up', 'Buen ritmo esta semana', `Llevas ${w0.length} ${plural(w0.length, 'venta', 'ventas')} en los últimos 7 días, ${Math.round(ch * 100)}% más que la semana anterior (${w1.length})${ceo ? ` y ${usd(w0.reduce((s, v) => s + gan(v), 0))} de ganancia` : ''}. Repite lo que hiciste: mismos horarios, mismas publicaciones.`); }
-    else if (ch <= -0.15) { mood = 'slow'; add(85, 'warn', 'fa-arrow-trend-down', 'La semana va más lenta', `Van ${w0.length} ${plural(w0.length, 'venta', 'ventas')} contra ${w1.length} de la semana pasada. Prueba un cupón de lealtad para clientes anteriores o comparte una oferta corta en tus redes.`, 'descuentos', 'Crear cupón'); }
-    else add(30, 'tip', 'fa-chart-line', 'Ritmo estable', `${w0.length} ${plural(w0.length, 'venta', 'ventas')} esta semana, parecido a la anterior (${w1.length}). Para subirlo, pide a tus mejores clientes que te recomienden.`);
+  else if (dayOfMonth >= 5 && m1.length >= 3) {
+    const ch = (m0.length - m1.length) / m1.length;
+    if (ch >= 0.15) { mood = 'great'; add(60, 'good', 'fa-arrow-trend-up', 'Buen ritmo este mes', `Van ${m0.length} ${plural(m0.length, 'venta', 'ventas')} en lo que va del mes, ${Math.round(ch * 100)}% más que en el mismo tramo del mes anterior (${m1.length})${ceo ? ` y ${usd(m0.reduce((s, v) => s + gan(v), 0))} de ganancia` : ''}. Conviene repetir lo que está funcionando: mismos horarios y mismas publicaciones.`); }
+    else if (ch <= -0.15) { mood = 'slow'; add(85, 'warn', 'fa-arrow-trend-down', 'El mes va más lento', `Van ${m0.length} ${plural(m0.length, 'venta', 'ventas')} en lo que va del mes frente a ${m1.length} en el mismo tramo del mes anterior. Conviene probar un cupón de lealtad para clientes anteriores o compartir una oferta corta en redes.`, 'descuentos', 'Crear cupón'); }
+    else add(30, 'tip', 'fa-chart-line', 'Ritmo estable', `${m0.length} ${plural(m0.length, 'venta', 'ventas')} en lo que va del mes, parecido al mismo tramo del mes anterior (${m1.length}). Para subirlo, conviene pedir a los mejores clientes que recomienden la tienda.`);
   }
-  if (ventas.length && now.getHours() >= 14 && !ventas.some(v => ago(v) === 0)) add(55, 'tip', 'fa-bell', 'Todavía no hay ventas hoy', 'Aún queda día: escribe a clientes que preguntaron y no compraron, o comparte tu disponibilidad en tus estados.');
+  if (ventas.length && now.getHours() >= 14 && !ventas.some(v => ago(v) === 0)) add(55, 'tip', 'fa-bell', 'Todavía no hay ventas hoy', 'Aún queda día: se puede escribir a clientes que preguntaron y no compraron, o compartir la disponibilidad en los estados.');
 
   // ── Mejores y peores días ──
   const last56 = ventas.filter(v => ago(v) >= 0 && ago(v) < 56);
   if (last56.length >= 15) {
     const per = Array(7).fill(0); last56.forEach(v => per[new Date(vcLocalDay(v.created_at) + 'T00:00:00').getDay()]++);
     const best = per.indexOf(Math.max(...per)), min = Math.min(...per), worst = per.indexOf(min);
-    if (per[best] >= 3 && per[worst] <= per[best] * 0.5) add(40, 'tip', 'fa-calendar-day', `Tu mejor día es el ${SUG_DAYS[best]}`, `Concentras más ventas los ${SUG_DAYS[best]} (${per[best]} en 8 semanas). Los ${SUG_DAYS[worst]} son los más flojos (${per[worst]}): publica una oferta ese día para equilibrar.`);
+    if (per[best] >= 3 && per[worst] <= per[best] * 0.5) add(40, 'tip', 'fa-calendar-day', `El mejor día es el ${SUG_DAYS[best]}`, `Se concentran más ventas los ${SUG_DAYS[best]} (${per[best]} en 8 semanas). Los ${SUG_DAYS[worst]} son los más flojos (${per[worst]}): conviene publicar una oferta ese día para equilibrar.`);
   }
 
   // ── Mezcla de productos y márgenes (últimos 30 días) ──
@@ -10631,21 +10640,21 @@ function sugBuild() {
   if (last30.length >= 8) {
     const byT = {}; last30.forEach(v => { byT[v.tipo || 'Otro'] = (byT[v.tipo || 'Otro'] || 0) + 1; });
     const [topT, topN] = Object.entries(byT).sort((a, b) => b[1] - a[1])[0];
-    if (topN / last30.length >= 0.7) add(45, 'tip', 'fa-layer-group', `Dependes mucho de ${tipoLabel(topT)}`, `${Math.round(topN / last30.length * 100)}% de tus ventas del mes son de ${tipoLabel(topT)}. Impulsa otro producto con una promoción para no depender de uno solo.`);
+    if (topN / last30.length >= 0.7) add(45, 'tip', 'fa-layer-group', `Alta dependencia de ${tipoLabel(topT)}`, `${Math.round(topN / last30.length * 100)}% de las ventas del mes son de ${tipoLabel(topT)}. Conviene impulsar otro producto con una promoción para no depender de uno solo.`);
     const byM = {}; last30.forEach(v => { const m = methodLabel(v); byM[m] = (byM[m] || 0) + 1; });
     const [topM, topMN] = Object.entries(byM).sort((a, b) => b[1] - a[1])[0];
-    if (Object.keys(byM).length > 1 && topMN / last30.length >= 0.65) add(35, 'tip', 'fa-wallet', `Muchas ventas entran por ${topM}`, `${Math.round(topMN / last30.length * 100)}% de tus ventas usan ${topM}. Ofrece también otras opciones de pago para no perder clientes que prefieren otro método.`);
+    if (Object.keys(byM).length > 1 && topMN / last30.length >= 0.65) add(35, 'tip', 'fa-wallet', `Muchas ventas entran por ${topM}`, `${Math.round(topMN / last30.length * 100)}% de las ventas usan ${topM}. Conviene ofrecer también otras opciones de pago para no perder clientes que prefieren otro método.`);
   }
   if (ceo) {
     const last60 = ventas.filter(v => ago(v) >= 0 && ago(v) < 60), g = {};
     last60.forEach(v => { const k = v.tipo || 'Otro'; (g[k] = g[k] || { i: 0, p: 0, n: 0 }); g[k].i += inc(v); g[k].p += gan(v); g[k].n++; });
     const rows = Object.entries(g).filter(([, x]) => x.n >= 3 && x.i > 0).map(([k, x]) => ({ k, m: x.p / x.i, n: x.n })).sort((a, b) => a.m - b.m);
-    if (rows.length && rows[0].m < 0.2) add(90, 'warn', 'fa-percent', `Margen bajo en ${tipoLabel(rows[0].k)}`, `Tu margen en ${tipoLabel(rows[0].k)} es de ${(rows[0].m * 100).toFixed(0)}% en ${rows[0].n} ventas. Revisa el precio o el costo para que cada venta deje más ganancia.`);
-    if (rows.length > 1) { const b = rows[rows.length - 1]; if (b.m >= 0.3) add(38, 'good', 'fa-gem', `${tipoLabel(b.k)} es tu producto más rentable`, `Deja ${(b.m * 100).toFixed(0)}% de margen. Si puedes, destácalo primero cuando un cliente pregunte qué comprar.`); }
+    if (rows.length && rows[0].m < 0.2) add(90, 'warn', 'fa-percent', `Margen bajo en ${tipoLabel(rows[0].k)}`, `El margen en ${tipoLabel(rows[0].k)} es de ${(rows[0].m * 100).toFixed(0)}% en ${rows[0].n} ventas. Conviene revisar el precio o el costo para que cada venta deje más ganancia.`);
+    if (rows.length > 1) { const b = rows[rows.length - 1]; if (b.m >= 0.3) add(38, 'good', 'fa-gem', `${tipoLabel(b.k)} es el producto más rentable`, `Deja ${(b.m * 100).toFixed(0)}% de margen. Conviene destacarlo primero cuando un cliente pregunte qué comprar.`); }
     const prev30 = ventas.filter(v => ago(v) >= 30 && ago(v) < 60);
     if (last30.length >= 8 && prev30.length >= 8) {
       const a = last30.reduce((s, v) => s + inc(v), 0) / last30.length, b = prev30.reduce((s, v) => s + inc(v), 0) / prev30.length;
-      if (b > 0 && a < b * 0.9) add(50, 'tip', 'fa-receipt', 'Tu ticket promedio bajó', `Pasó de ${usd(b)} a ${usd(a)}. Ofrece un combo o un extra al cerrar la venta para recuperarlo.`);
+      if (b > 0 && a < b * 0.9) add(50, 'tip', 'fa-receipt', 'El ticket promedio bajó', `Pasó de ${usd(b)} a ${usd(a)}. Conviene ofrecer un combo o un extra al cerrar la venta para recuperarlo.`);
     }
   }
 
@@ -10657,33 +10666,33 @@ function sugBuild() {
   const dormant = all.filter(c => c.last >= 30 && c.last <= 150).sort((a, b) => b.n - a.n);
   if (dormant.length) add(70, 'warn', 'fa-user-clock', `${dormant.length} ${plural(dormant.length, 'cliente lleva', 'clientes llevan')} más de 30 días sin comprar`, `${list(dormant.map(c => c.name))}${dormant.length > 3 ? ' y otros' : ''}. Un mensaje personal con un cupón de lealtad suele traerlos de vuelta.`, 'descuentos', 'Crear cupón');
   const loyal = all.filter(c => c.n >= 3 && c.last <= 60).sort((a, b) => b.n - a.n);
-  if (loyal.length) add(58, 'good', 'fa-heart', `${loyal.length} ${plural(loyal.length, 'cliente frecuente', 'clientes frecuentes')}`, `${list(loyal.map(c => c.name))} ${plural(loyal.length, 'te ha comprado', 'te han comprado')} 3 veces o más. Agradéceles con un cupón o un trato especial: son tus mejores embajadores.`, 'descuentos', 'Crear cupón');
+  if (loyal.length) add(58, 'good', 'fa-heart', `${loyal.length} ${plural(loyal.length, 'cliente frecuente', 'clientes frecuentes')}`, `${list(loyal.map(c => c.name))} ${plural(loyal.length, 'ha comprado', 'han comprado')} 3 veces o más. Conviene agradecerles con un cupón o un trato especial: son los mejores embajadores.`, 'descuentos', 'Crear cupón');
   const fresh = all.filter(c => c.n === 1 && c.last <= 7);
-  if (fresh.length) add(52, 'tip', 'fa-user-plus', `${fresh.length} ${plural(fresh.length, 'cliente nuevo', 'clientes nuevos')} esta semana`, `${list(fresh.map(c => c.name))}. Pregúntales si quedaron conformes y pídeles que te recomienden: el primer seguimiento marca la diferencia.`);
+  if (fresh.length) add(52, 'tip', 'fa-user-plus', `${fresh.length} ${plural(fresh.length, 'cliente nuevo', 'clientes nuevos')} esta semana`, `${list(fresh.map(c => c.name))}. Conviene preguntarles si quedaron conformes y pedirles que recomienden la tienda: el primer seguimiento marca la diferencia.`);
 
   const premio = clientes.filter(c => c.recompensa === 'ganada');
   if (premio.length) add(95, 'warn', 'fa-gift', `${premio.length} ${plural(premio.length, 'recompensa', 'recompensas')} por entregar`, `${list(premio.map(c => c.nombre))} ya ${plural(premio.length, 'ganó su recompensa', 'ganaron su recompensa')} por dejar reseña. Entregarla pronto refuerza la confianza.`, 'clientes', 'Ver clientes');
   const stale = clientes.filter(c => c.resena === 'solicitada' && c.resenaSolicitadaEn && (now - new Date(c.resenaSolicitadaEn)) / DAY >= 5);
   if (stale.length) add(48, 'tip', 'fa-comment-dots', `${stale.length} ${plural(stale.length, 'reseña pedida sin respuesta', 'reseñas pedidas sin respuesta')}`, 'Pasaron 5 días o más. Un recordatorio amable y corto por WhatsApp funciona mejor que insistir varias veces.', 'clientes', 'Ver clientes');
   const sinPedir = clientes.filter(c => c.resena === 'pendiente' && c.wa);
-  if (sinPedir.length >= 5) add(33, 'tip', 'fa-star', `${sinPedir.length} clientes sin reseña`, 'Las reseñas generan confianza en nuevos compradores. Pídelas a quienes ya recibieron su pedido.', 'clientes', 'Pedir reseñas');
+  if (sinPedir.length >= 5) add(33, 'tip', 'fa-star', `${sinPedir.length} clientes sin reseña`, 'Las reseñas generan confianza en nuevos compradores. Conviene pedirlas a quienes ya recibieron su pedido.', 'clientes', 'Pedir reseñas');
   const rated = clientes.filter(c => c.resena === 'recibida' && c.calificacion > 0);
   if (rated.length >= 5) { const avg = rated.reduce((s, c) => s + c.calificacion, 0) / rated.length;
-    if (avg >= 4.8) add(36, 'good', 'fa-medal', `Calificación de ${avg.toFixed(1)} de 5`, 'Tu servicio está muy bien valorado. Comparte capturas de reseñas en tus publicaciones para atraer más clientes.');
-    else if (avg < 4.3) add(80, 'warn', 'fa-triangle-exclamation', `Tu calificación promedio es ${avg.toFixed(1)}`, 'Revisa los comentarios de las reseñas más bajas, identifica el motivo y escribe a esos clientes para resolverlo.', 'clientes', 'Ver clientes'); }
+    if (avg >= 4.8) add(36, 'good', 'fa-medal', `Calificación de ${avg.toFixed(1)} de 5`, 'El servicio está muy bien valorado. Conviene compartir capturas de reseñas en las publicaciones para atraer más clientes.');
+    else if (avg < 4.3) add(80, 'warn', 'fa-triangle-exclamation', `La calificación promedio es ${avg.toFixed(1)}`, 'Conviene revisar los comentarios de las reseñas más bajas, identificar el motivo y escribir a esos clientes para resolverlo.', 'clientes', 'Ver clientes'); }
   const refs = {}; clientes.forEach(c => { const r = String(c.referidoPor || '').trim(); if (r) refs[r] = (refs[r] || 0) + 1; });
   const topRef = Object.entries(refs).sort((a, b) => b[1] - a[1])[0];
-  if (topRef && topRef[1] >= 2) add(42, 'good', 'fa-share-nodes', `${rvEsc(topRef[0])} te ha traído ${topRef[1]} clientes`, 'Premia a quien te recomienda: un cupón o un detalle lo anima a seguir invitando.', 'descuentos', 'Crear cupón');
+  if (topRef && topRef[1] >= 2) add(42, 'good', 'fa-share-nodes', `${rvEsc(topRef[0])} ha traído ${topRef[1]} clientes`, 'Conviene premiar a quien recomienda la tienda: un cupón o un detalle lo anima a seguir invitando.', 'descuentos', 'Crear cupón');
 
   // ── Orden interno ──
   const abiertos = ventas.reduce((s, v) => s + (Array.isArray(v.remarks) ? v.remarks.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length : 0), 0);
   const conAbiertos = ventas.filter(v => Array.isArray(v.remarks) && v.remarks.some(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto));
   if (abiertos) add(75, 'warn', 'fa-flag', `${abiertos} ${plural(abiertos, 'seguimiento abierto', 'seguimientos abiertos')} en ventas`, 'Hay créditos, promesas o pendientes sin resolver. Cerrarlos a tiempo evita malentendidos con clientes.', 'cuentas', 'Ver ventas', { label: 'Ventas con seguimientos abiertos', ids: conAbiertos.map(v => String(v.id)) });
   const sinNombre = last30.filter(v => !String(v.cliente || '').trim());
-  if (sinNombre.length >= 3) add(25, 'tip', 'fa-user-tag', `${sinNombre.length} ventas recientes sin nombre de cliente`, 'Registrar el cliente en cada venta te permite reconocer a los frecuentes y reactivar a los que se alejan.');
+  if (sinNombre.length >= 3) add(25, 'tip', 'fa-user-tag', `${sinNombre.length} ventas recientes sin nombre de cliente`, 'Registrar el cliente en cada venta permite reconocer a los frecuentes y reactivar a los que se alejan.');
   const cups = Array.isArray(window._couponData) ? window._couponData : [];
   const porVencer = cups.filter(c => c.estado === 'activo' && c.expira_en && (new Date(c.expira_en) - now) / DAY >= 0 && (new Date(c.expira_en) - now) / DAY <= 5);
-  if (porVencer.length) add(46, 'tip', 'fa-ticket', `${porVencer.length} ${plural(porVencer.length, 'código vence', 'códigos vencen')} en 5 días`, 'Recuérdaselo a los clientes que lo recibieron para que no se pierda el descuento.', 'descuentos', 'Ver códigos');
+  if (porVencer.length) add(46, 'tip', 'fa-ticket', `${porVencer.length} ${plural(porVencer.length, 'código vence', 'códigos vencen')} en 5 días`, 'Conviene recordárselo a los clientes que lo recibieron para que no se pierda el descuento.', 'descuentos', 'Ver códigos');
 
   items.sort((a, b) => b.p - a.p);
   // Frase motivadora según cómo va el negocio
