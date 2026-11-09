@@ -2008,10 +2008,6 @@ window.doLogin = async function () {
   .vm-receipt-preview-bar{padding:9px}.vm-receipt-preview-bar>span:last-child{width:100%;display:grid!important;grid-template-columns:1fr 1fr;gap:8px}
   .vm-receipt-preview-bar .vm-receipt-view,.vm-receipt-preview-bar .vm-receipt-remove{min-height:40px}
   #imgv-nav{gap:8px!important}#imgv-nav .btn{flex:1;justify-content:center;min-height:44px}
-  /* Ganancia por tipo de venta */
-  #vc-ganancia-chart{gap:5px!important;padding:0!important}
-  #vc-ganancia-chart>div>div:first-child{font-size:.56rem!important}
-  #vc-ganancia-chart>div>div:last-child{font-size:.52rem!important;letter-spacing:-.2px}
 }
 </style>
 <style id="coupon-mobile-fix">
@@ -2331,14 +2327,6 @@ window.doLogin = async function () {
           </article>
         </div>
 
-        <!-- Gráfica ganancia por tipo -->
-        <div class="month-chart" style="margin-bottom:0">
-          <div class="chart-title" style="display:flex;align-items:center;gap:8px">
-            <span>GANANCIA POR TIPO DE VENTA</span>
-            <span style="background:rgba(98,255,0,.1);color:var(--accent);font-size:0.7em;padding:2px 8px;border-radius:10px;border:1px solid rgba(98,255,0,.28)">Solo CEO</span>
-          </div>
-          <div id="vc-ganancia-chart" style="display:flex;align-items:flex-end;gap:16px;height:100px;margin-top:12px;padding:0 4px"></div>
-        </div>
       </div>
 
       <!-- Transacciones totales visible para ADMIN -->
@@ -6934,8 +6922,6 @@ function updateVentasStats(filtered, periodRows) {
   const adminCard = document.getElementById('vc-admin-count-card');
   if (adminCard) adminCard.style.display = currentRole !== 'CEO' ? 'block' : 'none';
 
-  // Gráfica ganancia por tipo (CEO only)
-  renderGananciaChart(sumGanancia);
   renderSalesInsights(periodRows);
 }
 
@@ -7004,45 +6990,6 @@ function renderSalesInsights(periodRows) {
   const group=key=>{const m=new Map();current.forEach(v=>{const name=String(v[key]||'Sin especificar').trim()||'Sin especificar';m.set(name,(m.get(name)||0)+1);});return [...m].map(([name,count])=>({name,count})).sort((a,b)=>b.count-a.count);};
   renderRank('sales-products-chart',group('producto'));
   renderRank('sales-types-chart',group('tipo'));
-}
-
-// Colores de la gráfica por tipo de venta (sin amarillos)
-const GANANCIA_CHART_COLORS = { 'Pavos':'#818cf8', 'Apartar':'#f0abfc' };
-function renderGananciaChart(sumGanancia) {
-  const container = document.getElementById('vc-ganancia-chart');
-  if (!container) return;
-
-  const vals = Object.entries(TIPO_CONFIG).map(([tipo, cfg]) => ({
-    oculto: !!cfg.oculto,
-    label: cfg.label,
-    color: cfg.color,
-    ganancia: sumGanancia[tipo] || 0
-  })).filter(v => !v.oculto || v.ganancia !== 0); // tipos descontinuados: solo si tienen historial
-
-  const maxVal = Math.max(...vals.map(v => Math.abs(v.ganancia)), 1);
-
-  container.innerHTML = vals.map(v => {
-    const pct = Math.max((Math.abs(v.ganancia) / maxVal) * 88, 2);
-    const isNeg = v.ganancia < 0;
-    const barColor = isNeg ? 'var(--red)' : (GANANCIA_CHART_COLORS[v.label] || v.color || 'var(--accent)');
-    return `
-    <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:5px;min-width:0">
-      <div style="font-size:0.62em;font-weight:800;color:${barColor}">
-        ${isNeg ? '-' : ''}$${Math.abs(v.ganancia).toFixed(0)}
-      </div>
-      <div style="width:100%;display:flex;align-items:flex-end;justify-content:center;height:88px">
-        <div style="
-          width:70%;
-          height:${pct}px;
-          background:linear-gradient(180deg,${barColor},color-mix(in srgb,${barColor} 35%,transparent));
-          border-radius:4px 4px 0 0;
-          transition:height .5s cubic-bezier(.4,0,.2,1);
-          box-shadow:0 0 8px color-mix(in srgb,${barColor} 27%,transparent)
-        "></div>
-      </div>
-      <div style="font-size:0.6em;color:var(--text2);font-weight:600;text-align:center;line-height:1.2;word-break:break-word">${v.label}</div>
-    </div>`;
-  }).join('');
 }
 
 // Bug 10 fix: renderVentas is role-aware, no longer references vc-method-breakdown (Bug 6)
