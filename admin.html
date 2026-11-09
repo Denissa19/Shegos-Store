@@ -2020,6 +2020,59 @@ window.doLogin = async function () {
 <style id="gestion-mobile-menu-styles">
 @media(max-width:620px){.gestion-account-table-wrap{border:0;background:transparent;overflow:visible}.gestion-account-table{min-width:0;display:grid;gap:10px}.gestion-account-header{display:none}.gestion-account-row{display:grid;grid-template-columns:1fr auto;gap:5px;padding:14px;border:1px solid var(--border);border-radius:13px;background:rgba(12,17,13,.9);cursor:pointer}.gestion-account-row:not(.gestion-account-header):active{transform:scale(.99);border-color:var(--accent)}.gestion-account-row>.gestion-account-cell:not(.gestion-account-name):not(.gestion-card-actions){display:none}.gestion-account-row .gestion-card-actions{grid-column:2;grid-row:1;align-self:center}.gestion-account-row .gestion-card-actions .btn{display:none}.gestion-account-row .gestion-card-actions:after{content:'Ver detalles';font-size:.75em;color:var(--accent);font-weight:700}.gestion-mobile-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.gestion-mobile-item{padding:11px;border:1px solid var(--border);border-radius:10px;background:rgba(255,255,255,.025)}.gestion-mobile-item small{display:block;color:var(--text3);font-size:.68em;text-transform:uppercase;letter-spacing:.04em}.gestion-mobile-item strong{display:block;margin-top:4px;font-size:.9em;color:var(--text)}.gestion-mobile-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.gestion-mobile-actions .btn{justify-content:center}.gestion-mobile-status{margin:0 0 13px;color:var(--text2);font-size:.86em}.gestion-mobile-status .gestion-online{margin-left:5px}}
 </style>
+<style id="ui-patch-fin-compact">
+/* ── Resumen financiero (sobrio, sin neón) ── */
+.fin-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.fin-card{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"ico body" "val val";align-items:center;gap:10px 12px;padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035) !important;overflow:hidden}
+.fin-ico{grid-area:ico;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;font-size:.85rem;color:var(--fin-tone);background:color-mix(in srgb,var(--fin-tone) 14%,transparent)}
+.fin-body{grid-area:body;min-width:0}
+.fin-label{font-size:.72rem;letter-spacing:.6px;text-transform:uppercase;color:var(--text2);font-weight:600}
+.fin-sub{font-size:.72rem;color:var(--text3);margin-top:2px}
+.fin-value{grid-area:val;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.9rem;letter-spacing:-.03em;line-height:1;color:var(--text);font-variant-numeric:tabular-nums}
+.fin-meter{grid-column:1/-1;height:4px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden;margin-top:-2px}
+.fin-meter i{display:block;height:100%;width:0;border-radius:inherit;background:var(--fin-tone);opacity:.85;transition:width .5s ease}
+@media(max-width:900px){.fin-grid{grid-template-columns:1fr;gap:8px}
+  .fin-card{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"ico body val";padding:12px 14px;gap:0 12px}
+  .fin-value{font-size:1.35rem;text-align:right}
+  .fin-meter{position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:0;margin:0}}
+
+/* ── Ventas: bloques más compactos ── */
+.sales-insights-charts{grid-template-columns:1.5fr 1fr}
+@media(max-width:900px){.sales-insights-charts{grid-template-columns:1fr}.sales-chart-month{grid-column:auto}}
+@media(max-width:620px){
+  .sales-insights{padding:11px;margin-bottom:14px;border-radius:14px}
+  .sales-insights-heading{margin-bottom:10px;gap:8px}
+  .sales-insights-heading p{display:none}
+  .sales-insights-heading h2{font-size:1rem;margin:2px 0 0}
+  .sales-insights-period{font-size:.68rem}
+  .sales-insights-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:8px}
+  .sales-insight-metric:last-child{grid-column:auto}
+  .sales-insight-metric,.sales-chart-card{padding:9px 10px;border-radius:10px}
+  .sales-insight-metric span{font-size:.62rem}
+  .sales-insight-metric strong{font-size:1.05rem;margin:3px 0 1px}
+  .sales-insight-metric small{font-size:.58rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .sales-insight-metric:nth-child(n+2) small{display:none}
+  .sales-insights-charts{gap:8px}
+  .sales-chart-title{margin-bottom:7px}
+  .sales-chart-title strong{font-size:.78rem}
+  .sales-chart-title span{display:none}
+  .sales-chart-title i{font-size:.8rem}
+  .sales-bars{height:92px;gap:4px;padding-top:6px}
+  .sales-bar-col{font-size:.6rem;gap:3px}
+  .sales-rank-list{gap:6px}
+  .sales-rank-row{font-size:.68rem;gap:6px;grid-template-columns:minmax(60px,1fr) 1.6fr 20px}
+  .sales-rank-row:nth-child(n+5){display:none}
+  .sales-rank-track{height:5px}
+  .purchase-pattern-card{margin-top:8px;padding:10px 11px;border-radius:10px}
+  .purchase-pattern-summary{font-size:.68rem;line-height:1.4;margin-bottom:8px}
+  .purchase-weekday-chart{gap:4px}
+  .purchase-weekday-row{grid-template-columns:62px minmax(40px,1fr) 30px;font-size:.66rem;gap:6px}
+  .purchase-weekday-track{height:5px}
+  .purchase-weekday-row small{display:none}
+}
+.chart-type-toggle{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.chart-type-toggle *{pointer-events:none}
+</style>
 <div id="app">
   <div class="topbar">
     <button type="button" class="sidebar-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="window.toggleAdminSidebar()"><i class="fas fa-bars"></i></button><div class="topbar-brand">Panel de gestión</div>
@@ -2158,7 +2211,6 @@ window.doLogin = async function () {
         <div class="sales-insights-charts">
           <article class="sales-chart-card sales-chart-month"><div class="sales-chart-title"><div><strong>Ventas del período</strong><span>Distribución por fecha seleccionada</span></div><i class="fas fa-chart-column"></i></div><div id="sales-monthly-chart" class="sales-bars" role="img" aria-label="Cantidad de ventas en el período seleccionado"></div></article>
           <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Productos más vendidos</strong><span>Por número de ventas</span></div><i class="fas fa-trophy"></i></div><div id="sales-products-chart" class="sales-rank-list"></div></article>
-          <article class="sales-chart-card"><div class="sales-chart-title"><div><strong>Tipos de venta</strong><span>Distribución del mes actual</span></div><i class="fas fa-layer-group"></i></div><div id="sales-types-chart" class="sales-rank-list"></div></article>
         </div>
         <article class="purchase-pattern-card" aria-labelledby="purchase-pattern-title">
           <div class="sales-chart-title"><div><strong id="purchase-pattern-title">Análisis inteligente de compras</strong><span>Media de compras por día de la semana en el período seleccionado</span></div><i class="fas fa-wand-magic-sparkles"></i></div>
@@ -2194,22 +2246,32 @@ window.doLogin = async function () {
       <!-- CEO ONLY: Resumen financiero + Gráfica de ganancias -->
       <div class="sec-ceo-only" style="margin-bottom:24px">
         <!-- Tarjetas financieras CEO -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px">
-          <div class="stat-card" style="--accent-c:var(--accent)">
-            <div class="stat-label">Total Ventas (Ingresos)</div>
-            <div class="stat-value green" id="vc-s-total">$0.00</div>
-            <div class="stat-sub" id="vc-s-count">0 transacciones</div>
-          </div>
-          <div class="stat-card" style="--accent-c:var(--gold);border-top:2px solid var(--gold)">
-            <div class="stat-label" style="color:var(--gold)">Ganancia Total</div>
-            <div class="stat-value" style="color:var(--gold)" id="vc-s-ganancia">$0.00</div>
-            <div class="stat-sub">Ingreso − Costo</div>
-          </div>
-          <div class="stat-card" style="--accent-c:var(--blue)">
-            <div class="stat-label">Margen Promedio</div>
-            <div class="stat-value" style="color:var(--blue)" id="vc-s-margen">0%</div>
-            <div class="stat-sub">Rentabilidad total</div>
-          </div>
+        <div class="fin-grid">
+          <article class="fin-card" style="--fin-tone:#86d1b0">
+            <span class="fin-ico"><i class="fas fa-arrow-trend-up"></i></span>
+            <div class="fin-body">
+              <div class="fin-label">Total ventas</div>
+              <div class="fin-sub" id="vc-s-count">0 transacciones</div>
+            </div>
+            <div class="fin-value" id="vc-s-total">$0.00</div>
+          </article>
+          <article class="fin-card" style="--fin-tone:#e0c185">
+            <span class="fin-ico"><i class="fas fa-wallet"></i></span>
+            <div class="fin-body">
+              <div class="fin-label">Ganancia total</div>
+              <div class="fin-sub">Ingreso − Costo</div>
+            </div>
+            <div class="fin-value" id="vc-s-ganancia">$0.00</div>
+          </article>
+          <article class="fin-card" style="--fin-tone:#9bb0f5">
+            <span class="fin-ico"><i class="fas fa-percent"></i></span>
+            <div class="fin-body">
+              <div class="fin-label">Margen promedio</div>
+              <div class="fin-sub">Rentabilidad total</div>
+            </div>
+            <div class="fin-value" id="vc-s-margen">0%</div>
+            <div class="fin-meter" aria-hidden="true"><i id="vc-s-margen-bar"></i></div>
+          </article>
         </div>
 
         <!-- Gráfica ganancia por tipo -->
@@ -4898,7 +4960,12 @@ window.cycleMonthChartType=function(event){
   if(event){event.preventDefault?.();event.stopPropagation?.();}
   monthChartTypeIndex=(monthChartTypeIndex+1)%MONTH_CHART_TYPES.length;
   const chart=document.getElementById('bar-chart');
-  if(chart)renderChart(chart._monthlySeries||[]);
+  if(!chart)return;
+  try{renderChart(chart._monthlySeries||[]);}
+  catch(err){
+    console.error('renderChart',err);
+    chart.innerHTML='<div class="empty">No se pudo dibujar este gráfico.</div>';
+  }
 };
 function renderChart(serieMensual) {
   const chart=document.getElementById('bar-chart'); if(!chart)return;
@@ -6679,6 +6746,7 @@ function updateVentasStats(filtered, periodRows) {
   if (margenEl) {
     const margen = totalIngreso > 0 ? ((totalGanancia / totalIngreso) * 100) : 0;
     margenEl.textContent = `${margen.toFixed(1)}%`;
+    const mBar = document.getElementById('vc-s-margen-bar'); if (mBar) mBar.style.width = Math.max(0, Math.min(100, margen)) + '%';
   }
   if (countAdEl) countAdEl.textContent = source.length;
 
@@ -10490,17 +10558,22 @@ document.addEventListener('click', e => {
   if (e.target.closest('button,a,input,select,textarea,label')) return;
   tr.classList.toggle('open');
 });
-// ── Botón de tipo de gráfica: respuesta fiable en pantallas táctiles ──
+// ── Botón de tipo de gráfica: delegación global, un solo disparo por toque ──
 (function () {
-  const btn = document.getElementById('month-chart-type-toggle'); if (!btn) return;
-  btn.removeAttribute('onclick');
-  let last = 0;
-  const fire = e => {
-    const now = Date.now(); if (now - last < 400) { e.preventDefault?.(); return; }
-    last = now; window.cycleMonthChartType(e);
+  if (window.__chartToggleBound) return; window.__chartToggleBound = true;
+  let lastFire = 0;
+  const handle = e => {
+    const btn = e.target && e.target.closest && e.target.closest('#month-chart-type-toggle');
+    if (!btn) return;
+    e.preventDefault(); e.stopPropagation();
+    const now = Date.now();
+    if (now - lastFire < 350) return;
+    lastFire = now;
+    try { window.cycleMonthChartType(); } catch (err) { console.error('Gráfica:', err); }
   };
-  btn.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') fire(e); });
-  btn.addEventListener('click', fire);
+  document.addEventListener('click', handle, true);
+  document.addEventListener('touchend', handle, { capture: true, passive: false });
+  document.getElementById('month-chart-type-toggle')?.removeAttribute('onclick');
 })();
 
 // ═══════════════════════════════════════════════
