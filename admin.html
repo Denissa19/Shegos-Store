@@ -1981,6 +1981,21 @@ window.doLogin = async function () {
 .sug-quote{margin:0 0 14px;padding:13px 15px;border-left:3px solid var(--accent);border-radius:0 12px 12px 0;background:rgba(98,255,0,.06)}
 .sug-quote p{margin:0;color:var(--text);font-size:.95rem;font-style:italic;line-height:1.45}.sug-quote small{display:block;margin-top:6px;color:var(--text3);font-size:.74rem;font-style:normal;font-weight:700;letter-spacing:.03em}
 .sug-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.dorm-sec{margin-bottom:26px}
+.dorm-sub{margin:-6px 0 14px;color:var(--text3);font-size:.78rem;line-height:1.45}
+.dorm-list{display:grid;gap:8px}
+.dorm-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 14px;border:1px solid var(--border2);border-radius:12px;background:var(--surface)}
+.dorm-main{flex:1 1 190px;min-width:0}
+.dorm-name{font-weight:700;color:var(--text);overflow-wrap:anywhere}
+.dorm-meta{margin-top:2px;color:var(--text3);font-size:.74rem;line-height:1.4}
+.dorm-days{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;border:1px solid}
+.dorm-d1{color:#ff9f0a;background:rgba(255,159,10,.12);border-color:rgba(255,159,10,.3)}
+.dorm-d2{color:#f97316;background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.3)}
+.dorm-d3{color:var(--red);background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.3)}
+.dorm-act{display:flex;gap:6px;flex-wrap:wrap}
+.dorm-act .btn{padding:7px 12px;font-size:.75rem}
+.dorm-empty{padding:18px;border:1px dashed var(--border2);border-radius:12px;color:var(--text2);text-align:center;font-size:.85rem}
+.dorm-more{margin-top:10px}
 .sug-item{display:flex;gap:11px;min-width:0;padding:12px;border:1px solid var(--border2);border-radius:13px;background:rgba(5,9,6,.55)}
 .sug-item>i{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;font-size:.9rem;background:color-mix(in srgb,var(--sug-c) 14%,transparent);color:var(--sug-c)}
 .sug-item strong{display:block;color:var(--text);font-size:.88rem;line-height:1.3}.sug-item p{margin:4px 0 0;color:var(--text2);font-size:.8rem;line-height:1.45;overflow-wrap:anywhere}
@@ -2440,6 +2455,8 @@ window.doLogin = async function () {
       </div>
 
       <div id="cli-rv-wrap"></div>
+
+      <div id="cli-dormant-wrap"></div>
 
       <div class="sec-title">
         <h3 style="color:#a855f7"><i class="fas fa-users" style="margin-right:8px"></i>Base de Clientes</h3>
@@ -6853,6 +6870,7 @@ async function fetchVentas() {
     });
     renderVentas();
     try { renderSuggestions(); } catch (_) {}
+    try { renderDormantClients(); } catch (_) {}
     updateStats(); // Refresh topbar total with ventas included
     renderAccounting();
   } catch (err) {
@@ -9793,6 +9811,7 @@ window.renderClientesTab = async function(mode) {
   const referralBadge = document.getElementById('cli-referrals-total');
   if (referralBadge) referralBadge.textContent = `${totalReferrals} referido${totalReferrals === 1 ? '' : 's'} registrados`;
   rvRenderPanel(all);
+  try { renderDormantClients(); } catch (err) { console.warn('Clientes inactivos:', err); }
   renderGiftCustomers(all);
 
   const query = (document.getElementById('cli-search')?.value || '').toLowerCase();
@@ -10732,7 +10751,7 @@ function sugBuild() {
   const methodLabel = v => { const val = paymentMethodFromDb(v.metodo_pago); const it = PAYMENT_METHODS.find(x => x.value === val) || LEGACY_PAYMENT_METHODS[val]; return it?.label || String(v.metodo_pago || 'otro'); };
   const tipoLabel = t => (TIPO_CONFIG[t]?.label) || t || 'Otro';
   const items = [];
-  const add = (p, tone, icon, title, text, tab, cta, focus) => items.push({ p, tone, icon, title, text, tab, cta, focus });
+  const add = (p, tone, icon, title, text, tab, cta, focus, alt) => items.push({ p, tone, icon, title, text, tab, cta, focus, alt });
 
   // ── Ritmo del mes (mismo tramo del mes anterior) ──
   const dayOfMonth = now.getDate();
@@ -10789,7 +10808,7 @@ function sugBuild() {
   ventas.forEach(v => { const n = String(v.cliente || '').trim(); if (!n || n === '—') return; const k = norm(n); const o = byC.get(k) || { name: n, n: 0, last: 9999 }; o.n++; o.last = Math.min(o.last, ago(v)); byC.set(k, o); });
   const all = [...byC.values()];
   const dormant = all.filter(c => c.last >= 30 && c.last <= 150).sort((a, b) => b.n - a.n);
-  if (dormant.length) add(70, 'warn', 'fa-user-clock', `${dormant.length} ${plural(dormant.length, 'cliente lleva', 'clientes llevan')} más de 30 días sin comprar`, `${list(dormant.map(c => c.name))}${dormant.length > 3 ? ' y otros' : ''}. Un mensaje personal con un cupón de lealtad suele traerlos de vuelta.`, 'descuentos', 'Crear cupón');
+  if (dormant.length) add(70, 'warn', 'fa-user-clock', `${dormant.length} ${plural(dormant.length, 'cliente lleva', 'clientes llevan')} más de 30 días sin comprar`, `${list(dormant.map(c => c.name))}${dormant.length > 3 ? ' y otros' : ''}. Un mensaje personal con un cupón de lealtad suele traerlos de vuelta.`, 'clientes', 'Ver clientes', { dormant: true }, { tab: 'descuentos', cta: 'Crear cupón' });
   const loyal = all.filter(c => c.n >= 3 && c.last <= 60).sort((a, b) => b.n - a.n);
   if (loyal.length) add(58, 'good', 'fa-heart', `${loyal.length} ${plural(loyal.length, 'cliente frecuente', 'clientes frecuentes')}`, `${list(loyal.map(c => c.name))} ${plural(loyal.length, 'ha comprado', 'han comprado')} 3 veces o más. Conviene agradecerles con un cupón o un trato especial: son los mejores embajadores.`, 'descuentos', 'Crear cupón');
   const fresh = all.filter(c => c.n === 1 && c.last <= 7);
@@ -10835,17 +10854,19 @@ function renderSuggestions(shuffle) {
   window._sugItems = r.items;
   const LIMIT = 50, show = window._sugExpanded ? r.items : r.items.slice(0, LIMIT);
   const badge = document.getElementById('sug-badge'); if (badge) { const w = r.items.filter(i => i.tone === 'warn').length; badge.textContent = w; badge.hidden = !w; badge.title = w + ' por atender'; }
-  list.innerHTML = show.length ? show.map((i, idx) => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}', ${idx})">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
+  list.innerHTML = show.length ? show.map((i, idx) => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}', ${idx})">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}${i.alt ? `<button type="button" class="sug-cta" style="margin-left:6px" onclick="window.sugGo('${i.alt.tab}', ${idx}, true)">${i.alt.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
     : '<div class="sug-empty">Aún no hay suficientes datos para sugerencias. Registra ventas y clientes y aquí aparecerán ideas para mejorar.</div>';
   const more = document.getElementById('sug-more');
   if (more) { more.hidden = r.items.length <= LIMIT; more.textContent = window._sugExpanded ? 'Ver menos' : `Ver más ideas (${r.items.length - LIMIT})`; }
 }
 window.renderSuggestions = renderSuggestions;
 window.sugToggle = function() { window._sugExpanded = !window._sugExpanded; renderSuggestions(); };
-window.sugGo = function(tab, idx) {
+window.sugGo = function(tab, idx, isAlt) {
   const it = (window._sugItems || [])[idx];
   window.switchTab(tab, document.getElementById('btn-tab-' + tab));
   if (tab === 'cuentas' && it && it.focus) window.vcSetFocus(it.focus);
+  // "Ver clientes" del aviso de inactivos: baja hasta la sección cuando termine de pintarse
+  if (tab === 'clientes' && !isAlt && it && it.focus && it.focus.dormant) { window._dormScroll = true; try { renderDormantClients(); } catch (_) {} setTimeout(() => window.cliDormantScroll(), 700); return; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 // Enfoca el Registro de Ventas en un grupo exacto de ventas (el de la sugerencia)
@@ -10861,6 +10882,69 @@ window.vcSetFocus = function(focus) {
   renderVentas();
 };
 window.vcClearFocus = function() { window._vcFocus = null; vcClearDates(); };
+
+// ═══════════════════════════════════════════════
+// CLIENTES INACTIVOS (30+ días sin comprar)
+// Se calcula con las ventas registradas (sin contar canceladas), igual que el aviso de Sugerencias.
+// ═══════════════════════════════════════════════
+window._dormList = []; window._dormShowAll = false; window._dormScroll = false;
+function dormantClients(minDays) {
+  const DAY = 86400000, now = new Date(), today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const ventas = (currentVentas || []).filter(v => v.created_at && v.estado !== 'Cancelado');
+  const byC = new Map();
+  ventas.forEach(v => {
+    const n = String(v.cliente || '').trim(); if (!n || n === '—') return;
+    const day = vcLocalDay(v.created_at); if (!day) return;
+    const days = Math.round((today0 - new Date(day + 'T00:00:00')) / DAY);
+    const k = normalizeClientName(n);
+    const o = byC.get(k) || { name: n, n: 0, last: 9999, lastDay: '', total: 0 };
+    o.n++; o.total += parseFloat(v.ingreso) || 0;
+    if (days < o.last) { o.last = days; o.lastDay = day; o.name = n; }
+    byC.set(k, o);
+  });
+  const wa = new Map((getClientes() || []).map(c => [normalizeClientName(c.nombre), c.wa || '']));
+  return [...byC.entries()].map(([k, o]) => ({ ...o, wa: wa.get(k) || '' }))
+    .filter(c => c.last >= minDays)
+    .sort((a, b) => (b.n - a.n) || (a.last - b.last));
+}
+function renderDormantClients() {
+  const wrap = document.getElementById('cli-dormant-wrap'); if (!wrap) return;
+  const MIN = 30, PREVIEW = 10;
+  const list = dormantClients(MIN); window._dormList = list;
+  const hasSales = (currentVentas || []).some(v => v.created_at && v.estado !== 'Cancelado');
+  const head = `<div class="sec-title"><h3 style="color:#f97316"><i class="fas fa-user-clock" style="margin-right:8px"></i>Sin comprar hace 30+ días</h3><div class="sec-line"></div><span style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600">${list.length} cliente${list.length === 1 ? '' : 's'}</span></div>`;
+  let body;
+  if (!hasSales) body = `<div class="dorm-empty">Aún no hay ventas registradas para calcular esto.</div>`;
+  else if (!list.length) body = `<div class="dorm-empty">Ningún cliente lleva 30 días o más sin comprar.</div>`;
+  else {
+    const show = window._dormShowAll ? list : list.slice(0, PREVIEW);
+    const fmtDay = d => new Date(d + 'T00:00:00').toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
+    const row = (c, i) => {
+      const tier = c.last >= 90 ? 'dorm-d3' : c.last >= 60 ? 'dorm-d2' : 'dorm-d1';
+      const digits = String(c.wa || '').replace(/\D/g, '');
+      const msg = `Hola ${String(c.name).split(' ')[0]}, hace tiempo que no te vemos por Shegos Store. ¿Te gustaría volver a comprar? Tengo un cupón de lealtad para ti.`;
+      const waBtn = digits ? `<a class="btn btn-outline" href="https://wa.me/${digits}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : '';
+      return `<div class="dorm-row"><div class="dorm-main"><div class="dorm-name">${rvEsc(c.name)}</div><div class="dorm-meta">${c.n} compra${c.n === 1 ? '' : 's'} · $${c.total.toFixed(2)} en total · última: ${fmtDay(c.lastDay)}</div></div><span class="dorm-days ${tier}">hace ${c.last} días</span><div class="dorm-act">${waBtn}<button type="button" class="btn btn-outline" onclick="window.cliDormantCoupon(${i})"><i class="fas fa-ticket"></i> Cupón</button></div></div>`;
+    };
+    body = `<div class="dorm-list">${show.map((c, i) => row(c, i)).join('')}</div>`
+      + (list.length > PREVIEW ? `<button type="button" class="btn btn-ghost dorm-more" onclick="window.cliDormantToggle()">${window._dormShowAll ? 'Ver menos' : `Ver todos (${list.length})`}</button>` : '');
+  }
+  wrap.innerHTML = `<section class="dorm-sec" id="cli-dormant">${head}<p class="dorm-sub">Según las ventas registradas. Primero aparecen los que más han comprado.</p>${body}</section>`;
+  if (window._dormScroll) window.cliDormantScroll();
+}
+window.renderDormantClients = renderDormantClients;
+window.cliDormantToggle = function() { window._dormShowAll = !window._dormShowAll; renderDormantClients(); };
+window.cliDormantScroll = function() {
+  const el = document.getElementById('cli-dormant'); if (!el) return;
+  window._dormScroll = false;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+// Abre Descuentos con el cliente ya escrito (la categoría se elige a mano)
+window.cliDormantCoupon = function(i) {
+  const c = (window._dormList || [])[i]; if (!c) return;
+  window.switchTab('descuentos', document.getElementById('btn-tab-descuentos'));
+  setTimeout(() => { const inp = document.getElementById('coupon-customer'); if (inp) inp.value = c.name; window.scrollTo({ top: 0, behavior: 'smooth' }); }, 80);
+};
 </script>
 
 <!-- ── MODAL AGREGAR / EDITAR CLIENTE ──────────── -->
