@@ -270,6 +270,9 @@ td{padding:12px 14px;vertical-align:middle}
 .pay-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px}
 .pay-card{min-width:0;border:1px solid var(--border2);border-radius:12px;background:linear-gradient(145deg,var(--surface2),var(--surface));padding:12px;display:flex;flex-direction:column;gap:8px}
 .pay-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pay-card-head h4{display:flex;align-items:center;gap:9px;}
+.pay-tag{display:inline-flex;align-items:center;gap:8px}
+.pay-tag .pay-logo{width:24px!important;height:24px!important;flex-basis:24px!important;border-radius:7px}.pay-tag .pay-logo-img{width:18px!important;height:18px!important}
 .pay-card-head h4{font-size:.8rem;letter-spacing:.5px;text-transform:uppercase;color:var(--text);margin:0}
 .pay-group-copy{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--accent);cursor:pointer;font-size:12px;transition:background .18s,border-color .18s}
 .pay-group-copy:hover{background:var(--accent-dim);border-color:var(--accent)}
@@ -2011,6 +2014,7 @@ window.doLogin = async function () {
 .sug-cta{margin-top:8px;padding:6px 11px;border:1px solid color-mix(in srgb,var(--sug-c) 45%,transparent);border-radius:9px;background:transparent;color:var(--sug-c);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}
 .sug-more{display:block;margin:12px auto 0;padding:9px 16px;border:1px solid var(--border2);border-radius:10px;background:transparent;color:var(--text2);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
 .sug-more[hidden]{display:none}.sug-empty{grid-column:1/-1;padding:14px;color:var(--text3);font-size:.84rem;text-align:center}
+.vc-focus-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 14px;border:1px solid rgba(251,113,133,.35);border-radius:12px;background:rgba(251,113,133,.07);color:var(--text2);font-size:.82rem}.vc-focus-banner[hidden]{display:none}.vc-focus-banner>i{color:#fb7185}.vc-focus-banner span{flex:1 1 200px;min-width:0}.vc-focus-banner strong{color:var(--text)}.vc-focus-banner .btn{padding:6px 12px;font-size:.74rem}
 .sug-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;display:inline-grid;place-items:center;border-radius:999px;background:#fb7185;color:#1a0508;font-style:normal;font-size:.68rem;font-weight:800;line-height:1}.sug-badge[hidden]{display:none}
 #tab-sugerencias .sug-card{margin-bottom:0}
 @media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{grid-template-columns:1fr;gap:8px}.sug-item{padding:10px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}}
@@ -2074,8 +2078,8 @@ window.doLogin = async function () {
     <div class="sidebar-section">
       <div class="sidebar-section-label">Espacio de trabajo</div>
       <button class="tab-nav-btn" id="btn-tab-sugerencias" onclick="window.switchTab('sugerencias',this)"><i class="fas fa-lightbulb"></i><span>Sugerencias</span><em class="sug-badge" id="sug-badge" hidden></em></button>
-      <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i><span>Notas</span></button>
       <button class="tab-nav-btn" id="btn-tab-informacion-util" onclick="window.switchTab('informacion-util',this)"><i class="fas fa-circle-info"></i><span>Información útil</span></button>
+      <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i><span>Notas</span></button>
     </div>
     <div class="sidebar-footnote"><i class="fas fa-circle-check"></i> Gestión de Shegos Store</div>
   </nav>
@@ -2298,6 +2302,7 @@ window.doLogin = async function () {
       </div>
 
       <div class="sec-title"><h3>Registro de Ventas</h3><div class="sec-line"></div><span id="vc-count-info" style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600"></span></div>
+      <div id="vc-focus-banner" class="vc-focus-banner" hidden></div>
       <div id="vc-table-area"></div>
     </div>
 
@@ -2491,10 +2496,7 @@ window.doLogin = async function () {
         <div class="fgroup">
           <label class="flabel">Estado</label>
           <select class="fsel" id="f-status">
-            <option>Pendiente</option>
-            <option>En Proceso</option>
             <option>Completado</option>
-            <option>Cancelado</option>
           </select>
         </div>
       </div>
@@ -2524,9 +2526,9 @@ window.doLogin = async function () {
             <option value="">— Seleccionar —</option>
             <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
             <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-            <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
-            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
-            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
+            <option value="bybit">Bybit</option><option value="transferencia_mx">Transferencia MX</option>
+            <option value="oxxo">OXXO</option>
+            <option value="cripto">Cripto</option>
           </select>
           <small id="f-payment-fee-note" class="payment-fee-note"></small>
         </div>
@@ -2973,9 +2975,9 @@ window.doLogin = async function () {
             <option value="">— Seleccionar —</option>
             <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
             <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-            <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
-            <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
-            <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
+            <option value="bybit">Bybit</option><option value="transferencia_mx">Transferencia MX</option>
+            <option value="oxxo">OXXO</option>
+            <option value="cripto">Cripto</option>
           </select>
           <div class="payment-method-grid" id="vc-payment-method-grid" role="group" aria-label="Selecciona el método de pago"></div>
           <small id="vc-payment-fee-note" class="payment-fee-note"></small>
@@ -2985,10 +2987,7 @@ window.doLogin = async function () {
         <div class="fgroup">
           <label class="flabel">Estado</label>
           <select class="fsel" id="vc-f-status">
-              <option>Pendiente</option>
-              <option>En Proceso</option>
               <option selected>Completado</option>
-              <option>Cancelado</option>
           </select>
         </div>
 
@@ -4647,10 +4646,7 @@ function getTableRow(o) {
     <td class="td-date" data-label="Fecha">${formattedDate}</td>
     <td data-label="Estado">
       <select class="status-sel" onchange="window.updateOrderStatus('${o.id}', this.value)">
-        <option ${o.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-        <option ${o.estado === 'En Proceso' ? 'selected' : ''}>En Proceso</option>
-        <option ${o.estado === 'Completado' ? 'selected' : ''}>Completado</option>
-        <option ${o.estado === 'Cancelado' ? 'selected' : ''}>Cancelado</option>
+        <option selected>Completado</option>
       </select>
     </td>
     <td style="text-align:right">
@@ -4726,24 +4722,26 @@ function paymentMethodIdentity(method) {
 // Logos de los métodos de pago (Get Logo). El token pub_ es público y está pensado para usarse en el navegador.
 const GETLOGO_TOKEN = 'pub_d8afba65caa8b467e85e71014b83bce1';
 const getLogo = domain => `https://getlogo.dev/logos/${domain}?token=${GETLOGO_TOKEN}`;
+const SPEI_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/122019/spei.jpg?SdtDxplISZ9mV5CM1oWItlQ51Dl6ZA55&itok=_VmvrlD4';
+const OXXO_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/0008/9696/brand.gif?itok=8Qra579p';
 const PAYMENT_METHODS = [
   {value:'binance',label:'Binance',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
   {value:'binance_giftcard',label:'Binance Giftcard',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
   {value:'xbox_giftcard',label:'Xbox Giftcard',logo:getLogo('xbox.com'),fallback:'X',color:'#107c10'},
   {value:'remitly',label:'Remitly',logo:getLogo('remitly.com'),fallback:'R',color:'#2f6bed'},
   {value:'bybit',label:'Bybit',logo:getLogo('bybit.com'),fallback:'B',color:'#f7a600'},
-  {value:'airtm',label:'Airtm',logo:getLogo('airtm.com'),fallback:'A',color:'#1685ff'},
-  {value:'transferencia_mx',label:'Transferencia MX',logo:getLogo('banxico.org.mx'),fallback:'MX',color:'#38bdf8'},
-  {value:'spei',label:'SPEI',logo:getLogo('banxico.org.mx'),fallback:'S',color:'#61a5ff'},
-  {value:'oxxo',label:'OXXO',logo:getLogo('oxxo.com'),fallback:'O',color:'#e31837'},
-  {value:'mercado_pago',label:'Mercado Pago',logo:getLogo('mercadopago.com.mx'),fallback:'MP',color:'#00a0e3'},
+  {value:'transferencia_mx',label:'Transferencia MX',logo:SPEI_LOGO_URL,fallback:'MX',color:'#38bdf8'},
+  {value:'oxxo',label:'OXXO',logo:OXXO_LOGO_URL,fallback:'O',color:'#e31837'},
   {value:'cripto',label:'Cripto',logo:getLogo('bitcoin.org'),fallback:'₿',color:'#f7931a'}
 ];
 const isTransferPayment = method => method === 'transferencia_mx' || method === 'spei';
 const LEGACY_PAYMENT_METHODS = {
   link:{label:'Link de Pago (histórico)',fallback:'↗',color:'#77808a'}, paypal:{label:'PayPal (histórico)',fallback:'P',color:'#0070ba'},
   popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
-  binance_pay:{label:'Binance Pay',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'}
+  binance_pay:{label:'Binance Pay',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
+  airtm:{label:'Airtm (histórico)',logo:getLogo('airtm.com'),fallback:'A',color:'#1685ff'},
+  spei:{label:'SPEI (histórico)',logo:SPEI_LOGO_URL,fallback:'S',color:'#61a5ff'},
+  mercado_pago:{label:'Mercado Pago (histórico)',logo:getLogo('mercadopago.com.mx'),fallback:'MP',color:'#00a0e3'}
 };
 function paymentMethodToDb(method) {
   const labels={binance:'Binance',binance_giftcard:'Binance Giftcard',xbox_giftcard:'Xbox Giftcard',remitly:'Remitly',bybit:'Bybit',airtm:'Airtm',transferencia_mx:'Transferencia MX',spei:'SPEI',oxxo:'OXXO',mercado_pago:'Mercado Pago',cripto:'Cripto',paypal:'PayPal',popular:'Banco Popular'};
@@ -4990,7 +4988,7 @@ function openModal() {
   document.getElementById('m-title').textContent = 'Nuevo Pedido';
   document.getElementById('f-id').value = '';
   document.getElementById('f-id').disabled = false;
-  document.getElementById('f-status').value = 'Pendiente';
+  document.getElementById('f-status').value = 'Completado';
   document.getElementById('f-name').value = '';
   document.getElementById('f-phone').value = '';
   document.getElementById('f-epic').value = '';
@@ -5037,7 +5035,7 @@ async function editOrder(id) {
   document.getElementById('m-title').textContent = `Editar Pedido: ${o.id_pedido}`;
   document.getElementById('f-id').value = o.id_pedido;
   document.getElementById('f-id').disabled = true;
-  document.getElementById('f-status').value = o.estado || 'Pendiente';
+  document.getElementById('f-status').value = 'Completado';
   document.getElementById('f-name').value = o.nombre_cliente || '';
   document.getElementById('f-phone').value = o.telefono_cliente || '';
   document.getElementById('f-epic').value = o.epic_id_cliente || '';
@@ -6170,27 +6168,27 @@ function updateGiftAllocationSummary(autoPrice=true){
 const PAYMENT_SEP='━━━━━━━━━━━━━━━━━━━━';
 const PAYMENT_REGIONS=[
   {region:'MÉXICO',methods:[
-    {title:'Transferencia SPEI / OXXO',fields:[
+    {title:'Transferencia SPEI / OXXO',pm:'transferencia_mx',fields:[
       {label:'Banco',value:'NVIO Pagos México'},
       {label:'CLABE',value:'710969000491354916',mono:true},
       {label:'Entidad',value:'NVIO Pagos México'},
       {label:'Beneficiario',value:'Denisa Severino Figueroa'}
     ]},
-    {title:'Depósito OXXO',fields:[{label:'Número',value:'4217 4700 4878 0296',mono:true,bare:true}]}
+    {title:'Depósito OXXO',pm:'oxxo',fields:[{label:'Número',value:'4217 4700 4878 0296',mono:true,bare:true}]}
   ]},
   {region:'INTERNACIONAL',methods:[
     {title:'Criptomonedas y transferencias',fields:[
       {label:'Binance Pay',value:'481410806',mono:true},
       {label:'Bybit ID',value:'457842019',mono:true}
-    ],tags:['Binance Gift Card','Remitly','Airtm']}
+    ],tags:[{t:'Binance Gift Card',pm:'binance_giftcard'},{t:'Remitly',pm:'remitly'}]}
   ]},
-  {region:'ESPAÑA / EUROPA',methods:[{title:'',fields:[],tags:['Transferencia bancaria']}]}
+  {region:'ESPAÑA / EUROPA',methods:[{title:'',fields:[],tags:[{t:'Transferencia bancaria'}]}]}
 ];
 function paymentMethodText(m){
   const out=[];
   if(m.title)out.push(m.title.toUpperCase());
   (m.fields||[]).forEach(f=>out.push(f.bare?f.value:`${f.label}: ${f.value}`));
-  (m.tags||[]).forEach(t=>out.push(t));
+  (m.tags||[]).forEach(t=>out.push(t.t));
   return out.join('\n');
 }
 function buildPaymentsText(){
@@ -6218,14 +6216,18 @@ async function copyPlainText(text,okMsg){
     return ok;
   }
 }
+function payLogoHtml(value){
+  const item=PAYMENT_METHODS.find(x=>x.value===value);
+  return item?paymentLogoMarkup(item):'';
+}
 function renderPaymentMethods(){
   const board=document.getElementById('payment-methods-board');
   if(!board)return;
   const esc=gestionEscape;
   board.innerHTML=PAYMENT_REGIONS.map((r,ri)=>`<div><h4 class="pay-region-title">${esc(r.region)}</h4><div class="pay-grid">${r.methods.map((m,mi)=>{
-    const head=m.title?`<div class="pay-card-head"><h4>${esc(m.title)}</h4>${(m.fields||[]).length>1?`<button type="button" class="pay-group-copy" title="Copiar todo este método" aria-label="Copiar todo: ${esc(m.title)}" onclick="window.copyPaymentGroup(${ri},${mi})"><i class="fas fa-copy"></i></button>`:''}</div>`:'';
+    const head=m.title?`<div class="pay-card-head"><h4>${m.pm?payLogoHtml(m.pm)+' ':''}${esc(m.title)}</h4>${(m.fields||[]).length>1?`<button type="button" class="pay-group-copy" title="Copiar todo este método" aria-label="Copiar todo: ${esc(m.title)}" onclick="window.copyPaymentGroup(${ri},${mi})"><i class="fas fa-copy"></i></button>`:''}</div>`:'';
     const fields=(m.fields||[]).map(f=>`<button type="button" class="pay-field${f.mono?' pay-mono':''}" data-copy="${esc(f.value)}" data-label="${esc(f.label)}" onclick="window.copyPaymentField(this)" title="Copiar ${esc(f.label)}"><span><small>${esc(f.label)}</small><strong>${esc(f.value)}</strong></span><i class="fas fa-copy"></i></button>`).join('');
-    const tags=(m.tags||[]).length?`<div class="pay-tags">${m.tags.map(t=>`<button type="button" class="pay-tag" data-copy="${esc(t)}" data-label="${esc(t)}" onclick="window.copyPaymentField(this)" title="Copiar nombre">${esc(t)}</button>`).join('')}</div>`:'';
+    const tags=(m.tags||[]).length?`<div class="pay-tags">${m.tags.map(t=>`<button type="button" class="pay-tag" data-copy="${esc(t.t)}" data-label="${esc(t.t)}" onclick="window.copyPaymentField(this)" title="Copiar nombre">${t.pm?payLogoHtml(t.pm):''}${esc(t.t)}</button>`).join('')}</div>`:'';
     return `<div class="pay-card">${head}${fields}${tags}</div>`;
   }).join('')}</div></div>`).join('');
 }
@@ -6894,12 +6896,16 @@ function renderVentas() {
   const remFilter = document.getElementById('vc-rem-filter')?.value || '';
   const {from, to} = ventasDateRange();
   const isCEO = currentRole === 'CEO';
+  const focus = window._vcFocus;
+  const fb = document.getElementById('vc-focus-banner');
+  if (fb) { fb.hidden = !focus; if (focus) fb.innerHTML = `<i class="fas fa-filter"></i><span>Mostrando: <strong>${rvEsc(focus.label)}</strong></span><button type="button" class="btn btn-ghost" onclick="window.vcClearFocus()"><i class="fas fa-xmark"></i> Quitar filtro</button>`; }
 
   const periodRows = currentVentas.filter(v => {
     const dia = vcLocalDay(v.created_at);
     return !!dia && dia >= from && dia <= to;
   });
   let filtered = periodRows.filter(v => {
+    if (focus && !focus.ids.has(String(v.id))) return false;
     if (tipoFilter && v.tipo !== tipoFilter) return false;
     if (remFilter) {
       const rr = Array.isArray(v.remarks) ? v.remarks : [];
@@ -7110,7 +7116,7 @@ window.editVenta = async function(id) {
   const idEl = document.getElementById('vc-f-id');
   if (idEl) idEl.value = v.id_pedido || '';
   const statusEl = document.getElementById('vc-f-status');
-  if (statusEl) statusEl.value = v.estado || 'Completado';
+  if (statusEl) statusEl.value = 'Completado';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = paymentMethodFromDb(v.metodo_pago);
   syncPaymentPicker('vc-f-metodo');
@@ -7572,6 +7578,7 @@ function setDefaultVentasRange() {
 }
 
 function vcClearDates() {
+  window._vcFocus = null;
   const now = new Date();
   document.getElementById('vc-date-from').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-01`;
   document.getElementById('vc-date-to').value = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
@@ -7606,6 +7613,7 @@ function vcDaysWithSales() {
 // Rango rápido: llena Desde/Hasta con los últimos N días
 function vcQuickRange(days) {
   if (!days) return;
+  window._vcFocus = null;
   const hoy = new Date();
   const desde = new Date();
   desde.setDate(hoy.getDate() - parseInt(days, 10));
@@ -10624,7 +10632,7 @@ function sugBuild() {
   const methodLabel = v => { const val = paymentMethodFromDb(v.metodo_pago); const it = PAYMENT_METHODS.find(x => x.value === val) || LEGACY_PAYMENT_METHODS[val]; return it?.label || String(v.metodo_pago || 'otro'); };
   const tipoLabel = t => (TIPO_CONFIG[t]?.label) || t || 'Otro';
   const items = [];
-  const add = (p, tone, icon, title, text, tab, cta) => items.push({ p, tone, icon, title, text, tab, cta });
+  const add = (p, tone, icon, title, text, tab, cta, focus) => items.push({ p, tone, icon, title, text, tab, cta, focus });
 
   // ── Ritmo de la semana ──
   const w0 = ventas.filter(v => ago(v) >= 0 && ago(v) <= 6), w1 = ventas.filter(v => ago(v) >= 7 && ago(v) <= 13);
@@ -10698,9 +10706,8 @@ function sugBuild() {
 
   // ── Orden interno ──
   const abiertos = ventas.reduce((s, v) => s + (Array.isArray(v.remarks) ? v.remarks.filter(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto).length : 0), 0);
-  if (abiertos) add(75, 'warn', 'fa-flag', `${abiertos} ${plural(abiertos, 'seguimiento abierto', 'seguimientos abiertos')} en ventas`, 'Hay créditos, promesas o pendientes sin resolver. Cerrarlos a tiempo evita malentendidos con clientes.', 'cuentas', 'Ver ventas');
-  const sinCompletar = ventas.filter(v => (v.estado === 'Pendiente' || v.estado === 'En Proceso') && ago(v) >= 2);
-  if (sinCompletar.length) add(72, 'warn', 'fa-hourglass-half', `${sinCompletar.length} ${plural(sinCompletar.length, 'venta sin completar', 'ventas sin completar')}`, 'Llevan 2 días o más en Pendiente o En Proceso. Confirma con el cliente y actualiza su estado.', 'cuentas', 'Ver ventas');
+  const conAbiertos = ventas.filter(v => Array.isArray(v.remarks) && v.remarks.some(r => !r.resuelto && (REM_TIPOS[r.tipo] || {}).abierto));
+  if (abiertos) add(75, 'warn', 'fa-flag', `${abiertos} ${plural(abiertos, 'seguimiento abierto', 'seguimientos abiertos')} en ventas`, 'Hay créditos, promesas o pendientes sin resolver. Cerrarlos a tiempo evita malentendidos con clientes.', 'cuentas', 'Ver ventas', { label: 'Ventas con seguimientos abiertos', ids: conAbiertos.map(v => String(v.id)) });
   const sinNombre = last30.filter(v => !String(v.cliente || '').trim());
   if (sinNombre.length >= 3) add(25, 'tip', 'fa-user-tag', `${sinNombre.length} ventas recientes sin nombre de cliente`, 'Registrar el cliente en cada venta te permite reconocer a los frecuentes y reactivar a los que se alejan.');
   const cups = Array.isArray(window._couponData) ? window._couponData : [];
@@ -10720,16 +10727,35 @@ function renderSuggestions(shuffle) {
   if (shuffle === true) window._sugShuffle++;
   let r; try { r = sugBuild(); } catch (err) { console.warn('Sugerencias:', err); return; }
   const q = document.getElementById('sug-quote'); if (q) q.innerHTML = `<p>“${rvEsc(r.quote)}”</p>${r.resumen ? `<small>${rvEsc(r.resumen)}</small>` : ''}`;
+  window._sugItems = r.items;
   const LIMIT = 50, show = window._sugExpanded ? r.items : r.items.slice(0, LIMIT);
   const badge = document.getElementById('sug-badge'); if (badge) { const w = r.items.filter(i => i.tone === 'warn').length; badge.textContent = w; badge.hidden = !w; badge.title = w + ' por atender'; }
-  list.innerHTML = show.length ? show.map(i => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}')">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
+  list.innerHTML = show.length ? show.map((i, idx) => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}', ${idx})">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
     : '<div class="sug-empty">Aún no hay suficientes datos para sugerencias. Registra ventas y clientes y aquí aparecerán ideas para mejorar.</div>';
   const more = document.getElementById('sug-more');
   if (more) { more.hidden = r.items.length <= LIMIT; more.textContent = window._sugExpanded ? 'Ver menos' : `Ver más ideas (${r.items.length - LIMIT})`; }
 }
 window.renderSuggestions = renderSuggestions;
 window.sugToggle = function() { window._sugExpanded = !window._sugExpanded; renderSuggestions(); };
-window.sugGo = function(tab) { window.switchTab(tab, document.getElementById('btn-tab-' + tab)); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+window.sugGo = function(tab, idx) {
+  const it = (window._sugItems || [])[idx];
+  window.switchTab(tab, document.getElementById('btn-tab-' + tab));
+  if (tab === 'cuentas' && it && it.focus) window.vcSetFocus(it.focus);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+// Enfoca el Registro de Ventas en un grupo exacto de ventas (el de la sugerencia)
+window._vcFocus = null;
+window.vcSetFocus = function(focus) {
+  const ids = new Set(focus.ids || []);
+  const days = (currentVentas || []).filter(v => ids.has(String(v.id)) && v.created_at).map(v => vcLocalDay(v.created_at)).filter(Boolean).sort();
+  window._vcFocus = { label: focus.label, ids };
+  const now = new Date(), today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const setV = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+  if (days.length) { setV('vc-date-from', days[0]); setV('vc-date-to', days[days.length - 1] > today ? days[days.length - 1] : today); }
+  setV('vc-search', ''); setV('vc-tipo-filter', ''); setV('vc-rem-filter', ''); setV('vc-range-quick', '');
+  renderVentas();
+};
+window.vcClearFocus = function() { window._vcFocus = null; vcClearDates(); };
 </script>
 
 <!-- ── MODAL AGREGAR / EDITAR CLIENTE ──────────── -->
@@ -10760,9 +10786,9 @@ window.sugGo = function(tab) { window.switchTab(tab, document.getElementById('bt
           <option value="">— Seleccionar —</option>
           <option value="binance">Binance</option><option value="binance_giftcard">Binance Giftcard</option>
           <option value="xbox_giftcard">Xbox Giftcard</option><option value="remitly">Remitly</option>
-          <option value="bybit">Bybit</option><option value="airtm">Airtm</option><option value="transferencia_mx">Transferencia MX</option>
-          <option value="spei">SPEI</option><option value="oxxo">OXXO</option>
-          <option value="mercado_pago">Mercado Pago</option><option value="cripto">Cripto</option>
+          <option value="bybit">Bybit</option><option value="transferencia_mx">Transferencia MX</option>
+          <option value="oxxo">OXXO</option>
+          <option value="cripto">Cripto</option>
         </select>
         <div class="payment-method-grid client-payment-grid" id="ac-payment-options" role="group" aria-label="Método de pago preferido"></div>
       </div>
