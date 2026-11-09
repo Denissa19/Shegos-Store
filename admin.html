@@ -2011,6 +2011,8 @@ window.doLogin = async function () {
 .sug-cta{margin-top:8px;padding:6px 11px;border:1px solid color-mix(in srgb,var(--sug-c) 45%,transparent);border-radius:9px;background:transparent;color:var(--sug-c);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}
 .sug-more{display:block;margin:12px auto 0;padding:9px 16px;border:1px solid var(--border2);border-radius:10px;background:transparent;color:var(--text2);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
 .sug-more[hidden]{display:none}.sug-empty{grid-column:1/-1;padding:14px;color:var(--text3);font-size:.84rem;text-align:center}
+.sug-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;display:inline-grid;place-items:center;border-radius:999px;background:#fb7185;color:#1a0508;font-style:normal;font-size:.68rem;font-weight:800;line-height:1}.sug-badge[hidden]{display:none}
+#tab-sugerencias .sug-card{margin-bottom:0}
 @media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{grid-template-columns:1fr;gap:8px}.sug-item{padding:10px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}}
 </style>
 <style id="mobile-latest-changes">
@@ -2071,6 +2073,7 @@ window.doLogin = async function () {
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-label">Espacio de trabajo</div>
+      <button class="tab-nav-btn" id="btn-tab-sugerencias" onclick="window.switchTab('sugerencias',this)"><i class="fas fa-lightbulb"></i><span>Sugerencias</span><em class="sug-badge" id="sug-badge" hidden></em></button>
       <button class="tab-nav-btn" id="btn-tab-notas" onclick="window.switchTab('notas',this)"><i class="fas fa-sticky-note"></i><span>Notas</span></button>
       <button class="tab-nav-btn" id="btn-tab-informacion-util" onclick="window.switchTab('informacion-util',this)"><i class="fas fa-circle-info"></i><span>Información útil</span></button>
     </div>
@@ -2166,13 +2169,6 @@ window.doLogin = async function () {
 
     <!-- ── TAB CUENTAS ─────────────────────────── -->
     <div class="tab-panel active" id="tab-cuentas">
-
-      <section class="sug-card" id="sug-card" aria-labelledby="sug-title">
-        <div class="sug-head"><div><span class="dash-eyebrow">Inicio · Sugerencias</span><h2 id="sug-title">Ideas para hoy</h2><p>Basadas en tus ventas, clientes y seguimientos.</p></div><button type="button" class="sug-refresh" onclick="window.renderSuggestions(true)" aria-label="Cambiar frase y actualizar" title="Actualizar"><i class="fas fa-rotate"></i></button></div>
-        <blockquote class="sug-quote" id="sug-quote"></blockquote>
-        <div class="sug-list" id="sug-list"><div class="sug-empty">Analizando tus datos…</div></div>
-        <button type="button" class="sug-more" id="sug-more" onclick="window.sugToggle()" hidden>Ver más ideas</button>
-      </section>
 
       <section class="sales-insights" aria-labelledby="sales-insights-title">
         <div class="sales-insights-heading"><div><span class="dash-eyebrow">Ventas · Tendencia</span><h2 id="sales-insights-title">Así se mueve la tienda</h2><p>Consulta el mes en curso o el período que selecciones en el calendario.</p></div><span class="sales-insights-period" id="sales-insights-period"></span></div>
@@ -2398,6 +2394,16 @@ window.doLogin = async function () {
         <div class="useful-card-heading"><div><h3>Métodos de pago</h3><p>Toca cualquier dato para copiarlo por separado. Confirma los datos con el staff antes de cada transacción.</p></div><button class="useful-copy-icon" aria-label="Copiar todos los métodos de pago" title="Copiar todo" type="button" onclick="window.copyPaymentAll()"><i class="fas fa-copy"></i></button></div>
         <div id="payment-methods-board" class="pay-board"></div>
         <div class="pay-notice"><i class="fas fa-triangle-exclamation"></i><p><strong>IMPORTANTE</strong> · Verifica siempre los datos con el staff antes de enviar dinero. No realices pagos a cuentas distintas de las autorizadas.</p></div>
+      </section>
+    </div>
+
+    <!-- ── TAB SUGERENCIAS ────────────────────── -->
+    <div class="tab-panel" id="tab-sugerencias">
+      <section class="sug-card" id="sug-card" aria-labelledby="sug-title">
+        <div class="sug-head"><div><span class="dash-eyebrow">Sugerencias</span><h2 id="sug-title">Ideas para hoy</h2><p>Basadas en tus ventas, clientes y seguimientos.</p></div><button type="button" class="sug-refresh" onclick="window.renderSuggestions(true)" aria-label="Cambiar frase y actualizar" title="Actualizar"><i class="fas fa-rotate"></i></button></div>
+        <blockquote class="sug-quote" id="sug-quote"></blockquote>
+        <div class="sug-list" id="sug-list"><div class="sug-empty">Analizando tus datos…</div></div>
+        <button type="button" class="sug-more" id="sug-more" onclick="window.sugToggle()" hidden>Ver más ideas</button>
       </section>
     </div>
 
@@ -5875,6 +5881,7 @@ function switchTab(tab, btn) {
   }
   if (tab === 'descuentos') window.loadCoupons(false);
   if (tab === 'informacion-util') populateUsefulInfo();
+  if (tab === 'sugerencias') { try { renderSuggestions(); } catch (_) {} }
   // Al entrar a Contabilidad se recargan sus cifras y registros.
   if (tab === 'contabilidad') {
     renderAccounting();
@@ -10713,7 +10720,8 @@ function renderSuggestions(shuffle) {
   if (shuffle === true) window._sugShuffle++;
   let r; try { r = sugBuild(); } catch (err) { console.warn('Sugerencias:', err); return; }
   const q = document.getElementById('sug-quote'); if (q) q.innerHTML = `<p>“${rvEsc(r.quote)}”</p>${r.resumen ? `<small>${rvEsc(r.resumen)}</small>` : ''}`;
-  const LIMIT = 4, show = window._sugExpanded ? r.items : r.items.slice(0, LIMIT);
+  const LIMIT = 50, show = window._sugExpanded ? r.items : r.items.slice(0, LIMIT);
+  const badge = document.getElementById('sug-badge'); if (badge) { const w = r.items.filter(i => i.tone === 'warn').length; badge.textContent = w; badge.hidden = !w; badge.title = w + ' por atender'; }
   list.innerHTML = show.length ? show.map(i => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}')">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
     : '<div class="sug-empty">Aún no hay suficientes datos para sugerencias. Registra ventas y clientes y aquí aparecerán ideas para mejorar.</div>';
   const more = document.getElementById('sug-more');
