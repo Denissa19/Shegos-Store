@@ -4722,11 +4722,12 @@ function paymentMethodIdentity(method) {
 // Logos de los métodos de pago (Get Logo). El token pub_ es público y está pensado para usarse en el navegador.
 const GETLOGO_TOKEN = 'pub_d8afba65caa8b467e85e71014b83bce1';
 const getLogo = domain => `https://getlogo.dev/logos/${domain}?token=${GETLOGO_TOKEN}`;
+const BINANCE_LOGO_URL = 'https://imgs.search.brave.com/FV-sUGK-cf2tHPC42G37_6qZH922UGG82qJMq_59pAU/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9sb2dv/ZG93bmxvYWQub3Jn/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzAzL2JpbmFuY2Ut/bG9nby0yLnBuZw';
 const SPEI_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/122019/spei.jpg?SdtDxplISZ9mV5CM1oWItlQ51Dl6ZA55&itok=_VmvrlD4';
 const OXXO_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/0008/9696/brand.gif?itok=8Qra579p';
 const PAYMENT_METHODS = [
-  {value:'binance',label:'Binance',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
-  {value:'binance_giftcard',label:'Binance Giftcard',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
+  {value:'binance',label:'Binance',logo:BINANCE_LOGO_URL,fallback:'B',color:'#f0b90b'},
+  {value:'binance_giftcard',label:'Binance Giftcard',logo:BINANCE_LOGO_URL,fallback:'B',color:'#f0b90b'},
   {value:'xbox_giftcard',label:'Xbox Giftcard',logo:getLogo('xbox.com'),fallback:'X',color:'#107c10'},
   {value:'remitly',label:'Remitly',logo:getLogo('remitly.com'),fallback:'R',color:'#2f6bed'},
   {value:'bybit',label:'Bybit',logo:getLogo('bybit.com'),fallback:'B',color:'#f7a600'},
@@ -4738,7 +4739,7 @@ const isTransferPayment = method => method === 'transferencia_mx' || method === 
 const LEGACY_PAYMENT_METHODS = {
   link:{label:'Link de Pago (histórico)',fallback:'↗',color:'#77808a'}, paypal:{label:'PayPal (histórico)',fallback:'P',color:'#0070ba'},
   popular:{label:'Banco Popular (histórico)',fallback:'B',color:'#e63946'}, transferencia_mx:{label:'Transferencia MX (histórico)',fallback:'T',color:'#a855f7'},
-  binance_pay:{label:'Binance Pay',logo:getLogo('binance.com'),fallback:'B',color:'#f0b90b'},
+  binance_pay:{label:'Binance Pay',logo:BINANCE_LOGO_URL,fallback:'B',color:'#f0b90b'},
   airtm:{label:'Airtm (histórico)',logo:getLogo('airtm.com'),fallback:'A',color:'#1685ff'},
   spei:{label:'SPEI (histórico)',logo:SPEI_LOGO_URL,fallback:'S',color:'#61a5ff'},
   mercado_pago:{label:'Mercado Pago (histórico)',logo:getLogo('mercadopago.com.mx'),fallback:'MP',color:'#00a0e3'}
