@@ -373,32 +373,6 @@ td{padding:12px 14px;vertical-align:middle}
   content: ''; flex: 1; height: 1px; background: var(--border);
 }
 
-/* Auto-parse colapsable */
-.vm-parse-toggle {
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer; padding: 9px 13px;
-  background: rgba(40,254,182,.06); border: 1px solid rgba(40,254,182,.18);
-  border-radius: 6px; transition: all .2s; margin-bottom: 14px;
-  user-select: none;
-}
-.vm-parse-toggle:hover { border-color: var(--accent); }
-.vm-parse-toggle-label {
-  display: flex; align-items: center; gap: 9px;
-  font-size: 0.75em; font-weight: 700; color: var(--accent);
-  text-transform: uppercase; letter-spacing: 1px;
-}
-.vm-parse-toggle .arrow {
-  color: var(--text3); font-size: .72em;
-  transition: transform .25s;
-}
-.vm-parse-toggle.open .arrow { transform: rotate(180deg); }
-.vm-parse-body {
-  display: none; margin-bottom: 14px;
-  background: rgba(40,254,182,.04); border: 1px solid rgba(40,254,182,.12);
-  border-top: none; border-radius: 0 0 6px 6px; padding: 12px;
-}
-.vm-parse-body.open { display: block; }
-
 /* Campo cliente con icono */
 .vm-client-wrap { position: relative; }
 .vm-client-wrap .finput { padding-right: 36px; }
@@ -2917,20 +2891,6 @@ window.doLogin = async function () {
 
     <div class="mbody" style="padding:22px 26px">
 
-      <!-- Auto-parse toggle -->
-      <div class="vm-parse-toggle" id="vm-parse-toggle" onclick="window.vmToggleParse()">
-        <div class="vm-parse-toggle-label">
-          <i class="fas fa-magic"></i> Auto-rellenar desde Discord / WhatsApp
-        </div>
-        <i class="fas fa-chevron-down arrow"></i>
-      </div>
-      <div class="vm-parse-body" id="vm-parse-body">
-        <label class="flabel" style="margin-bottom:6px">Pega el mensaje y los campos se llenan solos</label>
-        <textarea class="ftarea" id="vc-f-parse" style="height:72px;margin-bottom:0"
-          placeholder="Pega el texto aquí..."
-          oninput="window.parseVentaAutomatica(this.value)"></textarea>
-      </div>
-
       <!-- Tipo de venta (chips) -->
       <div class="fgroup">
         <label class="flabel">Tipo de Venta *</label>
@@ -4714,6 +4674,11 @@ function calcularPanelLocal(period) {
 // Guarda el último panel cargado (lo usa exportAccounting y renderSaldoMetodo)
 let _ultimoPanelContabilidad = null;
 
+function paymentMethodLogoOnly(method) {
+  const item = PAYMENT_METHODS.find(x => x.value === method) || LEGACY_PAYMENT_METHODS[method] || { label: String(method || 'Otro').replaceAll('_', ' '), fallback: '•', color: '#9aa3a0' };
+  const label = gestionEscape(item.label);
+  return '<span class="meth-identity meth-logo-only" role="img" title="' + label + '" aria-label="' + label + '" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '</span>';
+}
 function paymentMethodIdentity(method) {
   const item = PAYMENT_METHODS.find(x => x.value === method) || LEGACY_PAYMENT_METHODS[method] || { label: String(method || 'Otro').replaceAll('_', ' '), fallback: '•', color: '#9aa3a0' };
   return '<span class="meth-identity" style="--meth-color:' + item.color + '">' + paymentLogoMarkup(item, 'meth-logo-img') + '<span class="meth-name">' + item.label + '</span></span>';
@@ -4722,13 +4687,14 @@ function paymentMethodIdentity(method) {
 // Logos de los métodos de pago (Get Logo). El token pub_ es público y está pensado para usarse en el navegador.
 const GETLOGO_TOKEN = 'pub_d8afba65caa8b467e85e71014b83bce1';
 const getLogo = domain => `https://getlogo.dev/logos/${domain}?token=${GETLOGO_TOKEN}`;
-const BINANCE_LOGO_URL = 'https://imgs.search.brave.com/FV-sUGK-cf2tHPC42G37_6qZH922UGG82qJMq_59pAU/rs:fit:0:180:1:0/g:ce/aHR0cHM6Ly9sb2dv/ZG93bmxvYWQub3Jn/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIx/LzAzL2JpbmFuY2Ut/bG9nby0yLnBuZw';
+const XBOX_LOGO_URL = 'https://imgs.search.brave.com/u7d5JfKwzxjd4jDWcH1f3phlxv5Zs_d6iU5pZ8i9ipA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMtbmEuc3NsLWlt/YWdlcy1hbWF6b24u/Y29tL2ltYWdlcy9J/LzYxN1hBeVdCTExM/LmpwZw';
+const BINANCE_LOGO_URL = 'https://cdn.simpleicons.org/binance/000000';
 const SPEI_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/122019/spei.jpg?SdtDxplISZ9mV5CM1oWItlQ51Dl6ZA55&itok=_VmvrlD4';
 const OXXO_LOGO_URL = 'https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/0008/9696/brand.gif?itok=8Qra579p';
 const PAYMENT_METHODS = [
   {value:'binance',label:'Binance',logo:BINANCE_LOGO_URL,fallback:'B',color:'#f0b90b'},
   {value:'binance_giftcard',label:'Binance Giftcard',logo:BINANCE_LOGO_URL,fallback:'B',color:'#f0b90b'},
-  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:getLogo('xbox.com'),fallback:'X',color:'#107c10'},
+  {value:'xbox_giftcard',label:'Xbox Giftcard',logo:XBOX_LOGO_URL,fallback:'X',color:'#107c10'},
   {value:'remitly',label:'Remitly',logo:getLogo('remitly.com'),fallback:'R',color:'#2f6bed'},
   {value:'bybit',label:'Bybit',logo:getLogo('bybit.com'),fallback:'B',color:'#f7a600'},
   {value:'transferencia_mx',label:'Transferencia MX',logo:SPEI_LOGO_URL,fallback:'MX',color:'#38bdf8'},
@@ -6831,64 +6797,6 @@ function renderGananciaChart(sumGanancia) {
   }).join('');
 }
 
-// Bug 2 fix: implement parseVentaAutomatica
-function parseVentaAutomatica(txt) {
-  if (!txt || txt.length < 5) return;
-  const platformMap = { fnes_pc:'PC', pc:'PC', xbox:'Xbox', nintendo:'Nintendo Switch', switch:'Nintendo Switch', playstation:'PlayStation', ps:'PlayStation' };
-  const emojiRx = /<:([^:]+):\d+>/gi;
-  const platforms = [];
-  let em;
-  while ((em = emojiRx.exec(txt)) !== null) {
-    const key = em[1].toLowerCase();
-    const label = Object.keys(platformMap).find(k => key.includes(k));
-    if (label && !platforms.includes(platformMap[label])) platforms.push(platformMap[label]);
-  }
-
-  // Detect tipo from keywords
-  const txtL = txt.toLowerCase();
-  let tipoDetectado = '';
-  const streamingKeywords = ['netflix','hbo','max platino','disney','prime video','spotify','crunchyroll','paramount','vix','viki','claro video','universal+','streaming'];
-  if (txtL.includes('regalo')) tipoDetectado = 'Venta via regalo';
-  else if (txtL.includes('club')) tipoDetectado = 'Club de fortnite';
-  else if (txtL.includes('pav') || txtL.includes('vbuck') || txtL.includes('v-buck')) tipoDetectado = 'Recarga de pavos';
-  else if (txtL.includes('pack')) tipoDetectado = 'Packs';
-  else if (streamingKeywords.some(k => txtL.includes(k))) tipoDetectado = 'Streaming';
-  else if (platforms.length > 0 || txtL.includes('cuenta') || txtL.includes('skin')) tipoDetectado = 'Cuenta de fortnite';
-
-  // Price
-  let precio = 0, moneda = 'USD';
-  const priceRx = /[\-\*]?\s*\$?([\d]+(?:[.,]\d+)?)\s*(mx|mxn|usd|dlls?)?/i;
-  const pm = txt.match(priceRx);
-  if (pm) {
-    precio = parseFloat(pm[1].replace(',','.')) || 0;
-    moneda = /mx|mxn/i.test(pm[2]||'') ? 'MXN' : 'USD';
-  }
-
-  // Title
-  const titulo = txt.replace(/<:[^>]+>/g, '').replace(/[\-\*•]\s*[\d.,]+\s*(mx|mxn|usd|dlls?)?[^\n]*/gi,'')
-    .replace(/es el (precio|titulo|nombre).*/gi,'').replace(/que son las plataformas.*/gi,'').replace(/\s+/g,' ').trim();
-
-  // Fill form
-  if (tipoDetectado) {
-    document.getElementById('vc-f-tipo').value = tipoDetectado;
-    document.querySelectorAll('.vm-tipo-chip').forEach(c => {
-      c.classList.toggle('active', c.dataset.tipo === tipoDetectado);
-    });
-    window.toggleVentaFields();
-  }
-  if (precio > 0) {
-    document.getElementById('vc-f-ingreso').value = precio.toFixed(2);
-    const currency=document.getElementById('vc-f-moneda'); if(currency)currency.value=moneda;
-  }
-
-  const notasParts = [];
-  if (titulo) notasParts.push(titulo);
-  if (platforms.length) notasParts.push(`Plataformas: ${platforms.join(' | ')}`);
-  if (moneda === 'MXN') notasParts.push(`Precio original: ${precio} MXN`);
-  document.getElementById('vc-f-notas').value = notasParts.join('\n');
-  window.calcVentaMargen();
-}
-
 // Bug 10 fix: renderVentas is role-aware, no longer references vc-method-breakdown (Bug 6)
 function renderVentas() {
   const area = document.getElementById('vc-table-area');
@@ -6950,7 +6858,7 @@ function renderVentas() {
       <td class="td-date m-det" data-label="Fecha">${vcLocalDay(v.created_at)}</td>
       <td class="m-a"><span class="badge" style="background:${cfg.color}22;color:${cfg.color};border:1px solid ${cfg.color}44">${cfg.label}</span></td>
       <td class="m-c" style="color:var(--text2);font-size:0.85em">${v.cliente || '—'}</td>
-      <td class="m-d">${paymentMethodIdentity(paymentMethodFromDb(v.metodo_pago))}</td>
+      <td class="m-d">${paymentMethodLogoOnly(paymentMethodFromDb(v.metodo_pago))}</td>
       <td class="td-money m-b" style="color:var(--accent)">$${ingresoVal.toFixed(2)} USD</td>
       <td class="m-det" data-label="Descuento">${v.cupon_codigo ? `<span class="coupon-code">-${Number(v.descuento_porcentaje||0)}% ${couponEscape(v.cupon_codigo)}</span>` : '—'}</td>`;
 
@@ -7017,7 +6925,6 @@ function openVentaModal() {
   window.clearSaleCoupon();
   const couponBox=document.getElementById('sale-coupon-box');if(couponBox)couponBox.style.display='';
   document.getElementById('vc-m-title').textContent = 'Nueva Venta';
-  document.getElementById('vc-f-parse').value = '';
   // Reset chips
   document.querySelectorAll('.vm-tipo-chip').forEach(c => c.classList.remove('active'));
   document.getElementById('vc-f-tipo').value = '';
@@ -7092,7 +6999,6 @@ window.editVenta = async function(id) {
   window.clearSaleCoupon();
   const saleCouponBox=document.getElementById('sale-coupon-box');
   if(saleCouponBox){saleCouponBox.style.display='';const status=document.getElementById('sale-coupon-status');if(v.cupon_codigo){document.getElementById('sale-coupon-code').value=v.cupon_codigo;document.getElementById('sale-coupon-code').disabled=true;document.getElementById('sale-coupon-apply').hidden=true;status.textContent=`Cupón existente: -${Number(v.descuento_porcentaje||0)}% (${Number(v.descuento_usd||0).toFixed(2)} USD). No se puede cambiar al editar.`;status.dataset.kind='success';}else{saleCouponBox.style.display='none';}}
-  document.getElementById('vc-f-parse').value = '';
   // Restore tipo via chips
   const tipoVal = v.tipo || '';
   document.querySelectorAll('.vm-tipo-chip').forEach(c => {
@@ -7262,13 +7168,6 @@ window.vmSelectTipo = function(chip) {
   const tipo = chip.dataset.tipo;
   document.getElementById('vc-f-tipo').value = tipo;
   window.toggleVentaFields();
-};
-
-window.vmToggleParse = function() {
-  const toggle = document.getElementById('vm-parse-toggle');
-  const body = document.getElementById('vm-parse-body');
-  toggle.classList.toggle('open');
-  body.classList.toggle('open');
 };
 
 window.toggleVentaFields = function() {
@@ -8945,7 +8844,6 @@ window.renderVentas = renderVentas;
 window.openVentaModal = openVentaModal;
 window.closeVentaModal = closeVentaModal;
 window.deleteVenta = deleteVenta;
-window.parseVentaAutomatica = parseVentaAutomatica;
 window.vcClearDates = vcClearDates;
 window.vcQuickRange = vcQuickRange;
 
@@ -9374,7 +9272,6 @@ window.clearOrderProd = function() {
 };
 window.exportVentasCSV = exportVentasCSV;
 window.vmSelectTipo = window.vmSelectTipo;
-window.vmToggleParse = window.vmToggleParse;
 window.vmUpdateTotal = window.vmUpdateTotal;
 window.vmHandleDrop = window.vmHandleDrop;
 window.vmClearReceipt = window.vmClearReceipt;
@@ -9777,7 +9674,7 @@ window.renderClientesTab = async function(mode) {
               <td class="m-det" data-label="Invitados"><span class="referral-count-badge">${referralCounts[String(c.id)] || 0}</span></td>
               <td class="m-b" data-label="Método">
                 ${c.metodo
-                  ? `<span class="badge b-proc" style="font-size:0.72em;display:inline-flex;align-items:center;gap:7px">${paymentMethodIdentity(c.metodo)}</span>`
+                  ? paymentMethodLogoOnly(c.metodo)
                   : `<span style="color:var(--text3);font-size:0.78em">—</span>`}
               </td>
               <td class="m-det" data-label="Reseña">${resenaCell(c)}</td>
