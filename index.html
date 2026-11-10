@@ -2147,7 +2147,7 @@
         .club-hero-nota { font-size: .78em; font-style: italic; color: #c9a6ff; margin: 0 0 22px; }
         .club-hero-btn { background: #f5e50a; color: #1a1a1a; border: none; padding: 15px 30px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: transform .2s ease, filter .2s ease; }
         .club-hero-btn:hover { transform: translateY(-2px); filter: brightness(1.08); }
-        .vb-cards-6 { grid-template-columns: repeat(6, 1fr); }
+        .vb-cards-6 { grid-template-columns: repeat(5, 1fr); max-width: 1040px; align-self: center; margin-left: auto; margin-right: auto; }
         @media (max-width: 1100px) { .vb-cards-6 { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 700px) { .vb-cards-6 { display: flex; } }
         .club-hero-img { border-radius: 14px; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,.55); background: linear-gradient(135deg, rgba(150,40,80,.5), rgba(50,25,100,.5)); }
@@ -4695,6 +4695,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   #sub-club .club-hero-btn { width:100%; max-width:320px; }
 }
 @media(prefers-reduced-motion:reduce) { #menu-servicios > div > .producto img { transition:none; } }
+/* ===== Organización tipo catálogo (V-Bucks, Cuentas con pavos y Crew) ===== */
+.pk-title{display:flex;align-items:center;gap:16px;margin:38px 0 4px;padding:0;border:0;color:#fff;font-family:'Anton','Bebas Neue',Impact,sans-serif;font-weight:400;font-size:clamp(1.7rem,3.2vw,2.3rem);letter-spacing:.03em;text-transform:uppercase}
+.pk-title::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(112,255,0,.6),rgba(255,255,255,0))}
+.pk-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:20px!important;justify-content:stretch!important;max-width:1180px;margin:18px auto 0!important}
+.pk-grid .servicio-card{width:100%!important;height:auto;padding:0!important;overflow:hidden;text-align:left;border-radius:14px;background:#101310;border:1px solid rgba(255,255,255,.1);align-self:stretch}
+.pk-grid .servicio-card>img{display:block;width:100%!important;height:auto!important;aspect-ratio:2/3!important;object-fit:cover!important;margin:0!important;border-radius:0!important}
+.pk-grid.club-grid-3 .servicio-card>img{aspect-ratio:16/9!important}
+.pk-grid .servicio-card>:not(img){margin-left:16px!important;margin-right:16px!important}
+.pk-grid .servicio-card>:not(img):last-child{margin-bottom:16px!important}
+.pk-grid .servicio-card>strong{margin-top:14px!important;margin-bottom:2px!important;font-size:1.15em!important}
+.pk-grid .servicio-card{position:relative}
+.pk-grid .servicio-card>span[style*="inline-block"]{position:absolute;top:10px;left:10px;z-index:2;margin:0!important}
+.pk-grid .servicio-card .precio-producto{margin-bottom:12px!important;color:#70ff00;font-size:1.35em!important;font-weight:800}
+.pk-grid .servicio-card .btn-outline-mint,.pk-grid .servicio-card .btn-secundario{width:auto}
+.vb-cards-6 .club-card-img{aspect-ratio:2/3}
+@media(max-width:1000px){.pk-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}}
+/* Portadas del menú de Servicios: proporción 16:9 para que la imagen no se recorte */
+#menu-servicios > div > .producto{aspect-ratio:16/9;min-height:0!important;height:auto!important}
 </style>
 </head>
 <body>
@@ -5097,7 +5115,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">V-Bucks</strong>
                     </div>
                     <div class="producto" style="display: flex; flex-direction: column; padding: 0; cursor: pointer; background: transparent; border: none; align-items: center; width: 100%; box-shadow: none; transition: transform 0.3s ease;" onclick="mostrarSubServicio('club')">
-                        <img loading="lazy" decoding="async" src="https://cms-assets.unrealengine.com/cm6l5gfpm05kr07my04cqgy2x/resize=width:1024/quality=value:80/output=format:webp/cmvpppg2w8bv507mybebtc2gb" width="1280" height="720" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" width="1280" height="720" alt="Fortnite Crew" id="img-club-cover" class="img-servicio-premium" style="width: 100%; aspect-ratio: 16 / 9; height: auto; object-fit: cover;">
                         <strong style="font-size: 1.4em; margin-top: 10px; color: #fff; display: block; width: 100%; text-align: center;">Fortnite Crew</strong>
                     </div>
                 </div>
@@ -5119,28 +5137,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                     </div>
                     <div class="club-cards vb-cards-6">
                         <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" alt="2.400 V-Bucks"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="assets/vbucks-2400.jpg" alt="2.400 V-Bucks"></div>
                             <div class="club-card-label"><span>2.400 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" alt="4.500 V-Bucks"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="assets/vbucks-4500.jpg" alt="4.500 V-Bucks"></div>
                             <div class="club-card-label"><span>4.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" alt="12.500 V-Bucks"></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="assets/vbucks-12500.jpg" alt="12.500 V-Bucks"></div>
                             <div class="club-card-label"><span>12.500 V-Bucks</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 12.500"></div>
-                            <div class="club-card-label"><span>Cuenta con 12.500</span><i class="fas fa-chevron-right"></i></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="assets/vbucks-12500.jpg" alt="Cuenta con 12.500"></div>
+                            <div class="club-card-label"><span>Cuenta 12.500</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                         <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 25.000"></div>
-                            <div class="club-card-label"><span>Cuenta con 25.000</span><i class="fas fa-chevron-right"></i></div>
-                        </div>
-                        <div class="club-card" role="button" tabindex="0" onclick="vbIrAPrecios()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();vbIrAPrecios();}">
-                            <div class="club-card-img"><img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 50.000"></div>
-                            <div class="club-card-label"><span>Cuenta con 50.000</span><i class="fas fa-chevron-right"></i></div>
+                            <div class="club-card-img"><img loading="lazy" decoding="async" src="assets/vbucks-25000.jpg" alt="Cuenta con 25.000"></div>
+                            <div class="club-card-label"><span>Cuenta 25.000</span><i class="fas fa-chevron-right"></i></div>
                         </div>
                     </div>
                     <button class="club-scroll-arrow" onclick="vbIrAPrecios()" aria-label="Ver precios"><i class="fas fa-arrow-down"></i></button>
@@ -5149,73 +5163,65 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 <!-- PRECIOS (aparecen al deslizar) -->
                 <section id="vb-precios" class="club-precios">
                     <div class="club-panel activo">
-                <h4 class="vb-subtitle">Elige tu cantidad</h4>
+                <h4 class="pk-title">Recargas</h4>
                 <!-- ── SECCIÓN 1: CANTIDADES DE V-BUCKS ── -->
-                <div class="servicios-flex-container">
+                <div class="servicios-flex-container pk-grid">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_2400-1-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
+                        <img loading="lazy" decoding="async" src="assets/vbucks-2400.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">2.400 V-Bucks</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Recarga</span>
                         <span class="precio-producto" data-precio-usd="21">$21 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
                             <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="22.99">$23 USD PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('2.400', '192')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta 2,400 V-Bucks" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '21', 'https://fortnite-api.com/images/vbuck.png', '2400', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 2,400 V-Bucks" onclick="agregarAlCarrito('Cuenta 2,400 V-Bucks', '21', 'assets/vbucks-2400.jpg', '2400', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_4500-330x404.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
+                        <img loading="lazy" decoding="async" src="assets/vbucks-4500.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">4.500 V-Bucks</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Recarga</span>
                         <span class="precio-producto" data-precio-usd="30">$30 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
                             <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="36.99">$37 USD PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('4.500', '360')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta 4,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '30', 'https://fortnite-api.com/images/vbuck.png', '4500', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 4,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 4,500 V-Bucks', '30', 'assets/vbucks-4500.jpg', '4500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card" style="border-color: #70ff00;">
                         <span style="background: #70ff00; color: #070907; font-size: 0.7em; font-weight: bold; padding: 2px 10px; border-radius: 10px; margin-bottom: 8px; display: inline-block;">MÁS VENDIDO✦✦</span>
-                        <img loading="lazy" decoding="async" src="https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Vbucks</span>
+                        <img loading="lazy" decoding="async" src="assets/vbucks-12500.jpg" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500 V-Bucks</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Recarga</span>
                         <span class="precio-producto" data-precio-usd="65">$65 USD</span>
                         <div style="font-size: 0.75em; color: #888; margin: 6px 0;">
                             <span style="text-decoration: line-through;" class="precio-regular-producto" data-precio-regular-usd="89.99">$90 USD PRECIO REGULAR</span>
                         </div>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta 12,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '65', 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', '12500', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta 12,500 V-Bucks" onclick="agregarAlCarrito('Cuenta 12,500 V-Bucks', '65', 'assets/vbucks-12500.jpg', '12500', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
 
                 <!-- ── SECCIÓN 2: CUENTAS CON PAVOS ── -->
-                <h4 style="color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px;">Cuentas con Pavos</h4>
+                <h4 class="pk-title">Cuentas con pavos</h4>
                 <p style="font-size: 0.8em; color: #888; margin-bottom: 15px;">Se entrega la cuenta con los pavos ya disponibles.</p>
 
-                <div class="servicios-flex-container">
+                <div class="servicios-flex-container pk-grid">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 12.500 pavos" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Pavos · Cuenta con pavos</span>
+                        <img loading="lazy" decoding="async" src="assets/vbucks-12500.jpg" alt="Cuenta con 12.500 pavos" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">12.500 V-Bucks</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Cuenta con pavos</span>
                         <span class="precio-producto" data-precio-usd="56.17977528">$1,000 MXN</span>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('12.500', '1000', 'cuenta-con-pavos')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 12500 Pavos" onclick="agregarAlCarrito('Cuenta Con 12500 Pavos', '56.17977528', 'https://fortnite-api.com/images/vbuck.png', '12500', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 12500 Pavos" onclick="agregarAlCarrito('Cuenta Con 12500 Pavos', '56.17977528', 'assets/vbucks-12500.jpg', '12500', 'cuenta', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 25.000 pavos" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">25.000</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Pavos · Cuenta con pavos</span>
+                        <img loading="lazy" decoding="async" src="assets/vbucks-25000.jpg" alt="Cuenta con 25.000 pavos" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
+                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">25.000 V-Bucks</strong>
+                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Cuenta con pavos</span>
                         <span class="precio-producto" data-precio-usd="95.50561798">$1,700 MXN</span>
                         <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('25.000', '1700', 'cuenta-con-pavos')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 25000 Pavos" onclick="agregarAlCarrito('Cuenta Con 25000 Pavos', '95.50561798', 'https://fortnite-api.com/images/vbuck.png', '25000', 'cuenta', event)">+ Carrito</button>
-                    </div>
-                    <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="https://fortnite-api.com/images/vbuck.png" alt="Cuenta con 50.000 pavos" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin: 0 auto 10px auto; display: block;">
-                        <strong style="font-size: 1.5em; display: block; margin: 5px 0;">50.000</strong>
-                        <span style="color: #aaa; font-size: 0.8em; display: block; margin-bottom: 10px;">Pavos · Cuenta con pavos</span>
-                        <span class="precio-producto" data-precio-usd="185.39325843">$3,300 MXN</span>
-                        <button class="btn-secundario" style="margin: 10px 0; padding: 8px 15px; font-size: 0.8em; border-radius: 5px;" onclick="abrirInfoPavos('50.000', '3300', 'cuenta-con-pavos')">MÁS INFORMACIÓN</button>
-                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 50000 Pavos" onclick="agregarAlCarrito('Cuenta Con 50000 Pavos', '185.39325843', 'https://fortnite-api.com/images/vbuck.png', '50000', 'cuenta', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Cuenta Con 25000 Pavos" onclick="agregarAlCarrito('Cuenta Con 25000 Pavos', '95.50561798', 'assets/vbucks-25000.jpg', '25000', 'cuenta', event)">+ Carrito</button>
                     </div>
                 </div>
                 </div>
@@ -5281,43 +5287,44 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
                 <!-- PRECIOS (aparecen al deslizar) -->
                 <section id="club-precios" class="club-precios">
                     <div id="club-panel-nuevo" class="club-panel activo">
+                <h4 class="pk-title">Fortnite Crew</h4>
                 <p class="club-panel-desc">Para cuentas que no tienen problemas de región. Se usa el método Xbox, sin pedirte datos de acceso.</p>
-                <div class="club-grid-3">
+                <div class="club-grid-3 pk-grid">
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>1 Mes de Club</strong>
                         <span class="precio-producto" data-precio-usd="7">$7 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 1 Mes" onclick="agregarAlCarrito('Club (Sin Error) - 1 Mes', '7', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>2 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="13">$13 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 2 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 2 Meses', '13', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>3 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="18">$18 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 3 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 3 Meses', '18', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>4 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="24">$24 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 4 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 4 Meses', '24', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>5 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="28">$28 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 5 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 5 Meses', '28', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                     <div class="servicio-card">
-                        <img loading="lazy" decoding="async" src="assets/club-mortuus-x-octubre.png" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
+                        <img loading="lazy" decoding="async" src="https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium" alt="Paquete de Fortnite Crew: Mortuus X" class="club-img-16-9">
                         <strong>6 Meses de Club</strong>
                         <span class="precio-producto" data-precio-usd="33">$33 USD</span>
-                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'assets/club-mortuus-x-octubre.png', '0', 'club', event)">+ Carrito</button>
+                        <button class="btn-outline-mint" data-item-nombre="Club (Sin Error) - 6 Meses" onclick="agregarAlCarrito('Club (Sin Error) - 6 Meses', '33', 'https://cdn1.epicgames.com/offer/fn/FNECO_43-00_November_Crew_Lineup_EGS_Launcher_PDPCarousel_2560x1440_2560x1440-2f253219679c47c1aa12625b379c6bef?resize=1&amp;w=1280&amp;h=720&amp;quality=medium', '0', 'club', event)">+ Carrito</button>
                     </div>
                 </div>
 
@@ -8366,7 +8373,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
         }
 
         // V-Bucks destacado (12.500): mismos datos que su tarjeta de abajo
-        var VB_DESTACADO = { n: 'Cuenta 12,500 V-Bucks', p: '65', i: 'https://dixgamer.com/wp-content/uploads/2018/06/fortnite-pavos_12500-1.jpg', v: '12500' };
+        var VB_DESTACADO = { n: 'Cuenta 12,500 V-Bucks', p: '65', i: 'assets/vbucks-12500.jpg', v: '12500' };
         function vbucksAgregar(ev) {
             agregarAlCarrito(VB_DESTACADO.n, VB_DESTACADO.p, VB_DESTACADO.i, VB_DESTACADO.v, 'cuenta', ev);
         }
