@@ -2150,7 +2150,6 @@ window.doLogin = async function () {
     <button type="button" class="sidebar-toggle" aria-label="Abrir menú" aria-expanded="false" onclick="window.toggleAdminSidebar()"><i class="fas fa-bars"></i></button><div class="topbar-brand">Panel de gestión</div>
     <div class="topbar-right">
       <button type="button" class="notif-bell" id="notif-bell" aria-label="Notificaciones" aria-haspopup="dialog" aria-expanded="false" aria-controls="notif-panel" title="Notificaciones" onclick="window.toggleNotifCenter(event)"><i class="fas fa-bell"></i><span class="notif-badge" id="notif-badge" hidden>0</span></button>
-      <div class="topbar-revenue" id="topbar-rev"></div>
       <div class="topbar-revenue" id="topbar-user" style="font-size:0.72em;color:var(--text2)"></div>
       <button class="btn-logout" onclick="window.openWallpaperPicker()" title="Cambiar fondo" style="border-color:var(--border2);margin-right:4px">
         <i class="fas fa-image"></i>
@@ -4643,17 +4642,8 @@ function updateStats() {
     else if (o.estado === 'Cancelado') cancel++;
   });
 
-  // Also include ventas income (completed/ingreso) in total revenue
-  let ventasRevenue = 0;
-  currentVentas.forEach(v => {
-    ventasRevenue += (parseFloat(v.ingreso) || 0);
-  });
-  const totalRevenue = revenue + ventasRevenue;
-
   const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
   setText('s-pend',pend); setText('s-proc',proc); setText('s-done',done); setText('s-cancel',cancel); setText('s-total',currentOrders.length);
-  const revenueEl=document.getElementById('topbar-rev');
-  if(revenueEl)revenueEl.innerHTML=`Ingresos Totales: <strong>$${totalRevenue.toFixed(2)} USD</strong>`;
 }
 
 function renderTable() {
