@@ -339,7 +339,7 @@ td{padding:12px 14px;vertical-align:middle}
 /* Selector de tipo como chips visuales */
 .vm-tipo-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
 .vm-tipo-chip {
-  flex: 1; min-width: 120px;
+  flex: 1; min-width: 100px;
   background: var(--bg); border: 1px solid var(--border2);
   color: var(--text2); padding: 10px 12px; border-radius: 6px;
   cursor: pointer; transition: all .2s; font-family: var(--font-body);
@@ -357,8 +357,9 @@ td{padding:12px 14px;vertical-align:middle}
 .vm-tipo-chip[data-tipo="Club de fortnite"] { --sale-type-color:#c084fc; }
 .vm-tipo-chip[data-tipo="Recarga de pavos"] { --sale-type-color:#fbbf24; }
 .vm-tipo-chip[data-tipo="Venta via regalo"] { --sale-type-color:#fb7185; }
-.vm-tipo-chip[data-tipo="Cuenta de fortnite"],.vm-tipo-chip[data-tipo="Club de fortnite"],.vm-tipo-chip[data-tipo="Recarga de pavos"],.vm-tipo-chip[data-tipo="Venta via regalo"] { color:var(--sale-type-color); border-color:color-mix(in srgb,var(--sale-type-color) 48%,var(--border2)); }
-.vm-tipo-chip[data-tipo="Cuenta de fortnite"].active,.vm-tipo-chip[data-tipo="Club de fortnite"].active,.vm-tipo-chip[data-tipo="Recarga de pavos"].active,.vm-tipo-chip[data-tipo="Venta via regalo"].active { color:var(--sale-type-color); border-color:var(--sale-type-color); background:color-mix(in srgb,var(--sale-type-color) 16%,var(--bg)); box-shadow:0 0 12px color-mix(in srgb,var(--sale-type-color) 24%,transparent); }
+.vm-tipo-chip[data-tipo="Packs"] { --sale-type-color:#2dd4bf; }
+.vm-tipo-chip[data-tipo="Cuenta de fortnite"],.vm-tipo-chip[data-tipo="Club de fortnite"],.vm-tipo-chip[data-tipo="Recarga de pavos"],.vm-tipo-chip[data-tipo="Venta via regalo"],.vm-tipo-chip[data-tipo="Packs"] { color:var(--sale-type-color); border-color:color-mix(in srgb,var(--sale-type-color) 48%,var(--border2)); }
+.vm-tipo-chip[data-tipo="Cuenta de fortnite"].active,.vm-tipo-chip[data-tipo="Club de fortnite"].active,.vm-tipo-chip[data-tipo="Recarga de pavos"].active,.vm-tipo-chip[data-tipo="Venta via regalo"].active,.vm-tipo-chip[data-tipo="Packs"].active { color:var(--sale-type-color); border-color:var(--sale-type-color); background:color-mix(in srgb,var(--sale-type-color) 16%,var(--bg)); box-shadow:0 0 12px color-mix(in srgb,var(--sale-type-color) 24%,transparent); }
 
 /* Separador de secciones */
 .vm-sep {
@@ -2576,6 +2577,12 @@ window.doLogin = async function () {
       </section>
         <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
+    <section class="coupon-panel ref-panel" id="referrals-panel">
+      <div class="coupon-panel-heading"><i class="fas fa-user-group"></i><div><strong>Shegos Referrals</strong><small>Invita y desbloquea cupones por invitados que sí compran.</small></div></div>
+      <div id="ref-head"></div>
+      <div class="ref-list" id="ref-list"><div class="ref-empty"><i class="fas fa-circle-notch fa-spin"></i> Cargando…</div></div>
+      <div class="ref-more" id="ref-more"></div>
+    </section>
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
@@ -3031,6 +3038,9 @@ window.doLogin = async function () {
           </button>
           <button type="button" class="vm-tipo-chip" data-tipo="Recarga de pavos" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-coins"></i>Pavos
+          </button>
+          <button type="button" class="vm-tipo-chip" data-tipo="Packs" onclick="window.vmSelectTipo(this)">
+            <i class="fas fa-box-open"></i>Packs
           </button>
           <button type="button" class="vm-tipo-chip" data-tipo="Venta via regalo" onclick="window.vmSelectTipo(this)">
             <i class="fas fa-gift"></i>Regalo
@@ -5841,6 +5851,119 @@ window.createCoupon=async function(){
   }catch(error){console.error('No se pudo generar el cupón:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
   finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar código';}}
 };
+
+/* ══ SHEGOS REFERRALS ══ */
+const REFERRAL_RULES = {
+  tiers: [{ invites: 2, pct: 3 }, { invites: 5, pct: 5 }, { invites: 10, pct: 8 }],
+  minMxn: 385, minUsd: 20.62,   // misma compra mínima de los demás cupones
+  minMarginPct: 15              // no aplica si, ya con el descuento, el margen queda por debajo de este %
+};
+function refKeys(c){
+  const k=[], n=normalizeClientName(c.nombre||''); if(n)k.push('n:'+n);
+  const w=String(c.wa||'').replace(/\D/g,''); if(w.length>=7)k.push('w:'+w.slice(-10));
+  const d=String(c.discordId||'').trim().toLowerCase(); if(d)k.push('d:'+d);
+  const e=String(c.epicId||'').trim().toLowerCase(); if(e)k.push('e:'+e);
+  return k;
+}
+function refClusters(list){
+  const parent=list.map((_,i)=>i), find=i=>{while(parent[i]!==i){parent[i]=parent[parent[i]];i=parent[i];}return i;}, seen=new Map();
+  list.forEach((c,i)=>refKeys(c).forEach(k=>{ if(seen.has(k))parent[find(i)]=find(seen.get(k)); else seen.set(k,i); }));
+  return list.map((_,i)=>find(i));
+}
+function referralBuild(){
+  const cl=(typeof getClientes==='function'?getClientes():clientesCache)||[];
+  const buys=new Set();
+  (currentVentas||[]).filter(v=>v.estado!=='Cancelado'&&(parseFloat(v.ingreso)||0)>0).forEach(v=>{
+    const n=normalizeClientName(v.cliente||''); if(n)buys.add('n:'+n);
+    const w=String(v.whatsapp||'').replace(/\D/g,''); if(w.length>=7)buys.add('w:'+w.slice(-10));
+  });
+  const cluster=refClusters(cl), buyer=new Set();
+  cl.forEach((c,i)=>{ if(refKeys(c).some(k=>buys.has(k)))buyer.add(cluster[i]); });
+  const byId=new Map(cl.map((c,i)=>[String(c.id),i])), taken=new Set(), out=new Map();
+  cl.forEach((c,i)=>{
+    let rid=c.referidoPorId?String(c.referidoPorId):'';
+    if(!rid&&c.referidoPor){const r=cl.find(x=>normalizeClientName(x.nombre)===normalizeClientName(c.referidoPor));if(r)rid=String(r.id);}
+    if(!rid||!byId.has(rid))return;
+    const ri=byId.get(rid), rc=cluster[ri];
+    if(rc===cluster[i]||taken.has(cluster[i]))return;   // auto-referido o persona ya contada (duplicada)
+    taken.add(cluster[i]);
+    const o=out.get(rc)||{id:cl[ri].id,nombre:cl[ri].nombre,registered:0,valid:0};
+    o.registered++; if(buyer.has(cluster[i]))o.valid++;
+    out.set(rc,o);
+  });
+  return [...out.values()].sort((a,b)=>b.valid-a.valid||b.registered-a.registered);
+}
+function referralCoupons(name){
+  const n=normalizeClientName(name||''), now=new Date();
+  const list=(window._couponData||[]).filter(c=>c.categoria==='referidos'&&c.estado!=='anulado'&&normalizeClientName(c.cliente||'')===n);
+  return { maxPct:Math.max(0,...list.map(c=>Number(c.porcentaje)||0)), pcts:new Set(list.map(c=>Number(c.porcentaje))), active:list.find(c=>c.estado==='activo'&&(!c.expira_en||new Date(c.expira_en)>now))||null };
+}
+window._refVisible=12;
+window.renderReferrals=async function(){
+  const head=document.getElementById('ref-head'), box=document.getElementById('ref-list'), more=document.getElementById('ref-more');
+  if(!head||!box)return;
+  try{ if(!(clientesCache||[]).length)await fetchClientesFromDB(); if(!(currentVentas||[]).length)await fetchVentas(); }catch(_){}
+  const R=REFERRAL_RULES, T=R.tiers;
+  head.innerHTML=`<div class="ref-tiers">${T.map(t=>`<div class="ref-tier"><b>${t.pct}%</b><span>${t.invites} invitados que entran y compran</span></div>`).join('')}</div>
+  <ul class="ref-rules">
+    <li>Solo cuentan invitados <strong>válidos</strong>: personas distintas (sin duplicar por nombre, WhatsApp, Discord o Epic ID) con al menos 1 compra.</li>
+    <li>Un cupón por nivel y por persona, y solo si no tiene otro cupón de referidos activo.</li>
+    <li>No se acumulan: un solo cupón por venta y solo lo usa quien lo ganó.</li>
+    <li>Compra mínima de MX$${R.minMxn} o US$${Math.round(R.minUsd)}.</li>
+    <li>No aplica a productos con margen bajo: tras el descuento debe quedar al menos ${R.minMarginPct}% de margen.</li>
+  </ul>`;
+  const rows=referralBuild();
+  if(!rows.length){box.innerHTML='<div class="ref-empty">Aún no hay clientes con invitados registrados. Anota quién refirió a cada cliente en la pestaña Clientes.</div>';if(more)more.innerHTML='';return;}
+  const show=rows.slice(0,window._refVisible);
+  box.innerHTML=show.map(r=>{
+    const cp=referralCoupons(r.nombre), next=T.find(t=>t.invites>r.valid), unlocked=T.filter(t=>r.valid>=t.invites);
+    const claim=[...unlocked].reverse().find(t=>t.pct>cp.maxPct)||null;
+    const pctBar=next?Math.min(100,Math.round(r.valid/next.invites*100)):100;
+    const chips=T.map(t=>cp.pcts.has(t.pct)?`<span class="ref-chip done">${t.pct}% generado</span>`:r.valid>=t.invites?`<span class="ref-chip on">${t.pct}% listo</span>`:`<span class="ref-chip">${t.pct}% · ${t.invites} inv.</span>`).join('');
+    const act=claim&&!cp.active?`<button type="button" class="btn btn-accent" onclick="window.createReferralCoupon('${couponEscape(r.id)}',${claim.pct},this)"><i class="fas fa-ticket"></i> Generar cupón ${claim.pct}%</button>`
+      :claim&&cp.active?`<div class="ref-note"><i class="fas fa-circle-info"></i> Tiene un cupón de referidos activo (${couponEscape(cp.active.codigo)}). Debe usarlo, vencer o anularse antes de generar el ${claim.pct}%.</div>`
+      :!unlocked.length?`<div class="ref-note">Aún no desbloquea el primer nivel.</div>`:`<div class="ref-note"><i class="fas fa-check"></i> Cupones de sus niveles ya generados.</div>`;
+    const pend=r.registered-r.valid;
+    return `<article class="ref-card"><div class="ref-top"><strong title="${couponEscape(r.nombre)}">${couponEscape(r.nombre)}</strong><span><b>${r.valid}</b> válidos</span></div>
+      <div class="ref-bar"><i style="width:${pctBar}%"></i></div>
+      <div class="ref-sub">${r.registered} registrados${pend?` · ${pend} sin compra aún`:''}${next?` · faltan ${next.invites-r.valid} para el ${next.pct}%`:' · nivel máximo'}</div>
+      <div class="ref-chips">${chips}</div><div class="ref-act">${act}</div></article>`;
+  }).join('');
+  if(more)more.innerHTML=rows.length>12?(rows.length>window._refVisible?`<button class="btn btn-outline" type="button" onclick="window._refVisible+=12;window.renderReferrals()">Ver más (${rows.length-window._refVisible})</button>`:`<button class="btn btn-ghost" type="button" onclick="window._refVisible=12;window.renderReferrals()">Ver menos</button>`):'';
+};
+window.createReferralCoupon=async function(clientId,pct,btn){
+  const cl=(getClientes()||[]).find(c=>String(c.id)===String(clientId)), r=referralBuild().find(x=>String(x.id)===String(clientId)), tier=REFERRAL_RULES.tiers.find(t=>t.pct===pct);
+  if(!cl||!r||!tier||r.valid<tier.invites){showToast('Todavía no cumple los invitados válidos para este nivel.',true);return;}
+  if(!confirm(`¿Generar el cupón de ${pct}% para ${cl.nombre}? (${r.valid} invitados válidos)`))return;
+  if(btn)btn.disabled=true;
+  try{
+    const {data:prev,error:pe}=await supabase.from('cupones_descuento').select('codigo,porcentaje,estado,expira_en').eq('categoria','referidos').eq('cliente',cl.nombre);
+    if(pe)throw pe;
+    const live=(prev||[]).filter(c=>c.estado!=='anulado');
+    if(live.some(c=>Number(c.porcentaje)>=pct)){showToast(`${cl.nombre} ya tiene un cupón de referidos de ${pct}% o más.`,true,7000);return;}
+    const act=live.find(c=>c.estado==='activo'&&(!c.expira_en||new Date(c.expira_en)>new Date()));
+    if(act){showToast(`Ya tiene un cupón de referidos activo (${act.codigo}). Debe usarlo, vencer o anularse primero.`,true,7000);return;}
+    let data,error;
+    for(let i=0;i<5;i++){
+      ({data,error}=await supabase.rpc('crear_cupon_descuento',{p_codigo:couponMakeCode(),p_categoria:'referidos',p_porcentaje:pct,p_compra_minima_mxn:REFERRAL_RULES.minMxn,p_compra_minima_usd:REFERRAL_RULES.minUsd,p_cliente:cl.nombre,p_motivo:`Shegos Referrals: ${r.valid} invitados válidos`}));
+      if(error?.code!=='23505')break;
+    }
+    if(error)throw error;
+    const coupon=Array.isArray(data)?data[0]:data;
+    couponShowCard(coupon); showToast(`Cupón ${coupon.codigo} generado ✓`);
+    await window.loadCoupons(true);
+    document.getElementById('coupon-created-card')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }catch(error){console.error('No se pudo generar el cupón de referidos:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
+  finally{if(btn)btn.disabled=false;window.renderReferrals();}
+};
+function referralMarginProblem(c){
+  const sub=ventaNumber('vc-f-ingreso')*(1+ventaNumber('vc-f-interes-pct')/100), total=sub*(1-(Number(c.porcentaje)||0)/100), cost=ventaNumber('vc-f-costo-real');
+  if(!(total>0))return '';
+  if(!(cost>0))return 'Registra el costo del producto antes de aplicar un cupón de referidos, para verificar que el margen no sea bajo.';
+  const margin=(total-cost)/total*100;
+  return margin<REFERRAL_RULES.minMarginPct?`Los cupones de referidos no aplican a productos con margen bajo: con el descuento quedaría en ${margin.toFixed(0)}% y el mínimo es ${REFERRAL_RULES.minMarginPct}%.`:'';
+}
+{ const baseLoadCoupons=window.loadCoupons; window.loadCoupons=async function(...a){ try{ return await baseLoadCoupons.apply(this,a); } finally { try{ window.renderReferrals(); }catch(_){} } }; }
 window.validateCouponCode=async function(){
   const input=document.getElementById('cv-code'), box=document.getElementById('cv-result');
   const code=(input?.value||'').trim().toUpperCase();
@@ -5924,6 +6047,7 @@ function saleCouponProblem(c,usedSale){
   const owner=couponOwnerName(c);
   const client=(document.getElementById('vc-f-cliente')?.value||'').trim();
   if(owner&&normalizeClientName(client)!==normalizeClientName(owner))return `Este cupón fue generado para ${owner}. El cliente de la venta debe ser el mismo.`;
+  if(c.categoria==='referidos'){const mp=referralMarginProblem(c);if(mp)return mp;}
   return '';
 }
 function couponOwnerName(c){
@@ -7548,7 +7672,7 @@ window.saveVenta = async function() {
     if (activeSaleCoupon) {
       let problem = '';
       try {
-        const { data, error } = await supabase.from('cupones_descuento').select('codigo,estado,expira_en,usos,usos_maximos,cliente').eq('codigo', activeSaleCoupon.codigo).maybeSingle();
+        const { data, error } = await supabase.from('cupones_descuento').select('codigo,estado,expira_en,usos,usos_maximos,cliente,categoria,porcentaje').eq('codigo', activeSaleCoupon.codigo).maybeSingle();
         if (error) throw error;
         problem = saleCouponProblem(data, data ? await findCouponSale(data.codigo) : null);
       } catch (couponError) {
@@ -8008,6 +8132,29 @@ window.exportVentasPDFImprimible = function() {
 .cv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .cv-grid div{display:flex;flex-direction:column;gap:2px}.cv-grid small{color:var(--text2);font-size:.75rem}.cv-grid b{font-size:.95rem;word-break:break-word}
 .cv-note{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(231,76,60,.1);font-size:.9rem}
+</style>
+<style id="shegos-referrals-styles">
+.ref-panel{margin-top:18px}
+.ref-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:4px 0 14px}
+.ref-tier{padding:14px 10px;border:1px solid var(--border2);border-radius:12px;background:rgba(255,255,255,.03);text-align:center}
+.ref-tier b{display:block;font-family:var(--font-title);font-size:2.1em;line-height:1;color:var(--accent);font-style:italic}
+.ref-tier span{display:block;font-size:.7rem;color:var(--text2);margin-top:5px;line-height:1.35}
+.ref-rules{margin:0 0 16px;padding:12px 14px 12px 30px;border-left:2px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.78rem;line-height:1.6}
+.ref-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ref-card{display:grid;gap:9px;min-width:0;padding:13px 14px;border:1px solid var(--border2);border-radius:12px;background:var(--surface)}
+.ref-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.ref-top strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ref-top span{flex:0 0 auto;font-size:.72rem;color:var(--text2);white-space:nowrap}.ref-top span b{color:var(--accent);font-size:1.15rem}
+.ref-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}.ref-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.ref-sub,.ref-note{font-size:.72rem;color:var(--text3);line-height:1.45}
+.ref-chips{display:flex;flex-wrap:wrap;gap:6px}
+.ref-chip{padding:3px 9px;border:1px solid var(--border2);border-radius:99px;color:var(--text3);font-size:.66rem;font-weight:700}
+.ref-chip.on{color:var(--accent);border-color:rgba(40,254,182,.45)}.ref-chip.done{color:var(--text2);border-color:rgba(255,255,255,.25)}
+.ref-act .btn{width:100%;justify-content:center;min-height:40px}
+.ref-more{display:flex;justify-content:center;margin-top:12px}
+.ref-empty{grid-column:1/-1;padding:22px 12px;text-align:center;color:var(--text3);font-size:.82rem}
+@media(max-width:850px){.ref-list{grid-template-columns:1fr}}
+@media(max-width:520px){.ref-tiers{gap:6px}.ref-tier{padding:11px 6px}.ref-tier b{font-size:1.7em}.ref-panel{padding:16px}}
 </style>
 </head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
