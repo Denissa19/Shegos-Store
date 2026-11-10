@@ -2460,8 +2460,6 @@ window.doLogin = async function () {
 
       <div id="cli-rv-wrap"></div>
 
-      <div id="cli-dormant-wrap"></div>
-
       <div class="sec-title">
         <h3 style="color:#a855f7"><i class="fas fa-users" style="margin-right:8px"></i>Base de Clientes</h3>
         <div class="sec-line"></div>
@@ -2470,6 +2468,8 @@ window.doLogin = async function () {
       </div>
 
       <div id="cli-table-area"></div>
+
+      <div id="cli-dormant-wrap"></div>
 
     </div>
 
@@ -11009,7 +11009,7 @@ window.sugGo = function(tab, idx, isAlt) {
   window.switchTab(tab, document.getElementById('btn-tab-' + tab));
   if (tab === 'cuentas' && it && it.focus) window.vcSetFocus(it.focus);
   // "Ver clientes" del aviso de inactivos: baja hasta la sección cuando termine de pintarse
-  if (tab === 'clientes' && !isAlt && it && it.focus && it.focus.dormant) { window._dormScroll = true; try { renderDormantClients(); } catch (_) {} setTimeout(() => window.cliDormantScroll(), 700); return; }
+  if (tab === 'clientes' && !isAlt && it && it.focus && it.focus.dormant) { window._dormOpen = true; window._dormScroll = true; try { renderDormantClients(); } catch (_) {} setTimeout(() => window.cliDormantScroll(), 700); return; }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 // Enfoca el Registro de Ventas en un grupo exacto de ventas (el de la sugerencia)
@@ -11030,7 +11030,7 @@ window.vcClearFocus = function() { window._vcFocus = null; vcClearDates(); };
 // CLIENTES INACTIVOS (30+ días sin comprar)
 // Se calcula con las ventas registradas (sin contar canceladas), igual que el aviso de Sugerencias.
 // ═══════════════════════════════════════════════
-window._dormList = []; window._dormShowAll = false; window._dormScroll = false;
+window._dormList = []; window._dormShowAll = false; window._dormScroll = false; window._dormOpen = false;
 function dormantClients(minDays) {
   const DAY = 86400000, now = new Date(), today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const ventas = (currentVentas || []).filter(v => v.created_at && v.estado !== 'Cancelado');
@@ -11052,10 +11052,11 @@ function dormantClients(minDays) {
 }
 function renderDormantClients() {
   const wrap = document.getElementById('cli-dormant-wrap'); if (!wrap) return;
+  if (!window._dormOpen) { wrap.innerHTML = ''; return; }
   const MIN = 30, PREVIEW = 10;
   const list = dormantClients(MIN); window._dormList = list;
   const hasSales = (currentVentas || []).some(v => v.created_at && v.estado !== 'Cancelado');
-  const head = `<div class="sec-title"><h3 style="color:#f97316"><i class="fas fa-user-clock" style="margin-right:8px"></i>Sin comprar hace 30+ días</h3><div class="sec-line"></div><span style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600">${list.length} cliente${list.length === 1 ? '' : 's'}</span></div>`;
+  const head = `<div class="sec-title"><h3 style="color:#f97316"><i class="fas fa-user-clock" style="margin-right:8px"></i>Sin comprar hace 30+ días</h3><div class="sec-line"></div><span style="font-size:0.72em;color:var(--text3);white-space:nowrap;margin-left:12px;font-weight:600">${list.length} cliente${list.length === 1 ? '' : 's'}</span><button type="button" class="btn btn-accent" style="margin-left:12px;padding:6px 12px;font-size:.75rem" onclick="window.exportDormantPDF()"${list.length ? '' : ' disabled'}><i class="fas fa-file-pdf"></i> Exportar PDF</button><button type="button" class="btn btn-ghost" style="margin-left:6px;padding:6px 12px;font-size:.75rem" onclick="window.cliDormantClose()"><i class="fas fa-times"></i> Ocultar</button></div>`;
   let body;
   if (!hasSales) body = `<div class="dorm-empty">Aún no hay ventas registradas para calcular esto.</div>`;
   else if (!list.length) body = `<div class="dorm-empty">Ningún cliente lleva 30 días o más sin comprar.</div>`;
@@ -11072,10 +11073,59 @@ function renderDormantClients() {
     body = `<div class="dorm-list">${show.map((c, i) => row(c, i)).join('')}</div>`
       + (list.length > PREVIEW ? `<button type="button" class="btn btn-ghost dorm-more" onclick="window.cliDormantToggle()">${window._dormShowAll ? 'Ver menos' : `Ver todos (${list.length})`}</button>` : '');
   }
-  wrap.innerHTML = `<section class="dorm-sec" id="cli-dormant">${head}<p class="dorm-sub">Según las ventas registradas. Primero aparecen los que más han comprado.</p>${body}</section>`;
+  wrap.innerHTML = `<section class="dorm-sec" id="cli-dormant">${head}<p class="dorm-sub">Según las ventas registradas. Primero aparecen los que más han comprado. El PDF incluye a todos, no solo los visibles.</p>${body}</section>`;
   if (window._dormScroll) window.cliDormantScroll();
 }
 window.renderDormantClients = renderDormantClients;
+window.cliDormantClose = function() { window._dormOpen = false; window._dormShowAll = false; renderDormantClients(); };
+// Descarga directa del PDF con TODOS los clientes que llevan 30+ días sin comprar
+window.exportDormantPDF = async function() {
+  const list = dormantClients(30);
+  if (!list.length) { showToast('No hay clientes con 30+ días sin comprar para exportar.', true); return; }
+  showToast('Generando PDF…');
+  try {
+    const jsPDF = await ensureJsPdf();
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const W = 210, H = 297, M = 12;
+    const green = [54, 185, 0], dark = [23, 32, 23], grey = [83, 96, 82], line = [216, 226, 212];
+    const clean = s => String(s ?? '').replace(/[\u00A0\u2009\u202F]/g, ' ').replace(/[\u2013\u2014]/g, '-').replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"').replace(/[^\u0020-\u007E\u00A1-\u00FF]/g, '').replace(/\s+/g, ' ').trim();
+    const money = n => '$' + (Number(n) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const font = (style, size, color) => doc.setFont('helvetica', style).setFontSize(size).setTextColor(...color);
+    const fmtDay = d => new Date(d + 'T00:00:00').toLocaleDateString('es-DO', { day: '2-digit', month: 'short', year: 'numeric' });
+    const now = new Date();
+
+    doc.addImage(SHEGOS_REPORT_LOGO, 'JPEG', M, M - 2, 24, 24);
+    font('bold', 18, dark); doc.text('Clientes sin comprar hace 30+ días', M + 30, M + 8);
+    font('normal', 9, grey); doc.text(clean(list.length + ' cliente' + (list.length === 1 ? '' : 's') + '  ·  Generado ' + now.toLocaleString('es-DO')), M + 30, M + 15);
+    font('bold', 11, green); doc.text('SHEGOS STORE', W - M, M + 8, { align: 'right' });
+    doc.setDrawColor(...green).setLineWidth(0.8).line(M, M + 25, W - M, M + 25);
+
+    const R = { halign: 'right' };
+    const head = [['#', 'Cliente', 'WhatsApp', { content: 'Compras', styles: R }, { content: 'Total', styles: R }, 'Última compra', { content: 'Días', styles: R }]];
+    const body = list.map((c, i) => [i + 1, clean(c.name), clean(c.wa) || '-', c.n, money(c.total), fmtDay(c.lastDay), c.last]);
+    doc.autoTable({
+      startY: M + 30, head, body, theme: 'grid',
+      styles: { font: 'helvetica', fontSize: 8.5, cellPadding: 2, textColor: dark, lineColor: line, lineWidth: 0.2, overflow: 'linebreak', valign: 'middle' },
+      headStyles: { fillColor: dark, textColor: [255, 255, 255], fontStyle: 'bold' },
+      alternateRowStyles: { fillColor: [247, 250, 245] },
+      columnStyles: { 0: { cellWidth: 9, halign: 'center' }, 3: { halign: 'right', cellWidth: 20 }, 4: { halign: 'right', cellWidth: 26 }, 5: { cellWidth: 30 }, 6: { halign: 'right', cellWidth: 16 } },
+      margin: { left: M, right: M, top: M, bottom: 16 },
+      didParseCell: h => { if (h.section === 'body' && h.column.index === 6) { const d = Number(h.cell.raw); h.cell.styles.fontStyle = 'bold'; h.cell.styles.textColor = d >= 90 ? [220, 38, 38] : d >= 60 ? [249, 115, 22] : [217, 119, 6]; } }
+    });
+    const pages = doc.getNumberOfPages();
+    for (let i = 1; i <= pages; i++) {
+      doc.setPage(i); font('normal', 8, grey);
+      doc.text('Documento generado desde el panel de Shegos Store.', M, H - 7);
+      doc.text('Página ' + i + ' de ' + pages, W - M, H - 7, { align: 'right' });
+    }
+    const pad = n => String(n).padStart(2, '0');
+    doc.save(`Clientes_sin_comprar_30dias_${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.pdf`);
+    showToast('PDF descargado ✓');
+  } catch (err) {
+    console.error('No se pudo generar el PDF de clientes inactivos:', err);
+    showToast('No se pudo generar el PDF. Revisa tu conexión e inténtalo de nuevo.', true, 5000);
+  }
+};
 window.cliDormantToggle = function() { window._dormShowAll = !window._dormShowAll; renderDormantClients(); };
 window.cliDormantScroll = function() {
   const el = document.getElementById('cli-dormant'); if (!el) return;
