@@ -4713,6 +4713,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media(max-width:1000px){.pk-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}}
 /* Portadas del menú de Servicios: proporción 16:9 para que la imagen no se recorte */
 #menu-servicios > div > .producto{aspect-ratio:16/9;min-height:0!important;height:auto!important}
+/* ===== Skin del hero: grande y ajustada a la altura de la pantalla (escritorio/tablet) ===== */
+@media (min-width:769px){
+  .hero-container{--hero-h:calc(100vh - var(--hero-offset,104px));min-height:max(560px,var(--hero-h));padding-top:0;padding-bottom:0}
+  @supports (height:100svh){.hero-container{--hero-h:calc(100svh - var(--hero-offset,104px))}}
+  .hero-text{padding:clamp(30px,5vw,72px) 0 30px}
+  .hero-image{flex:1 1 56%;align-self:stretch;min-height:max(560px,var(--hero-h))}
+  .hero-image::before{width:min(110%,900px)}
+  .hero-image img{height:calc(100% - 18px);width:100%;max-height:none;max-width:none;object-fit:contain;object-position:center bottom}
+}
 </style>
 </head>
 <body>
@@ -10852,5 +10861,19 @@ function mostrarModalCapturaMovil(url) {
 
 <script>document.addEventListener("DOMContentLoaded",function(){var y=document.getElementById("footer-year");if(y)y.textContent=new Date().getFullYear();});</script>
 
+<script>
+// Mide cuánto ocupa lo que está sobre el hero (barra superior) para que la skin llene el resto de la pantalla.
+(function(){
+  function fit(){
+    try{
+      var h=document.querySelector('.hero-container'); if(!h) return;
+      var top=h.offsetParent!==null?Math.round(h.getBoundingClientRect().top+window.scrollY):0;
+      if(!(top>40&&top<260)){var hd=document.querySelector('header'); top=hd?Math.round(hd.getBoundingClientRect().bottom):104;}
+      if(top>40&&top<260) h.style.setProperty('--hero-offset',top+'px');
+    }catch(_){}
+  }
+  window.addEventListener('load',fit); window.addEventListener('resize',fit); setTimeout(fit,600);
+})();
+</script>
 </body>
 </html>
