@@ -1981,7 +1981,7 @@ window.doLogin = async function () {
 .sug-refresh:hover{border-color:var(--accent)}
 .sug-quote{margin:0 0 14px;padding:13px 15px;border-left:3px solid var(--accent);border-radius:0 12px 12px 0;background:rgba(98,255,0,.06)}
 .sug-quote p{margin:0;color:var(--text);font-size:.95rem;font-style:italic;line-height:1.45}.sug-quote small{display:block;margin-top:6px;color:var(--text3);font-size:.74rem;font-style:normal;font-weight:700;letter-spacing:.03em}
-.sug-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.sug-list{display:flex;flex-direction:column;gap:10px}
 .dorm-sec{margin-bottom:26px}
 .dorm-sub{margin:-6px 0 14px;color:var(--text3);font-size:.78rem;line-height:1.45}
 .dorm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
@@ -1997,17 +1997,36 @@ window.doLogin = async function () {
 .dorm-act .btn{padding:7px 12px;font-size:.75rem}
 .dorm-empty{padding:18px;border:1px dashed var(--border2);border-radius:12px;color:var(--text2);text-align:center;font-size:.85rem}
 .dorm-more{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:10px;min-height:42px}
-.sug-item{display:flex;gap:11px;min-width:0;padding:12px;border:1px solid var(--border2);border-radius:13px;background:rgba(5,9,6,.55)}
-.sug-item>i{flex:0 0 34px;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;font-size:.9rem;background:color-mix(in srgb,var(--sug-c) 14%,transparent);color:var(--sug-c)}
+.sug-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.sug-filters{display:flex;gap:6px;flex-wrap:wrap}
+.sug-filter{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--border2);border-radius:999px;background:transparent;color:var(--text2);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;touch-action:manipulation}
+.sug-filter b{min-width:18px;height:18px;padding:0 5px;display:inline-grid;place-items:center;border-radius:999px;background:var(--surface);color:var(--text2);font-size:.68rem;font-weight:800}
+.sug-filter.on{border-color:var(--accent);color:var(--accent);background:rgba(98,255,0,.08)}
+.sug-filter.on b{background:var(--accent);color:#07100a}
+.sug-markall{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--border2);border-radius:10px;background:transparent;color:var(--text2);font:inherit;font-size:.78rem;font-weight:600;cursor:pointer;touch-action:manipulation}
+.sug-markall:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.sug-markall:disabled{opacity:.4;cursor:default}
+.sug-item{position:relative;display:flex;gap:13px;min-width:0;padding:14px 14px 12px 14px;border:1px solid var(--border2);border-left:4px solid var(--sug-c,#60a5fa);border-radius:13px;background:rgba(5,9,6,.72);transition:opacity .2s,background .2s}
+.sug-item.is-read{opacity:.58;background:rgba(5,9,6,.35)}
+.sug-item.is-read:hover{opacity:.9}
+.sug-body{flex:1;min-width:0}
+.sug-top{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.sug-tag{padding:2px 8px;border-radius:999px;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--sug-c);background:color-mix(in srgb,var(--sug-c) 14%,transparent)}
+.sug-new{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:700;color:var(--text2)}
+.sug-new::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--sug-c)}
+.sug-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sug-read-btn{display:inline-flex;align-items:center;gap:6px;margin-left:auto;padding:6px 10px;border:0;border-radius:9px;background:transparent;color:var(--text3);font:inherit;font-size:.74rem;font-weight:600;cursor:pointer;touch-action:manipulation}
+.sug-read-btn:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.sug-item>i{flex:0 0 38px;width:38px;height:38px;display:grid;place-items:center;border-radius:11px;font-size:.95rem;background:color-mix(in srgb,var(--sug-c) 14%,transparent);color:var(--sug-c)}
 .sug-item strong{display:block;color:var(--text);font-size:.88rem;line-height:1.3}.sug-item p{margin:4px 0 0;color:var(--text2);font-size:.8rem;line-height:1.45;overflow-wrap:anywhere}
-.sug-good{--sug-c:#4ade80;border-color:rgba(74,222,128,.25)}.sug-warn{--sug-c:#fb7185;border-color:rgba(251,113,133,.3)}.sug-tip{--sug-c:#60a5fa}
-.sug-cta{margin-top:8px;padding:6px 11px;border:1px solid color-mix(in srgb,var(--sug-c) 45%,transparent);border-radius:9px;background:transparent;color:var(--sug-c);font:inherit;font-size:.74rem;font-weight:700;cursor:pointer}
+.sug-good{--sug-c:#4ade80}.sug-warn{--sug-c:#fb7185}.sug-tip{--sug-c:#60a5fa}
+.sug-cta{padding:7px 12px;border:1px solid color-mix(in srgb,var(--sug-c) 45%,transparent);border-radius:9px;background:transparent;color:var(--sug-c);font:inherit;font-size:.76rem;font-weight:700;cursor:pointer;touch-action:manipulation}
 .sug-more{display:block;margin:12px auto 0;padding:9px 16px;border:1px solid var(--border2);border-radius:10px;background:transparent;color:var(--text2);font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}
 .sug-more[hidden]{display:none}.sug-empty{grid-column:1/-1;padding:14px;color:var(--text3);font-size:.84rem;text-align:center}
 .vc-focus-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:10px 14px;border:1px solid rgba(251,113,133,.35);border-radius:12px;background:rgba(251,113,133,.07);color:var(--text2);font-size:.82rem}.vc-focus-banner[hidden]{display:none}.vc-focus-banner>i{color:#fb7185}.vc-focus-banner span{flex:1 1 200px;min-width:0}.vc-focus-banner strong{color:var(--text)}.vc-focus-banner .btn{padding:6px 12px;font-size:.74rem}
 .sug-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;display:inline-grid;place-items:center;border-radius:999px;background:#fb7185;color:#1a0508;font-style:normal;font-size:.68rem;font-weight:800;line-height:1}.sug-badge[hidden]{display:none}
 #tab-sugerencias .sug-card{margin-bottom:0}
-@media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{grid-template-columns:1fr;gap:8px}.sug-item{padding:10px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}.dorm-list{grid-template-columns:1fr}.dorm-row{padding:11px}.dorm-act .btn{min-height:38px}.dorm-sub{margin-bottom:11px}}
+@media(max-width:768px){.sug-card{padding:14px;margin-bottom:14px;border-radius:15px}.sug-head h2{font-size:1.1rem}.sug-list{gap:8px}.sug-item{padding:11px 11px 10px;gap:10px}.sug-item>i{flex-basis:34px;width:34px;height:34px}.sug-markall{width:100%;justify-content:center;min-height:40px}.sug-filters{width:100%}.sug-filter{flex:1;justify-content:center}.sug-read-btn{min-height:36px}.sug-quote p{font-size:.88rem}.sug-more{width:100%;min-height:44px}.dorm-list{grid-template-columns:1fr}.dorm-row{padding:11px}.dorm-act .btn{min-height:38px}.dorm-sub{margin-bottom:11px}}
 </style>
 <style id="mobile-latest-changes">
 .vm-receipt-preview-bar{flex-wrap:wrap;gap:8px}
@@ -2489,8 +2508,6 @@ window.doLogin = async function () {
           <a class="useful-link-card" href="https://youtu.be/uBSrUCNkElE" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i><span><strong>Cómo asegurar las cuentas</strong><small>Ver guía en YouTube</small></span><i class="fas fa-arrow-up-right-from-square"></i></a>
           <a class="useful-link-card" href="https://www.epicgames.com/id/activate" target="_blank" rel="noopener noreferrer"><i class="fas fa-gamepad"></i><span><strong>Vincular una consola</strong><small>Activación de Epic Games</small></span><i class="fas fa-arrow-up-right-from-square"></i></a>
           <a class="useful-link-card" href="https://www.epicgames.com/help/wizards/w4" target="_blank" rel="noopener noreferrer"><i class="fas fa-unlock-keyhole"></i><span><strong>Eliminar restricción de consola</strong><small>Ayuda de Epic Games</small></span><i class="fas fa-arrow-up-right-from-square"></i></a>
-          <a class="useful-link-card" href="https://www.eneba.com/us/binance-binance-gift-card-usdt-25-usd-key-global" target="_blank" rel="noopener noreferrer"><i class="fas fa-gift"></i><span><strong>Binance Gift Card · Eneba</strong><small>Comprar en Eneba</small></span><i class="fas fa-arrow-up-right-from-square"></i></a>
-          <a class="useful-link-card" href="https://www.g2a.com/es/binance-gift-card-35-usdt-key-i10000337768552?suid=82af7e89-8933-44ca-a64a-42d39a9587bd" target="_blank" rel="noopener noreferrer"><i class="fas fa-gift"></i><span><strong>Binance Gift Card · G2A</strong><small>Comprar en G2A</small></span><i class="fas fa-arrow-up-right-from-square"></i></a>
         </div>
       </section>
       <section class="useful-section useful-copy-card">
@@ -2509,6 +2526,14 @@ window.doLogin = async function () {
       <section class="sug-card" id="sug-card" aria-labelledby="sug-title">
         <div class="sug-head"><div><span class="dash-eyebrow">Sugerencias</span><h2 id="sug-title">Ideas para hoy</h2><p>Basadas en las ventas, clientes y seguimientos.</p></div><button type="button" class="sug-refresh" onclick="window.renderSuggestions(true)" aria-label="Cambiar frase y actualizar" title="Actualizar"><i class="fas fa-rotate"></i></button></div>
         <blockquote class="sug-quote" id="sug-quote"></blockquote>
+        <div class="sug-toolbar">
+          <div class="sug-filters" role="group" aria-label="Filtrar sugerencias">
+            <button type="button" class="sug-filter on" data-f="all" onclick="window.sugSetFilter('all')">Todas <b id="sug-cnt-all">0</b></button>
+            <button type="button" class="sug-filter" data-f="unread" onclick="window.sugSetFilter('unread')">Sin leer <b id="sug-cnt-unread">0</b></button>
+            <button type="button" class="sug-filter" data-f="read" onclick="window.sugSetFilter('read')">Leídas <b id="sug-cnt-read">0</b></button>
+          </div>
+          <button type="button" class="sug-markall" id="sug-markall" onclick="window.sugMarkAll()"><i class="fas fa-check-double"></i> Marcar todas como leídas</button>
+        </div>
         <div class="sug-list" id="sug-list"><div class="sug-empty">Analizando los datos…</div></div>
         <button type="button" class="sug-more" id="sug-more" onclick="window.sugToggle()" hidden>Ver más ideas</button>
       </section>
@@ -5894,14 +5919,7 @@ window.renderReferrals=async function(){
   if(!head||!box)return;
   try{ if(!(clientesCache||[]).length)await fetchClientesFromDB(); if(!(currentVentas||[]).length)await fetchVentas(); }catch(_){}
   const R=REFERRAL_RULES, T=R.tiers;
-  head.innerHTML=`<div class="ref-tiers">${T.map(t=>`<div class="ref-tier"><b>${t.pct}%</b><span>${t.invites} invitados que entran y compran</span></div>`).join('')}</div>
-  <ul class="ref-rules">
-    <li>Solo cuentan invitados <strong>válidos</strong>: personas distintas (sin duplicar por nombre, WhatsApp, Discord o Epic ID) con al menos 1 compra.</li>
-    <li>Un cupón por nivel y por persona, y solo si no tiene otro cupón de referidos activo.</li>
-    <li>No se acumulan: un solo cupón por venta y solo lo usa quien lo ganó.</li>
-    <li>Compra mínima de MX$${R.minMxn} o US$${Math.round(R.minUsd)}.</li>
-    <li>No aplica a productos con margen bajo: tras el descuento debe quedar al menos ${R.minMarginPct}% de margen.</li>
-  </ul>`;
+  head.innerHTML='';
   const rows=referralBuild();
   if(!rows.length){box.innerHTML='<div class="ref-empty">Aún no hay clientes con invitados registrados. Anota quién refirió a cada cliente en la pestaña Clientes.</div>';if(more)more.innerHTML='';return;}
   const show=rows.slice(0,window._refVisible);
@@ -6517,7 +6535,15 @@ const PAYMENT_REGIONS=[
     {title:'Criptomonedas y transferencias',fields:[
       {label:'Binance Pay',value:'481410806',mono:true},
       {label:'Bybit ID',value:'457842019',mono:true}
-    ],tags:[{t:'Binance Gift Card',pm:'binance_giftcard'},{t:'Remitly',pm:'remitly'}]}
+    ]},
+    {title:'Remitly',pm:'remitly',fields:[
+      {label:'País',value:'República Dominicana'},
+      {label:'Ciudad',value:'Santo Domingo'},
+      {label:'Nombre',value:'Denisa Severino Figueroa'},
+      {label:'Método',value:'Depósito bancario'},
+      {label:'Banco',value:'Popular Dominicano'},
+      {label:'Cuenta corriente',value:'837508191',mono:true}
+    ]}
   ]},
   {region:'ESPAÑA / EUROPA',methods:[{title:'',fields:[],tags:[{t:'Transferencia bancaria'}]}]}
 ];
@@ -10989,23 +11015,54 @@ function sugBuild() {
   return { items, quote, resumen };
 }
 
+// ── Estado de lectura de las sugerencias (se guarda en este navegador) ──
+// Una sugerencia queda "leída" mientras su contenido no cambie: si cambian los datos
+// (otro cliente inactivo, otra cifra) vuelve a aparecer como nueva.
+const SUG_READ_KEY = 'shegos_sug_read_v1';
+window._sugFilter = 'all';
+function sugHash(str) { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return String(h >>> 0); }
+function sugSig(i) { return sugHash(i.title + '|' + i.text + (i.icon === 'fa-bell' ? '|' + new Date().toDateString() : '')); }
+function sugReadMap() { try { const m = JSON.parse(localStorage.getItem(SUG_READ_KEY) || '{}'); return m && typeof m === 'object' ? m : {}; } catch (_) { return {}; } }
+function sugSaveReadMap(m) { try { localStorage.setItem(SUG_READ_KEY, JSON.stringify(m)); } catch (_) {} }
+function sugMarkRead(i, val) { const m = sugReadMap(); if (val) m[i.icon] = sugSig(i); else delete m[i.icon]; sugSaveReadMap(m); }
+const SUG_TAGS = { warn: 'Atender', good: 'Va bien', tip: 'Idea' };
+
 function renderSuggestions(shuffle) {
   const list = document.getElementById('sug-list'); if (!list) return;
   if (shuffle === true) window._sugShuffle++;
   let r; try { r = sugBuild(); } catch (err) { console.warn('Sugerencias:', err); return; }
   const q = document.getElementById('sug-quote'); if (q) q.innerHTML = `<p>“${rvEsc(r.quote)}”</p>${r.resumen ? `<small>${rvEsc(r.resumen)}</small>` : ''}`;
+  const rd = sugReadMap();
   window._sugItems = r.items;
-  const LIMIT = 50, show = window._sugExpanded ? r.items : r.items.slice(0, LIMIT);
-  const badge = document.getElementById('sug-badge'); if (badge) { const w = r.items.filter(i => i.tone === 'warn').length; badge.textContent = w; badge.hidden = !w; badge.title = w + ' por atender'; }
-  list.innerHTML = show.length ? show.map((i, idx) => `<article class="sug-item sug-${i.tone}"><i class="fas ${i.icon}" aria-hidden="true"></i><div><strong>${i.title}</strong><p>${i.text}</p>${i.tab ? `<button type="button" class="sug-cta" onclick="window.sugGo('${i.tab}', ${idx})">${i.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}${i.alt ? `<button type="button" class="sug-cta" style="margin-left:6px" onclick="window.sugGo('${i.alt.tab}', ${idx}, true)">${i.alt.cta || 'Ver'} <i class="fas fa-arrow-right"></i></button>` : ''}</div></article>`).join('')
-    : '<div class="sug-empty">Aún no hay suficientes datos para sugerencias. Registra ventas y clientes y aquí aparecerán ideas para mejorar.</div>';
+  r.items.forEach(i => { i._read = rd[i.icon] === sugSig(i); });
+  const nUnread = r.items.filter(i => !i._read).length, nRead = r.items.length - nUnread;
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTxt('sug-cnt-all', r.items.length); setTxt('sug-cnt-unread', nUnread); setTxt('sug-cnt-read', nRead);
+  document.querySelectorAll('#sug-card .sug-filter').forEach(b => b.classList.toggle('on', b.dataset.f === window._sugFilter));
+  const markAll = document.getElementById('sug-markall'); if (markAll) markAll.disabled = !nUnread;
+  // El número rojo del menú cuenta solo lo urgente que aún no se ha leído
+  const badge = document.getElementById('sug-badge'); if (badge) { const w = r.items.filter(i => i.tone === 'warn' && !i._read).length; badge.textContent = w; badge.hidden = !w; badge.title = w + ' por atender'; }
+  const f = window._sugFilter;
+  const rows = r.items.map((i, idx) => ({ i, idx })).filter(x => f === 'unread' ? !x.i._read : f === 'read' ? x.i._read : true)
+    .sort((a, b) => Number(a.i._read) - Number(b.i._read));   // las sin leer primero; dentro de cada grupo se mantiene la prioridad
+  const LIMIT = 50, show = window._sugExpanded ? rows : rows.slice(0, LIMIT);
+  const cta = (tab, label, idx, alt) => `<button type="button" class="sug-cta" onclick="window.sugGo('${tab}', ${idx}${alt ? ', true' : ''})">${label || 'Ver'} <i class="fas fa-arrow-right"></i></button>`;
+  let html;
+  if (!r.items.length) html = '<div class="sug-empty">Aún no hay suficientes datos para sugerencias. Registra ventas y clientes y aquí aparecerán ideas para mejorar.</div>';
+  else if (!show.length) html = `<div class="sug-empty">${f === 'unread' ? '¡Todo al día! No tienes sugerencias sin leer.' : 'Todavía no has marcado sugerencias como leídas.'}</div>`;
+  else html = show.map(({ i, idx }) => `<article class="sug-item sug-${i.tone} ${i._read ? 'is-read' : 'is-unread'}"><i class="fas ${i.icon}" aria-hidden="true"></i><div class="sug-body"><div class="sug-top"><span class="sug-tag">${SUG_TAGS[i.tone] || 'Idea'}</span>${i._read ? '' : '<span class="sug-new">Nueva</span>'}</div><strong>${i.title}</strong><p>${i.text}</p><div class="sug-actions">${i.tab ? cta(i.tab, i.cta, idx) : ''}${i.alt ? cta(i.alt.tab, i.alt.cta, idx, true) : ''}<button type="button" class="sug-read-btn" onclick="window.sugToggleRead(${idx})" title="${i._read ? 'Volver a marcar como sin leer' : 'Marcar como leída'}"><i class="fas ${i._read ? 'fa-rotate-left' : 'fa-check'}"></i> ${i._read ? 'Marcar sin leer' : 'Marcar como leída'}</button></div></div></article>`).join('');
+  list.innerHTML = html;
   const more = document.getElementById('sug-more');
-  if (more) { more.hidden = r.items.length <= LIMIT; more.textContent = window._sugExpanded ? 'Ver menos' : `Ver más ideas (${r.items.length - LIMIT})`; }
+  if (more) { more.hidden = rows.length <= LIMIT; more.textContent = window._sugExpanded ? 'Ver menos' : `Ver más ideas (${rows.length - LIMIT})`; }
 }
+window.sugToggleRead = function(idx) { const i = (window._sugItems || [])[idx]; if (!i) return; sugMarkRead(i, !i._read); renderSuggestions(); };
+window.sugMarkAll = function() { const m = sugReadMap(); (window._sugItems || []).forEach(i => { m[i.icon] = sugSig(i); }); sugSaveReadMap(m); renderSuggestions(); };
+window.sugSetFilter = function(f) { window._sugFilter = f; renderSuggestions(); };
 window.renderSuggestions = renderSuggestions;
 window.sugToggle = function() { window._sugExpanded = !window._sugExpanded; renderSuggestions(); };
 window.sugGo = function(tab, idx, isAlt) {
   const it = (window._sugItems || [])[idx];
+  if (it) { try { sugMarkRead(it, true); } catch (_) {} }
   window.switchTab(tab, document.getElementById('btn-tab-' + tab));
   if (tab === 'cuentas' && it && it.focus) window.vcSetFocus(it.focus);
   // "Ver clientes" del aviso de inactivos: baja hasta la sección cuando termine de pintarse
