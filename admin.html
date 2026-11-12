@@ -2601,12 +2601,6 @@ window.doLogin = async function () {
       </section>
         <section class="coupon-panel coupon-list-panel"><div class="coupon-panel-heading"><i class="fas fa-ticket"></i><div><strong>Códigos generados</strong><small>El registro conserva estado, vencimiento y uso.</small></div></div><div id="coupon-list"><div class="coupon-loading"><i class="fas fa-circle-notch fa-spin"></i> Cargando cupones…</div></div></section>
       </div>
-    <section class="coupon-panel ref-panel" id="referrals-panel">
-      <div class="coupon-panel-heading"><i class="fas fa-user-group"></i><div><strong>Shegos Referrals</strong><small>Invita y desbloquea cupones por invitados que sí compran.</small></div></div>
-      <div id="ref-head"></div>
-      <div class="ref-list" id="ref-list"><div class="ref-empty"><i class="fas fa-circle-notch fa-spin"></i> Cargando…</div></div>
-      <div class="ref-more" id="ref-more"></div>
-    </section>
     </div>
 
     <!-- ── TAB JUEGOS XBOX ─────────────────────── -->
@@ -4920,7 +4914,7 @@ function syncPaymentPicker(id) {
 function renderVentaPaymentGrid() {
   const grid=document.getElementById('vc-payment-method-grid'), select=document.getElementById('vc-f-metodo');
   if(!grid||!select)return;
-  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>Registrar método</small></button>`).join('');
+  grid.innerHTML=PAYMENT_METHODS.map(item=>`<button type="button" class="payment-method-card${select.value===item.value?' selected':''}" data-method="${item.value}" aria-pressed="${select.value===item.value}" style="--meth-color:${item.color}">${paymentLogoMarkup(item)}<span class="payment-method-name">${item.label}</span><small>${window._ventaClientSavedMethod===item.value?'Guardado del cliente':'Registrar método'}</small></button>`).join('');
   grid.querySelectorAll('.payment-method-card').forEach(button=>button.addEventListener('click',()=>{
     select.value=button.dataset.method;
     select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -5867,111 +5861,6 @@ window.createCoupon=async function(){
   finally{if(button){button.disabled=false;button.innerHTML='<i class="fas fa-ticket"></i> Generar código';}}
 };
 
-/* ══ SHEGOS REFERRALS ══ */
-const REFERRAL_RULES = {
-  tiers: [{ invites: 2, pct: 3 }, { invites: 5, pct: 5 }, { invites: 10, pct: 8 }],
-  minMxn: 385, minUsd: 20.62,   // misma compra mínima de los demás cupones
-  minMarginPct: 15              // no aplica si, ya con el descuento, el margen queda por debajo de este %
-};
-function refKeys(c){
-  const k=[], n=normalizeClientName(c.nombre||''); if(n)k.push('n:'+n);
-  const w=String(c.wa||'').replace(/\D/g,''); if(w.length>=7)k.push('w:'+w.slice(-10));
-  const d=String(c.discordId||'').trim().toLowerCase(); if(d)k.push('d:'+d);
-  const e=String(c.epicId||'').trim().toLowerCase(); if(e)k.push('e:'+e);
-  return k;
-}
-function refClusters(list){
-  const parent=list.map((_,i)=>i), find=i=>{while(parent[i]!==i){parent[i]=parent[parent[i]];i=parent[i];}return i;}, seen=new Map();
-  list.forEach((c,i)=>refKeys(c).forEach(k=>{ if(seen.has(k))parent[find(i)]=find(seen.get(k)); else seen.set(k,i); }));
-  return list.map((_,i)=>find(i));
-}
-function referralBuild(){
-  const cl=(typeof getClientes==='function'?getClientes():clientesCache)||[];
-  const buys=new Set();
-  (currentVentas||[]).filter(v=>v.estado!=='Cancelado'&&(parseFloat(v.ingreso)||0)>0).forEach(v=>{
-    const n=normalizeClientName(v.cliente||''); if(n)buys.add('n:'+n);
-    const w=String(v.whatsapp||'').replace(/\D/g,''); if(w.length>=7)buys.add('w:'+w.slice(-10));
-  });
-  const cluster=refClusters(cl), buyer=new Set();
-  cl.forEach((c,i)=>{ if(refKeys(c).some(k=>buys.has(k)))buyer.add(cluster[i]); });
-  const byId=new Map(cl.map((c,i)=>[String(c.id),i])), taken=new Set(), out=new Map();
-  cl.forEach((c,i)=>{
-    let rid=c.referidoPorId?String(c.referidoPorId):'';
-    if(!rid&&c.referidoPor){const r=cl.find(x=>normalizeClientName(x.nombre)===normalizeClientName(c.referidoPor));if(r)rid=String(r.id);}
-    if(!rid||!byId.has(rid))return;
-    const ri=byId.get(rid), rc=cluster[ri];
-    if(rc===cluster[i]||taken.has(cluster[i]))return;   // auto-referido o persona ya contada (duplicada)
-    taken.add(cluster[i]);
-    const o=out.get(rc)||{id:cl[ri].id,nombre:cl[ri].nombre,registered:0,valid:0};
-    o.registered++; if(buyer.has(cluster[i]))o.valid++;
-    out.set(rc,o);
-  });
-  return [...out.values()].sort((a,b)=>b.valid-a.valid||b.registered-a.registered);
-}
-function referralCoupons(name){
-  const n=normalizeClientName(name||''), now=new Date();
-  const list=(window._couponData||[]).filter(c=>c.categoria==='referidos'&&c.estado!=='anulado'&&normalizeClientName(c.cliente||'')===n);
-  return { maxPct:Math.max(0,...list.map(c=>Number(c.porcentaje)||0)), pcts:new Set(list.map(c=>Number(c.porcentaje))), active:list.find(c=>c.estado==='activo'&&(!c.expira_en||new Date(c.expira_en)>now))||null };
-}
-window._refVisible=12;
-window.renderReferrals=async function(){
-  const head=document.getElementById('ref-head'), box=document.getElementById('ref-list'), more=document.getElementById('ref-more');
-  if(!head||!box)return;
-  try{ if(!(clientesCache||[]).length)await fetchClientesFromDB(); if(!(currentVentas||[]).length)await fetchVentas(); }catch(_){}
-  const R=REFERRAL_RULES, T=R.tiers;
-  head.innerHTML='';
-  const rows=referralBuild();
-  if(!rows.length){box.innerHTML='<div class="ref-empty">Aún no hay clientes con invitados registrados. Anota quién refirió a cada cliente en la pestaña Clientes.</div>';if(more)more.innerHTML='';return;}
-  const show=rows.slice(0,window._refVisible);
-  box.innerHTML=show.map(r=>{
-    const cp=referralCoupons(r.nombre), next=T.find(t=>t.invites>r.valid), unlocked=T.filter(t=>r.valid>=t.invites);
-    const claim=[...unlocked].reverse().find(t=>t.pct>cp.maxPct)||null;
-    const pctBar=next?Math.min(100,Math.round(r.valid/next.invites*100)):100;
-    const chips=T.map(t=>cp.pcts.has(t.pct)?`<span class="ref-chip done">${t.pct}% generado</span>`:r.valid>=t.invites?`<span class="ref-chip on">${t.pct}% listo</span>`:`<span class="ref-chip">${t.pct}% · ${t.invites} inv.</span>`).join('');
-    const act=claim&&!cp.active?`<button type="button" class="btn btn-accent" onclick="window.createReferralCoupon('${couponEscape(r.id)}',${claim.pct},this)"><i class="fas fa-ticket"></i> Generar cupón ${claim.pct}%</button>`
-      :claim&&cp.active?`<div class="ref-note"><i class="fas fa-circle-info"></i> Tiene un cupón de referidos activo (${couponEscape(cp.active.codigo)}). Debe usarlo, vencer o anularse antes de generar el ${claim.pct}%.</div>`
-      :!unlocked.length?`<div class="ref-note">Aún no desbloquea el primer nivel.</div>`:`<div class="ref-note"><i class="fas fa-check"></i> Cupones de sus niveles ya generados.</div>`;
-    const pend=r.registered-r.valid;
-    return `<article class="ref-card"><div class="ref-top"><strong title="${couponEscape(r.nombre)}">${couponEscape(r.nombre)}</strong><span><b>${r.valid}</b> válidos</span></div>
-      <div class="ref-bar"><i style="width:${pctBar}%"></i></div>
-      <div class="ref-sub">${r.registered} registrados${pend?` · ${pend} sin compra aún`:''}${next?` · faltan ${next.invites-r.valid} para el ${next.pct}%`:' · nivel máximo'}</div>
-      <div class="ref-chips">${chips}</div><div class="ref-act">${act}</div></article>`;
-  }).join('');
-  if(more)more.innerHTML=rows.length>12?(rows.length>window._refVisible?`<button class="btn btn-outline" type="button" onclick="window._refVisible+=12;window.renderReferrals()">Ver más (${rows.length-window._refVisible})</button>`:`<button class="btn btn-ghost" type="button" onclick="window._refVisible=12;window.renderReferrals()">Ver menos</button>`):'';
-};
-window.createReferralCoupon=async function(clientId,pct,btn){
-  const cl=(getClientes()||[]).find(c=>String(c.id)===String(clientId)), r=referralBuild().find(x=>String(x.id)===String(clientId)), tier=REFERRAL_RULES.tiers.find(t=>t.pct===pct);
-  if(!cl||!r||!tier||r.valid<tier.invites){showToast('Todavía no cumple los invitados válidos para este nivel.',true);return;}
-  if(!confirm(`¿Generar el cupón de ${pct}% para ${cl.nombre}? (${r.valid} invitados válidos)`))return;
-  if(btn)btn.disabled=true;
-  try{
-    const {data:prev,error:pe}=await supabase.from('cupones_descuento').select('codigo,porcentaje,estado,expira_en').eq('categoria','referidos').eq('cliente',cl.nombre);
-    if(pe)throw pe;
-    const live=(prev||[]).filter(c=>c.estado!=='anulado');
-    if(live.some(c=>Number(c.porcentaje)>=pct)){showToast(`${cl.nombre} ya tiene un cupón de referidos de ${pct}% o más.`,true,7000);return;}
-    const act=live.find(c=>c.estado==='activo'&&(!c.expira_en||new Date(c.expira_en)>new Date()));
-    if(act){showToast(`Ya tiene un cupón de referidos activo (${act.codigo}). Debe usarlo, vencer o anularse primero.`,true,7000);return;}
-    let data,error;
-    for(let i=0;i<5;i++){
-      ({data,error}=await supabase.rpc('crear_cupon_descuento',{p_codigo:couponMakeCode(),p_categoria:'referidos',p_porcentaje:pct,p_compra_minima_mxn:REFERRAL_RULES.minMxn,p_compra_minima_usd:REFERRAL_RULES.minUsd,p_cliente:cl.nombre,p_motivo:`Shegos Referrals: ${r.valid} invitados válidos`}));
-      if(error?.code!=='23505')break;
-    }
-    if(error)throw error;
-    const coupon=Array.isArray(data)?data[0]:data;
-    couponShowCard(coupon); showToast(`Cupón ${coupon.codigo} generado ✓`);
-    await window.loadCoupons(true);
-    document.getElementById('coupon-created-card')?.scrollIntoView({behavior:'smooth',block:'center'});
-  }catch(error){console.error('No se pudo generar el cupón de referidos:',error);showToast(error.message||'No se pudo generar el cupón.',true,7000);}
-  finally{if(btn)btn.disabled=false;window.renderReferrals();}
-};
-function referralMarginProblem(c){
-  const sub=ventaNumber('vc-f-ingreso')*(1+ventaNumber('vc-f-interes-pct')/100), total=sub*(1-(Number(c.porcentaje)||0)/100), cost=ventaNumber('vc-f-costo-real');
-  if(!(total>0))return '';
-  if(!(cost>0))return 'Registra el costo del producto antes de aplicar un cupón de referidos, para verificar que el margen no sea bajo.';
-  const margin=(total-cost)/total*100;
-  return margin<REFERRAL_RULES.minMarginPct?`Los cupones de referidos no aplican a productos con margen bajo: con el descuento quedaría en ${margin.toFixed(0)}% y el mínimo es ${REFERRAL_RULES.minMarginPct}%.`:'';
-}
-{ const baseLoadCoupons=window.loadCoupons; window.loadCoupons=async function(...a){ try{ return await baseLoadCoupons.apply(this,a); } finally { try{ window.renderReferrals(); }catch(_){} } }; }
 window.validateCouponCode=async function(){
   const input=document.getElementById('cv-code'), box=document.getElementById('cv-result');
   const code=(input?.value||'').trim().toUpperCase();
@@ -6055,7 +5944,6 @@ function saleCouponProblem(c,usedSale){
   const owner=couponOwnerName(c);
   const client=(document.getElementById('vc-f-cliente')?.value||'').trim();
   if(owner&&normalizeClientName(client)!==normalizeClientName(owner))return `Este cupón fue generado para ${owner}. El cliente de la venta debe ser el mismo.`;
-  if(c.categoria==='referidos'){const mp=referralMarginProblem(c);if(mp)return mp;}
   return '';
 }
 function couponOwnerName(c){
@@ -6079,6 +5967,45 @@ window.couponCustomerSearch=async function(val){
     setTimeout(()=>dropEl.classList.remove('open'),200);
   });
 };
+// Cuando el cliente cambia de nombre, mueve sus cupones (cliente = nombre viejo) al nombre nuevo.
+window.syncCouponClientName=async function(oldName,newName){
+  const oldKey=normalizeClientName(oldName);
+  if(!oldKey||!newName)return 0;
+  const {data,error}=await supabase.from('cupones_descuento').select('id,cliente').not('cliente','is',null).limit(2000);
+  if(error)throw error;
+  const ids=(data||[]).filter(c=>normalizeClientName(c.cliente)===oldKey).map(c=>c.id);
+  if(!ids.length)return 0;
+  const {data:updated,error:upErr}=await supabase.from('cupones_descuento').update({cliente:newName,actualizado_en:new Date().toISOString()}).in('id',ids).select('id');
+  if(upErr)throw upErr;
+  if((updated||[]).length<ids.length)throw new Error('La base de datos no permitió actualizar todos los cupones (revisa los permisos de cupones_descuento).');
+  if(typeof activeTab!=='undefined'&&activeTab==='descuentos')window.loadCoupons?.(true);
+  return updated.length;
+};
+// Mantiene enlazadas las ventas de un cliente cuando se edita su nombre o WhatsApp.
+// No toca el método de pago ni los montos: eso es historial de cada venta.
+window.syncVentasClientInfo=async function(oldName,patch){
+  const name=String(oldName||'').trim();
+  if(!name||!patch||!Object.keys(patch).length)return 0;
+  const pattern=name.replace(/[\%_]/g,m=>'\\'+m);
+  const {data,error}=await supabase.from('ventas').update(patch).ilike('cliente',pattern).select('id');
+  if(error)throw error;
+  return (data||[]).length;
+};
+// Rescate para cupones que quedaron con un nombre viejo (cliente renombrado antes de este arreglo).
+function offerCouponReassign(coupon){
+  const status=document.getElementById('sale-coupon-status');
+  const client=(document.getElementById('vc-f-cliente')?.value||'').trim();
+  if(!status||!client||!coupon||!couponOwnerName(coupon))return;
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='btn btn-outline';btn.style.cssText='display:block;margin-top:8px';
+  btn.innerHTML='<i class="fas fa-user-pen"></i> ¿Cambió de nombre? Reasignar cupón a este cliente';
+  btn.onclick=()=>window.openConfirmModal('Reasignar cupón',`El cupón ${coupon.codigo} está a nombre de "${coupon.cliente}". ¿Reasignarlo a "${client}"?`,async function(){
+    const {data,error}=await supabase.from('cupones_descuento').update({cliente:client,actualizado_en:new Date().toISOString()}).eq('codigo',coupon.codigo).select('codigo');
+    if(error||!data?.length){showToast(error?.message||'No se pudo reasignar el cupón.',true,7000);return;}
+    showToast('Cupón reasignado ✓');window.applySaleCoupon();
+  },'Reasignar','fa-user-pen');
+  status.appendChild(btn);
+}
 window.applySaleCoupon=async function(){
   const code=(document.getElementById('sale-coupon-code')?.value||'').trim().toUpperCase(), status=document.getElementById('sale-coupon-status');
   const fail=message=>{status.textContent=message;status.dataset.kind='error';};
@@ -6087,7 +6014,7 @@ window.applySaleCoupon=async function(){
     const {data,error}=await supabase.from('cupones_descuento').select('codigo,categoria,porcentaje,compra_minima_mxn,compra_minima_usd,cliente,estado,expira_en,usos,usos_maximos').eq('codigo',code).maybeSingle();
     if(error)throw error;
     const usedSale=data?await findCouponSale(data.codigo):null;
-    const problem=saleCouponProblem(data,usedSale);if(problem){fail(problem);return;}
+    const problem=saleCouponProblem(data,usedSale);if(problem){fail(problem);if(/fue generado para/.test(problem))offerCouponReassign(data);return;}
     const subtotal=ventaIngresoUsd()*(1+ventaNumber('vc-f-interes-pct')/100), currency=document.getElementById('vc-f-moneda')?.value||'MXN';
     if(currency==='USD'&&subtotal<Number(data.compra_minima_usd)){fail(`La compra mínima es US$${Number(data.compra_minima_usd).toLocaleString('en-US')}.`);return;}
     if(currency==='MXN'&&subtotal*VENTA_USD_MXN_RATE<Number(data.compra_minima_mxn)){fail(`La compra mínima es MX$${Number(data.compra_minima_mxn).toLocaleString('es-MX')}.`);return;}
@@ -6395,12 +6322,12 @@ window.openGestionMobileMenu=function(id){
   document.getElementById('gestion-mobile-title').textContent=account.nombre;document.getElementById('modal-gestion-mobile')?.classList.add('open');
 };
 function resetPavoOriginInputs(groupName){document.querySelectorAll(`input[name="${groupName}"]`).forEach(input=>{input.checked=false;const amount=input.closest('.gestion-source-entry')?.querySelector('[data-source-amount]');if(amount){amount.value='';amount.hidden=true;}});}
-function collectPavoMovements(groupName,costId){const cost=Number(document.getElementById(costId)?.value||0);const selected=[...document.querySelectorAll(`input[name="${groupName}"]:checked`)];const movements=[];let total=0;let valid=selected.length>0;for(const input of selected){const amountInput=input.closest('.gestion-source-entry')?.querySelector('[data-source-amount]');const pavos=Number(amountInput?.value);if(!Number.isInteger(pavos)||pavos<50||pavos%50!==0)valid=false;else total+=pavos;movements.push({origen:input.value,pavos,costo_mxn:input.value==='recarga'?cost:0});}if(selected.some(input=>input.value==='recarga')&&(!Number.isFinite(cost)||cost<=0))valid=false;if(!selected.some(input=>input.value==='recarga')&&cost!==0)valid=false;return {movements,total,valid};}
+function collectPavoMovements(groupName,costId){const cost=Number(document.getElementById(costId)?.value||0);const selected=[...document.querySelectorAll(`input[name="${groupName}"]:checked`)];const movements=[];let total=0;let valid=selected.length>0;for(const input of selected){const amountInput=input.closest('.gestion-source-entry')?.querySelector('[data-source-amount]');const pavos=Number(amountInput?.value);if(!Number.isInteger(pavos)||pavos<=0||pavos%2!==0)valid=false;else total+=pavos;movements.push({origen:input.value,pavos,costo_mxn:input.value==='recarga'?cost:0});}if(selected.some(input=>input.value==='recarga')&&(!Number.isFinite(cost)||cost<=0))valid=false;if(!selected.some(input=>input.value==='recarga')&&cost!==0)valid=false;return {movements,total,valid};}
 function bindPavoOriginGroup(groupName,costGroupId){document.querySelectorAll(`input[name="${groupName}"]`).forEach(input=>input.addEventListener('change',()=>{const entry=input.closest('.gestion-source-entry');const amount=entry?.querySelector('[data-source-amount]');if(amount){amount.hidden=!input.checked;if(!input.checked)amount.value='';}const hasRecharge=!!document.querySelector(`input[name="${groupName}"][value="recarga"]:checked`);const costGroup=document.getElementById(costGroupId);if(costGroup)costGroup.hidden=!hasRecharge;if(!hasRecharge){const cost=document.getElementById(costGroupId.replace('-group',''));if(cost)cost.value='';}}));}
 bindPavoOriginGroup('gestion-edit-source','gestion-edit-cost-group');bindPavoOriginGroup('gestion-pavos-source','gestion-pavos-cost-group');
 window.openGestionPavos=function(id){const account=gestionAccounts.find(x=>String(x.id)===String(id));if(!account)return;document.getElementById('gestion-pavos-account-id').value=account.id;document.getElementById('gestion-pavos-account-name').textContent=`Cuenta: ${account.nombre} · Saldo actual: ${new Intl.NumberFormat('es-MX').format(Number(account.pavos_disponibles)||0)} pavos`;document.getElementById('gestion-pavos-amount').value='';document.getElementById('gestion-pavos-cost').value='';resetPavoOriginInputs('gestion-pavos-source');document.getElementById('gestion-pavos-cost-group').hidden=true;document.getElementById('modal-gestion-pavos').classList.add('open');};
 window.closeGestionPavos=function(){document.getElementById('modal-gestion-pavos')?.classList.remove('open');};
-window.saveGestionPavos=async function(){const accountId=document.getElementById('gestion-pavos-account-id').value;const amount=Number(document.getElementById('gestion-pavos-amount').value);const batch=collectPavoMovements('gestion-pavos-source','gestion-pavos-cost');if(!accountId||!Number.isInteger(amount)||amount<50||amount%50!==0||!batch.valid||batch.total!==amount){showToast('Selecciona uno o varios orígenes, indica pavos en múltiplos de 50 y comprueba que sus cantidades sumen el total. Para Recarga registra también el costo.',true);return;}const btn=document.getElementById('gestion-pavos-save-btn');if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Guardando…';}try{const {error}=await supabase.rpc('registrar_movimientos_pavos_lote',{p_cuenta_id:accountId,p_movimientos:batch.movements});if(error)throw error;window.closeGestionPavos();await window.fetchGestionAccounts(false);showToast('Pavos agregados y registrados por origen.');}catch(error){console.error('No se pudo registrar el ingreso de pavos:',error);showToast(`No se pudieron agregar pavos: ${error?.message||'revisa Supabase y aplica la migración actualizada.'}`,true,8000);}finally{if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-plus"></i> Agregar pavos';}}
+window.saveGestionPavos=async function(){const accountId=document.getElementById('gestion-pavos-account-id').value;const amount=Number(document.getElementById('gestion-pavos-amount').value);const batch=collectPavoMovements('gestion-pavos-source','gestion-pavos-cost');if(!accountId||!Number.isInteger(amount)||amount<=0||amount%2!==0||!batch.valid||batch.total!==amount){showToast('Los pavos no pueden ser una cantidad impar. Selecciona uno o varios orígenes y comprueba que sus cantidades sumen el total. Para Recarga registra también el costo.',true);return;}const btn=document.getElementById('gestion-pavos-save-btn');if(btn){btn.disabled=true;btn.innerHTML='<i class="fas fa-circle-notch fa-spin"></i> Guardando…';}try{const {error}=await supabase.rpc('registrar_movimientos_pavos_lote',{p_cuenta_id:accountId,p_movimientos:batch.movements});if(error)throw error;window.closeGestionPavos();await window.fetchGestionAccounts(false);showToast('Pavos agregados y registrados por origen.');}catch(error){console.error('No se pudo registrar el ingreso de pavos:',error);showToast(`No se pudieron agregar pavos: ${error?.message||'revisa Supabase y aplica la migración actualizada.'}`,true,8000);}finally{if(btn){btn.disabled=false;btn.innerHTML='<i class="fas fa-plus"></i> Agregar pavos';}}
 };
 
 window.openGestionAccount=function(id='') {
@@ -6441,14 +6368,17 @@ window.saveGestionAccount=async function(){
   const original=Number(document.getElementById('gestion-f-vbucks').dataset.original)||0;
   const added=vbucks-original;
   const batch=collectPavoMovements('gestion-edit-source','gestion-edit-cost');
-  if(!name||!Number.isInteger(vbucks)||vbucks<0||vbucks%50!==0||!Number.isInteger(generated)||generated<0||generated%50!==0||!Number.isInteger(gifts)||gifts<0||gifts>5||(level!==null&&(!Number.isInteger(level)||level<0))||(added>0&&(!Number.isInteger(added)||added<50||added%50!==0||!batch.valid||batch.total!==added))){showToast('Los pavos deben ser múltiplos de 50. Al aumentar el saldo, selecciona uno o varios orígenes y distribuye entre ellos exactamente la cantidad agregada; registra el costo si hay Recarga.',true);return;}
+  const hasOrigin=document.querySelectorAll('input[name="gestion-edit-source"]:checked').length>0;
+  if(!name||!Number.isInteger(vbucks)||vbucks<0||!Number.isInteger(generated)||generated<0||!Number.isInteger(gifts)||gifts<0||gifts>5||(level!==null&&(!Number.isInteger(level)||level<0))){showToast('Revisa los datos de la cuenta.',true);return;}
+  if(vbucks%2!==0||generated%2!==0){showToast('Los pavos no pueden ser una cantidad impar.',true);return;}
+  if(added>0&&hasOrigin&&(!batch.valid||batch.total!==added)){showToast('Las cantidades de los orígenes deben ser pares y sumar exactamente los pavos agregados ('+added+'). Si eliges Recarga, registra también el costo.',true);return;}
   const btn=document.getElementById('gestion-save-btn'); if(btn){btn.disabled=true;btn.textContent='Guardando…';}
   try{
     let query=supabase.from('cuentas_gestion');
-    const record={nombre:name,stw_level:level,...(added>0?{}:{pavos_disponibles:vbucks}),pavos_generados_mes:generated,pavos_generados_periodo:`${todayIso().slice(0,7)}-01`,regalos_disponibles:gifts,regalos_dia:todayIso(),actualizado_en:new Date().toISOString()};
+    const record={nombre:name,stw_level:level,...(added>0&&hasOrigin?{}:{pavos_disponibles:vbucks}),pavos_generados_mes:generated,pavos_generados_periodo:`${todayIso().slice(0,7)}-01`,regalos_disponibles:gifts,regalos_dia:todayIso(),actualizado_en:new Date().toISOString()};
     const result=id?await query.update(record).eq('id',id):await query.insert(record).select('id').single();
     if(result.error)throw result.error;
-    if(added>0){
+    if(added>0&&hasOrigin){
       const accountId=id||result.data?.id;
       const movement=await supabase.rpc('registrar_movimientos_pavos_lote',{p_cuenta_id:accountId,p_movimientos:batch.movements});
       if(movement.error)throw movement.error;
@@ -7307,6 +7237,7 @@ function openVentaModal() {
   if (statusEl) statusEl.value = 'Completado';
   const metEl = document.getElementById('vc-f-metodo');
   if (metEl) metEl.value = '';
+  window._ventaClientSavedMethod = '';
   const monedaEl=document.getElementById('vc-f-moneda'); if(monedaEl)monedaEl.value='MXN';
   syncVentaCurrencyFields(false);
   const idField=document.getElementById('vc-f-id'); if(idField)idField.value=generarIdVenta();
@@ -7358,7 +7289,7 @@ window.editVenta = async function(id) {
   document.getElementById('vc-m-title').textContent = `Editar Venta`;
   window.clearSaleCoupon();
   const saleCouponBox=document.getElementById('sale-coupon-box');
-  if(saleCouponBox){saleCouponBox.style.display='';const status=document.getElementById('sale-coupon-status');if(v.cupon_codigo){document.getElementById('sale-coupon-code').value=v.cupon_codigo;document.getElementById('sale-coupon-code').disabled=true;document.getElementById('sale-coupon-apply').hidden=true;status.textContent=`Cupón existente: -${Number(v.descuento_porcentaje||0)}% (${Number(v.descuento_usd||0).toFixed(2)} USD). No se puede cambiar al editar.`;status.dataset.kind='success';}else{saleCouponBox.style.display='none';}}
+  if(saleCouponBox){saleCouponBox.style.display='';const status=document.getElementById('sale-coupon-status');if(v.cupon_codigo){document.getElementById('sale-coupon-code').value=v.cupon_codigo;document.getElementById('sale-coupon-code').disabled=true;document.getElementById('sale-coupon-apply').hidden=true;status.textContent=`Cupón existente: -${Number(v.descuento_porcentaje||0)}% (${Number(v.descuento_usd||0).toFixed(2)} USD). No se puede cambiar al editar.`;status.dataset.kind='success';}else{status.textContent='Puedes aplicar un cupón a esta venta: se descuenta del precio y el cupón queda como usado al guardar.';status.dataset.kind='';}}
   // Restore tipo via chips
   const tipoVal = v.tipo || '';
   document.querySelectorAll('.vm-tipo-chip').forEach(c => {
@@ -7677,7 +7608,8 @@ window.saveVenta = async function() {
   if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...'; }
 
   // Cupón: nunca guardar con un código escrito que no esté aplicado, ni con uno que ya no esté disponible.
-  if (!window.editingVentaId) {
+  const editHasCoupon = !!(window.editingVentaId && (currentVentas.find(v => String(v.id) === String(window.editingVentaId)) || {}).cupon_codigo);
+  if (!editHasCoupon) {
     const releaseSaveBtn = () => { if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<i class="fas fa-save"></i> Guardar Venta'; } };
     const typedCoupon = (document.getElementById('sale-coupon-code')?.value || '').trim();
     if (typedCoupon && !activeSaleCoupon) {
@@ -7774,10 +7706,32 @@ window.saveVenta = async function() {
       const updateRecord = { ...record };
       delete updateRecord.id;
       delete updateRecord.created_at;
+      // Cupón aplicado al editar una venta que aún no tenía: se descuenta del precio y se registra el descuento.
+      const applyingCoupon = !!(activeSaleCoupon && !origVenta?.cupon_codigo);
+      if (applyingCoupon) {
+        const pct = Number(activeSaleCoupon.porcentaje) || 0;
+        const discountUsd = totalVenta * pct / 100, finalUsd = totalVenta - discountUsd;
+        Object.assign(updateRecord, {
+          ingreso: finalUsd, monto_recibido: finalUsd, ganancia_neta: finalUsd - costoReal,
+          margen: finalUsd > 0 ? (((finalUsd - costoReal) / finalUsd) * 100).toFixed(1) + '%' : '0%',
+          cupon_codigo: activeSaleCoupon.codigo, descuento_porcentaje: pct, descuento_usd: discountUsd, precio_original_usd: totalVenta
+        });
+      }
       // Un ADMIN no ve ni captura costos: al editar no se sobrescriben los del CEO.
       if (currentRole !== 'CEO') ['costo','costo_real','monto_recibido','comision','ganancia_neta','margen'].forEach(k => delete updateRecord[k]);
+      let claimedCoupon = null;
+      if (applyingCoupon) {
+        // Se reclama el cupón primero (solo si sigue activo) para que no se use dos veces.
+        const prevUses = Number(activeSaleCoupon.usos) || 0;
+        const claim = await supabase.from('cupones_descuento').update({ estado: 'usado', usos: prevUses + 1, actualizado_en: new Date().toISOString() }).eq('codigo', activeSaleCoupon.codigo).eq('estado', 'activo').select('codigo');
+        if (claim.error || !claim.data?.length) throw new Error(claim.error?.message || 'El cupón ya no está disponible.');
+        claimedCoupon = { codigo: activeSaleCoupon.codigo, usos: prevUses };
+      }
       const { error: err } = await supabase.from('ventas').update(updateRecord).eq('id', window.editingVentaId).abortSignal(saveController.signal);
-      if (err) throw err;
+      if (err) {
+        if (claimedCoupon) { try { await supabase.from('cupones_descuento').update({ estado: 'activo', usos: claimedCoupon.usos, actualizado_en: new Date().toISOString() }).eq('codigo', claimedCoupon.codigo); } catch (_) {} }
+        throw err;
+      }
     } else if (activeSaleCoupon) {
       const { error: err } = await supabase.rpc('registrar_venta_con_cupon', {p_codigo:activeSaleCoupon.codigo,p_venta:record,p_tasa_usd_mxn:VENTA_USD_MXN_RATE,p_moneda_venta:saleCurrency}).abortSignal(saveController.signal);
       if (err) throw err;
@@ -8148,29 +8102,6 @@ window.exportVentasPDFImprimible = function() {
 .cv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 .cv-grid div{display:flex;flex-direction:column;gap:2px}.cv-grid small{color:var(--text2);font-size:.75rem}.cv-grid b{font-size:.95rem;word-break:break-word}
 .cv-note{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(231,76,60,.1);font-size:.9rem}
-</style>
-<style id="shegos-referrals-styles">
-.ref-panel{margin-top:18px}
-.ref-tiers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:4px 0 14px}
-.ref-tier{padding:14px 10px;border:1px solid var(--border2);border-radius:12px;background:rgba(255,255,255,.03);text-align:center}
-.ref-tier b{display:block;font-family:var(--font-title);font-size:2.1em;line-height:1;color:var(--accent);font-style:italic}
-.ref-tier span{display:block;font-size:.7rem;color:var(--text2);margin-top:5px;line-height:1.35}
-.ref-rules{margin:0 0 16px;padding:12px 14px 12px 30px;border-left:2px solid var(--accent);border-radius:0 10px 10px 0;background:rgba(98,255,0,.055);color:var(--text2);font-size:.78rem;line-height:1.6}
-.ref-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.ref-card{display:grid;gap:9px;min-width:0;padding:13px 14px;border:1px solid var(--border2);border-radius:12px;background:var(--surface)}
-.ref-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.ref-top strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ref-top span{flex:0 0 auto;font-size:.72rem;color:var(--text2);white-space:nowrap}.ref-top span b{color:var(--accent);font-size:1.15rem}
-.ref-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}.ref-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
-.ref-sub,.ref-note{font-size:.72rem;color:var(--text3);line-height:1.45}
-.ref-chips{display:flex;flex-wrap:wrap;gap:6px}
-.ref-chip{padding:3px 9px;border:1px solid var(--border2);border-radius:99px;color:var(--text3);font-size:.66rem;font-weight:700}
-.ref-chip.on{color:var(--accent);border-color:rgba(40,254,182,.45)}.ref-chip.done{color:var(--text2);border-color:rgba(255,255,255,.25)}
-.ref-act .btn{width:100%;justify-content:center;min-height:40px}
-.ref-more{display:flex;justify-content:center;margin-top:12px}
-.ref-empty{grid-column:1/-1;padding:22px 12px;text-align:center;color:var(--text3);font-size:.82rem}
-@media(max-width:850px){.ref-list{grid-template-columns:1fr}}
-@media(max-width:520px){.ref-tiers{gap:6px}.ref-tier{padding:11px 6px}.ref-tier b{font-size:1.7em}.ref-panel{padding:16px}}
 </style>
 </head><body><button class="print-action" onclick="window.print()">Imprimir / Guardar como PDF</button><header><img class="logo" id="report-logo" src="${esc(logoUrl)}" alt="Shegos Store"><div><h1>Registro de ventas</h1><p>Período: ${esc(reportRange)}</p><b>${rows.length}</b> transacciones<br><span>${new Date().toLocaleString('es-DO')}</span></div></header>
   <div class="summary"><div class="metric"><span>Ingresos brutos</span><strong>$${gross.toFixed(2)}</strong></div>${isCEO?`<div class="metric"><span>Comisiones</span><strong>$${fees.toFixed(2)}</strong></div><div class="metric"><span>Recibido neto</span><strong>$${net.toFixed(2)}</strong></div>`:''}<div class="metric"><span>Ventas registradas</span><strong>${rows.length}</strong></div></div>
@@ -9754,7 +9685,7 @@ function syncClientReferrerOptions(excludeId='') {
   options.innerHTML=clientesCache.filter(c=>String(c.id)!==String(excludeId)).map(c=>`<option value="${rvEsc(c.nombre)}"></option>`).join('');
 }
 
-async function upsertCliente(nombre, wa, metodo, extra = {}) {
+async function upsertCliente(nombre, wa, metodo, extra = {}, opts = {}) {
   if (!nombre) return;
   // Refrescamos la caché antes de decidir insert vs update, para evitar
   // fallos silenciosos por restricción única cuando la caché local está desactualizada
@@ -9765,7 +9696,8 @@ async function upsertCliente(nombre, wa, metodo, extra = {}) {
     if (existing) {
       const patch = { updated_at: new Date().toISOString() };
       if (wa) patch.wa = wa;
-      if (metodo) patch.metodo = metodo;
+      // keepSavedMethod: el método de una venta no reemplaza el método ya guardado del cliente.
+      if (metodo && !(opts.keepSavedMethod && existing.metodo)) patch.metodo = metodo;
       if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
       if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
       if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
@@ -9782,7 +9714,7 @@ async function upsertCliente(nombre, wa, metodo, extra = {}) {
         if (error.code === '23505') {
           const patch = { updated_at: new Date().toISOString() };
           if (wa) patch.wa = wa;
-          if (metodo) patch.metodo = metodo;
+          if (metodo && !opts.keepSavedMethod) patch.metodo = metodo;
           if (extra.epic_id !== undefined) patch.epic_id = extra.epic_id;
           if (extra.discord_id !== undefined) patch.discord_id = extra.discord_id;
           if (extra.compra_regalo !== undefined) patch.compra_regalo = !!extra.compra_regalo;
@@ -9860,6 +9792,7 @@ window.ventaClientSearch = function(val) {
   const clientWrap=clientInput?.closest('.vm-client-wrap');
   if(clientWrap){clientWrap.classList.remove('has-selection');const icon=clientWrap.querySelector('.vm-client-icon');if(icon)icon.className='fas fa-search vm-client-icon';}
   if(clientInput)delete clientInput.dataset.clientId;
+  if(window._ventaClientSavedMethod){window._ventaClientSavedMethod='';try{renderVentaPaymentGrid();}catch(_){}}
   if (dropEl) {
     const suggestions = getClienteSuggestions(val);
     renderClienteDropdown(dropEl, suggestions, (c) => {
@@ -9871,6 +9804,7 @@ window.ventaClientSearch = function(val) {
       if (epicEl) epicEl.value = c.epicId || '';
       if (discordEl) discordEl.value = c.discordId || '';
       const methodValue=paymentMethodFromDb(c.metodo);
+      window._ventaClientSavedMethod=PAYMENT_METHODS.some(item=>item.value===methodValue)?methodValue:'';
       const methodSelect=document.getElementById('vc-f-metodo');
       if(methodSelect&&PAYMENT_METHODS.some(item=>item.value===methodValue)){methodSelect.value=methodValue;methodSelect.dispatchEvent(new Event('change',{bubbles:true}));}
       syncPaymentPicker('vc-f-metodo');
@@ -9880,7 +9814,7 @@ window.ventaClientSearch = function(val) {
         hintEl.style.display = 'block';
         hintEl.style.color = 'var(--accent)';
         const method=PAYMENT_METHODS.find(item=>item.value===methodValue);
-        hintEl.innerHTML = `<i class="fas fa-check-circle"></i> Cliente seleccionado${method?` · Método preferido: ${paymentLogoMarkup(method)} ${rvEsc(method.label)}`:' · Datos cargados desde la base de clientes'}`;
+        hintEl.innerHTML = `<i class="fas fa-check-circle"></i> Cliente seleccionado${method?` · Método guardado: ${paymentLogoMarkup(method)} ${rvEsc(method.label)} (sugerido; elige otro abajo si esta venta se pagó distinto)`:' · Datos cargados desde la base de clientes'}`;
       }
     });
   }
@@ -9940,7 +9874,7 @@ window.saveVenta = async function() {
     };
     // La venta se registra primero: un fallo al sincronizar el cliente no debe
     // bloquear ni dar la impresión de que la venta no se guardó.
-    upsertCliente(nombre, wa, metodo, extra).then(ok => {
+    upsertCliente(nombre, wa, metodo, extra, { keepSavedMethod: true }).then(ok => {
       if (!ok) showToast('La venta se guardó; no se pudo actualizar el cliente.', true);
       else if (activeTab === 'clientes') window.renderClientesTab();
     }).catch(error => {
@@ -10619,9 +10553,35 @@ window.saveAddCliente = async function() {
       const patch = { nombre, updated_at: new Date().toISOString(), ...extra };
       if (wa) patch.wa = wa;
       if (metodo) patch.metodo = metodo;
+      const oldClientName = editedClient?.nombre || '';
       const { error } = await supabase.from('clientes').update(patch).eq('id', editId);
       if (error) throw error;
       await fetchClientesFromDB();
+      // Las ventas del cliente deben seguir enlazadas: nombre y WhatsApp se actualizan en el registro de ventas.
+      if (oldClientName) {
+        const ventaPatch = {};
+        if (oldClientName !== nombre) ventaPatch.cliente = nombre;
+        if (wa && wa !== (editedClient?.wa || '')) ventaPatch.whatsapp = wa;
+        if (Object.keys(ventaPatch).length) {
+          try {
+            const updatedSales = await window.syncVentasClientInfo(oldClientName, ventaPatch);
+            if (updatedSales > 0) { showToast(`Se actualizaron ${updatedSales} venta${updatedSales===1?'':'s'} del cliente ✓`); Promise.resolve().then(() => fetchVentas()).catch(() => {}); }
+          } catch (salesErr) {
+            console.error('No se pudieron actualizar las ventas del cliente:', salesErr);
+            showToast('El cliente se guardó, pero sus ventas siguen con los datos anteriores: ' + (salesErr?.message || 'error desconocido'), true, 9000);
+          }
+        }
+      }
+      // Si cambió el nombre, los cupones a nombre del cliente deben seguir al nombre nuevo.
+      if (oldClientName && oldClientName !== nombre) {
+        try {
+          const moved = await window.syncCouponClientName(oldClientName, nombre);
+          if (moved > 0) showToast(`Se actualizaron ${moved} cupón${moved===1?'':'es'} con el nuevo nombre ✓`);
+        } catch (couponErr) {
+          console.error('No se pudieron actualizar los cupones del cliente:', couponErr);
+          showToast('El cliente se guardó, pero sus cupones siguen con el nombre anterior: ' + (couponErr?.message || 'error desconocido'), true, 9000);
+        }
+      }
     } else {
       const ok = await upsertCliente(nombre, wa, metodo, extra);
       if (!ok) throw new Error(window._clientesSaveError || 'no se pudo guardar');
